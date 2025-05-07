@@ -13,4 +13,12 @@ UCLASS()
 class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
 {
 	GENERATED_BODY()
+
+public:
+	ABaseGameMode();
+	virtual void StartPlay() override;
+
+private:
+	UGameInstance* GameInstance;
+	FName CurrentLevel;
 };
