@@ -2,3 +2,14 @@
 
 
 #include "BaseGameState.h"
+#include "DominionFramework/GameInstance/SoundInstanceSubsystem.h"
+
+#include "Util/DebugHelper.h"
+
+void ABaseGameState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SoundSubsystem = GetGameInstance()->GetSubsystem<USoundInstanceSubsystem>();
+	SoundSubsystem->LoadVolumeSettings();
+}
