@@ -3,6 +3,7 @@
 
 #include "ProtoLevel2GameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "AI/AICharacters/BaseEnemy.h"
 
 #include "Util/DebugHelper.h"
 
@@ -16,12 +17,12 @@ void AProtoLevel2GameMode::BeginPlay()
 
 	//=====Enemy 위치정보 캐싱=====
 	TArray<AActor*> Enemies;
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADomiBaseEnemy::StaticClass(), Enemies);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseEnemy::StaticClass(), Enemies);
 	for (AActor* Enemy : Enemies)
 	{
 		//FGameplayTag 정해지면 그거로 바꿔야할 듯?
 		if (Enemy->ActorHasTag("Boss")) continue;
-		
+
 		FEnemySpawnInfo Info;
 		Info.EnemyClass = Enemy->GetClass();
 		Info.OriginTransform = Enemy->GetActorTransform();
@@ -34,25 +35,23 @@ void AProtoLevel2GameMode::BeginPlay()
 void AProtoLevel2GameMode::OnCrackUsed()
 {
 	TArray<AActor*> Enemies;
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADomiBaseEnemy::StaticClass(), Enemies);
-	// for (AActor* Enemy : Enemies)
-	// {
-	// 	Destroy(Enemy);
-	// }
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseEnemy::StaticClass(), Enemies);
+	for (AActor* Enemy : Enemies)
+	{
+		Enemy->Destroy();
+	}
 }
 
 void AProtoLevel2GameMode::RespawnEnemies()
 {
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	
+
 	for (FEnemySpawnInfo EnemyInfo : CachedEnemyInfo)
 	{
-		// ADomiBaseEnemy* SpawnedEnemy = GetWorld()->SpawnActor<ADomiBaseEnemy>(
-		// 	EnemyInfo.EnemyClass,
-		// 	EnemyInfo.OriginTransform,
-		// 	SpawnParams);
+		ABaseEnemy* SpawnedEnemy = GetWorld()->SpawnActor<ABaseEnemy>(
+			EnemyInfo.EnemyClass,
+			EnemyInfo.OriginTransform,
+			SpawnParams);
 	}
 }
-
-
