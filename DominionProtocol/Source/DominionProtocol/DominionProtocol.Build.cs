@@ -18,6 +18,6 @@ public class DominionProtocol : ModuleRules
 			"GameplayTags"
 		});
 		
-		PrivateIncludePaths.Add("BattleFramework");
+		PrivateIncludePaths.Add("DominionProtocol");
 	}
 }
