@@ -21,11 +21,13 @@ class DOMINIONPROTOCOL_API USoundInstanceSubsystem : public UGameInstanceSubsyst
 	GENERATED_BODY()
 	
 public:
+	void LoadSoundClass();
 	void LoadVolumeSettings();
 
 	void OnLevelChanged(UWorld* NewWorld);
 	
 	//Setter
+	FORCEINLINE void SetWorldCache(UWorld* NewWorld) { World = NewWorld; }
 	void SetMasterVolume(float NewVolume);
 	void SetSFXVolume(float NewVolume);
 	void SetBGMVolume(float NewVolume);

@@ -11,5 +11,6 @@ void ABaseGameState::BeginPlay()
 	Super::BeginPlay();
 
 	SoundSubsystem = GetGameInstance()->GetSubsystem<USoundInstanceSubsystem>();
+	SoundSubsystem->SetWorldCache(GetWorld());
 	SoundSubsystem->LoadVolumeSettings();
 }
