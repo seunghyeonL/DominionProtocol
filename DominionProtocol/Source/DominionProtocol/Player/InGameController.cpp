@@ -2,3 +2,9 @@
 
 
 #include "InGameController.h"
+#include "Util/DevCheatManager.h"
+
+AInGameController::AInGameController()
+{
+	CheatClass = UDevCheatManager::StaticClass();
+}

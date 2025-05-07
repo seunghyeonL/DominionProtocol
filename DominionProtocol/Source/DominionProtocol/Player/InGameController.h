@@ -6,11 +6,11 @@
 #include "GameFramework/PlayerController.h"
 #include "InGameController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	AInGameController();
 };
