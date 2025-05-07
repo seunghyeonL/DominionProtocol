@@ -1,31 +1,31 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DomiBaseEnemy.h"
+#include "BaseEnemy.h"
 
 
 // Sets default values
-ADomiBaseEnemy::ADomiBaseEnemy()
+ABaseEnemy::ABaseEnemy()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
-void ADomiBaseEnemy::BeginPlay()
+void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ADomiBaseEnemy::Tick(float DeltaTime)
+void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input
-void ADomiBaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

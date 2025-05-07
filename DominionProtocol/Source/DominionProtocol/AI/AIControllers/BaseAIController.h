@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Runtime/AIModule/Classes/AIController.h"
-#include "DomiBaseAIController.generated.h"
+#include "BaseAIController.generated.h"
 
 UCLASS()
-class DOMINIONPROTOCOL_API ADomiBaseAIController : public AAIController
+class DOMINIONPROTOCOL_API ABaseAIController : public AAIController
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ADomiBaseAIController();
+	ABaseAIController();
 
 protected:
 	// Called when the game starts or when spawned

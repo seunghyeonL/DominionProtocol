@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "DomiBaseEnemy.generated.h"
+#include "BaseEnemy.generated.h"
 
 UCLASS()
-class DOMINIONPROTOCOL_API ADomiBaseEnemy : public ACharacter
+class DOMINIONPROTOCOL_API ABaseEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ADomiBaseEnemy();
+	ABaseEnemy();
 
 protected:
 	// Called when the game starts or when spawned
