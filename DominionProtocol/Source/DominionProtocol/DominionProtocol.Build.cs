@@ -15,7 +15,10 @@ public class DominionProtocol : ModuleRules
 			"Engine", 
 			"InputCore", 
 			"EnhancedInput",
-			"GameplayTags"
+			"GameplayTags",
+			"AIModule",
+			"NavigationSystem",
+			"GameplayTasks"
 		});
 		
 		PrivateIncludePaths.Add("DominionProtocol");
