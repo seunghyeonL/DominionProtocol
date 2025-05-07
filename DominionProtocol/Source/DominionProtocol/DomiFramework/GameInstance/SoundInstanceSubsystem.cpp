@@ -17,12 +17,8 @@ void USoundInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	CategoryVolumes.Add(ESoundCategory::BGM, 1.f);
 	CategoryVolumes.Add(ESoundCategory::UI, 1.f);
 
-	VolumeControlMix = LoadObject<USoundMix>(nullptr, TEXT("Game/Sound/Classes/SM_VolumeControl"));
-	MasterClass = LoadObject<USoundClass>(nullptr, TEXT("Game/Sound/SC_Master"));
-	SFXClass = LoadObject<USoundClass>(nullptr, TEXT("Game/Sound/SC_SFX"));
-	BGMClass = LoadObject<USoundClass>(nullptr, TEXT("Game/Sound/SC_BGM"));
-	UIClass = LoadObject<USoundClass>(nullptr, TEXT("Game/Sound/SC_UI"));
-
+	LoadSoundClass();
+	
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &USoundInstanceSubsystem::OnLevelChanged);
 }
 
@@ -33,12 +29,23 @@ void USoundInstanceSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
+void USoundInstanceSubsystem::LoadSoundClass()
+{
+	VolumeControlMix = LoadObject<USoundMix>(nullptr, TEXT("/Game/Sound/Classes/SM_VolumeControl"));
+	MasterClass = LoadObject<USoundClass>(nullptr, TEXT("/Game/Sound/Classes/SC_Master"));
+	SFXClass = LoadObject<USoundClass>(nullptr, TEXT("/Game/Sound/Classes/SC_SFX"));
+	BGMClass = LoadObject<USoundClass>(nullptr, TEXT("/Game/Sound/Classes/SC_BGM"));
+	UIClass = LoadObject<USoundClass>(nullptr, TEXT("/Game/Sound/Classes/SC_UI"));
+	Debug::PrintLog(TEXT("USoundInstanceSubsystem::LoadSoundClass : SoundClasses Loaded"));
+}
+
 void USoundInstanceSubsystem::LoadVolumeSettings()
 {
-	SetMasterVolume(CategoryVolumes[ESoundCategory::Master]);
-	SetSFXVolume(CategoryVolumes[ESoundCategory::SFX]);
-	SetBGMVolume(CategoryVolumes[ESoundCategory::BGM]);
-	SetUIVolume(CategoryVolumes[ESoundCategory::UI]);
+	check(World);
+	SetMasterVolume(CategoryVolumes[ESoundCategory::Master] * 100.f);
+	SetSFXVolume(CategoryVolumes[ESoundCategory::SFX] * 100.f);
+	SetBGMVolume(CategoryVolumes[ESoundCategory::BGM] * 100.f);
+	SetUIVolume(CategoryVolumes[ESoundCategory::UI] * 100.f);
 	Debug::PrintLog(TEXT("USoundInstanceSubsystem::LoadVolumeSettings called"));
 }
 
@@ -51,8 +58,6 @@ void USoundInstanceSubsystem::OnLevelChanged(UWorld* NewWorld)
 void USoundInstanceSubsystem::SetMasterVolume(float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));
-
-	NewVolume = FMath::Clamp(NewVolume, 0.0f, 100.0f);
 
 	CategoryVolumes[ESoundCategory::Master] = NewVolume / 100.0f;
 
@@ -73,8 +78,6 @@ void USoundInstanceSubsystem::SetSFXVolume(float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));
 
-	NewVolume = FMath::Clamp(NewVolume, 0.0f, 100.0f);
-
 	CategoryVolumes[ESoundCategory::SFX] = NewVolume / 100.0f;
 
 	if (IsValid(VolumeControlMix) && IsValid(SFXClass))
@@ -94,8 +97,6 @@ void USoundInstanceSubsystem::SetBGMVolume(float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));
 
-	NewVolume = FMath::Clamp(NewVolume, 0.0f, 100.0f);
-
 	CategoryVolumes[ESoundCategory::BGM] = NewVolume / 100.0f;
 
 	if (IsValid(VolumeControlMix) && IsValid(BGMClass))
@@ -114,8 +115,6 @@ void USoundInstanceSubsystem::SetBGMVolume(float NewVolume)
 void USoundInstanceSubsystem::SetUIVolume(float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));
-
-	NewVolume = FMath::Clamp(NewVolume, 0.0f, 100.0f);
 
 	CategoryVolumes[ESoundCategory::UI] = NewVolume / 100.0f;
 

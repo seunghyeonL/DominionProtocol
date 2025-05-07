@@ -6,7 +6,6 @@
 #include "Engine/GameInstance.h"
 #include "DomiGameInstance.generated.h"
 
-
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiGameInstance : public UGameInstance
 {
@@ -23,8 +22,11 @@ public:
 protected:
 	
 private:
+	//=========
+	//보스 태그 이름 정해지면 bool 말고 태그 이용한 방식으로 변경해야함
 	UPROPERTY()
 	TArray<bool> IsBossDeadArray;
+	//========
 
 	static const int32 NumBosses;
 };
