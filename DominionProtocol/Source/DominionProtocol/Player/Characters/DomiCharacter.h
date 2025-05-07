@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Damagable.h"
-#include "EffectReceivable.h"
-#include "DomiProtoCharacter.generated.h"
+#include "../Damagable.h"
+#include "../EffectReceivable.h"
+#include "DomiCharacter.generated.h"
 
 class UPlayerStatusComponent;
 class UPlayerControlComponent;
@@ -18,7 +18,7 @@ struct FInputActionValue;
 struct FAttackData;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ADomiProtoCharacter :
+class DOMINIONPROTOCOL_API ADomiCharacter :
 public ACharacter, public IDamagable, public IEffectReceivable
 {
 	GENERATED_BODY()
@@ -37,45 +37,9 @@ protected:
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
 
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
-
-	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
-
-	// Dash Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* DashAction;
-	
-	// Sprint Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* SprintAction;
-
-	// Parry Input Action 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* ParryAction;
-	
-	// BaseAttack Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* BaseAttackAction;
-
-	// WeaponSkill Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* WeaponSkillAction;
-
-	// MagicSkill Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* MagicSkillAction;
-	
 public:
-	ADomiProtoCharacter();
+	ADomiCharacter();
 
 protected:
 	// Bind After ControlComponent Ready

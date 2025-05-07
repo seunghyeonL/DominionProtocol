@@ -1,6 +1,6 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "DomiProtoCharacter.h"
+#include "DomiCharacter.h"
 #include "Util/DebugHelper.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
@@ -10,20 +10,23 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "../InGameController.h"
 #include "InputActionValue.h"
 #include "Util/BattleDataTypes.h"
 #include "Components/ControlComponent/Player/PlayerControlComponent.h"
 #include "Components/ControlComponent/Player/States/PlayerControlState.h"
 #include "Components/StatusComponent/Player/PlayerStatusComponent.h"
+#include "InputAction.h"
+#include "InputMappingContext.h"
 
 //////////////////////////////////////////////////////////////////////////
-// ADomiProtoCharacter
+// ADomiCharacter
 
-ADomiProtoCharacter::ADomiProtoCharacter()
+ADomiCharacter::ADomiCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -50,13 +53,14 @@ ADomiProtoCharacter::ADomiProtoCharacter()
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Battle Components
 	ControlComponent = CreateDefaultSubobject<UPlayerControlComponent>(TEXT("ControlComponent"));
 	StatusComponent = CreateDefaultSubobject<UPlayerStatusComponent>(TEXT("StatusComponent"));
-	
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -64,105 +68,125 @@ ADomiProtoCharacter::ADomiProtoCharacter()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void ADomiProtoCharacter::NotifyControllerChanged()
+void ADomiCharacter::NotifyControllerChanged()
 {
 	Super::NotifyControllerChanged();
 
 	// Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (auto PlayerController = Cast<AInGameController>(Controller))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			if (IsValid(PlayerController->DefaultMappingContext))
+			{
+				Subsystem->AddMappingContext(PlayerController->DefaultMappingContext, 0);
+			}
+			else
+			{
+				Debug::PrintError(TEXT("ADomiCharacter::NotifyControllerChanged : Invalid MappingContext."));
+			}
 		}
 	}
 }
 
-void ADomiProtoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ADomiCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	InputComponent = PlayerInputComponent;
-	
+
 	if (ControlComponent->bIsComponentReady)
 	{
 		BindInputFunctions();
 	}
-	ControlComponent->OnComponentReady.BindUObject(this, &ADomiProtoCharacter::BindInputFunctions);
+	ControlComponent->OnComponentReady.BindUObject(this, &ADomiCharacter::BindInputFunctions);
 }
 
-void ADomiProtoCharacter::BindInputFunctions()
+void ADomiCharacter::BindInputFunctions()
 {
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent)) {
-		// Moving
-		if (IsValid(MoveAction))
-		{
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, ControlComponent.Get(), &UPlayerControlComponent::Move);	
-		}
-		
-		// Looking
-		if (IsValid(LookAction))
-		{
-			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, ControlComponent.Get(), &UPlayerControlComponent::Look);
-		}
-
-		// Dash
-		if (IsValid(DashAction))
-		{
-			EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, ControlComponent.Get(), &UPlayerControlComponent::Dash);
-		}
-
-		// Dash
-		if (IsValid(SprintAction))
-		{
-			EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, ControlComponent.Get(), &UPlayerControlComponent::Sprint);
-		}
-
-		// Parry
-		if (IsValid(ParryAction))
-		{
-			EnhancedInputComponent->BindAction(ParryAction, ETriggerEvent::Started, ControlComponent.Get(), &UPlayerControlComponent::Parry);
-		}
-
-		// BaseAttack
-		if (IsValid(BaseAttackAction))
-		{
-			EnhancedInputComponent->BindAction(BaseAttackAction, ETriggerEvent::Started, ControlComponent.Get(), &UPlayerControlComponent::BaseAttack);
-		}
-
-		// WeaponSkill
-		if (IsValid(WeaponSkillAction))
-		{
-			EnhancedInputComponent->BindAction(WeaponSkillAction, ETriggerEvent::Started, ControlComponent.Get(), &UPlayerControlComponent::WeaponSkill);
-		}
-
-		// MagicSkill
-		if (IsValid(MagicSkillAction))
-		{
-			EnhancedInputComponent->BindAction(MagicSkillAction, ETriggerEvent::Started, ControlComponent.Get(), &UPlayerControlComponent::MagicSkill);
-		}
-	}
-	else
+	if (auto PlayerController = Cast<AInGameController>(Controller))
 	{
-		UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		// Set up action bindings
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+		{
+			// Moving
+			if (IsValid(PlayerController->MoveAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->MoveAction, ETriggerEvent::Triggered, ControlComponent.Get(),
+				                                   &UPlayerControlComponent::Move);
+			}
+
+			// Looking
+			if (IsValid(PlayerController->LookAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->LookAction, ETriggerEvent::Triggered, ControlComponent.Get(),
+				                                   &UPlayerControlComponent::Look);
+			}
+
+			// Dash
+			if (IsValid(PlayerController->DashAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->DashAction, ETriggerEvent::Started, ControlComponent.Get(),
+				                                   &UPlayerControlComponent::Dash);
+			}
+
+			// Dash
+			if (IsValid(PlayerController->SprintAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->SprintAction, ETriggerEvent::Started, ControlComponent.Get(),
+				                                   &UPlayerControlComponent::Sprint);
+			}
+
+			// Parry
+			if (IsValid(PlayerController->ParryAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->ParryAction, ETriggerEvent::Started, ControlComponent.Get(),
+				                                   &UPlayerControlComponent::Parry);
+			}
+
+			// BaseAttack
+			if (IsValid(PlayerController->BaseAttackAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->BaseAttackAction, ETriggerEvent::Started, ControlComponent.Get(),
+				                                   &UPlayerControlComponent::BaseAttack);
+			}
+
+			// WeaponSkill
+			if (IsValid(PlayerController->WeaponSkillAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->WeaponSkillAction, ETriggerEvent::Started, ControlComponent.Get(),
+				                                   &UPlayerControlComponent::WeaponSkill);
+			}
+
+			// MagicSkill
+			if (IsValid(PlayerController->MagicSkillAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->MagicSkillAction, ETriggerEvent::Started, ControlComponent.Get(),
+				                                   &UPlayerControlComponent::MagicSkill);
+			}
+		}
+		else
+		{
+			Debug::PrintError(TEXT("ADomiCharacter::BindInputFunctions : Invalid InputComponent."));
+		}
 	}
 }
 
-void ADomiProtoCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
+void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);
 
 	if (!IsValid(ControlComponent))
 	{
-		Debug::PrintError(TEXT("ADomiProtoCharacter::OnAttacked : ControlComponent is not valid"));
+		Debug::PrintError(TEXT("ADomiCharacter::OnAttacked : ControlComponent is not valid"));
 		return;
 	}
 
 	if (!IsValid(StatusComponent))
 	{
-		Debug::PrintError(TEXT("ADomiProtoCharacter::OnAttacked : StatusComponent is not valid"));
+		Debug::PrintError(TEXT("ADomiCharacter::OnAttacked : StatusComponent is not valid"));
 		return;
 	}
-	
+
 	float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
 
@@ -183,26 +207,26 @@ void ADomiProtoCharacter::OnAttacked_Implementation(const FAttackData& AttackDat
 	}
 }
 
-FGameplayTagContainer ADomiProtoCharacter::GetActiveControlEffectTags_Implementation()
+FGameplayTagContainer ADomiCharacter::GetActiveControlEffectTags_Implementation()
 {
 	IEffectReceivable::GetActiveControlEffectTags_Implementation();
 
 	if (!IsValid(ControlComponent))
 	{
-		Debug::PrintError(TEXT("ADomiProtoCharacter::GetActiveControlEffectTags : ControlComponent is not valid"));
+		Debug::PrintError(TEXT("ADomiCharacter::GetActiveControlEffectTags : ControlComponent is not valid"));
 		return FGameplayTagContainer();
 	}
 
 	return ControlComponent->GetActiveControlEffects();
 }
 
-FGameplayTagContainer ADomiProtoCharacter::GetActiveStatusEffectTags_Implementation()
+FGameplayTagContainer ADomiCharacter::GetActiveStatusEffectTags_Implementation()
 {
 	IEffectReceivable::GetActiveStatusEffectTags_Implementation();
 
 	if (!IsValid(StatusComponent))
 	{
-		Debug::PrintError(TEXT("ADomiProtoCharacter::GetActiveControlEffectTags : ControlComponent is not valid"));
+		Debug::PrintError(TEXT("ADomiCharacter::GetActiveControlEffectTags : ControlComponent is not valid"));
 		return FGameplayTagContainer();
 	}
 
