@@ -33,7 +33,7 @@ void UPlayerDeathEffect::Move(const FInputActionValue& Value)
 
 void UPlayerDeathEffect::Look(const FInputActionValue& Value)
 {
-	// Super::Look(Value);
+	Super::Look(Value);
 }
 
 void UPlayerDeathEffect::Dash()

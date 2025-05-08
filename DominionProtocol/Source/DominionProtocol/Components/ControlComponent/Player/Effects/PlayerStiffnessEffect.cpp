@@ -33,7 +33,7 @@ void UPlayerStiffnessEffect::Move(const FInputActionValue& Value)
 
 void UPlayerStiffnessEffect::Look(const FInputActionValue& Value)
 {
-	// Super::Look(Value);
+	Super::Look(Value);
 }
 
 void UPlayerStiffnessEffect::Dash()

@@ -171,6 +171,14 @@ void ADomiCharacter::BindInputFunctions()
 	}
 }
 
+void ADomiCharacter::OnDeath()
+{
+	ControlComponent->ActivateControlEffect(EffectTags::Death);
+	
+	// Ignore Collision with Pawn
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+}
+
 void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);

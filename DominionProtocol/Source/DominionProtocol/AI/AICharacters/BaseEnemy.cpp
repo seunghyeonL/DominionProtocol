@@ -18,15 +18,41 @@ void ABaseEnemy::BeginPlay()
 	
 }
 
+void ABaseEnemy::OnDeath()
+{
+}
+
+void ABaseEnemy::OnGroggy()
+{
+}
+
 // Called every frame
 void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
-void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ABaseEnemy::LookAtTarget(const AActor* TargetActor)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
+
+void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
+{
+	IDamagable::OnAttacked_Implementation(AttackData);
+}
+
+void ABaseEnemy::ExecutePattern(FGameplayTag SkillGroupTag)
+{
+}
+
+FGameplayTagContainer ABaseEnemy::GetActiveControlEffectTags_Implementation()
+{
+	return IEffectReceivable::GetActiveControlEffectTags_Implementation();
+}
+
+FGameplayTagContainer ABaseEnemy::GetActiveStatusEffectTags_Implementation()
+{
+	return IEffectReceivable::GetActiveStatusEffectTags_Implementation();
+}
+
 

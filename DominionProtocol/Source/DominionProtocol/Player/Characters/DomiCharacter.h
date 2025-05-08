@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "../Damagable.h"
 #include "../EffectReceivable.h"
+#include "Components/StatusComponent/StatusComponentUser.h"
 #include "DomiCharacter.generated.h"
 
 class UPlayerStatusComponent;
@@ -18,12 +19,12 @@ struct FInputActionValue;
 struct FAttackData;
 
 //UI Delegate
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Skills);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Skill);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
-public ACharacter, public IDamagable, public IEffectReceivable
+public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser
 {
 	GENERATED_BODY()
 
@@ -65,12 +66,10 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	UFUNCTION(BlueprintCallable, Category="Components")
-	FORCEINLINE	UPlayerControlComponent* GetPlayerControlComponent() const { return ControlComponent; }
-
-	UFUNCTION(BlueprintCallable, Category="Components")
-	FORCEINLINE UPlayerStatusComponent* GetPlayerStatusComponent() const { return StatusComponent; }
-
+	// StateComponentUser
+	virtual void OnDeath() override;
+	virtual void OnGroggy() override { /* Not used in player*/ };
+	
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 
