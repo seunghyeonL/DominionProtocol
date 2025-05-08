@@ -1,21 +1,21 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerControlEffectBase.h"
-#include "PlayerDeathEffect.generated.h"
+#include "../PlayerControlEffectBase.h"
+#include "PlayerUsingDashEffect.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UPlayerDeathEffect : public UPlayerControlEffectBase
+class DOMINIONPROTOCOL_API UPlayerUsingDashEffect : public UPlayerControlEffectBase
 {
 	GENERATED_BODY()
-	
+
 public:
-	UPlayerDeathEffect();
+	UPlayerUsingDashEffect();
 	
 	virtual void Activate() override;
 	virtual void Activate(float Duration) override;

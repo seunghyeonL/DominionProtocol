@@ -19,8 +19,8 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
-#include "Components/StatusComponent/StatusEffects/AttackDownEffect.h"
-#include "Components/StatusComponent/StatusEffects/PoisonEffect.h"
+#include "Components/StatusComponent/StatusEffects/AttackDownEffect/AttackDownEffect.h"
+#include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
 
 class UPoisonEffect;
 //////////////////////////////////////////////////////////////////////////

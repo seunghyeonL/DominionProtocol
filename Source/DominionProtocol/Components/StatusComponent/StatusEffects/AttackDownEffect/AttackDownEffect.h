@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "StatusEffectBase.h"
+#include "../StatusEffectBase.h"
 #include "AttackDownEffect.generated.h"
 
 /**

@@ -63,7 +63,7 @@ public:
 	UInputAction* MagicSkillAction;
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UDomiInGameHUDWidget> InGameHUDWidgetClass;
 
 	UPROPERTY()

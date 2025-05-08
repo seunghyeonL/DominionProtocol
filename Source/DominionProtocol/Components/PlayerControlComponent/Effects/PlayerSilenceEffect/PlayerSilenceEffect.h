@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerControlEffectBase.h"
-#include "PlayerStiffnessEffect.generated.h"
+#include "../PlayerControlEffectBase.h"
+#include "PlayerSilenceEffect.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UPlayerStiffnessEffect : public UPlayerControlEffectBase
+class DOMINIONPROTOCOL_API UPlayerSilenceEffect : public UPlayerControlEffectBase
 {
 	GENERATED_BODY()
 
 public:
-	UPlayerStiffnessEffect();
+	UPlayerSilenceEffect();
 	
 	virtual void Activate() override;
 	virtual void Activate(float Duration) override;

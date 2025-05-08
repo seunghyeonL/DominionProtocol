@@ -6,11 +6,11 @@
 #include "GameFramework/Character.h"
 #include "./States/PlayerControlState.h"
 #include "Effects/PlayerConfusedEffect/PlayerConfusedEffect.h"
-#include "Effects/PlayerDeathEffect.h"
-#include "Effects/PlayerSilenceEffect.h"
-#include "Effects/PlayerStiffnessEffect.h"
-#include "Effects/PlayerStunEffect.h"
-#include "Effects/PlayerUsingDashEffect.h"
+#include "Effects/PlayerDeathEffect/PlayerDeathEffect.h"
+#include "Effects/PlayerSilenceEffect/PlayerSilenceEffect.h"
+#include "Effects/PlayerStiffnessEffect/PlayerStiffnessEffect.h"
+#include "Effects/PlayerStunEffect/PlayerStunEffect.h"
+#include "Effects/PlayerUsingDashEffect/PlayerUsingDashEffect.h"
 
 
 // Sets default values for this component's properties

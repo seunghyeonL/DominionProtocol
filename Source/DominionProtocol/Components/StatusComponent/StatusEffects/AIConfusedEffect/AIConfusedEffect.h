@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "StatusEffectBase.h"
-#include "PoisonEffect.generated.h"
+#include "../StatusEffectBase.h"
+#include "AIConfusedEffect.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UPoisonEffect : public UStatusEffectBase
+class DOMINIONPROTOCOL_API UAIConfusedEffect : public UStatusEffectBase
 {
 	GENERATED_BODY()
 };

@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerControlEffectBase.h"
-#include "PlayerStunEffect.generated.h"
+#include "../PlayerControlEffectBase.h"
+#include "PlayerDeathEffect.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UPlayerStunEffect : public UPlayerControlEffectBase
+class DOMINIONPROTOCOL_API UPlayerDeathEffect : public UPlayerControlEffectBase
 {
 	GENERATED_BODY()
-
+	
 public:
-	UPlayerStunEffect();
+	UPlayerDeathEffect();
 	
 	virtual void Activate() override;
 	virtual void Activate(float Duration) override;
