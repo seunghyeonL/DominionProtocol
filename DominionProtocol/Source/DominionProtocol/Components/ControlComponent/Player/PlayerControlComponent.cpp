@@ -10,6 +10,7 @@
 #include "Effects/PlayerSilenceEffect.h"
 #include "Effects/PlayerStiffnessEffect.h"
 #include "Effects/PlayerStunEffect.h"
+#include "Effects/PlayerUsingDashEffect.h"
 
 
 // Sets default values for this component's properties
@@ -58,7 +59,7 @@ void UPlayerControlComponent::BeginPlay()
 	ControlEffectMapper.Add(EffectTags::Death, NewObject<UPlayerDeathEffect>(this));
 	// ControlEffectMapper.Add(EffectTags::UsingSkill, NewObject<UUsingSkillEffect>(this));
 	// ControlEffectMapper.Add(EffectTags::UsingParry, NewObject<UUsingParryEffect>(this));
-	// ControlEffectMapper.Add(EffectTags::UsingDash, NewObject<UUsingDasgEffect>(this));
+	ControlEffectMapper.Add(EffectTags::UsingDash, NewObject<UPlayerUsingDashEffect>(this));
 
 	// Set OwnerCharacter to ControlEffects
 	for (auto& [ControlEffectTag, ControlEffect] : ControlEffectMapper)
