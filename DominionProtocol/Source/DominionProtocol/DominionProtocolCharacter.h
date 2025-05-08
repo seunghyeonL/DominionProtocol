@@ -49,14 +49,43 @@ public:
 	
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Dash")
+	UAnimMontage* DashMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Dash")
+	float DashSpeed = 800.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash")
+	float DashDuration = 0.5f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash")
+	float DashStaminaCost = 20.f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Dash")
+	bool bIsDashing = false;
+
+	UPROPERTY(VisibleAnywhere, Category = "Dash")
+	bool bIsInvincible = false;
+
+	FTimerHandle DashEndTimerHandle;
+
+	FVector GetDashDirection() const;
+
+	void SetInvincible(bool bInvincible);
+
+	void EndDash();
+
+	bool HasEnoughStamina() const;
+
+	void ConsumeStamina(float Amount);
+	
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 			
-
+	void Dash();
 protected:
 
 	virtual void NotifyControllerChanged() override;

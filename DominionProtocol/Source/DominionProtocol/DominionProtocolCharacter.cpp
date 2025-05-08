@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "TimerManager.h"
+#include "Kismet/KismetMathLibrary.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -126,4 +128,61 @@ void ADominionProtocolCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ADominionProtocolCharacter::Dash()
+{
+	// 스태미나 소모
+	ConsumeStamina(DashStaminaCost);
+
+	// 대시 방향 계산
+	FVector DashDir = GetDashDirection();
+	FVector LaunchVelocity = DashDir * DashSpeed;
+
+	// 이동 처리 (RootMotion 없이 LaunchCharacter 사용)
+	LaunchCharacter(LaunchVelocity, true, true);
+
+	// 애니메이션 재생
+	if (DashMontage)
+	{
+		PlayAnimMontage(DashMontage);
+	}
+
+	// 상태 설정
+	bIsDashing = true;
+
+	// 대시 종료 타이머 설정
+	GetWorldTimerManager().SetTimer(DashEndTimerHandle, this, &ADominionProtocolCharacter::EndDash, DashDuration, false);
+}
+
+FVector ADominionProtocolCharacter::GetDashDirection() const
+{
+	FVector Input = GetLastMovementInputVector();
+
+	if (Input.IsNearlyZero())
+	{
+		return -GetActorForwardVector();
+	}
+
+	return Input.GetSafeNormal();
+}
+
+void ADominionProtocolCharacter::EndDash()
+{
+	bIsDashing = false;
+	SetInvincible(false);
+}
+
+void ADominionProtocolCharacter::SetInvincible(bool bInvincible)
+{
+	bIsInvincible = bInvincible;
+}
+bool ADominionProtocolCharacter::HasEnoughStamina() const
+{
+	return true;
+}
+
+void ADominionProtocolCharacter::ConsumeStamina(float Amount)
+{
+
 }
