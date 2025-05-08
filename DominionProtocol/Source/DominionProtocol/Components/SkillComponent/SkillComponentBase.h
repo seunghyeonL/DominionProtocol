@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
@@ -16,6 +16,7 @@ public:
 
 	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) {};
 
+	// SkillComponent를 가지고 있는 액터에서 초기화
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
 	TMap<FGameplayTag, FSkillGroup> SkillGroups;
 };

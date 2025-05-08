@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
@@ -45,7 +45,7 @@ struct FSkillGroup
 
 	// 스킬 그룹 내 스킬 목록
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	//TArray<TSubclassOf<USkill>> Skills;
+	//TArray<TSubclassOf<USkill>> SkillGroup;
 
 	int32 CurrentSkillIdx;
 };
