@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -32,4 +32,11 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual float GetStat(FGameplayTag StatTag) const override;
+
+	UFUNCTION(BlueprintCallable, Category = "Stamina")
+	bool HasEnoughStamina(float RequiredAmount) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Stamina")
+	void ConsumeStamina(float Amount);
+
 };

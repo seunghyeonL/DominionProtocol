@@ -12,6 +12,9 @@
 #include "InputActionValue.h"
 #include "TimerManager.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/ControlComponent/Player/PlayerControlComponent.h"
+#include "Components/ControlComponent/Player/States/PlayerControlState.h"
+#include "Components/StatusComponent/Player/PlayerStatusComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -54,6 +57,8 @@ ADominionProtocolCharacter::ADominionProtocolCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	PlayerStatusComponent = CreateDefaultSubobject<UPlayerStatusComponent>(TEXT("PlayerStatusComponent"));
+	ControlComponent = CreateDefaultSubobject<UPlayerControlComponent>(TEXT("ControlComponent"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -132,27 +137,32 @@ void ADominionProtocolCharacter::Look(const FInputActionValue& Value)
 
 void ADominionProtocolCharacter::Dash()
 {
-	// ½ºÅÂ¹Ì³ª ¼Ò¸ğ
-	ConsumeStamina(DashStaminaCost);
+	if (PlayerStatusComponent && PlayerStatusComponent->HasEnoughStamina(DashStaminaCost))
+	{
+		PlayerStatusComponent->ConsumeStamina(DashStaminaCost);
+	}
 
-	// ´ë½Ã ¹æÇâ °è»ê
+	if (ControlComponent)
+	{
+		ControlComponent->ActivateControlEffectWithDuration(EffectTags::UsingDash, DashDuration);
+	}
+
+
+	// ëŒ€ì‹œ ë°©í–¥ ê³„ì‚°
 	FVector DashDir = GetDashDirection();
 	FVector LaunchVelocity = DashDir * DashSpeed;
 
-	// ÀÌµ¿ Ã³¸® (RootMotion ¾øÀÌ LaunchCharacter »ç¿ë)
 	LaunchCharacter(LaunchVelocity, true, true);
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
-	if (DashMontage)
-	{
-		PlayAnimMontage(DashMontage);
-	}
+	//// ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
+	//if (DashMontage)
+	//{
+	//	PlayAnimMontage(DashMontage);
+	//}
 
-	// »óÅÂ ¼³Á¤
+	// ìƒíƒœ ì„¤ì •
 	bIsDashing = true;
-
-	// ´ë½Ã Á¾·á Å¸ÀÌ¸Ó ¼³Á¤
-	GetWorldTimerManager().SetTimer(DashEndTimerHandle, this, &ADominionProtocolCharacter::EndDash, DashDuration, false);
+	SetInvincible(true);
 }
 
 FVector ADominionProtocolCharacter::GetDashDirection() const

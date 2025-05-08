@@ -12,6 +12,8 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class UPlayerControlComponent;
+class UPlayerStatusComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -47,13 +49,22 @@ class ADominionProtocolCharacter : public ACharacter
 public:
 	ADominionProtocolCharacter();
 	
+	void EndDash();
 
+	UFUNCTION(BlueprintCallable)
+	void Dash();
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UPlayerControlComponent> ControlComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPlayerStatusComponent* PlayerStatusComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	UAnimMontage* DashMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
-	float DashSpeed = 800.f;
+	float DashSpeed = 2500.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashDuration = 0.5f;
@@ -73,8 +84,6 @@ protected:
 
 	void SetInvincible(bool bInvincible);
 
-	void EndDash();
-
 	bool HasEnoughStamina() const;
 
 	void ConsumeStamina(float Amount);
@@ -84,8 +93,6 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
-	void Dash();
 protected:
 
 	virtual void NotifyControllerChanged() override;

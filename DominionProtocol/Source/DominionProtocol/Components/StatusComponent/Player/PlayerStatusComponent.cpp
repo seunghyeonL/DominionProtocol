@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerStatusComponent.h"
@@ -80,4 +80,14 @@ float UPlayerStatusComponent::GetStat(FGameplayTag StatTag) const
 
 	Debug::PrintError(TEXT("UPlayerStatusComponent::GetStat : Finding StatTag is not set."));
 	return -1.f;
+}
+
+bool UPlayerStatusComponent::HasEnoughStamina(float RequiredAmount) const
+{
+	return Stamina >= RequiredAmount;
+}
+
+void UPlayerStatusComponent::ConsumeStamina(float Amount)
+{
+	Stamina = FMath::Max(0.f, Stamina - Amount);
 }
