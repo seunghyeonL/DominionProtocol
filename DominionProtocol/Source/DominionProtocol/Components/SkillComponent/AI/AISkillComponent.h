@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/SkillComponentBase.h"
@@ -19,13 +19,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = true))
 	TMap<FGameplayTag, FSkillGroup> Patterns;
 
-    // AI 전용 패턴 기반 스킬 실행
-    UFUNCTION(BlueprintCallable, Category = "AI Skills")
-    void ExecutePatternSkill(FGameplayTag PatternTag);
+    //// AI 전용 패턴 기반 스킬 실행
+    //UFUNCTION(BlueprintCallable, Category = "AI Skills")
+    //void ExecutePatternSkill(FGameplayTag PatternTag);
 
-    // 랜덤 패턴 선택 및 실행
-    UFUNCTION(BlueprintCallable, Category = "AI Skills")
-    void ExecuteRandomPattern();
+    //// 랜덤 패턴 선택 및 실행
+    //UFUNCTION(BlueprintCallable, Category = "AI Skills")
+    //void ExecuteRandomPattern();
 
 	// 스킬 실행 함수
 	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) override;
