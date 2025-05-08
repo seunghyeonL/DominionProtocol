@@ -3,21 +3,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/DomiUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "DomiStatusBarWidget.generated.h"
 
 
 UCLASS()
-class DOMINIONPROTOCOL_API UDomiStatusBarWidget : public UDomiUserWidget
+class DOMINIONPROTOCOL_API UDomiStatusBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 
-protected:
+public:
+	UFUNCTION()
+	void UpdateHPBar();
+	
 
+protected:
 	UPROPERTY()
 	float CurrentHp;
 
 	UPROPERTY()
 	float MaxHp;
+	
 };

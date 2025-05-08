@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/DomiUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "DomiAbilitySlotsWidget.generated.h"
 
 UCLASS()

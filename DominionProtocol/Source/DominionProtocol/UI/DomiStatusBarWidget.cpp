@@ -3,3 +3,7 @@
 
 #include "DomiStatusBarWidget.h"
 
+void UDomiStatusBarWidget::UpdateHPBar()
+{
+	
+}

@@ -18,5 +18,6 @@ class DOMINIONPROTOCOL_API IDomiHUDInterface
 	GENERATED_BODY()
 
 public:
+	// Initialize & Binding
 	virtual void SetupHUDWidget(class UDomiHUDWidget* InDomiHUDWidget) = 0;
 };

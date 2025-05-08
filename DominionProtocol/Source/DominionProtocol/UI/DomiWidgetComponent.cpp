@@ -2,13 +2,14 @@
 
 
 #include "DomiWidgetComponent.h"
-#include "DomiUserWidget.h"
+#include "DomiCharacterWidget.h"
 
 void UDomiWidgetComponent::InitWidget()
 {
 	Super::InitWidget();
 
-	auto DomiCharacterWidget = Cast<UDomiUserWidget>(GetWidget());
+	// SetOwner
+	auto DomiCharacterWidget = Cast<UDomiCharacterWidget>(GetWidget());
 	if (DomiCharacterWidget)
 	{
 		DomiCharacterWidget->SetOwningActor(GetOwner());
