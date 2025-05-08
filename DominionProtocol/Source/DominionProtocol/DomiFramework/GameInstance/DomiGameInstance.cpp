@@ -10,6 +10,20 @@ UDomiGameInstance::UDomiGameInstance()
 	IsBossDeadArray.Init(false, NumBosses);
 }
 
+void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)
+{
+	IsBossDeadArray = SaveData.IsBossDeadArray;
+}
+
+FInstanceData UDomiGameInstance::GetSaveData() const
+{
+	FInstanceData SaveData;
+
+	SaveData.IsBossDeadArray = IsBossDeadArray;
+	
+	return SaveData;
+}
+
 void UDomiGameInstance::SetIsBossDead(int32 BossIndex)
 {
 	check(IsBossDeadArray.IsValidIndex(BossIndex));

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "EnumAndStruct/FInstanceData.h"
 #include "DomiGameInstance.generated.h"
 
 UCLASS()
@@ -14,10 +15,16 @@ class DOMINIONPROTOCOL_API UDomiGameInstance : public UGameInstance
 public:
 	UDomiGameInstance();
 
+	//Save & Load
+	void LoadSaveData(const FInstanceData& SaveData);
+	FInstanceData GetSaveData() const;
+	
 	//Setter
 	FORCEINLINE void SetIsBossDead(int32 BossIndex);
+	
 	//Getter
 	FORCEINLINE bool GetIsBossDead(int32 BossIndex);
+	
 	
 protected:
 	

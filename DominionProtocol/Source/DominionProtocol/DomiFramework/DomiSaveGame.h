@@ -4,10 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "EnumAndStruct/FInstanceData.h"
+#include "EnumAndStruct/FSoundSubsystemData.h"
 #include "DomiSaveGame.generated.h"
 
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiSaveGame : public USaveGame
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FInstanceData InstanceData;
+
+	UPROPERTY()
+	FSoundSubsystemData SoundSubsystemData;
 };

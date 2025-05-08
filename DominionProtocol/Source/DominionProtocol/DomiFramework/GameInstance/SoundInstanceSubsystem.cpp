@@ -55,6 +55,21 @@ void USoundInstanceSubsystem::OnLevelChanged(UWorld* NewWorld)
 	LoadVolumeSettings();
 }
 
+void USoundInstanceSubsystem::LoadSaveData(const FSoundSubsystemData& SaveData)
+{
+	CategoryVolumes.Empty();
+	CategoryVolumes = SaveData.CategoryVolumes;
+}
+
+FSoundSubsystemData USoundInstanceSubsystem::GetSaveData() const
+{
+	FSoundSubsystemData SaveData;
+
+	SaveData.CategoryVolumes = CategoryVolumes;
+
+	return SaveData;
+}
+
 void USoundInstanceSubsystem::SetMasterVolume(float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));

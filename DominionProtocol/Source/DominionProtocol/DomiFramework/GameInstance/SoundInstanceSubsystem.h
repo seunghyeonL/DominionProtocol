@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "EnumAndStruct/ESoundCategory.h"
+#include "EnumAndStruct/FSoundSubsystemData.h"
 #include "SoundInstanceSubsystem.generated.h"
 
 UCLASS()
@@ -17,6 +18,10 @@ public:
 	void LoadVolumeSettings();
 
 	void OnLevelChanged(UWorld* NewWorld);
+
+	//Save & Load
+	void LoadSaveData(const FSoundSubsystemData& SaveData);
+	FSoundSubsystemData GetSaveData() const;
 	
 	//Setter
 	FORCEINLINE void SetWorldCache(UWorld* NewWorld) { World = NewWorld; }
@@ -24,8 +29,10 @@ public:
 	void SetSFXVolume(float NewVolume);
 	void SetBGMVolume(float NewVolume);
 	void SetUIVolume(float NewVolume);
+	
 	//Getter
 	FORCEINLINE float GetVolumeMultiplier(ESoundCategory Category) const { return CategoryVolumes[Category]; }
+	
 
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
