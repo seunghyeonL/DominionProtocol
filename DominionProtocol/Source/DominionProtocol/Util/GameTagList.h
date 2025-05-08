@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GameplayTagContainer.h"
 
@@ -44,5 +44,8 @@ namespace StatTags
 	inline const FGameplayTag GroggyGauge = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.GroggyGauge"));
 }
 
-
-
+namespace SkillGroupTags
+{
+	// BaseSkillTags
+	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("SkillGroup.BaseAttack"));
+}

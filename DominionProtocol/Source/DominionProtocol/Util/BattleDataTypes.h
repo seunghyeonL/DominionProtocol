@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+//#include "Components/Skill.h"
 #include "BattleDataTypes.generated.h"
 
 USTRUCT(BlueprintType)
@@ -35,4 +36,16 @@ struct FAttackData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FEffectData> Effects;
+};
+
+USTRUCT(BlueprintType)
+struct FSkillGroup
+{
+	GENERATED_BODY()
+
+	// 스킬 그룹 내 스킬 목록
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//TArray<TSubclassOf<USkill>> Skills;
+
+	int32 CurrentSkillIdx;
 };
