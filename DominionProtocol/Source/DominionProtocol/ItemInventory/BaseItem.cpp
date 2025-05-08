@@ -10,25 +10,36 @@ ABaseItem::ABaseItem()
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMesh;
 
-	this->GetItemData();
+}
+
+void ABaseItem::BeginPlay()
+{
+	Super::BeginPlay();
+	this->GetItemData(); 
+	this->GetItemGameplayTag();
 }
 
 FItemData* ABaseItem::GetItemData() const
 {
-	if (!ItemDataTable)
+	if (ItemDataTable && ItemDataRowName!= NAME_None)
 	{
-		Debug::Print(TEXT("DataTable Not Found"));
+		Debug::Print(TEXT("Row Found"));
+		return ItemDataTable->FindRow<FItemData>(ItemDataRowName, TEXT(""));
+	}
+	else
+	{
+		Debug::Print(TEXT("Row or Table NotFound"));
 		return nullptr;
 	}
-	TArray<FItemData*> AllRows;
-	static const FString ContextString(TEXT("ItemDataContext"));
-	ItemDataTable->GetAllRows(ContextString, AllRows);
-
-	if (AllRows.IsEmpty())
+}
+//아이템 태그 반환
+FGameplayTag ABaseItem::GetItemGameplayTag() const
+{
+	const FItemData* Data = GetItemData();
+	if (Data)
 	{
-		Debug::Print(TEXT("Row Empty"));
-		return nullptr;
+		Debug::Print(TEXT("return gameplaytag"));
+		//return FGameplayTag::RequestGameplayTag(Data->ItemTag);
 	}
-	Debug::Print(TEXT("Row Found"));
-	return ItemDataTable->FindRow<FItemData>(ItemDataRowName, TEXT(""));
+	return FGameplayTag();
 }

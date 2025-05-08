@@ -37,6 +37,8 @@ public:
 	// 아이템 데이터 반환 (데이터 테이블에서 로드)
 	FItemData* GetItemData()const;
 	// 아이템 태그 반환
-	/*UFUNCTION(BlueprintPure)
-	FGameplayTag GetItemGameplayTag() const;*/
+	UFUNCTION(BlueprintPure)
+	FGameplayTag GetItemGameplayTag() const;
+
+	virtual void BeginPlay()override;
 };
