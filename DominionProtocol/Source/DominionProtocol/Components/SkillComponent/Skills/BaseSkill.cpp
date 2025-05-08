@@ -1,26 +1,40 @@
-#include "Components/SkillComponent/Skill.h"
+#include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "GameFramework/Character.h"
 #include "CollisionQueryParams.h"
 #include "Player/Damagable.h"
+#include "Components/StatusComponent/StatusComponentBase.h"
+#include "Util/GameTagList.h"
 
-USkill::USkill()
+UBaseSkill::UBaseSkill()
 {
 	Stamina = 10.f;
 	DamageCoefficient = 2.f;
+
+	AttackRadius = 100.0f;			// 공격 크기
+	AttackForwardOffset = 50.0f;	// 캐릭터의 앞 위치
 }
 
-void USkill::Excute(ACharacter* Owner) const
+void UBaseSkill::Excute(ACharacter* Owner)
 {
 	check(AnimMontage);
 
 	if (IsValid(Owner))
 	{
 		Owner->PlayAnimMontage(AnimMontage);
+
+		UStatusComponentBase* StatusComponentBase = Owner->FindComponentByClass<UStatusComponentBase>();
+
+		if (IsValid(StatusComponentBase))
+		{
+			int32 AttackPower = StatusComponentBase->GetStat(StatTags::AttackPower);
+
+			BaseAttackData.Damage = GetFinalAttackData(AttackPower);
+		}
 	}
 }
 
 // 애님 노티파이에서 실행
-void USkill::AttackTrace(const ACharacter* Owner) const
+void UBaseSkill::AttackTrace(const ACharacter* Owner) const
 {
 	if (!IsValid(Owner))
 	{
@@ -29,8 +43,8 @@ void USkill::AttackTrace(const ACharacter* Owner) const
 
 	FVector ForwardVector = Owner->GetActorForwardVector();
 
-	FVector Start = Owner->GetActorLocation() + ForwardVector * 150.f;
-	FVector End = Start + ForwardVector * 150.f;
+	FVector Start = Owner->GetActorLocation() + ForwardVector * (AttackRadius + AttackForwardOffset);
+	FVector End = Start + ForwardVector * (AttackRadius + AttackForwardOffset);
 
 	TArray<FHitResult> HitResults;
 
@@ -52,7 +66,7 @@ void USkill::AttackTrace(const ACharacter* Owner) const
 	DrawDebugSphere(
 		GetWorld(),
 		Start,
-		100.f,
+		AttackRadius,
 		12,
 		FColor::Green,
 		false,              // 지속 여부 (false면 일정 시간 후 사라짐)
@@ -75,26 +89,19 @@ void USkill::AttackTrace(const ACharacter* Owner) const
 			continue;
 		}
 
-		// HitActor를 무언가로 캐스트해서 OnAttacked를 호출해야 함.
 		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 		{
-			FAttackData AttackData(BaseAttackData);
-
-			AttackData.Damage = GetFinalAttackData(BaseAttackData.Damage);
-
 			IDamagable::Execute_OnAttacked(HitActor, BaseAttackData);
 		}
 	}
 }
 
-float USkill::GetStamina() const
+float UBaseSkill::GetStamina() const
 {
 	return Stamina;
 }
 
-float USkill::GetFinalAttackData(const float AttackPower) const
+float UBaseSkill::GetFinalAttackData(const float AttackPower) const
 {
 	return AttackPower * DamageCoefficient;
 }
-
-

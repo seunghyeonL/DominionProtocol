@@ -3,17 +3,17 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Util/BattleDataTypes.h"
-#include "Skill.generated.h"
+#include "BaseSkill.generated.h"
 
-UCLASS()
-class DOMINIONPROTOCOL_API USkill : public UObject
+UCLASS(Blueprintable)
+class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 {
 	GENERATED_BODY()
-
+	
 public:
-	USkill();
+	UBaseSkill();
 
-	void Excute(ACharacter* Owner) const;
+	void Excute(ACharacter* Owner);
 
 	void AttackTrace(const ACharacter* Owner) const;
 
@@ -35,8 +35,13 @@ private:
 	float Stamina;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
-	float DamageCoefficient;
+	float AttackRadius;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
+	float AttackForwardOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
+	float DamageCoefficient;
+
 	FAttackData BaseAttackData;
 };
