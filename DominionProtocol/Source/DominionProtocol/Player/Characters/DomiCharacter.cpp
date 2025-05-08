@@ -18,6 +18,7 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+#include "Components/StatusComponent/StatusComponentInitializeData.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ADomiCharacter
@@ -169,6 +170,39 @@ void ADomiCharacter::BindInputFunctions()
 			Debug::PrintError(TEXT("ADomiCharacter::BindInputFunctions : Invalid InputComponent."));
 		}
 	}
+}
+
+void ADomiCharacter::InitializeStatusComponent()
+{
+	FStatusComponentInitializeData InitializeData;
+	InitializeData.StatDatas.Add({StatTags::LIFE, 0.f});
+
+	// Initializing Data for BaseStats
+	InitializeData.StatDatas.Add({StatTags::LIFE, 0.f});
+	InitializeData.StatDatas.Add({StatTags::STR, 0.f});
+	InitializeData.StatDatas.Add({StatTags::DEX, 0.f});
+
+	// Initializing Data for BattleStats
+	InitializeData.StatDatas.Add({StatTags::MaxHealth, 100.f});
+	InitializeData.StatDatas.Add({StatTags::MaxStamina, 100.f});
+	InitializeData.StatDatas.Add({StatTags::AttackPower, 100.f});
+	InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
+	InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
+
+	// Initializing Data for VariableStats
+	InitializeData.StatDatas.Add({StatTags::Health, 100.f});
+	InitializeData.StatDatas.Add({StatTags::Stamina, 100.f});
+
+	// Initializing Data for BattleStatMultipliers
+	InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
+	InitializeData.StatMultiplierDatas.Add({StatTags::MaxStamina, 1.f});
+	InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});
+	InitializeData.StatMultiplierDatas.Add({StatTags::Defense, 1.f});
+	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
+
+	// Initializing Data for StatusEffectClasses
+	// InitializeData.EffectClassDatas.Add({});
+	
 }
 
 void ADomiCharacter::OnDeath()

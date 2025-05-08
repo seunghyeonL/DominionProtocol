@@ -8,6 +8,9 @@
 #include "Util/DebugHelper.h"
 #include "StatusComponent.generated.h"
 
+//UI Delegate
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
 
 class UStatusEffectBase;
 
@@ -19,6 +22,12 @@ class DOMINIONPROTOCOL_API UStatusComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UStatusComponent();
+
+	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
+	FOnHealthChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
+	FOnStaminaChanged OnStaminaChanged;
 
 protected:
 	virtual void BeginPlay() override;

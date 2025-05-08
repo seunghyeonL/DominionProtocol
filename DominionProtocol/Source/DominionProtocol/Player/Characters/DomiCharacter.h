@@ -18,10 +18,6 @@ class UInputAction;
 struct FInputActionValue;
 struct FAttackData;
 
-//UI Delegate
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
-
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
 public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser
@@ -45,19 +41,11 @@ protected:
 
 public:
 	ADomiCharacter();
-
-	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
-	FOnHealthChanged OnHealthChanged;
-
-	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
-	FOnStaminaChanged OnStaminaChanged;
 	
 protected:
 	// Bind After ControlComponent Ready
 	void BindInputFunctions();
-	
 	virtual void NotifyControllerChanged() override;
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
@@ -67,6 +55,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	// StateComponentUser
+	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath() override;
 	virtual void OnGroggy() override { /* Not used in player*/ };
 	

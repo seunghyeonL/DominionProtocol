@@ -55,4 +55,7 @@ FGameplayTagContainer ABaseEnemy::GetActiveStatusEffectTags_Implementation()
 	return IEffectReceivable::GetActiveStatusEffectTags_Implementation();
 }
 
+void ABaseEnemy::InitializeStatusComponent()
+{
+}
 

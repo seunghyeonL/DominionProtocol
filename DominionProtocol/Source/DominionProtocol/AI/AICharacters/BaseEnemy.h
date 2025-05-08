@@ -46,6 +46,7 @@ public:
 	virtual FGameplayTagContainer GetActiveStatusEffectTags_Implementation() override;
 
 	// StatusComponentUser
+	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath() override;
 	virtual void OnGroggy() override;
 };
