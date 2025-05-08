@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DominionProtocol/Components/ControlComponent/ControlComponentBase.h"
+#include "Components/ActorComponent.h"
+#include "Util/GameTagList.h"
 #include "PlayerControlComponent.generated.h"
 
 class UPlayerControlStateBase;
@@ -13,7 +14,7 @@ struct FInputActionValue;
 DECLARE_DELEGATE(FOnComponentReady);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class DOMINIONPROTOCOL_API UPlayerControlComponent : public UControlComponentBase
+class DOMINIONPROTOCOL_API UPlayerControlComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -31,6 +32,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlStateBase> PlayerControlState;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+	FGameplayTagContainer ActiveControlEffectTags;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effect")
 	TMap<FGameplayTag, UPlayerControlEffectBase*> ControlEffectMapper;
 
@@ -42,9 +46,12 @@ public:
 	FORCEINLINE UPlayerControlStateBase* GetPlayerControlState() const { return PlayerControlState; };
 	FORCEINLINE void SetPlayerControlState(UPlayerControlStateBase* NewState) { PlayerControlState = NewState; };
 
-	virtual void ActivateControlEffect(const FGameplayTag& ControlEffectTag) override;
-	virtual void ActivateControlEffectWithDuration(const FGameplayTag& ControlEffectTag, float Duration) override;
-	virtual void DeactivateControlEffect(const FGameplayTag& ControlEffectTag) override;
+	UFUNCTION(BlueprintCallable, Category = "Effects")
+	FORCEINLINE FGameplayTagContainer& GetActiveControlEffects() { return ActiveControlEffectTags; }
+
+	virtual void ActivateControlEffect(const FGameplayTag& ControlEffectTag);
+	virtual void ActivateControlEffectWithDuration(const FGameplayTag& ControlEffectTag, float Duration);
+	virtual void DeactivateControlEffect(const FGameplayTag& ControlEffectTag);
 
 	// Input Binding Functions
 	void Move(const FInputActionValue& Value);

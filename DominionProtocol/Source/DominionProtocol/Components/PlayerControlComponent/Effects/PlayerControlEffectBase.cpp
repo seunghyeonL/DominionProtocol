@@ -3,7 +3,7 @@
 
 #include "PlayerControlEffectBase.h"
 #include "Util/DebugHelper.h"
-#include "Components/ControlComponent/Player/PlayerControlComponent.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 
 void UPlayerControlEffectBase::Activate()
 {

@@ -87,8 +87,6 @@ void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag)
 {
-	Super::ActivateControlEffect(ControlEffectTag);
-
 	if (!ControlEffectMapper.Contains(ControlEffectTag))
 	{
 		Debug::PrintError(TEXT("UPlayerControlComponent::ActivateControlEffect : Tag Not Initialized in Mapper."));
@@ -107,8 +105,6 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 
 void UPlayerControlComponent::ActivateControlEffectWithDuration(const FGameplayTag& ControlEffectTag, float Duration)
 {
-	Super::ActivateControlEffectWithDuration(ControlEffectTag, Duration);
-
 	if (!ControlEffectMapper.Contains(ControlEffectTag))
 	{
 		Debug::PrintError(TEXT("UPlayerControlComponent::ActivateControlEffect : Tag Not Initialized in Mapper."));
@@ -127,8 +123,6 @@ void UPlayerControlComponent::ActivateControlEffectWithDuration(const FGameplayT
 
 void UPlayerControlComponent::DeactivateControlEffect(const FGameplayTag& ControlEffectTag)
 {
-	Super::DeactivateControlEffect(ControlEffectTag);
-
 	if (!ControlEffectMapper.Contains(ControlEffectTag))
 	{
 		Debug::PrintError(TEXT("UPlayerControlComponent::DeactivateControlEffect : Tag Not Initialized in Mapper."));

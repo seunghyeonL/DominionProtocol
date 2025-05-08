@@ -12,8 +12,8 @@
 #include "InputActionValue.h"
 #include "TimerManager.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Components/ControlComponent/Player/PlayerControlComponent.h"
-#include "Components/ControlComponent/Player/States/PlayerControlState.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
+#include "Components/PlayerControlComponent/States/PlayerControlState.h"
 #include "Components/StatusComponent/Player/PlayerStatusComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
