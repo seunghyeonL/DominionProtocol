@@ -1,9 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "BaseGameMode.generated.h"
 
 /**
@@ -17,8 +18,11 @@ class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
 public:
 	ABaseGameMode();
 	virtual void StartPlay() override;
+	virtual void StartBattle();
+	virtual void EndBattle();
 
-private:
-	UGameInstance* GameInstance;
+public:
+	UPROPERTY()
+	UDomiGameInstance* GameInstance;
 	FName CurrentLevel;
 };
