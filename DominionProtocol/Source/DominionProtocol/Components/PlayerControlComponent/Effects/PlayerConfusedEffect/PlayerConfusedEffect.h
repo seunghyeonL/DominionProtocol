@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerControlEffectBase.h"
+#include "../PlayerControlEffectBase.h"
 #include "PlayerConfusedEffect.generated.h"
 
 /**

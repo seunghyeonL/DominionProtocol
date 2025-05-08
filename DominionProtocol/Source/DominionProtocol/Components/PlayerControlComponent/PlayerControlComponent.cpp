@@ -5,7 +5,7 @@
 #include "Util/DebugHelper.h"
 #include "GameFramework/Character.h"
 #include "./States/PlayerControlState.h"
-#include "Effects/PlayerConfusedEffect.h"
+#include "Effects/PlayerConfusedEffect/PlayerConfusedEffect.h"
 #include "Effects/PlayerDeathEffect.h"
 #include "Effects/PlayerSilenceEffect.h"
 #include "Effects/PlayerStiffnessEffect.h"
