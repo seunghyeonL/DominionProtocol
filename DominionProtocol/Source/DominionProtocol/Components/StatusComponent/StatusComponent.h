@@ -6,19 +6,19 @@
 #include "Components/ActorComponent.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
-#include "StatusComponentBase.generated.h"
+#include "StatusComponent.generated.h"
 
 
 class UStatusEffectBase;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class DOMINIONPROTOCOL_API UStatusComponentBase : public UActorComponent
+class DOMINIONPROTOCOL_API UStatusComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UStatusComponentBase();
+	UStatusComponent();
 
 protected:
 	virtual void BeginPlay() override;

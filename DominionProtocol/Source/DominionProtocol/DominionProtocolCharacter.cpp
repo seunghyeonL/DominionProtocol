@@ -14,7 +14,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/PlayerControlComponent/States/PlayerControlState.h"
-#include "Components/StatusComponent/Player/PlayerStatusComponent.h"
+#include "Components/StatusComponent/StatusComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -57,7 +57,7 @@ ADominionProtocolCharacter::ADominionProtocolCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-	PlayerStatusComponent = CreateDefaultSubobject<UPlayerStatusComponent>(TEXT("PlayerStatusComponent"));
+	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 	ControlComponent = CreateDefaultSubobject<UPlayerControlComponent>(TEXT("ControlComponent"));
 }
 
@@ -137,9 +137,9 @@ void ADominionProtocolCharacter::Look(const FInputActionValue& Value)
 
 void ADominionProtocolCharacter::Dash()
 {
-	if (PlayerStatusComponent && PlayerStatusComponent->HasEnoughStamina(DashStaminaCost))
+	if (StatusComponent && StatusComponent->HasEnoughStamina(DashStaminaCost))
 	{
-		PlayerStatusComponent->ConsumeStamina(DashStaminaCost);
+		StatusComponent->ConsumeStamina(DashStaminaCost);
 	}
 
 	if (ControlComponent)

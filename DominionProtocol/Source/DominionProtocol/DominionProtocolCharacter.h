@@ -13,7 +13,7 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class UPlayerControlComponent;
-class UPlayerStatusComponent;
+class UStatusComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -58,7 +58,7 @@ protected:
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UPlayerStatusComponent* PlayerStatusComponent;
+	UStatusComponent* StatusComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	UAnimMontage* DashMontage;

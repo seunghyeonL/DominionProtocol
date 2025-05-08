@@ -9,7 +9,7 @@
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "DomiCharacter.generated.h"
 
-class UPlayerStatusComponent;
+class UStatusComponent;
 class UPlayerControlComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -33,7 +33,7 @@ protected:
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UPlayerStatusComponent> StatusComponent;
+	TObjectPtr<UStatusComponent> StatusComponent;
 	
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

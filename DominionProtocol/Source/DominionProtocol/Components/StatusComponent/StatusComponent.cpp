@@ -1,14 +1,13 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "StatusComponentBase.h"
+#include "StatusComponent.h"
 #include "StatusComponentUser.h"
 
-UStatusComponentBase::UStatusComponentBase()
+UStatusComponent::UStatusComponent()
 {
-
 }
 
-void UStatusComponentBase::BeginPlay()
+void UStatusComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -23,11 +22,12 @@ void UStatusComponentBase::BeginPlay()
 	StatMap.Add(StatTags::AttackPower, 100.f);
 	StatMap.Add(StatTags::Defense, 100.f);
 	StatMap.Add(StatTags::MoveSpeed, 1.f);
+	StatMap.Add(StatTags::MaxGroggyGauge, 100.f);
 
 	// Initialize VariableStats
 	StatMap.Add(StatTags::Health, StatMap[StatTags::MaxHealth]);
 	StatMap.Add(StatTags::Stamina, StatMap[StatTags::MaxStamina]);
-	StatMap.Add(StatTags::GroggyGauge, StatMap[StatTags::GroggyGauge]);
+	StatMap.Add(StatTags::GroggyGauge, StatMap[StatTags::MaxGroggyGauge]);
 
 	// Initialize BattleStatMultipliers
 	BattleStatMultipliers.Add(StatTags::MaxHealth, 1.f);
@@ -37,24 +37,24 @@ void UStatusComponentBase::BeginPlay()
 	BattleStatMultipliers.Add(StatTags::MoveSpeed, 1.f);
 }
 
-void UStatusComponentBase::TickComponent(float DeltaTime, enum ELevelTick TickType,
+void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
                                          FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-float UStatusComponentBase::GetStat(FGameplayTag StatTag) const
+float UStatusComponent::GetStat(FGameplayTag StatTag) const
 {
 	if (StatMap.Contains(StatTags::MaxHealth))
 	{
 		return StatMap[StatTag];
 	}
 
-	Debug::PrintError(TEXT("UStatusComponentBase::GetStat : Finding StatTag is not set."));
+	Debug::PrintError(TEXT("UStatusComponent::GetStat : Finding StatTag is not set."));
 	return -1.f;
 }
 
-void UStatusComponentBase::SetHealth(float NewHealth)
+void UStatusComponent::SetHealth(float NewHealth)
 {
 	check(StatMap.Contains(StatTags::MaxHealth));
 
@@ -76,17 +76,17 @@ void UStatusComponentBase::SetHealth(float NewHealth)
 	}
 }
 
-bool UStatusComponentBase::HasEnoughStamina(float RequiredAmount) const
+bool UStatusComponent::HasEnoughStamina(float RequiredAmount) const
 {
 	return StatMap[StatTags::Stamina] >= RequiredAmount;
 }
 
-void UStatusComponentBase::ConsumeStamina(float Amount)
+void UStatusComponent::ConsumeStamina(float Amount)
 {
 	StatMap[StatTags::Stamina] = FMath::Max(0.f, StatMap[StatTags::Stamina] - Amount);
 }
 
-void UStatusComponentBase::ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude)
+void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude)
 {
 	if (!StatusEffectClasses.Contains(StatusEffectTag))
 	{
@@ -105,7 +105,7 @@ void UStatusComponentBase::ActivateStatusEffect(const FGameplayTag& StatusEffect
 	// ActiveStatusEffects[StatusEffectTag].Activate();
 }
 
-void UStatusComponentBase::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration)
+void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration)
 {
 	if (!StatusEffectClasses.Contains(StatusEffectTag))
 	{
@@ -124,7 +124,7 @@ void UStatusComponentBase::ActivateStatusEffectWithDuration(const FGameplayTag& 
 	// ActiveStatusEffects[StatusEffectTag].Activate(Duration);
 }
 
-void UStatusComponentBase::DeactivateStatusEffect(const FGameplayTag& StatusEffectTag)
+void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTag)
 {
 	if (!StatusEffectClasses.Contains(StatusEffectTag))
 	{
