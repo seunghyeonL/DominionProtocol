@@ -21,12 +21,10 @@ public:
 	UStatusComponentBase();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
-	float Health;
+	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
-	TMap<FGameplayTag, float> BattleStats;
-	
+	TMap<FGameplayTag, float> StatMap;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	TMap<FGameplayTag, float> BattleStatMultipliers;
@@ -41,6 +39,8 @@ protected:
 	FGameplayTagContainer ActiveStatusEffectTags;
 
 public:
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	FORCEINLINE FGameplayTagContainer& GetActiveStatusEffectTags() { return ActiveStatusEffectTags; }
 
@@ -49,6 +49,12 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	void SetHealth(float NewHealth);
+
+	UFUNCTION(BlueprintCallable, Category = "Stamina")
+	bool HasEnoughStamina(float RequiredAmount) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Stamina")
+	void ConsumeStamina(float Amount);
 	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);

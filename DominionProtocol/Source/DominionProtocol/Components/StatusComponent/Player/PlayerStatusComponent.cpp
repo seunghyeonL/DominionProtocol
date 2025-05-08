@@ -56,38 +56,4 @@ void UPlayerStatusComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
-float UPlayerStatusComponent::GetStat(FGameplayTag StatTag) const
-{
-	if (StatTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle"))))
-	{
-		return BattleStats[StatTag];
-	}
 
-	if (StatTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Stat.Base"))))
-	{
-		return BaseStats[StatTag];
-	}
-
-	if (StatTag.MatchesTagExact(StatTags::Health))
-	{
-		return Health;
-	}
-
-	if (StatTag.MatchesTagExact(StatTags::Stamina))
-	{
-		return Stamina;
-	}
-
-	Debug::PrintError(TEXT("UPlayerStatusComponent::GetStat : Finding StatTag is not set."));
-	return -1.f;
-}
-
-bool UPlayerStatusComponent::HasEnoughStamina(float RequiredAmount) const
-{
-	return Stamina >= RequiredAmount;
-}
-
-void UPlayerStatusComponent::ConsumeStamina(float Amount)
-{
-	Stamina = FMath::Max(0.f, Stamina - Amount);
-}

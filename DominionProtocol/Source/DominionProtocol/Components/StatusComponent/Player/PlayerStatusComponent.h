@@ -20,23 +20,14 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
-	TMap<FGameplayTag, float> BaseStats;
+	
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
-	float Stamina;
+	
 	
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	virtual float GetStat(FGameplayTag StatTag) const override;
-
-	UFUNCTION(BlueprintCallable, Category = "Stamina")
-	bool HasEnoughStamina(float RequiredAmount) const;
-
-	UFUNCTION(BlueprintCallable, Category = "Stamina")
-	void ConsumeStamina(float Amount);
 
 };
