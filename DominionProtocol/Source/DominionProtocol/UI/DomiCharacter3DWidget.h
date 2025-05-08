@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "DomiCharacterWidget.generated.h"
+#include "DomiCharacter3DWidget.generated.h"
 
 
 UCLASS()
-class DOMINIONPROTOCOL_API UDomiCharacterWidget : public UUserWidget
+class DOMINIONPROTOCOL_API UDomiCharacter3DWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	FORCEINLINE void SetOwningActor(AActor* NewOwner) { OwningActor = NewOwner; }
+	virtual void SetOwningActor(AActor* NewOwner);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

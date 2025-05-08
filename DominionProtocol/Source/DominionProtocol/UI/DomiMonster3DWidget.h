@@ -3,21 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/DomiCharacterWidget.h"
+#include "UI/DomiCharacter3DWidget.h"
 #include "DomiMonster3DWidget.generated.h"
 
 UCLASS()
-class DOMINIONPROTOCOL_API UDomiMonster3DWidget : public UDomiCharacterWidget
+class DOMINIONPROTOCOL_API UDomiMonster3DWidget : public UDomiCharacter3DWidget
 {
 	GENERATED_BODY()
 
 public:
-	void UpdateMonsterHPBar(float NewHP);
-	void UpdateMonsterShield(float NewShield);
+	void UpdateMonsterHPBar(const float NewHP);
+	void UpdateMonsterShield(const float NewShield);
 
 
 protected:
 	virtual void NativeConstruct() override;
+
+	virtual void SetOwningActor(AActor* NewOwner) override;
+	void SetupMonster3dWidget();
 	
 
 protected:

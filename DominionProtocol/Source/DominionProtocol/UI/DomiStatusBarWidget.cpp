@@ -3,7 +3,19 @@
 
 #include "DomiStatusBarWidget.h"
 
-void UDomiStatusBarWidget::UpdateHPBar()
+void UDomiStatusBarWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	// Check Widget Binding 
+	ensure(PlayerHPBar);
+	ensure(PlayerStaminaBar);
+
+	// Initialize & DelegateBinding
+	SetupHUDWidget();
+}
+
+void UDomiStatusBarWidget::SetupHUDWidget()
 {
 	
 }

@@ -14,15 +14,31 @@ class DOMINIONPROTOCOL_API UDomiStatusBarWidget : public UUserWidget
 
 
 public:
-	UFUNCTION()
-	void UpdateHPBar();
+
+
+protected:
+	void SetupHUDWidget();
+	
+	virtual void NativeConstruct() override;
 	
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UProgressBar> PlayerHPBar;
+	
 	UPROPERTY()
 	float CurrentHp;
 
 	UPROPERTY()
 	float MaxHp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UProgressBar> PlayerStaminaBar;
+
+	UPROPERTY()
+	float CurrentStamina;
+
+	UPROPERTY()
+	float MaxStamina;
 	
 };
