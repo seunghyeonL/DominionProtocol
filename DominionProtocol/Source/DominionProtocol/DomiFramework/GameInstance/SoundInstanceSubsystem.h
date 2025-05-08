@@ -4,16 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "EnumAndStruct/ESoundCategory.h"
 #include "SoundInstanceSubsystem.generated.h"
-
-UENUM(BlueprintType)
-enum class ESoundCategory : uint8
-{
-	Master UMETA(DisplayName = "Master"),
-	SFX UMETA(DisplayName = "SFX"),
-	BGM UMETA(DisplayName = "BGM"),
-	UI UMETA(DisplayName = "UI")
-};
 
 UCLASS()
 class DOMINIONPROTOCOL_API USoundInstanceSubsystem : public UGameInstanceSubsystem

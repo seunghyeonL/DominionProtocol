@@ -1,0 +1,13 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/SaveGame.h"
+#include "DomiSaveGame.generated.h"
+
+UCLASS()
+class DOMINIONPROTOCOL_API UDomiSaveGame : public USaveGame
+{
+	GENERATED_BODY()
+};
