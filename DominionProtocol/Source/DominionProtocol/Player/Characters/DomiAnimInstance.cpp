@@ -30,6 +30,7 @@ void UDomiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 	FGameplayTagContainer NewTags;
+	
 	if (bIsPlayer)
 	{
 		NewTags = IEffectReceivable::Execute_GetActiveControlEffectTags(Character);

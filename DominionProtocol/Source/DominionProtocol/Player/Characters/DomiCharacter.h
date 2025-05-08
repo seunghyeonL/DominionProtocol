@@ -17,6 +17,10 @@ class UInputAction;
 struct FInputActionValue;
 struct FAttackData;
 
+//UI Delegate
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Skills);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Skill);
+
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
 public ACharacter, public IDamagable, public IEffectReceivable
@@ -41,6 +45,12 @@ protected:
 public:
 	ADomiCharacter();
 
+	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
+	FOnHealthChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
+	FOnStaminaChanged OnStaminaChanged;
+	
 protected:
 	// Bind After ControlComponent Ready
 	void BindInputFunctions();
