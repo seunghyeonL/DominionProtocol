@@ -19,7 +19,10 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
+#include "Components/StatusComponent/StatusEffects/AttackDownEffect.h"
+#include "Components/StatusComponent/StatusEffects/PoisonEffect.h"
 
+class UPoisonEffect;
 //////////////////////////////////////////////////////////////////////////
 // ADomiCharacter
 
@@ -175,7 +178,6 @@ void ADomiCharacter::BindInputFunctions()
 void ADomiCharacter::InitializeStatusComponent()
 {
 	FStatusComponentInitializeData InitializeData;
-	InitializeData.StatDatas.Add({StatTags::LIFE, 0.f});
 
 	// Initializing Data for BaseStats
 	InitializeData.StatDatas.Add({StatTags::LIFE, 0.f});
@@ -201,8 +203,11 @@ void ADomiCharacter::InitializeStatusComponent()
 	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
 
 	// Initializing Data for StatusEffectClasses
-	// InitializeData.EffectClassDatas.Add({});
-	
+	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
+	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
+
+	Debug::Print(TEXT("ADomiCharacter::InitializeStatusComponent : Call."));
+	StatusComponent->InitializeStatusComponent(InitializeData);
 }
 
 void ADomiCharacter::OnDeath()

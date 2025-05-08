@@ -13,6 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
 
 class UStatusEffectBase;
+struct FStatusComponentInitializeData;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API UStatusComponent : public UActorComponent
@@ -36,10 +37,10 @@ protected:
 	TMap<FGameplayTag, float> StatMap;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
-	TMap<FGameplayTag, float> BattleStatMultipliers;
+	TMap<FGameplayTag, float> StatMultiplierMap;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
-	TMap<FGameplayTag, TSubclassOf<UStatusEffectBase>> StatusEffectClasses;
+	TMap<FGameplayTag, TSubclassOf<UStatusEffectBase>> StatusEffectClassMap;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	TMap<FGameplayTag, UStatusEffectBase*> ActiveStatusEffects;
@@ -54,7 +55,10 @@ public:
 	FORCEINLINE FGameplayTagContainer& GetActiveStatusEffectTags() { return ActiveStatusEffectTags; }
 
 	UFUNCTION(BlueprintCallable, Category = "Effects")
-	virtual float GetStat(FGameplayTag StatTag) const;
+	float GetStat(const FGameplayTag& StatTag) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Effects")
+	void SetStat(const FGameplayTag& StatTag, float Value);
 	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	void SetHealth(float NewHealth);
@@ -64,6 +68,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Stamina")
 	void ConsumeStamina(float Amount);
+
+	virtual void InitializeComponent() override;
+	
+	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
 	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);
