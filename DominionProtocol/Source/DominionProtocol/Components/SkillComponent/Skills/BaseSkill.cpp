@@ -2,7 +2,7 @@
 #include "GameFramework/Character.h"
 #include "CollisionQueryParams.h"
 #include "Player/Damagable.h"
-#include "Components/StatusComponent/StatusComponentBase.h"
+#include "Components/StatusComponent/StatusComponent.h"
 #include "Util/GameTagList.h"
 
 UBaseSkill::UBaseSkill()
@@ -22,11 +22,11 @@ void UBaseSkill::Excute(ACharacter* Owner)
 	{
 		Owner->PlayAnimMontage(AnimMontage);
 
-		UStatusComponentBase* StatusComponentBase = Owner->FindComponentByClass<UStatusComponentBase>();
+		UStatusComponent* StatusComponent = Owner->FindComponentByClass<UStatusComponent>();
 
-		if (IsValid(StatusComponentBase))
+		if (IsValid(StatusComponent))
 		{
-			int32 AttackPower = StatusComponentBase->GetStat(StatTags::AttackPower);
+			int32 AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
 
 			BaseAttackData.Damage = GetFinalAttackData(AttackPower);
 		}
