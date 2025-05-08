@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "DomiHUDWidget.generated.h"
+#include "DomiInGameHUDWidget.generated.h"
 
 
 UCLASS()
-class DOMINIONPROTOCOL_API UDomiHUDWidget : public UUserWidget
+class DOMINIONPROTOCOL_API UDomiInGameHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

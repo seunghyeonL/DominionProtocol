@@ -19,5 +19,5 @@ class DOMINIONPROTOCOL_API IDomiHUDInterface
 
 public:
 	// Initialize & Binding
-	virtual void SetupHUDWidget(class UDomiHUDWidget* InDomiHUDWidget) = 0;
+	virtual void SetupHUDWidget(class UDomiInGameHUDWidget* InDomiHUDWidget) = 0;
 };

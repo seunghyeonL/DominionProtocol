@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DomiHUDWidget.h"
+#include "DomiInGameHUDWidget.h"
 
-void UDomiHUDWidget::NativeConstruct()
+void UDomiInGameHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 

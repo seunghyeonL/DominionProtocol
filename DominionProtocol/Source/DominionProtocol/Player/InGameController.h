@@ -8,9 +8,7 @@
 
 class UInputAction;
 class UInputMappingContext;
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 {
@@ -19,6 +17,14 @@ class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 public:
 	AInGameController();
 
+
+protected:
+	virtual void BeginPlay() override;
+
+	void CreateHUDWidget();
+	void AddHUDToViewport() const;
+
+	
 public:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -55,4 +61,11 @@ public:
 	// MagicSkill Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MagicSkillAction;
+
+protected:
+	UPROPERTY()
+	TSubclassOf<class UDomiInGameHUDWidget> InGameHUDWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UDomiInGameHUDWidget> InGameHUDWidgetInstance;
 };

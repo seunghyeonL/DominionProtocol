@@ -6,11 +6,27 @@
 #include "GameFramework/PlayerController.h"
 #include "TitleController.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API ATitleController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	ATitleController();
+
+	
+protected:
+	virtual void BeginPlay() override;
+
+	void CreateHUDWidget();
+	void AddHUDToViewport() const;
+	
+
+protected:
+	UPROPERTY()
+	TSubclassOf<class UDomiTitleHUDWidget> TitleHUDWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UDomiTitleHUDWidget> TitleHUDWidgetInstance;
 };
