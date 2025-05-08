@@ -3,14 +3,17 @@
 
 #include "PlayerUsingDashEffect.h"
 
-void UPlayerUsingDashEffect::Activate()
+UPlayerUsingDashEffect::UPlayerUsingDashEffect()
 {
-	Super::Activate();
-
 	ControlEffectTag = EffectTags::UsingDash;
 	bIsActive = false;
 	OuterState = nullptr;
 	InnerState = nullptr;
+}
+
+void UPlayerUsingDashEffect::Activate()
+{
+	Super::Activate();
 }
 
 void UPlayerUsingDashEffect::Activate(float Duration)
@@ -21,6 +24,7 @@ void UPlayerUsingDashEffect::Activate(float Duration)
 void UPlayerUsingDashEffect::Deactivate()
 {
 	Super::Deactivate();
+	
 }
 
 void UPlayerUsingDashEffect::Move(const FInputActionValue& Value)

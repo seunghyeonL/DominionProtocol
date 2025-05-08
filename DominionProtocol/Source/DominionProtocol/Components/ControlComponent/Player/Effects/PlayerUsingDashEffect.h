@@ -15,6 +15,8 @@ class DOMINIONPROTOCOL_API UPlayerUsingDashEffect : public UPlayerControlEffectB
 	GENERATED_BODY()
 
 public:
+	UPlayerUsingDashEffect();
+	
 	virtual void Activate() override;
 	virtual void Activate(float Duration) override;
 	virtual void Deactivate() override;
