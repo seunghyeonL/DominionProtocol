@@ -53,7 +53,7 @@ void AItemSpawner::SpawnItems()
 			if (SpawnedItem)
 			{
 				UE_LOG(LogTemp, Log, TEXT("[ItemSpawner] is spawned: %s (Location: %s)"), *SpawnedItem->GetName(), *SpawnPoint->GetName());
-
+				
 				SpawnedItem->OnDestroyed.AddDynamic(this, &AItemSpawner::OnItemDestroyed);
 
 				SpawnedItems.Add(SpawnPoint, SpawnedItem);

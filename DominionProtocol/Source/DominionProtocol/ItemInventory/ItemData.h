@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/Texture2D.h"
+#include "Util/GameTagList.h"
 #include "ItemData.generated.h"
 
 UENUM(BlueprintType)
@@ -33,7 +34,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	int32 MaxItemQuantity;
 	
-	//이런식으로 쓰는건가요?
+	//아이템태그
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
-	FName ItemTag;
+	FGameplayTag ItemTag;
 };

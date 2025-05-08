@@ -1,7 +1,7 @@
 #include "ItemInventory/BaseItem.h"
-#include "GameplayTagContainer.h"
+#include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
-
+#include "ItemInventory/ItemComponent.h"
 
 ABaseItem::ABaseItem()
 {
@@ -10,21 +10,27 @@ ABaseItem::ABaseItem()
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMesh;
 
+	InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionVolume"));
+	InteractionVolume->SetupAttachment(RootComponent);
+	InteractionVolume->SetCollisionResponseToAllChannels(ECR_Overlap);
+	InteractionVolume->SetGenerateOverlapEvents(true);
 }
 
 void ABaseItem::BeginPlay()
 {
 	Super::BeginPlay();
-	this->GetItemData(); 
-	this->GetItemGameplayTag();
+	GetItemData(); 
+	GetItemGameplayTag();
 }
 
 FItemData* ABaseItem::GetItemData() const
 {
-	if (ItemDataTable && ItemDataRowName!= NAME_None)
+	if (ItemDataTable && ItemTag.IsValid())
 	{
 		Debug::Print(TEXT("Row Found"));
-		return ItemDataTable->FindRow<FItemData>(ItemDataRowName, TEXT(""));
+		FString Msg = ItemTag.ToString();
+		Debug::Print(Msg);
+		return ItemDataTable->FindRow<FItemData>(ItemTag.GetTagName(), TEXT(""));
 	}
 	else
 	{
@@ -35,11 +41,30 @@ FItemData* ABaseItem::GetItemData() const
 //아이템 태그 반환
 FGameplayTag ABaseItem::GetItemGameplayTag() const
 {
-	const FItemData* Data = GetItemData();
-	if (Data)
+	FString Msg = ItemTag.ToString();
+	Debug::Print(Msg);
+	return ItemTag.IsValid() ? ItemTag : ItemTags::ItemBase;
+}
+
+//상호작용
+void ABaseItem::Interact(APawn* InteractingPawn)
+{
+	if (InteractingPawn)
 	{
-		Debug::Print(TEXT("return gameplaytag"));
-		//return FGameplayTag::RequestGameplayTag(Data->ItemTag);
+		UItemComponent* InventoryComp = InteractingPawn->FindComponentByClass<UItemComponent>();
+		if (InventoryComp)
+		{
+			const FItemData* Data = GetItemData();
+			if (Data)
+			{
+				//아이템 추가 후 액터 제거
+				InventoryComp->AddItem(Data->ItemTag, 1);
+				Destroy();
+			}
+			else
+			{
+				Debug::Print(TEXT("Invalid Item Data"));
+			}
+		}
 	}
-	return FGameplayTag();
 }

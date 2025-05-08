@@ -5,7 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "ItemData.h"
-#include "GameplayTagContainer.h"
+#include "Util/GameTagList.h"
 #include "BaseItem.generated.h"
 
 UCLASS()
@@ -21,14 +21,18 @@ protected:
 	UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
-	FName ItemDataRowName;
+	FGameplayTag ItemTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Data")
 	UDataTable* ItemDataTable;
 
 	// 획득 로직 (상호작용)
-	/*UFUNCTION(BlueprintCallable)
-	virtual void Interact(APawn* InteractingPawn);*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* InteractionVolume;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Interact(APawn* InteractingPawn);
+	
 	// 오버랩 획득 로직 (필요에 따라)
 	/*UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);*/

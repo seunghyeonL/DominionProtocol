@@ -62,3 +62,7 @@ namespace StatTags
 //	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("AI.Monster1.BaseAttack"));
 //	inline const FGameplayTag DoubleAttack = FGameplayTag::RequestGameplayTag(TEXT("AI.Monster1.DoubleAttack"));
 //}
+namespace ItemTags
+{
+	inline const FGameplayTag ItemBase = FGameplayTag::RequestGameplayTag(TEXT("Item.Base"));
+}
