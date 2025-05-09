@@ -18,6 +18,7 @@ public:
 	void ActivateBarrier();
 	void DeactivateBarrier();
 
+	UFUNCTION()
 	void OnPlayerOverlap(UPrimitiveComponent* OverlappedComponent, 
 		AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, 
@@ -26,6 +27,14 @@ public:
 		const FHitResult& SweepResult);
 
 public:	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* CollisionBox;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* Wall_Left;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* Wall_Right;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* Wall_Front;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* Wall_Back;
 };

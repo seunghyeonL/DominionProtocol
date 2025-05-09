@@ -23,6 +23,6 @@ public:
 	void EndBattle() override;
 		
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
 	AZoneBarrier* ZoneBarrier;
 };

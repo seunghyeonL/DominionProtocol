@@ -3,14 +3,17 @@
 
 #include "DomiFramework/GameMode/ProtoLevel1GameMode.h"
 #include "Util/DebugHelper.h"
+#include "Kismet/GameplayStatics.h"
 
 void AProtoLevel1GameMode::StartPlay()
 {
 	Super::StartPlay();
 
-	if (GameInstance->GetIsBossDead(0) && ZoneBarrier)
+	ZoneBarrier = Cast<AZoneBarrier>(UGameplayStatics::GetActorOfClass(GetWorld(), AZoneBarrier::StaticClass()));
+
+	if (GameInstance->GetIsBossDead(0) && IsValid(ZoneBarrier))
 	{
-		//ZoneBarrier->DeactivateBarrier();
+		ZoneBarrier->DeactivateBarrier();
 	}
 }
 
@@ -18,11 +21,34 @@ void AProtoLevel1GameMode::StartBattle()
 {
 	Super::StartBattle();
 
-	Debug::Print(TEXT("Start Battle"));
-
-	if (GameInstance->GetIsBossDead(0) && ZoneBarrier)
+	if (!GameInstance)
 	{
-		ZoneBarrier->ActivateBarrier();
+		return;
+	}
+
+	if (!ZoneBarrier)
+	{
+		return;
+	}
+
+	if (!GameInstance->GetIsBossDead(0))
+	{
+		Debug::Print(TEXT("Boss Not Dead"));
+		FTimerHandle BarrierTimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			BarrierTimerHandle,
+			[this]()
+			{
+				if (ZoneBarrier)
+				{
+					ZoneBarrier->ActivateBarrier();
+				}
+			},
+			1.0f, false);
+	}
+	else
+	{
+		Debug::Print(TEXT("No"));
 	}
 }
 

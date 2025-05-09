@@ -4,6 +4,7 @@
 #include "WorldObjects/ZoneBarrier.h"
 #include "DomiFramework/GameMode/ProtoLevel1GameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Util/DebugHelper.h"
 
 AZoneBarrier::AZoneBarrier()
 {
@@ -15,16 +16,43 @@ AZoneBarrier::AZoneBarrier()
     CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     CollisionBox->SetGenerateOverlapEvents(true);
     CollisionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic")); 
+
+    CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AZoneBarrier::OnPlayerOverlap);
+    
+    Wall_Left = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Left"));
+    Wall_Left->SetupAttachment(RootComponent);
+    Wall_Right = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Right"));
+    Wall_Right->SetupAttachment(RootComponent);
+    Wall_Front = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Front"));
+    Wall_Front->SetupAttachment(RootComponent);
+    Wall_Back = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Back"));
+    Wall_Back->SetupAttachment(RootComponent);
+    
+
+    TArray<UBoxComponent*> Walls = { Wall_Left, Wall_Right, Wall_Front, Wall_Back };
+    for (UBoxComponent* Wall : Walls)
+    {
+        Wall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
 }
 
 void AZoneBarrier::ActivateBarrier()
 {
-	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    TArray<UBoxComponent*> Walls = { Wall_Left, Wall_Right, Wall_Front, Wall_Back };
+    for (UBoxComponent* Wall : Walls)
+    {
+        Wall->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        Wall->SetCollisionProfileName(TEXT("BlockAll"));
+    }
 }
 
 void AZoneBarrier::DeactivateBarrier()
 {
-	CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    TArray<UBoxComponent*> Walls = { Wall_Left, Wall_Right, Wall_Front, Wall_Back };
+    for (UBoxComponent* Wall : Walls)
+    {
+        Wall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
 }
 
 void AZoneBarrier::OnPlayerOverlap(
