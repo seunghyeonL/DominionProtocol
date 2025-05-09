@@ -2,8 +2,8 @@
 
 
 #include "BaseEnemy.h"
-
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/CapsuleComponent.h"
 
 
 // Sets default values
@@ -26,6 +26,9 @@ void ABaseEnemy::BeginPlay()
 void ABaseEnemy::OnDeath()
 {
 	StatusComponent->ActivateStatusEffect(EffectTags::Death, 0);
+
+	// Ignore Collision with Pawn
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 }
 
 void ABaseEnemy::OnGroggy()
@@ -43,6 +46,17 @@ void ABaseEnemy::LookAtTarget(const AActor* TargetActor)
 {
 }
 
+FGameplayTagContainer ABaseEnemy::GetActiveStatusEffectTags()
+{
+	if (!IsValid(StatusComponent))
+	{
+		Debug::PrintError(TEXT("ADomiCharacter::GetActiveStatusEffectTags : StatusComponent is not valid"));
+		return FGameplayTagContainer();
+	}
+
+	return StatusComponent->GetActiveStatusEffectTags();
+}
+
 void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);
@@ -52,17 +66,25 @@ void ABaseEnemy::ExecutePattern(FGameplayTag SkillGroupTag)
 {
 }
 
-FGameplayTagContainer ABaseEnemy::GetActiveControlEffectTags_Implementation()
+void ABaseEnemy::ShowControlEffectTags_Implementation()
 {
-	return IEffectReceivable::GetActiveControlEffectTags_Implementation();
+	IEffectReceivable::ShowControlEffectTags_Implementation();
+
+	// Not Use ControlComponent
 }
 
-FGameplayTagContainer ABaseEnemy::GetActiveStatusEffectTags_Implementation()
+void ABaseEnemy::ShowStatusEffectTags_Implementation()
 {
-	return IEffectReceivable::GetActiveStatusEffectTags_Implementation();
+	IEffectReceivable::ShowStatusEffectTags_Implementation();
+
+	for (auto Tag : GetActiveStatusEffectTags().GetGameplayTagArray())
+	{
+		Debug::Print(Tag.ToString());
+	}
 }
 
 void ABaseEnemy::InitializeStatusComponent()
 {
+	
 }
 

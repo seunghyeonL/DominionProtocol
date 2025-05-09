@@ -6,8 +6,10 @@
 #include "UObject/Interface.h"
 #include "ControlComponentUser.generated.h"
 
+struct FGameplayTagContainer;
+
 // This class does not need to be modified.
-UINTERFACE()
+UINTERFACE(BlueprintType, Blueprintable)
 class UControlComponentUser : public UInterface
 {
 	GENERATED_BODY()
@@ -22,5 +24,7 @@ class DOMINIONPROTOCOL_API IControlComponentUser
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void InitializeControlComponent() = 0;
+	// virtual void InitializeControlComponent() = 0;
+	
+	virtual FGameplayTagContainer GetActiveControlEffectTags() = 0;
 };

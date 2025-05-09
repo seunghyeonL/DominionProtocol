@@ -38,20 +38,21 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void LookAtTarget(const AActor* TargetActor);
-	
-	// Damagable
-	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 
 	// Attack Function
 	UFUNCTION(BlueprintCallable, Category = "AI|Attack")
 	void ExecutePattern(FGameplayTag SkillGroupTag);
 	
-	// EffectReceivable
-	virtual FGameplayTagContainer GetActiveControlEffectTags_Implementation() override;
-	virtual FGameplayTagContainer GetActiveStatusEffectTags_Implementation() override;
-
 	// StatusComponentUser
 	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath() override;
 	virtual void OnGroggy() override;
+	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
+	
+	// Damagable
+	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
+	
+	// EffectReceivable
+	virtual void ShowControlEffectTags_Implementation() override;
+	virtual void ShowStatusEffectTags_Implementation() override;
 };

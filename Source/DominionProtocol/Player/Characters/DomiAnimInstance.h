@@ -36,9 +36,6 @@ protected:
 	bool bIsPlayer;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
-	bool bIsEffectReceivable;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
 	FVector Velocity;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")

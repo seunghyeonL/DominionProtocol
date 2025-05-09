@@ -7,6 +7,8 @@
 #include "StatusComponentUser.generated.h"
 
 class UStatusComponentBase;
+struct FGameplayTagContainer;
+
 // This class does not need to be modified.
 UINTERFACE()
 class UStatusComponentUser : public UInterface
@@ -26,4 +28,5 @@ public:
 	virtual void InitializeStatusComponent() = 0;
 	virtual void OnDeath() = 0;
 	virtual void OnGroggy() = 0;
+	virtual FGameplayTagContainer GetActiveStatusEffectTags() = 0;
 };

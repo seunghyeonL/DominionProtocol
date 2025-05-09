@@ -205,6 +205,28 @@ void ADomiCharacter::BindInputFunctions()
 	}
 }
 
+FGameplayTagContainer ADomiCharacter::GetActiveControlEffectTags()
+{
+	if (!IsValid(ControlComponent))
+	{
+		Debug::PrintError(TEXT("ADomiCharacter::GetActiveControlEffectTags : ControlComponent is not valid"));
+		return FGameplayTagContainer();
+	}
+
+	return ControlComponent->GetActiveControlEffectTags();
+}
+
+FGameplayTagContainer ADomiCharacter::GetActiveStatusEffectTags()
+{
+	if (!IsValid(StatusComponent))
+	{
+		Debug::PrintError(TEXT("ADomiCharacter::GetActiveStatusEffectTags : StatusComponent is not valid"));
+		return FGameplayTagContainer();
+	}
+
+	return StatusComponent->GetActiveStatusEffectTags();
+}
+
 void ADomiCharacter::InitializeStatusComponent()
 {
 	FStatusComponentInitializeData InitializeData;
@@ -284,28 +306,22 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	}
 }
 
-FGameplayTagContainer ADomiCharacter::GetActiveControlEffectTags_Implementation()
+void ADomiCharacter::ShowControlEffectTags_Implementation()
 {
-	IEffectReceivable::GetActiveControlEffectTags_Implementation();
+	IEffectReceivable::ShowControlEffectTags_Implementation();
 
-	if (!IsValid(ControlComponent))
+	for (auto Tag : GetActiveControlEffectTags().GetGameplayTagArray())
 	{
-		Debug::PrintError(TEXT("ADomiCharacter::GetActiveControlEffectTags : ControlComponent is not valid"));
-		return FGameplayTagContainer();
+		Debug::Print(Tag.ToString());
 	}
-
-	return ControlComponent->GetActiveControlEffectTags();
 }
 
-FGameplayTagContainer ADomiCharacter::GetActiveStatusEffectTags_Implementation()
+void ADomiCharacter::ShowStatusEffectTags_Implementation()
 {
-	IEffectReceivable::GetActiveStatusEffectTags_Implementation();
+	IEffectReceivable::ShowStatusEffectTags_Implementation();
 
-	if (!IsValid(StatusComponent))
+	for (auto Tag : GetActiveStatusEffectTags().GetGameplayTagArray())
 	{
-		Debug::PrintError(TEXT("ADomiCharacter::GetActiveControlEffectTags : ControlComponent is not valid"));
-		return FGameplayTagContainer();
+		Debug::Print(Tag.ToString());
 	}
-
-	return StatusComponent->GetActiveStatusEffectTags();
 }

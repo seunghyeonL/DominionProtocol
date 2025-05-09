@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "../Damagable.h"
 #include "../EffectReceivable.h"
+#include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Util/DebugHelper.h"
 #include "DomiCharacter.generated.h"
@@ -21,7 +22,7 @@ struct FAttackData;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
-public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser
+public ACharacter, public IDamagable, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser
 {
 	GENERATED_BODY()
 
@@ -60,17 +61,21 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	// StateComponentUser
+	// ControlComponentUser
+	virtual FGameplayTagContainer GetActiveControlEffectTags() override;
+
+	// StatusComponentUser
 	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath() override;
 	virtual void OnGroggy() override { /* Not used in player*/ };
+	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
 	
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 
 	// EffectReceivable
-	virtual FGameplayTagContainer GetActiveControlEffectTags_Implementation() override;
-	virtual FGameplayTagContainer GetActiveStatusEffectTags_Implementation() override;
+	virtual void ShowControlEffectTags_Implementation() override;
+	virtual void ShowStatusEffectTags_Implementation() override;
 
 private:
 	UPROPERTY()

@@ -24,8 +24,8 @@ class DOMINIONPROTOCOL_API IEffectReceivable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Effects")
-	FGameplayTagContainer GetActiveControlEffectTags();
+	void ShowControlEffectTags();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Effects")
-	FGameplayTagContainer GetActiveStatusEffectTags();
+	void ShowStatusEffectTags();
 };
