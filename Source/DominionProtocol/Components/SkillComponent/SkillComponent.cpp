@@ -26,13 +26,6 @@ void USkillComponent::InitializeComponent()
 
 void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeData& InitializeData)
 {
-    //const auto& [SkillGroups] = InitializeData;
-
-    //for (auto [SkillTag, SkillGroup] : SkillGroups)
-    //{
-    //    SkillGroupsMap.Add(SkillTag, SkillGroup);
-    //}
-
     for (const auto& [SkillGroupTag, SkillGroupData] : InitializeData.SkillGroupInitializeDatas)
     {
         FSkillGroup SkillGroup;
@@ -42,6 +35,11 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
             {
                 Skill->Initialize();
                 SkillGroup.Skills.Add(Skill);
+            }
+            else
+            {
+                FString Msg = FString::Printf(TEXT("UStatusComponent::InitializeStatusComponent : Create %s."), *SkillGroupTag.ToString());
+                Debug::PrintError(Msg);
             }
         }
         SkillGroupMap.Add(SkillGroupTag, SkillGroup);

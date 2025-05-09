@@ -9,14 +9,14 @@ UAIConfusedEffect::UAIConfusedEffect()
 	bIsActive = false;
 }
 
-void UAIConfusedEffect::Activate()
+void UAIConfusedEffect::Activate(float Magnitude)
 {
-	Super::Activate();
+	Super::Activate(Magnitude);
 }
 
-void UAIConfusedEffect::Activate(float Duration)
+void UAIConfusedEffect::Activate(float Magnitude, float Duration)
 {
-	Super::Activate(Duration);
+	Super::Activate(Magnitude, Duration);
 }
 
 void UAIConfusedEffect::Deactivate()

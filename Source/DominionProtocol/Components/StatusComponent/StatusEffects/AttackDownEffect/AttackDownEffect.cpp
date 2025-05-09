@@ -9,14 +9,14 @@ UAttackDownEffect::UAttackDownEffect()
 	bIsActive = false;
 }
 
-void UAttackDownEffect::Activate()
+void UAttackDownEffect::Activate(float Magnitude)
 {
-	Super::Activate();
+	Super::Activate(Magnitude);
 }
 
-void UAttackDownEffect::Activate(float Duration)
+void UAttackDownEffect::Activate(float Magnitude, float Duration)
 {
-	Super::Activate(Duration);
+	Super::Activate(Magnitude, Duration);
 }
 
 void UAttackDownEffect::Deactivate()

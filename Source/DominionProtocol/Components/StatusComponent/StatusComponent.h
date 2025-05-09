@@ -42,10 +42,7 @@ protected:
 	TMap<FGameplayTag, float> StatMultiplierMap;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
-	TMap<FGameplayTag, TSubclassOf<UStatusEffectBase>> StatusEffectClassMap;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
-	TMap<FGameplayTag, UStatusEffectBase*> ActiveStatusEffects;
+	TMap<FGameplayTag, UStatusEffectBase*> StatusEffectMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	FGameplayTagContainer ActiveStatusEffectTags;

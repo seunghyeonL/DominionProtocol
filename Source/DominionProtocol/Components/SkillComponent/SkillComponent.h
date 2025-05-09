@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Util/GameTagList.h"
+#include "Util/BattleDataTypes.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "SkillComponent.generated.h"
 

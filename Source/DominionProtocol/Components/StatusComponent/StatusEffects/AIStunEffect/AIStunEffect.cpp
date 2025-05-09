@@ -9,14 +9,14 @@ UAIStunEffect::UAIStunEffect()
 	bIsActive = false;
 }
 
-void UAIStunEffect::Activate()
+void UAIStunEffect::Activate(float Magnitude)
 {
-	Super::Activate();
+	Super::Activate(Magnitude);
 }
 
-void UAIStunEffect::Activate(float Duration)
+void UAIStunEffect::Activate(float Magnitude, float Duration)
 {
-	Super::Activate(Duration);
+	Super::Activate(Magnitude, Duration);
 }
 
 void UAIStunEffect::Deactivate()

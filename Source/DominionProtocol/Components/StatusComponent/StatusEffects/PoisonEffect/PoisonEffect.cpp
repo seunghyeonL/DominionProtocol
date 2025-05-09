@@ -9,14 +9,14 @@ UPoisonEffect::UPoisonEffect()
 	bIsActive = false;
 }
 
-void UPoisonEffect::Activate()
+void UPoisonEffect::Activate(float Magnitude)
 {
-	Super::Activate();
+	Super::Activate(Magnitude);
 }
 
-void UPoisonEffect::Activate(float Duration)
+void UPoisonEffect::Activate(float Magnitude, float Duration)
 {
-	Super::Activate(Duration);
+	Super::Activate(Magnitude, Duration);
 }
 
 void UPoisonEffect::Deactivate()

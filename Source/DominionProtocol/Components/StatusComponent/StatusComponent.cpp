@@ -4,6 +4,7 @@
 #include "StatusComponentUser.h"
 #include "StatusComponentInitializeData.h"
 #include "StatusEffects/StatusEffectBase.h"
+#include "GameFramework/Character.h"
 
 UStatusComponent::UStatusComponent()
 {
@@ -93,6 +94,13 @@ void UStatusComponent::InitializeComponent()
 
 void UStatusComponent::InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData)
 {
+	auto OwnerCharacter = Cast<ACharacter>(GetOuter());
+	if (!IsValid(OwnerCharacter))
+	{
+		Debug::PrintError(TEXT("UStatusComponent::InitializeStatusComponent : Invalid OwnerCharacter."));
+		return;
+	}
+	
 	const auto& [StatDatas, StatMultiplierDatas, EffectClassDatas] = InitializeData;
 
 	for (auto [StatTag, StatValue] : StatDatas)
@@ -105,48 +113,58 @@ void UStatusComponent::InitializeStatusComponent(const FStatusComponentInitializ
 		StatMultiplierMap.Add(StatTag, StatMultiplierValue);
 	}
 
-	for (auto [StatTag, EffectClass] : EffectClassDatas)
+	for (auto [EffectTag, EffectClass] : EffectClassDatas)
 	{
-		StatusEffectClassMap.Add(StatTag, EffectClass);
+		if (UStatusEffectBase* StatusEffect = NewObject<UStatusEffectBase>(this, EffectClass))
+		{
+			StatusEffectMap.Add(EffectTag, StatusEffect);
+			StatusEffect->SetOwnerCharacter(OwnerCharacter);
+		}
+		else
+		{
+			FString Msg = FString::Printf(TEXT("UStatusComponent::InitializeStatusComponent : Create %s. "), *EffectTag.ToString());
+			Debug::PrintError(Msg);
+		}
 	}
 }
 
 void UStatusComponent::RemoveActiveStatusEffect(FGameplayTag StatusEffectTag)
 {
-	ActiveStatusEffects.Remove(StatusEffectTag);
+	StatusEffectMap.Remove(StatusEffectTag);
 }
 
 void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude)
 {
-	if (!StatusEffectClassMap.Contains(StatusEffectTag))
+	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		Debug::PrintError(TEXT("UStatusComponent::ActivateStatusEffectWithDuration : StatusEffectTag is not set."));
-		return;
+		(*StatusEffect)->Activate(Magnitude);
 	}
-	
-	ActiveStatusEffects.Add(StatusEffectTag, NewObject<UStatusEffectBase>(this, StatusEffectClassMap[StatusEffectTag]));
-	ActiveStatusEffects[StatusEffectTag]->Activate();
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerStatusComponent::ActivateStatusEffect : Tag Not Initialized in Mapper."));
+	}
 }
 
 void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration)
 {
-	if (!StatusEffectClassMap.Contains(StatusEffectTag))
+	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		Debug::PrintError(TEXT("UStatusComponent::ActivateStatusEffectWithDuration : StatusEffectTag is not set."));
-		return;
+		(*StatusEffect)->Activate(Magnitude, Duration);
 	}
-	
-	ActiveStatusEffects.Add(StatusEffectTag, NewObject<UStatusEffectBase>(this, StatusEffectClassMap[StatusEffectTag]));
-	ActiveStatusEffects[StatusEffectTag]->Activate(Duration);
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerStatusComponent::ActivateStatusEffectWithDuration : Tag Not Initialized in Mapper."));
+	}
 }
 
 void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTag)
 {
-	if (!ActiveStatusEffects.Contains(StatusEffectTag))
+	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		Debug::Print(TEXT("UStatusComponent::DeactivateStatusEffect : StatusEffectTag is not Activated."));
-		return;
+		(*StatusEffect)->Deactivate();
 	}
-
-	ActiveStatusEffects[StatusEffectTag]->Deactivate();
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerStatusComponent::DeactivateStatusEffect : Tag Not Initialized in Mapper."));
+	}
 }

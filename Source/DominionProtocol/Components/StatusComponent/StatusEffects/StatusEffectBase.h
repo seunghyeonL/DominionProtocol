@@ -19,6 +19,9 @@ class DOMINIONPROTOCOL_API UStatusEffectBase : public UObject
 protected:
 	FTimerHandle DurationTimer;
 	FTimerHandle DoTTimer;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<ACharacter> OwnerCharacter;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
 	FGameplayTag StatusEffectTag;
@@ -27,8 +30,10 @@ protected:
 	bool bIsActive;
 
 public:
-	virtual void Activate();
-	virtual void Activate(float Duration);
+	FORCEINLINE void SetOwnerCharacter(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
+	
+	virtual void Activate(float Magnitude);
+	virtual void Activate(float Magnitude, float Duration);
 	virtual void Deactivate();
 	virtual void Tick(float DeltaTime);
 };

@@ -40,14 +40,14 @@ void UPlayerControlComponent::InitializeComponent()
 	PlayerControlState = NewObject<UPlayerControlState>(this);
 	if (!IsValid(PlayerControlState))
 	{
-		Debug::PrintError(TEXT("UPlayerControlComponent::BeginPlay : Invalid PlayerControlState."));
+		Debug::PrintError(TEXT("UPlayerControlComponent::InitializeComponent : Invalid PlayerControlState."));
 		return;
 	}
 
 	auto OwnerCharacter = Cast<ACharacter>(GetOuter());
 	if (!IsValid(OwnerCharacter))
 	{
-		Debug::PrintError(TEXT("UPlayerControlComponent::BeginPlay : Invalid OwnerCharacter."));
+		Debug::PrintError(TEXT("UPlayerControlComponent::InitializeComponent : Invalid OwnerCharacter."));
 		return;
 	}
 	PlayerControlState->SetOwnerCharacter(OwnerCharacter);
@@ -93,55 +93,37 @@ void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag)
 {
-	if (!ControlEffectMap.Contains(ControlEffectTag))
+	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		Debug::PrintError(TEXT("UPlayerControlComponent::ActivateControlEffect : Tag Not Initialized in Mapper."));
-		return;
-	}
-
-	if (auto ControlEffect = ControlEffectMap[ControlEffectTag])
-	{
-		ControlEffect->Activate();
+		(*ControlEffect)->Activate();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UPlayerControlComponent::ActivateControlEffect : Invalid ControlEffect."))
+		Debug::PrintError(TEXT("UPlayerControlComponent::ActivateControlEffect : Tag Not Initialized in Mapper."));
 	}
 }
 
 void UPlayerControlComponent::ActivateControlEffectWithDuration(const FGameplayTag& ControlEffectTag, float Duration)
 {
-	if (!ControlEffectMap.Contains(ControlEffectTag))
+	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		Debug::PrintError(TEXT("UPlayerControlComponent::ActivateControlEffect : Tag Not Initialized in Mapper."));
-		return;
-	}
-
-	if (auto ControlEffect = ControlEffectMap[ControlEffectTag])
-	{
-		ControlEffect->Activate(Duration);
+		(*ControlEffect)->Activate(Duration);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UPlayerControlComponent::ActivateControlEffect : Invalid ControlEffect."))
+		Debug::PrintError(TEXT("UPlayerControlComponent::ActivateControlEffectWithDuration : Tag Not Initialized in Mapper."));
 	}
 }
 
 void UPlayerControlComponent::DeactivateControlEffect(const FGameplayTag& ControlEffectTag)
 {
-	if (!ControlEffectMap.Contains(ControlEffectTag))
+	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		Debug::PrintError(TEXT("UPlayerControlComponent::DeactivateControlEffect : Tag Not Initialized in Mapper."));
-		return;
-	}
-
-	if (auto ControlEffect = ControlEffectMap[ControlEffectTag])
-	{
-		ControlEffect->Deactivate();
+		(*ControlEffect)->Deactivate();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UPlayerControlComponent::DeactivateControlEffect : Invalid ControlEffect."))
+		Debug::PrintError(TEXT("UPlayerControlComponent::DeactivateControlEffect : Tag Not Initialized in Mapper."));
 	}
 }
 

@@ -9,14 +9,14 @@ UAIDeathEffect::UAIDeathEffect()
 	bIsActive = false;
 }
 
-void UAIDeathEffect::Activate()
+void UAIDeathEffect::Activate(float Magnitude)
 {
-	Super::Activate();
+	Super::Activate(Magnitude);
 }
 
-void UAIDeathEffect::Activate(float Duration)
+void UAIDeathEffect::Activate(float Magnitude, float Duration)
 {
-	Super::Activate(Duration);
+	Super::Activate(Magnitude, Duration);
 }
 
 void UAIDeathEffect::Deactivate()
