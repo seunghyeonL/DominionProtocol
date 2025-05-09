@@ -32,6 +32,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void InitializeComponent() override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	TMap<FGameplayTag, float> StatMap;
@@ -68,8 +70,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Stamina")
 	void ConsumeStamina(float Amount);
-
-	virtual void InitializeComponent() override;
 	
 	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
 	

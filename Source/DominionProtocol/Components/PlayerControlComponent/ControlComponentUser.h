@@ -6,8 +6,6 @@
 #include "UObject/Interface.h"
 #include "ControlComponentUser.generated.h"
 
-class UControlComponentBase;
-
 // This class does not need to be modified.
 UINTERFACE()
 class UControlComponentUser : public UInterface
@@ -15,11 +13,14 @@ class UControlComponentUser : public UInterface
 	GENERATED_BODY()
 };
 
+/**
+ * 
+ */
 class DOMINIONPROTOCOL_API IControlComponentUser
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual UControlComponentBase* GetControlComponent() const = 0;
+	virtual void InitializeControlComponent() = 0;
 };

@@ -11,7 +11,7 @@ class UPlayerControlStateBase;
 class UPlayerControlEffectBase;
 struct FInputActionValue;
 
-DECLARE_DELEGATE(FOnComponentReady);
+// DECLARE_DELEGATE(FOnComponentReady);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API UPlayerControlComponent : public UActorComponent
@@ -21,13 +21,15 @@ class DOMINIONPROTOCOL_API UPlayerControlComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UPlayerControlComponent();
-
-	FOnComponentReady OnComponentReady;
-	bool bIsComponentReady;
+	
+	// FOnComponentReady OnComponentReady;
+	// bool bIsComponentReady;
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	virtual void InitializeComponent() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlStateBase> PlayerControlState;
@@ -52,7 +54,7 @@ public:
 	virtual void ActivateControlEffect(const FGameplayTag& ControlEffectTag);
 	virtual void ActivateControlEffectWithDuration(const FGameplayTag& ControlEffectTag, float Duration);
 	virtual void DeactivateControlEffect(const FGameplayTag& ControlEffectTag);
-
+	
 	// Input Binding Functions
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);

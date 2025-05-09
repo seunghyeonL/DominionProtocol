@@ -14,7 +14,6 @@ class DOMINIONPROTOCOL_API UPlayerControlState : public UPlayerControlStateBase
 {
 	GENERATED_BODY()
 
-	
 public:
 	virtual void Move(const FInputActionValue& Value) override;
 	virtual void Look(const FInputActionValue& Value) override;

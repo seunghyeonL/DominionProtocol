@@ -97,12 +97,13 @@ void ADomiCharacter::NotifyControllerChanged()
 void ADomiCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	InputComponent = PlayerInputComponent;
+	BindInputFunctions();
 
-	if (ControlComponent->bIsComponentReady)
-	{
-		BindInputFunctions();
-	}
-	ControlComponent->OnComponentReady.BindUObject(this, &ADomiCharacter::BindInputFunctions);
+	// if (ControlComponent->bIsComponentReady)
+	// {
+	// 	BindInputFunctions();
+	// }
+	// ControlComponent->OnComponentReady.BindUObject(this, &ADomiCharacter::BindInputFunctions);
 }
 
 void ADomiCharacter::BindInputFunctions()
