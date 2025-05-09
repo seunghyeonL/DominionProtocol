@@ -12,4 +12,16 @@ struct FInstanceData
 
 	UPROPERTY()
 	TArray<bool> IsBossDeadArray;
+
+	UPROPERTY()
+	FString CurrentLevelName;
+
+	UPROPERTY()
+	FText CurrentLevelDisplayName;
+
+	UPROPERTY()
+	FText RecentCrackName;
+
+	UPROPERTY()
+	int32 RecentCrackIndex;
 };

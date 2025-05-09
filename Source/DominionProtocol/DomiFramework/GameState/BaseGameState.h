@@ -7,6 +7,7 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+class UDomiGameInstance;
 class USoundInstanceSubsystem;
 
 UCLASS()
@@ -14,15 +15,24 @@ class DOMINIONPROTOCOL_API ABaseGameState : public AGameState
 {
 	GENERATED_BODY()
 
+//Functions
 public:
 	ABaseGameState();
 
-	FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
+	FORCEINLINE FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
 	
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	void InitializeGameInstance();
+	void InitializeSoundSubsystem();
+
+//Variables
+private:
+	UPROPERTY()
+	UDomiGameInstance* GameInstance;
+	
 	UPROPERTY()
 	USoundInstanceSubsystem* SoundSubsystem;
 

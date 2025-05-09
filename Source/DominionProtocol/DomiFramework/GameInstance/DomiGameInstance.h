@@ -21,9 +21,16 @@ public:
 	
 	//Setter
 	FORCEINLINE void SetIsBossDead(int32 BossIndex);
-	
+	FORCEINLINE void SetCurrentLevelName(FString NewCurrentLevelName) { CurrentLevelName = NewCurrentLevelName; }
+	FORCEINLINE void SetCurrentLevelDisplayName(FText NewCurrentLevelDisplayName) { CurrentLevelDisplayName = NewCurrentLevelDisplayName; }
+	FORCEINLINE void SetRecentCrackName(FText NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
+	FORCEINLINE void SetRecentCrackIndex(int32 NewRecentCrackIndex) { RecentCrackIndex = NewRecentCrackIndex; }
 	//Getter
-	FORCEINLINE bool GetIsBossDead(int32 BossIndex);
+	FORCEINLINE bool GetIsBossDead(int32 BossIndex) const;
+	FORCEINLINE FString GetCurrentLevelName() const { return CurrentLevelName; }
+	FORCEINLINE FText GetCurrentLevelDisplayName() const { return CurrentLevelDisplayName; }
+	FORCEINLINE FText GetRecentCrackName() const { return RecentCrackName; }
+	FORCEINLINE int32 GetRecentCrackIndex() const { return RecentCrackIndex; }
 	
 	
 protected:
@@ -34,6 +41,18 @@ private:
 	UPROPERTY()
 	TArray<bool> IsBossDeadArray;
 	//========
+
+	UPROPERTY()
+	FString CurrentLevelName;
+
+	UPROPERTY()
+	FText CurrentLevelDisplayName;
+
+	UPROPERTY()
+	FText RecentCrackName;
+
+	UPROPERTY()
+	int32 RecentCrackIndex;
 
 	static const int32 NumBosses;
 };
