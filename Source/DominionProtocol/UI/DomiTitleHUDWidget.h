@@ -11,25 +11,10 @@ class DOMINIONPROTOCOL_API UDomiTitleHUDWidget : public UUserWidget
 
 protected:
     virtual void NativeConstruct() override;
-
-    // 위젯 바인딩용 변수
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-    class UButton* NewGameButton;
     
+
+protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-    class UButton* LoadButton;
+    TObjectPtr<class UDomiMainMenuWidget> MainMenu;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-    class UButton* ExitButton;
-
-public:
-    // 버튼에 연결될 함수들
-    UFUNCTION()
-    void OnLoadClicked();
-
-    UFUNCTION()
-    void OnNewGameClicked();
-
-    UFUNCTION()
-    void OnExitClicked();
 };
