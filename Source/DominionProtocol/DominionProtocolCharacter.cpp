@@ -161,6 +161,7 @@ void ADominionProtocolCharacter::Dash()
 	//}
 
 	// 상태 설정
+	bIsDashing = true;
 	SetInvincible(true);
 }
 
@@ -178,6 +179,7 @@ FVector ADominionProtocolCharacter::GetDashDirection() const
 
 void ADominionProtocolCharacter::EndDash()
 {
+	bIsDashing = false;
 	SetInvincible(false);
 }
 

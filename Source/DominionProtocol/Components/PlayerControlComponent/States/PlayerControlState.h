@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UPlayerControlState : public UPlayerControlStateBase, public FTickableGameObject
+class DOMINIONPROTOCOL_API UPlayerControlState : public UPlayerControlStateBase
 {
 	GENERATED_BODY()
 
@@ -24,7 +24,4 @@ public:
 	virtual void WeaponSkill() override;
 	virtual void MagicSkill() override;
 	virtual void Interact() override;
-	virtual void Tick(float DeltaTime) override;
-	virtual bool IsTickable() const override { return true; }
-	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UPlayerControlState, STATGROUP_Tickables); }
 };
