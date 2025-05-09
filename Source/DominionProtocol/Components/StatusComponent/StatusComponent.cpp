@@ -24,9 +24,9 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 float UStatusComponent::GetStat(const FGameplayTag& StatTag) const
 {
-	if (StatMap.Contains(StatTag))
+	if (const float* FoundStat = StatMap.Find(StatTag))
 	{
-		return StatMap[StatTag];
+		return *FoundStat;
 	}
 
 	Debug::PrintError(TEXT("UStatusComponent::GetStat : Finding StatTag is not set."));
@@ -35,9 +35,9 @@ float UStatusComponent::GetStat(const FGameplayTag& StatTag) const
 
 void UStatusComponent::SetStat(const FGameplayTag& StatTag, float Value)
 {
-	if (StatMap.Contains(StatTag))
+	if (float* FoundStat = StatMap.Find(StatTag))
 	{
-		StatMap[StatTag] = Value;
+		*FoundStat = Value;
 		return;
 	}
 
@@ -46,7 +46,7 @@ void UStatusComponent::SetStat(const FGameplayTag& StatTag, float Value)
 
 void UStatusComponent::SetHealth(float NewHealth)
 {
-	// check(StatMap.Contains(StatTags::MaxHealth));
+	ensure(StatMap.Contains(StatTags::MaxHealth));
 
 	const float MaxHealth = GetStat(StatTags::MaxHealth);
 	const float ClampedHealth = FMath::Clamp(NewHealth, 0.f, MaxHealth);
@@ -128,8 +128,7 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 	ActiveStatusEffects[StatusEffectTag]->Activate();
 }
 
-void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude,
-                                                        float Duration)
+void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration)
 {
 	if (!StatusEffectClassMap.Contains(StatusEffectTag))
 	{
