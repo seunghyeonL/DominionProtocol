@@ -232,7 +232,19 @@ void UPlayerControlComponent::Interact()
 	}
 	else
 	{
-		Debug::PrintError(TEXT("UPlayerControlComponent::MagicSkill : Invalid ControlState."));
+		Debug::PrintError(TEXT("UPlayerControlComponent::Interact : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::RockOn()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->RockOn();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::RockOn : Invalid ControlState."));
 	}
 }
 

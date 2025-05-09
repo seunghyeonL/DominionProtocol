@@ -78,3 +78,8 @@ void UPlayerUsingDashEffect::Interact()
 {
 	// Super::Interact();
 }
+
+void UPlayerUsingDashEffect::RockOn()
+{
+	// Super::RockOn();
+}

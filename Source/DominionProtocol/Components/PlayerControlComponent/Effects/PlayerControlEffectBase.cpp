@@ -233,3 +233,17 @@ void UPlayerControlEffectBase::Interact()
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Interact : Invalid InnerState"));
 	}
 }
+
+void UPlayerControlEffectBase::RockOn()
+{
+	Super::RockOn();
+
+	if (IsValid(InnerState))
+	{
+		InnerState->RockOn();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::RockOn : Invalid InnerState"));
+	}
+}

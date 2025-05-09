@@ -24,6 +24,8 @@ public:
 	virtual void WeaponSkill() override;
 	virtual void MagicSkill() override;
 	virtual void Interact() override;
+	virtual void RockOn() override;
+	
 	virtual void Tick(float DeltaTime) override;
 	virtual bool IsTickable() const override { return true; }
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UPlayerControlState, STATGROUP_Tickables); }

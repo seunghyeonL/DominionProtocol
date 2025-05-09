@@ -70,3 +70,8 @@ void UPlayerStiffnessEffect::Interact()
 {
 	// Super::Interact();
 }
+
+void UPlayerStiffnessEffect::RockOn()
+{
+	// Super::RockOn();
+}

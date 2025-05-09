@@ -70,3 +70,8 @@ void UPlayerStunEffect::Interact()
 {
 	// Super::Interact();
 }
+
+void UPlayerStunEffect::RockOn()
+{
+	// Super::RockOn();
+}

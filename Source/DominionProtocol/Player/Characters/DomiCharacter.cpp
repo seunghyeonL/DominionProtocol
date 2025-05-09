@@ -195,12 +195,20 @@ void ADomiCharacter::BindInputFunctions()
 				                                   &UPlayerControlComponent::MagicSkill);
 			}
 
-			// InteractSkill
+			// Interact
 			if (IsValid(PlayerController->InteractAction))
 			{
 				EnhancedInputComponent->BindAction(PlayerController->InteractAction, ETriggerEvent::Started,
 				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::Interact);
+			}
+
+			// RockOn
+			if (IsValid(PlayerController->RockOnAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->RockOnAction, ETriggerEvent::Started,
+												   ControlComponent.Get(),
+												   &UPlayerControlComponent::RockOn);
 			}
 		}
 		else

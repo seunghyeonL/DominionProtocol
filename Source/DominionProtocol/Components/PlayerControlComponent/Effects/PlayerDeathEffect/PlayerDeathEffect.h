@@ -30,4 +30,5 @@ public:
 	virtual void WeaponSkill() override;
 	virtual void MagicSkill() override;
 	virtual void Interact() override;
+	virtual void RockOn() override;
 };

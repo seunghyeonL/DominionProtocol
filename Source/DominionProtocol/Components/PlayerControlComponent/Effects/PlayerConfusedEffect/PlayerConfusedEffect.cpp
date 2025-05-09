@@ -74,3 +74,8 @@ void UPlayerConfusedEffect::Interact()
 {
 	Super::Interact();
 }
+
+void UPlayerConfusedEffect::RockOn()
+{
+	Super::RockOn();
+}

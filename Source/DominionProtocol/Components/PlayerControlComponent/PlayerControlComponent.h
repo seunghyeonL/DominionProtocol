@@ -65,4 +65,5 @@ public:
 	void WeaponSkill();
 	void MagicSkill();
 	void Interact();
+	void RockOn();
 };

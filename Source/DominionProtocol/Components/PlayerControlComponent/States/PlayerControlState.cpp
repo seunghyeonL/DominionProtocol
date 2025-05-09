@@ -160,3 +160,10 @@ void UPlayerControlState::Interact()
 	
 	Debug::Print(TEXT("UPlayerControlState::Interact : Call."));
 }
+
+void UPlayerControlState::RockOn()
+{
+	Super::RockOn();
+
+	Debug::Print(TEXT("UPlayerControlState::RockOn : Call."));
+}

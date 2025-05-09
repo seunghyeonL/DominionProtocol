@@ -70,3 +70,8 @@ void UPlayerDeathEffect::Interact()
 {
 	// Super::Interact();
 }
+
+void UPlayerDeathEffect::RockOn()
+{
+	// Super::RockOn();
+}
