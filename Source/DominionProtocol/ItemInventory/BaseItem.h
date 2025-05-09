@@ -23,6 +23,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	FGameplayTag ItemTag;
 
+	//아이템 데이터테이블
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Data")
 	UDataTable* ItemDataTable;
 

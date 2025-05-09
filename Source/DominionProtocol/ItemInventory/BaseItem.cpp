@@ -10,6 +10,7 @@ ABaseItem::ABaseItem()
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMesh;
 
+	//상호작용 볼륨
 	InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionVolume"));
 	InteractionVolume->SetupAttachment(RootComponent);
 	InteractionVolume->SetCollisionResponseToAllChannels(ECR_Overlap);
@@ -23,6 +24,7 @@ void ABaseItem::BeginPlay()
 	GetItemGameplayTag();
 }
 
+//아이템 데이터 Row 반환
 FItemData* ABaseItem::GetItemData() const
 {
 	if (ItemDataTable && ItemTag.IsValid())
@@ -38,6 +40,7 @@ FItemData* ABaseItem::GetItemData() const
 		return nullptr;
 	}
 }
+
 //아이템 태그 반환
 FGameplayTag ABaseItem::GetItemGameplayTag() const
 {

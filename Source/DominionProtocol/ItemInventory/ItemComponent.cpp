@@ -5,9 +5,11 @@
 
 UItemComponent::UItemComponent()
 {
-	
 	PrimaryComponentTick.bCanEverTick = false;
 
+	// 기본 슬롯 초기화
+	EquipmentSlots.Add(FName("WeaponSlot_Main"), FGameplayTag());
+	EquipmentSlots.Add(FName("WeaponSlot_Secondary"), FGameplayTag());
 }
 
 void UItemComponent::BeginPlay()
@@ -108,18 +110,78 @@ bool UItemComponent::RemoveItem(FGameplayTag ItemTag, int32 Quantity)
 	return false;
 }
 
-//아이템 몇개 이상 보유 여부 확인
+//아이템 특정 개수 이상 보유 여부 확인
 bool UItemComponent::HasItem(FGameplayTag ItemTag, int32 Quantity) const
 {
 	return InventoryMap.Contains(ItemTag) && InventoryMap[ItemTag] >= Quantity;
 }
 
+//아이템 개수 반환
 int32 UItemComponent::GetItemQuantity(FGameplayTag ItemTag) const
 {
 	return InventoryMap.Contains(ItemTag) ? InventoryMap[ItemTag] : 0;
 }
 
+//인벤토리 맵 GETTER
 const TMap<FGameplayTag, int32>& UItemComponent::GetInventoryMap() const
 {
 	return InventoryMap;
+}
+
+//장비 장착
+bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
+{
+	//데이터 테이블 체크
+	if (ItemDataTable)
+	{
+		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(ItemTag.GetTagName(), TEXT(""));
+		//데이터 체크
+		if (ItemData)
+		{
+			EItemType ItemType = ItemData->ItemType;
+			if (ItemType == EItemType::Weapon)
+			{
+				EquipmentSlots.Add(SlotName, ItemTag);
+				return true;
+			}
+			else
+			{
+				Debug::Print(TEXT("아이템의 타입이 무기가 아닙니다"));
+				return false;
+			}
+		}
+		else
+		{
+			Debug::Print(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 데이터가 테이블에 없습니다."), *ItemTag.ToString()));
+			return false;
+		}
+	}
+	else
+	{
+		Debug::Print(TEXT("아이템 데이터 테이블이 할당되지 않았습니다."));
+		return false;
+	}
+}
+
+//장비 해제
+bool UItemComponent::UnequipItem(FName SlotName)
+{
+	if (EquipmentSlots.Contains(SlotName))
+	{
+		EquipmentSlots[SlotName] = FGameplayTag(); // 태그를 비움
+		return true;
+	}
+	return false;
+}
+
+//슬롯에 장착된 아이템 태그 반환
+FGameplayTag UItemComponent::GetEquippedItem(FName SlotName) const
+{
+	return EquipmentSlots.Contains(SlotName) ? EquipmentSlots[SlotName] : FGameplayTag();
+}
+
+//장비 슬롯 맵 GETTER
+const TMap<FName, FGameplayTag>& UItemComponent::GetEquipmentSlots() const
+{
+	return EquipmentSlots;
 }
