@@ -72,6 +72,8 @@ public:
 	void ConsumeStamina(float Amount);
 	
 	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
+
+	void RemoveActiveStatusEffect(FGameplayTag StatusEffectTag);
 	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);

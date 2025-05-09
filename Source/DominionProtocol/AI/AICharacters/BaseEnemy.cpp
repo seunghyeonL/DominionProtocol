@@ -3,12 +3,17 @@
 
 #include "BaseEnemy.h"
 
+#include "Components/StatusComponent/StatusComponent.h"
+
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// BattleComponents
+	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -20,10 +25,12 @@ void ABaseEnemy::BeginPlay()
 
 void ABaseEnemy::OnDeath()
 {
+	StatusComponent->ActivateStatusEffect(EffectTags::Death, 0);
 }
 
 void ABaseEnemy::OnGroggy()
 {
+	// for Boss
 }
 
 // Called every frame
