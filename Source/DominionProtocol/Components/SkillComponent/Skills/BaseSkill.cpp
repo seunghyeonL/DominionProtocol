@@ -4,14 +4,37 @@
 #include "Player/Damagable.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Util/GameTagList.h"
+#include "DomiFramework/GameState/BaseGameState.h"
+#include "Components/SkillComponent/Skills/SkillData.h"
 
-UBaseSkill::UBaseSkill()
+UBaseSkill::UBaseSkill() : Super()
 {
-	Stamina = 10.f;
-	DamageCoefficient = 2.f;
+}
 
-	AttackRadius = 100.0f;			// 공격 크기
-	AttackForwardOffset = 50.0f;	// 캐릭터의 앞 위치
+void UBaseSkill::Initialize()
+{
+	UWorld* World = GetWorld();
+
+	if (IsValid(World))
+	{
+		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+
+		if (IsValid(BaseGameState))
+		{
+			FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag);
+
+			if (SkillData)
+			{
+				AnimMontage = SkillData->AnimMontage;
+				Sound = SkillData->Sound;
+				Particle = SkillData->Particle;
+				Stamina = SkillData->Stamina;
+				AttackRadius = SkillData->AttackRadius;
+				AttackForwardOffset = SkillData->AttackForwardOffset;
+				DamageCoefficient = SkillData->DamageCoefficient;
+			}
+		}
+	}
 }
 
 void UBaseSkill::Execute(ACharacter* Owner)
@@ -21,20 +44,11 @@ void UBaseSkill::Execute(ACharacter* Owner)
 	if (IsValid(Owner))
 	{
 		Owner->PlayAnimMontage(AnimMontage);
-
-		UStatusComponent* StatusComponent = Owner->FindComponentByClass<UStatusComponent>();
-
-		if (IsValid(StatusComponent))
-		{
-			int32 AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-			BaseAttackData.Damage = GetFinalAttackData(AttackPower);
-		}
 	}
 }
 
 // 애님 노티파이에서 실행
-void UBaseSkill::AttackTrace(const ACharacter* Owner) const
+void UBaseSkill::AttackTrace(ACharacter* Owner) const
 {
 	if (!IsValid(Owner))
 	{
@@ -80,6 +94,29 @@ void UBaseSkill::AttackTrace(const ACharacter* Owner) const
 		return;
 	}
 
+	FAttackData AttackData;
+
+	UWorld* World = GetWorld();
+
+	if (IsValid(World))
+	{
+		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+
+		if (IsValid(BaseGameState))
+		{
+			UStatusComponent* StatusComponent = Owner->FindComponentByClass<UStatusComponent>();
+
+			if (IsValid(StatusComponent))
+			{
+				int32 AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+
+				AttackData.Damage = GetFinalAttackData(AttackPower);
+			}
+
+			AttackData.Instigator = Owner;
+		}
+	}
+
 	for (const FHitResult& Hit : HitResults)
 	{
 		AActor* HitActor = Hit.GetActor();
@@ -91,7 +128,9 @@ void UBaseSkill::AttackTrace(const ACharacter* Owner) const
 
 		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 		{
-			IDamagable::Execute_OnAttacked(HitActor, BaseAttackData);
+			AttackData.LaunchVector = HitActor->GetActorLocation() - Owner->GetActorLocation();
+
+			IDamagable::Execute_OnAttacked(HitActor, AttackData);
 		}
 	}
 }

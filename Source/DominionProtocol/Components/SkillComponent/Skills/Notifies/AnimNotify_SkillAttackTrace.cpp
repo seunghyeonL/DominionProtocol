@@ -1,5 +1,6 @@
 #include "Components/SkillComponent/Skills/Notifies/AnimNotify_SkillAttackTrace.h"
 #include "Components/SkillComponent/SkillComponent.h"
+#include "GameFramework/Character.h"
 
 void UAnimNotify_SkillAttackTrace::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
@@ -14,6 +15,14 @@ void UAnimNotify_SkillAttackTrace::Notify(USkeletalMeshComponent* MeshComp, UAni
 			if (IsValid(SkillComponent))
 			{
 				// 현재 실행중인 스킬의 AttackTrace 함수 실행
+				UBaseSkill* BaseSkill = SkillComponent->GetCurrentSkill();
+
+				ACharacter* OwnerCharacter = Cast<ACharacter>(Owner);
+
+				if (OwnerCharacter && IsValid(BaseSkill))
+				{
+					BaseSkill->AttackTrace(OwnerCharacter);
+				}
 			}
 		}
 	}
