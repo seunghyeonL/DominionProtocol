@@ -98,7 +98,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
     }
 }
 
-FText ACrack::GetInteractMessage_Implementation()
+FText ACrack::GetInteractMessage_Implementation() const
 {
     return FText::FromString(TEXT("F 키를 눌러 균열과 상호작용"));
 }

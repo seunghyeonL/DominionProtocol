@@ -44,7 +44,7 @@ protected:
 
 	//Interact
 	virtual void Interact_Implementation(AActor* Interactor) override;
-	virtual FText GetInteractMessage_Implementation() override;
+	virtual FText GetInteractMessage_Implementation() const override;
 
 	//Variables
 public:
