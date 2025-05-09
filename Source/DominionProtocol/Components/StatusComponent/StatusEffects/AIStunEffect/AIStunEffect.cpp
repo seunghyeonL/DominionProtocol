@@ -2,3 +2,24 @@
 
 
 #include "AIStunEffect.h"
+
+UAIStunEffect::UAIStunEffect()
+{
+	StatusEffectTag = EffectTags::Stun;
+	bIsActive = false;
+}
+
+void UAIStunEffect::Activate()
+{
+	Super::Activate();
+}
+
+void UAIStunEffect::Activate(float Duration)
+{
+	Super::Activate(Duration);
+}
+
+void UAIStunEffect::Deactivate()
+{
+	Super::Deactivate();
+}

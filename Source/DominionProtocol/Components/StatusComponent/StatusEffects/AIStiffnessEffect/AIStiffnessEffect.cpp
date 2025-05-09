@@ -2,3 +2,24 @@
 
 
 #include "AIStiffnessEffect.h"
+
+UAIStiffnessEffect::UAIStiffnessEffect()
+{
+	StatusEffectTag = EffectTags::Stiffness;
+	bIsActive = false;
+}
+
+void UAIStiffnessEffect::Activate()
+{
+	Super::Activate();
+}
+
+void UAIStiffnessEffect::Activate(float Duration)
+{
+	Super::Activate(Duration);
+}
+
+void UAIStiffnessEffect::Deactivate()
+{
+	Super::Deactivate();
+}

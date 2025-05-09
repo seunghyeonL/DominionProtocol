@@ -26,7 +26,7 @@ void UPlayerControlEffectBase::Activate()
 		SetInnerState(PlayerControlState);
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
-		ControlComponent->GetActiveControlEffects().AddTag(ControlEffectTag);
+		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
 	}
 	else
 	{
@@ -63,7 +63,7 @@ void UPlayerControlEffectBase::Activate(float Duration)
 		SetInnerState(PlayerControlState);
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
-		ControlComponent->GetActiveControlEffects().AddTag(ControlEffectTag);
+		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
 		GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 			DurationTimer,
 			this,
@@ -117,7 +117,7 @@ void UPlayerControlEffectBase::Deactivate()
 
 	bIsActive = false;
 
-	ControlComponent->GetActiveControlEffects().RemoveTag(ControlEffectTag);
+	ControlComponent->GetActiveControlEffectTags().RemoveTag(ControlEffectTag);
 }
 
 void UPlayerControlEffectBase::Tick(float DeltaTime)

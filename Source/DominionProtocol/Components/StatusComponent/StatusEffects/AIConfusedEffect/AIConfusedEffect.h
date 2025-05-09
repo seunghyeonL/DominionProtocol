@@ -13,4 +13,11 @@ UCLASS()
 class DOMINIONPROTOCOL_API UAIConfusedEffect : public UStatusEffectBase
 {
 	GENERATED_BODY()
+
+public:
+	UAIConfusedEffect();
+
+	virtual void Activate() override;
+	virtual void Activate(float Duration) override;
+	virtual void Deactivate() override;
 };

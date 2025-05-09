@@ -272,7 +272,7 @@ FGameplayTagContainer ADomiCharacter::GetActiveControlEffectTags_Implementation(
 		return FGameplayTagContainer();
 	}
 
-	return ControlComponent->GetActiveControlEffects();
+	return ControlComponent->GetActiveControlEffectTags();
 }
 
 FGameplayTagContainer ADomiCharacter::GetActiveStatusEffectTags_Implementation()

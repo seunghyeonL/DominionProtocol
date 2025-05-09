@@ -13,4 +13,11 @@ UCLASS()
 class DOMINIONPROTOCOL_API UAIStiffnessEffect : public UStatusEffectBase
 {
 	GENERATED_BODY()
+
+public:
+	UAIStiffnessEffect();
+
+	virtual void Activate() override;
+	virtual void Activate(float Duration) override;
+	virtual void Deactivate() override;
 };

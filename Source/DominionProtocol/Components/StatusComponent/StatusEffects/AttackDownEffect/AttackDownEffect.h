@@ -13,4 +13,11 @@ UCLASS()
 class DOMINIONPROTOCOL_API UAttackDownEffect : public UStatusEffectBase
 {
 	GENERATED_BODY()
+
+public:
+	UAttackDownEffect();
+
+	virtual void Activate() override;
+	virtual void Activate(float Duration) override;
+	virtual void Deactivate() override;
 };

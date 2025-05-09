@@ -13,4 +13,12 @@ UCLASS()
 class DOMINIONPROTOCOL_API UPoisonEffect : public UStatusEffectBase
 {
 	GENERATED_BODY()
+
+public:
+	UPoisonEffect();
+
+	virtual void Activate() override;
+	virtual void Activate(float Duration) override;
+	virtual void Deactivate() override;
+	
 };

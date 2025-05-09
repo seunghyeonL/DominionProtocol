@@ -15,7 +15,7 @@ void UStatusComponent::BeginPlay()
 }
 
 void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
-                                         FActorComponentTickFunction* ThisTickFunction)
+                                     FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
@@ -49,7 +49,7 @@ void UStatusComponent::SetHealth(float NewHealth)
 	float MaxHealth = GetStat(StatTags::MaxHealth);
 	float ClampedHealth = FMath::Clamp(NewHealth, 0.f, MaxHealth);
 
-	SetStat(StatTags::Health ,ClampedHealth);
+	SetStat(StatTags::Health, ClampedHealth);
 	if (FMath::IsNearlyZero(GetStat(StatTags::Health)))
 	{
 		if (auto OwnerCharacter = Cast<IStatusComponentUser>(GetOuter()))
@@ -126,7 +126,8 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 	// ActiveStatusEffects[StatusEffectTag].Activate();
 }
 
-void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration)
+void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude,
+                                                        float Duration)
 {
 	if (!StatusEffectClassMap.Contains(StatusEffectTag))
 	{

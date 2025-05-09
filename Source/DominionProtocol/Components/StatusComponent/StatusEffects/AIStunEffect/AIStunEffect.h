@@ -13,4 +13,11 @@ UCLASS()
 class DOMINIONPROTOCOL_API UAIStunEffect : public UStatusEffectBase
 {
 	GENERATED_BODY()
+
+public:
+	UAIStunEffect();
+
+	virtual void Activate() override;
+	virtual void Activate(float Duration) override;
+	virtual void Deactivate() override;
 };

@@ -49,7 +49,7 @@ public:
 	FORCEINLINE void SetPlayerControlState(UPlayerControlStateBase* NewState) { PlayerControlState = NewState; };
 
 	UFUNCTION(BlueprintCallable, Category = "Effects")
-	FORCEINLINE FGameplayTagContainer& GetActiveControlEffects() { return ActiveControlEffectTags; }
+	FORCEINLINE FGameplayTagContainer& GetActiveControlEffectTags() { return ActiveControlEffectTags; }
 
 	virtual void ActivateControlEffect(const FGameplayTag& ControlEffectTag);
 	virtual void ActivateControlEffectWithDuration(const FGameplayTag& ControlEffectTag, float Duration);
