@@ -7,7 +7,7 @@
 
 ATitleController::ATitleController()
 {
-	static ConstructorHelpers::FClassFinder<UDomiTitleHUDWidget> TitleHUDWidgetRef (TEXT("/Game/Blueprints/UI/WBP_DomiTitleHUDWidget.WBP_DomiTitleHUDWidget"));
+	static ConstructorHelpers::FClassFinder<UDomiTitleHUDWidget> TitleHUDWidgetRef (TEXT("/Game/Blueprints/UI/WBP_DomiTitleHUDWidget.WBP_DomiTitleHUDWidget_C"));
 	if (TitleHUDWidgetRef.Class)
 	{
 		TitleHUDWidgetClass = TitleHUDWidgetRef.Class;

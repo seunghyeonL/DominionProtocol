@@ -24,7 +24,7 @@ protected:
 	
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UDomiTitleHUDWidget> TitleHUDWidgetClass;
 
 	UPROPERTY()

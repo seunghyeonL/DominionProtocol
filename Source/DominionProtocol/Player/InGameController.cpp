@@ -7,7 +7,8 @@
 
 AInGameController::AInGameController()
 {
-	static ConstructorHelpers::FClassFinder<UDomiInGameHUDWidget> InGameHUDWidgetRef (TEXT("/Game/Blueprints/UI/WBP_DomiInGameHUDWidget.WBP_DomiInGameHUDWidget"));
+	
+	static ConstructorHelpers::FClassFinder<UDomiInGameHUDWidget> InGameHUDWidgetRef (TEXT("/Game/Blueprints/UI/WBP_DomiInGameHUDWidget.WBP_DomiInGameHUDWidget_C"));
 	if (InGameHUDWidgetRef.Class)
 	{
 		InGameHUDWidgetClass = InGameHUDWidgetRef.Class;	

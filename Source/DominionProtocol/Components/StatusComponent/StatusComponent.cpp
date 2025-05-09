@@ -13,10 +13,35 @@ UStatusComponent::UStatusComponent()
 void UStatusComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// // Initialize BaseStats
+	// StatMap.Add(StatTags::LIFE, 0.f);
+	// StatMap.Add(StatTags::STR, 0.f);
+	// StatMap.Add(StatTags::DEX, 0.f);
+	//
+	// // Initalize BattleStats
+	// StatMap.Add(StatTags::MaxHealth, 100.f);
+	// StatMap.Add(StatTags::MaxStamina, 100.f);
+	// StatMap.Add(StatTags::AttackPower, 100.f);
+	// StatMap.Add(StatTags::Defense, 100.f);
+	// StatMap.Add(StatTags::MoveSpeed, 1.f);
+	// StatMap.Add(StatTags::MaxGroggyGauge, 100.f);
+	//
+	// // Initialize VariableStats
+	// StatMap.Add(StatTags::Health, GetStat(StatTags::MaxHealth]);
+	// StatMap.Add(StatTags::Stamina, GetStat(StatTags::MaxStamina]);
+	// StatMap.Add(StatTags::GroggyGauge, GetStat(StatTags::MaxGroggyGauge]);
+	//
+	// // Initialize StatMultiplierMap
+	// StatMultiplierMap.Add(StatTags::MaxHealth, 1.f);
+	// StatMultiplierMap.Add(StatTags::MaxStamina, 1.f);
+	// StatMultiplierMap.Add(StatTags::AttackPower, 1.f);
+	// StatMultiplierMap.Add(StatTags::Defense, 1.f);
+	// StatMultiplierMap.Add(StatTags::MoveSpeed, 1.f);
 }
 
 void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
-                                     FActorComponentTickFunction* ThisTickFunction)
+                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
@@ -47,10 +72,12 @@ void UStatusComponent::SetHealth(float NewHealth)
 {
 	// check(StatMap.Contains(StatTags::MaxHealth));
 
-	float MaxHealth = GetStat(StatTags::MaxHealth);
-	float ClampedHealth = FMath::Clamp(NewHealth, 0.f, MaxHealth);
+	const float MaxHealth = GetStat(StatTags::MaxHealth);
+	const float ClampedHealth = FMath::Clamp(NewHealth, 0.f, MaxHealth);
 
-	SetStat(StatTags::Health, ClampedHealth);
+	SetStat(StatTags::Health ,ClampedHealth);
+	OnHealthChanged.Broadcast(ClampedHealth);
+	
 	if (FMath::IsNearlyZero(GetStat(StatTags::Health)))
 	{
 		if (auto OwnerCharacter = Cast<IStatusComponentUser>(GetOuter()))

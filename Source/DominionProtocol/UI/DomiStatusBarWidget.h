@@ -14,31 +14,55 @@ class DOMINIONPROTOCOL_API UDomiStatusBarWidget : public UUserWidget
 
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void UpdatePlayerHPBar(const float NewHP);
+	UFUNCTION(BlueprintCallable)
+	void UpdatePlayerStaminaBar(const float NewStamina);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void AnimUpdatePlayerHPBar();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void AnimUpdatePlayerStaminaBar();
 
 
 protected:
-	void SetupHUDWidget();
-	
+	void SetupHUDWidget(const AActor* OwningActor);
+
+	UFUNCTION(BlueprintCallable)
 	virtual void NativeConstruct() override;
 	
 
 protected:
+	// HP Section
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<class UProgressBar> PlayerHPBar;
 	
-	UPROPERTY()
-	float CurrentHp;
+	UPROPERTY(BlueprintReadOnly)
+	float CurrentHP;
 
-	UPROPERTY()
-	float MaxHp;
+	UPROPERTY(BlueprintReadOnly)
+	float PreHP;
 
+	UPROPERTY(BlueprintReadOnly)
+	float MaxHP;
+
+	UPROPERTY(BlueprintReadWrite)
+	float AlphaForHPAnim;
+
+
+	// Stamina Section
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<class UProgressBar> PlayerStaminaBar;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	float CurrentStamina;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
+	float PreStamina;
+
+	UPROPERTY(BlueprintReadOnly)
 	float MaxStamina;
 	
+	UPROPERTY(BlueprintReadWrite)
+	float AlphaForStaminaAnim;
 };
