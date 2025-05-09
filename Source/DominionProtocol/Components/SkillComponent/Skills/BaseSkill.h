@@ -13,9 +13,9 @@ class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 public:
 	UBaseSkill();
 
-	void Execute(ACharacter* Owner) const;
+	void Execute(ACharacter* Owner);
 
-	void AttackTrace(ACharacter* Owner);
+	void AttackTrace(const ACharacter* Owner) const;
 
 	float GetStamina() const;
 
@@ -42,9 +42,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
 	float DamageCoefficient;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = "true"))
-	FGameplayTag SkillTag;
 
 	FAttackData BaseAttackData;
 };

@@ -3,6 +3,7 @@
 #include "CollisionQueryParams.h"
 #include "Player/Damagable.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Util/GameTagList.h"
 
 UBaseSkill::UBaseSkill()
 {
@@ -13,18 +14,27 @@ UBaseSkill::UBaseSkill()
 	AttackForwardOffset = 50.0f;	// 캐릭터의 앞 위치
 }
 
-void UBaseSkill::Execute(ACharacter* Owner) const
+void UBaseSkill::Execute(ACharacter* Owner)
 {
 	check(AnimMontage);
 
 	if (IsValid(Owner))
 	{
 		Owner->PlayAnimMontage(AnimMontage);
+
+		UStatusComponent* StatusComponent = Owner->FindComponentByClass<UStatusComponent>();
+
+		if (IsValid(StatusComponent))
+		{
+			int32 AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+
+			BaseAttackData.Damage = GetFinalAttackData(AttackPower);
+		}
 	}
 }
 
 // 애님 노티파이에서 실행
-void UBaseSkill::AttackTrace(ACharacter* Owner)
+void UBaseSkill::AttackTrace(const ACharacter* Owner) const
 {
 	if (!IsValid(Owner))
 	{
@@ -70,15 +80,6 @@ void UBaseSkill::AttackTrace(ACharacter* Owner)
 		return;
 	}
 
-	UStatusComponent* StatusComponent = Owner->FindComponentByClass<UStatusComponent>();
-
-	check(StatusComponent);
-
-	int32 AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-	BaseAttackData.Instigator = Owner;
-	BaseAttackData.Damage = GetFinalAttackData(AttackPower);
-
 	for (const FHitResult& Hit : HitResults)
 	{
 		AActor* HitActor = Hit.GetActor();
@@ -90,12 +91,6 @@ void UBaseSkill::AttackTrace(ACharacter* Owner)
 
 		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 		{
-			FVector LaunchDir = HitActor->GetActorLocation() - Owner->GetActorLocation();
-
-			LaunchDir.Normalize();
-
-			BaseAttackData.LaunchVector = LaunchDir;
-
 			IDamagable::Execute_OnAttacked(HitActor, BaseAttackData);
 		}
 	}

@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -9,9 +9,11 @@
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Util/DebugHelper.h"
+#include "Components/SkillComponent/SkillComponentUser.h"
 #include "DomiCharacter.generated.h"
 
 class UStatusComponent;
+class USkillComponent;
 class UPlayerControlComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -22,7 +24,7 @@ struct FAttackData;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
-public ACharacter, public IDamagable, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser
+public ACharacter, public IDamagable, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser, public ISkillComponentUser
 {
 	GENERATED_BODY()
 
@@ -32,6 +34,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStatusComponent> StatusComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkillComponent> SkillComponent;
 	
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -68,6 +73,10 @@ public:
 	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath() override;
 	virtual void OnGroggy() override { /* Not used in player*/ };
+
+	// SkillComponentUser
+	virtual void InitializeSkillComponent() override;
+
 	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
 	
 	// Damagable

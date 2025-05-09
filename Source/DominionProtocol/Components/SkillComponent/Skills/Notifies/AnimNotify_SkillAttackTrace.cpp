@@ -1,5 +1,5 @@
 #include "Components/SkillComponent/Skills/Notifies/AnimNotify_SkillAttackTrace.h"
-#include "Components/SkillComponent/SkillComponentBase.h"
+#include "Components/SkillComponent/SkillComponent.h"
 
 void UAnimNotify_SkillAttackTrace::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
@@ -9,9 +9,9 @@ void UAnimNotify_SkillAttackTrace::Notify(USkeletalMeshComponent* MeshComp, UAni
 
 		if (IsValid(Owner))
 		{
-			USkillComponentBase* SkillComponentBase = Owner->FindComponentByClass<USkillComponentBase>();
+			USkillComponent* SkillComponent = Owner->FindComponentByClass<USkillComponent>();
 
-			if (IsValid(SkillComponentBase))
+			if (IsValid(SkillComponent))
 			{
 				// 현재 실행중인 스킬의 AttackTrace 함수 실행
 			}

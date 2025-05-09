@@ -46,24 +46,25 @@ namespace StatTags
 	inline const FGameplayTag GroggyGauge = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.GroggyGauge"));
 }
 
-//namespace PlayerTags
+namespace SkillTags
+{
+	// AttackTags
+	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack"));
+	// inline const FGameplayTag BaseAttackCombo1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first"));
+	// inline const FGameplayTag BaseAttackCombo2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.Second"));
+	
+	// SkilTags
+	inline const FGameplayTag BaseSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseSkill"));
+	//	inline const FGameplayTag MagicAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicAttack"));
+}
+
+//namespace EnemeyTags
 //{
-//	// WeaponTags
-//	inline const FGameplayTag Sword = FGameplayTag::RequestGameplayTag(TEXT("Player.Weapon.Sword"));
+//	// PatternTags
+//	inline const FGameplayTag Pattern1 = FGameplayTag::RequestGameplayTag(TEXT("AI.Base.Pattern1"));
+//	inline const FGameplayTag SpecialPattern1 = FGameplayTag::RequestGameplayTag(TEXT("AI.Special.Pattern1"));
 //}
-//
-//namespace SkillTags
-//{
-//	// SkilTags
-//	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack"));
-//}
-//
-//namespace Monster1Tags
-//{
-//	// AttackTags
-//	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("AI.Monster1.BaseAttack"));
-//	inline const FGameplayTag DoubleAttack = FGameplayTag::RequestGameplayTag(TEXT("AI.Monster1.DoubleAttack"));
-//}
+
 namespace ItemTags
 {
 	inline const FGameplayTag ItemBase = FGameplayTag::RequestGameplayTag(TEXT("Item.Base"));

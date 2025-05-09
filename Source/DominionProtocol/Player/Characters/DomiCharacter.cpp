@@ -21,6 +21,9 @@
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Components/StatusComponent/StatusEffects/AttackDownEffect/AttackDownEffect.h"
 #include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Components/SkillComponent/SkillComponentInitializeData.h"
+
 
 class UPoisonEffect;
 //////////////////////////////////////////////////////////////////////////
@@ -268,6 +271,18 @@ void ADomiCharacter::OnDeath()
 
 	// Ignore Collision with Pawn
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+}
+
+void ADomiCharacter::InitializeSkillComponent()
+{
+	FSkillComponentInitializeData InitializeData;
+
+	// Initializing Data for SkillGroups
+	FSkillGroup BaseSkillGroup;
+	BaseSkillGroup.SkillGroup.Add(UBaseSkill::StaticClass());
+	InitializeData.SkillGroups.Add(SkillTags::BaseSkill, BaseSkillGroup);
+
+	SkillComponent->InitializeSkillComponent(InitializeData);
 }
 
 void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
