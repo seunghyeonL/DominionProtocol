@@ -73,11 +73,10 @@ public:
 	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath() override;
 	virtual void OnGroggy() override { /* Not used in player*/ };
+	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
 
 	// SkillComponentUser
 	virtual void InitializeSkillComponent() override;
-
-	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
 	
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;

@@ -24,6 +24,7 @@
 #include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
+#include "Components/SkillComponent/Skills/BaseAttack.h"
 
 
 class UPoisonEffect;
@@ -277,9 +278,10 @@ void ADomiCharacter::InitializeSkillComponent()
 	FSkillComponentInitializeData InitializeData;
 
 	// Initializing Data for SkillGroups
-	FSkillGroup BaseSkillGroup;
-	BaseSkillGroup.SkillGroup.Add(UBaseSkill::StaticClass());
-	InitializeData.SkillGroups.Add(SkillTags::BaseSkill, BaseSkillGroup);
+	FSkillGroupInitializeData BaseSkillGroupInitializeData;
+	BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
+	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());
+	InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
 
 	SkillComponent->InitializeSkillComponent(InitializeData);
 }

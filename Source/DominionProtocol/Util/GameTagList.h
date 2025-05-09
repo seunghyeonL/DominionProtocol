@@ -46,16 +46,15 @@ namespace StatTags
 	inline const FGameplayTag GroggyGauge = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.GroggyGauge"));
 }
 
+namespace SkillGroupTags
+{
+	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack"));
+}
+
 namespace SkillTags
 {
-	// AttackTags
-	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack"));
-	// inline const FGameplayTag BaseAttackCombo1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first"));
-	// inline const FGameplayTag BaseAttackCombo2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.Second"));
+	inline const FGameplayTag BaseAttackSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Sword"));
 	
-	// SkilTags
-	inline const FGameplayTag BaseSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseSkill"));
-	//	inline const FGameplayTag MagicAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicAttack"));
 }
 
 //namespace EnemeyTags

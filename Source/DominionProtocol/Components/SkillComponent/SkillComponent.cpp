@@ -33,61 +33,51 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
     //    SkillGroupsMap.Add(SkillTag, SkillGroup);
     //}
 
-    for (const TPair<FGameplayTag, FSkillGroup>& Pair : InitializeData.SkillGroups)
+    for (const auto& [SkillGroupTag, SkillGroupData] : InitializeData.SkillGroupInitializeDatas)
     {
-        SkillGroupsMap.Add(Pair.Key, Pair.Value);
+        FSkillGroup SkillGroup;
+        for (const auto& SkillClass : SkillGroupData)
+        {
+            if (UBaseSkill* Skill = NewObject<UBaseSkill>(this, SkillClass))
+            {
+                Skill->Initialize();
+                SkillGroup.Skills.Add(Skill);
+            }
+        }
+        SkillGroupMap.Add(SkillGroupTag, SkillGroup);
     }
 }
 
 void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 {
 	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
-    check(OwnerCharacter);
+    check(IsValid(OwnerCharacter));
 
-    if (FSkillGroup* SkillGroupData = SkillGroupsMap.Find(SkillGroupTag))
+    if (FSkillGroup* SkillGroup = SkillGroupMap.Find(SkillGroupTag))
     {
-        const TArray<TSubclassOf<UBaseSkill>>& SkillClasses = SkillGroupData->SkillGroup;
-        int32 CurrentIdx = SkillGroupData->CurrentSkillIdx;
+        const TArray<UBaseSkill*>& Skills = SkillGroup->Skills;
+        int32& ComboIdx = SkillGroup->ComboIdx;
 
-        if (SkillClasses.IsValidIndex(CurrentIdx))
+        if (Skills.IsValidIndex(ComboIdx))
         {
-            TSubclassOf<UBaseSkill> SkillClass = SkillClasses[CurrentIdx];
-            if (SkillClass)
+            UBaseSkill* Skill = Skills[ComboIdx];
+            if (IsValid(Skill))
             {
-                UBaseSkill* ActiveSkillInstance = nullptr;
-                
-                // 현재 캐싱된 스킬이 동일한 클래스라면 그대로 사용
-                if (CurrentSkill && CurrentSkill->GetClass() == SkillClass)
-                {
-                    ActiveSkillInstance = CurrentSkill;
-                }
-                else
-                {
-                    // UBaseSkill 인스턴스 생성
-                    ActiveSkillInstance = NewObject<UBaseSkill>(this, SkillClass);
-                    if (ActiveSkillInstance)
-                    {
-                        SetCurrentSkill(ActiveSkillInstance);
-                    }
-                }
+                SetCurrentSkill(Skill);
+                Skill->Execute(OwnerCharacter); // 해당 스킬 실행
 
-                if (ActiveSkillInstance)
-                {
-                    ActiveSkillInstance->Execute(OwnerCharacter); // 해당 스킬 실행
-
-                    // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴
-                    SkillGroupData->CurrentSkillIdx = (SkillGroupData->CurrentSkillIdx + 1) % SkillGroupData->SkillGroup.Num();
-                }                
+                // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴
+                ComboIdx = (ComboIdx + 1) % SkillGroup->Skills.Num();
             }
         }
         else
         {
-            Debug::PrintError(TEXT("Invalid SkillIndex in SkillGroupTag"));
+            Debug::PrintError(TEXT("USkillComponent::ExecuteSkill : Invalid SkillIndex in SkillGroup"));
         }
     }
     else
     {
-        Debug::PrintError(TEXT("SkillGroupTag passed in was not found"));
+        Debug::PrintError(TEXT("USkillComponent::ExecuteSkill : SkillGroupTag is not set in SkillGroupMap"));
     }
 }
 

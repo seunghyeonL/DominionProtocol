@@ -7,15 +7,15 @@
 #include "SkillComponentInitializeData.generated.h"
 
 USTRUCT(BlueprintType)
-struct FSkillGroup
+struct FSkillGroupInitializeData
 {
 	GENERATED_BODY()
 
-	// 스킬 그룹 내 스킬 목록
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSubclassOf<UBaseSkill>> SkillGroup;
+	FGameplayTag SkillGroupTag;
 
-	int32 CurrentSkillIdx;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<UBaseSkill>> SkillGroupData;
 };
 
 USTRUCT(BlueprintType)
@@ -24,7 +24,8 @@ struct FSkillComponentInitializeData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<FGameplayTag, FSkillGroup> SkillGroups;
+	TArray<FSkillGroupInitializeData> SkillGroupInitializeDatas;
+	
 	// SkillTags::BaseAttack
 	// "Skill.BaseAttack", { UDomiCharacterBaseAttackCombo1::StaticClass(),UDomiCharacterBaseAttackCombo2::StaticClass())
 	//							Skill.BaseAttack.first							Skill.BaseAttack.Second

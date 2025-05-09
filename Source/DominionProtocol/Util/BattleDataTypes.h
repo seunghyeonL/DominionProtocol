@@ -4,6 +4,22 @@
 #include "GameplayTagContainer.h"
 #include "BattleDataTypes.generated.h"
 
+class UBaseSkill;
+
+USTRUCT(BlueprintType)
+struct FSkillGroup
+{
+	GENERATED_BODY()
+
+	// 스킬 그룹 내 스킬 목록
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<UBaseSkill*> Skills;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 ComboIdx { 0 };
+};
+
+
 USTRUCT(BlueprintType)
 struct FEffectData
 {

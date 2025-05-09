@@ -26,9 +26,10 @@ public:
 	void SetCurrentSkill(UBaseSkill* Skill) { CurrentSkill = Skill; }
 
 protected:
-	TMap<FGameplayTag, FSkillGroup> SkillGroupsMap;
-
-private:
-	// 최근에 실행했던 스킬
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")
+	TMap<FGameplayTag, FSkillGroup> SkillGroupMap;
+	
+	// 실행중인 스킬
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")
 	UBaseSkill* CurrentSkill = nullptr;
 };
