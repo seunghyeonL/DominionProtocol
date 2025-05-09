@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interface/InteractableInterface.h"
+#include "Player/Characters/DomiCharacter.h"
 
 
 void UPlayerControlState::Move(const FInputActionValue& Value)
@@ -113,5 +115,14 @@ void UPlayerControlState::Interact()
 {
 	Super::Interact();
 
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	check(PlayerCharacter);
+
+	AActor* InteractableObject = PlayerCharacter->GetCurrentInteractableObject();
+	if (IsValid(InteractableObject))
+	{
+		IInteractableInterface::Execute_Interact(InteractableObject, PlayerCharacter);
+	}
+	
 	Debug::Print(TEXT("UPlayerControlState::Interact : Call."));
 }

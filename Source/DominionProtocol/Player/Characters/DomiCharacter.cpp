@@ -69,6 +69,19 @@ ADomiCharacter::ADomiCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+AActor* ADomiCharacter::GetCurrentInteractableObject() const
+{
+	if (InteractableObject == nullptr)
+	{
+		Debug::Print("ADomiCharacter::GetCurrentInteractableObject : InteractableObject == nullptr");
+		return nullptr;
+	}
+	else
+	{
+		return InteractableObject;
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -116,64 +129,73 @@ void ADomiCharacter::BindInputFunctions()
 			// Moving
 			if (IsValid(PlayerController->MoveAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->MoveAction, ETriggerEvent::Triggered, ControlComponent.Get(),
+				EnhancedInputComponent->BindAction(PlayerController->MoveAction, ETriggerEvent::Triggered,
+				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::Move);
 			}
 
 			// Looking
 			if (IsValid(PlayerController->LookAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->LookAction, ETriggerEvent::Triggered, ControlComponent.Get(),
+				EnhancedInputComponent->BindAction(PlayerController->LookAction, ETriggerEvent::Triggered,
+				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::Look);
 			}
 
 			// Dash
 			if (IsValid(PlayerController->DashAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->DashAction, ETriggerEvent::Started, ControlComponent.Get(),
+				EnhancedInputComponent->BindAction(PlayerController->DashAction, ETriggerEvent::Started,
+				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::Dash);
 			}
 
 			// Dash
 			if (IsValid(PlayerController->SprintAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->SprintAction, ETriggerEvent::Started, ControlComponent.Get(),
+				EnhancedInputComponent->BindAction(PlayerController->SprintAction, ETriggerEvent::Started,
+				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::Sprint);
 			}
 
 			// Parry
 			if (IsValid(PlayerController->ParryAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->ParryAction, ETriggerEvent::Started, ControlComponent.Get(),
+				EnhancedInputComponent->BindAction(PlayerController->ParryAction, ETriggerEvent::Started,
+				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::Parry);
 			}
 
 			// BaseAttack
 			if (IsValid(PlayerController->BaseAttackAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->BaseAttackAction, ETriggerEvent::Started, ControlComponent.Get(),
+				EnhancedInputComponent->BindAction(PlayerController->BaseAttackAction, ETriggerEvent::Started,
+				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::BaseAttack);
 			}
 
 			// WeaponSkill
 			if (IsValid(PlayerController->WeaponSkillAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->WeaponSkillAction, ETriggerEvent::Started, ControlComponent.Get(),
+				EnhancedInputComponent->BindAction(PlayerController->WeaponSkillAction, ETriggerEvent::Started,
+				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::WeaponSkill);
 			}
 
 			// MagicSkill
 			if (IsValid(PlayerController->MagicSkillAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->MagicSkillAction, ETriggerEvent::Started, ControlComponent.Get(),
+				EnhancedInputComponent->BindAction(PlayerController->MagicSkillAction, ETriggerEvent::Started,
+				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::MagicSkill);
 			}
 
 			// InteractSkill
 			if (IsValid(PlayerController->InteractAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->InteractAction, ETriggerEvent::Started, ControlComponent.Get(),
-												   &UPlayerControlComponent::Interact);
+				EnhancedInputComponent->BindAction(PlayerController->InteractAction, ETriggerEvent::Started,
+				                                   ControlComponent.Get(),
+				                                   &UPlayerControlComponent::Interact);
 			}
 		}
 		else
@@ -221,7 +243,7 @@ void ADomiCharacter::InitializeStatusComponent()
 void ADomiCharacter::OnDeath()
 {
 	ControlComponent->ActivateControlEffect(EffectTags::Death);
-	
+
 	// Ignore Collision with Pawn
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 }

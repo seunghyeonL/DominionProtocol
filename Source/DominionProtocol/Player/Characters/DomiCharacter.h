@@ -7,6 +7,7 @@
 #include "../Damagable.h"
 #include "../EffectReceivable.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
+#include "Util/DebugHelper.h"
 #include "DomiCharacter.generated.h"
 
 class UStatusComponent;
@@ -41,6 +42,11 @@ protected:
 
 public:
 	ADomiCharacter();
+
+	//Getter
+	FORCEINLINE AActor* GetCurrentInteractableObject() const;
+	//Setter
+	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableObject = NewActor; }
 	
 protected:
 	// Bind After ControlComponent Ready
@@ -65,4 +71,8 @@ public:
 	// EffectReceivable
 	virtual FGameplayTagContainer GetActiveControlEffectTags_Implementation() override;
 	virtual FGameplayTagContainer GetActiveStatusEffectTags_Implementation() override;
+
+private:
+	UPROPERTY()
+	AActor* InteractableObject;
 };
