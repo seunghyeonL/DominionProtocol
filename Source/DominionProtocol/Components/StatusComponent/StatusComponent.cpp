@@ -3,6 +3,7 @@
 #include "StatusComponent.h"
 #include "StatusComponentUser.h"
 #include "StatusComponentInitializeData.h"
+#include "StatusEffects/StatusEffectBase.h"
 
 UStatusComponent::UStatusComponent()
 {
@@ -107,23 +108,21 @@ void UStatusComponent::InitializeStatusComponent(const FStatusComponentInitializ
 	}
 }
 
+void UStatusComponent::RemoveActiveStatusEffect(FGameplayTag StatusEffectTag)
+{
+	ActiveStatusEffects.Remove(StatusEffectTag);
+}
+
 void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude)
 {
 	if (!StatusEffectClassMap.Contains(StatusEffectTag))
 	{
-		Debug::Print(TEXT("StatusEffectTag is not set."));
+		Debug::PrintError(TEXT("UStatusComponent::ActivateStatusEffectWithDuration : StatusEffectTag is not set."));
 		return;
 	}
-
-	if (ActiveStatusEffectTags.HasTag(StatusEffectTag))
-	{
-		return;
-	}
-
-	// ActiveStatusEffects.Add(StatusEffectTag, NewObject<UStatusEffectBase>(this));
-	ActiveStatusEffectTags.AddTag(StatusEffectTag);
-
-	// ActiveStatusEffects[StatusEffectTag].Activate();
+	
+	ActiveStatusEffects.Add(StatusEffectTag, NewObject<UStatusEffectBase>(this, StatusEffectClassMap[StatusEffectTag]));
+	ActiveStatusEffects[StatusEffectTag]->Activate();
 }
 
 void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude,
@@ -131,35 +130,21 @@ void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& Stat
 {
 	if (!StatusEffectClassMap.Contains(StatusEffectTag))
 	{
-		Debug::Print(TEXT("StatusEffectTag is not set."));
+		Debug::PrintError(TEXT("UStatusComponent::ActivateStatusEffectWithDuration : StatusEffectTag is not set."));
 		return;
 	}
-
-	if (ActiveStatusEffectTags.HasTag(StatusEffectTag))
-	{
-		return;
-	}
-
-	// ActiveStatusEffects.Add(StatusEffectTag, NewObject<UStatusEffectBase>(this));
-	ActiveStatusEffectTags.AddTag(StatusEffectTag);
-
-	// ActiveStatusEffects[StatusEffectTag].Activate(Duration);
+	
+	ActiveStatusEffects.Add(StatusEffectTag, NewObject<UStatusEffectBase>(this, StatusEffectClassMap[StatusEffectTag]));
+	ActiveStatusEffects[StatusEffectTag]->Activate(Duration);
 }
 
 void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTag)
 {
-	if (!StatusEffectClassMap.Contains(StatusEffectTag))
+	if (!ActiveStatusEffects.Contains(StatusEffectTag))
 	{
-		Debug::Print(TEXT("StatusEffectTag is not set."));
+		Debug::Print(TEXT("UStatusComponent::DeactivateStatusEffect : StatusEffectTag is not Activated."));
 		return;
 	}
 
-	if (!ActiveStatusEffectTags.HasTag(StatusEffectTag))
-	{
-		return;
-	}
-
-	// ActiveStatusEffects[StatusEffectTag].Dectivate();
-	// ActiveStatusEffects.Remove(StatusEffectTag);
-	ActiveStatusEffectTags.RemoveTag(StatusEffectTag);
+	ActiveStatusEffects[StatusEffectTag]->Deactivate();
 }

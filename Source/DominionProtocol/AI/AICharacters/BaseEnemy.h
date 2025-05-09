@@ -10,6 +10,8 @@
 #include "Player/EffectReceivable.h"
 #include "BaseEnemy.generated.h"
 
+class UStatusComponent;
+
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseEnemy :
 public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser
@@ -23,6 +25,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStatusComponent> StatusComponent;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI|State")

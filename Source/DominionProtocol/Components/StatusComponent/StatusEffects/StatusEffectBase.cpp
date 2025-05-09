@@ -19,6 +19,7 @@ void UStatusEffectBase::Activate()
 		return;
 	}
 
+	bIsActive = true;
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
 }
 
@@ -44,6 +45,7 @@ void UStatusEffectBase::Activate(float Duration)
 		return;
 	}
 
+	bIsActive = true;
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
 	GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 		DurationTimer,
@@ -72,6 +74,7 @@ void UStatusEffectBase::Deactivate()
 	
 	bIsActive = false;
 	StatusComponent->GetActiveStatusEffectTags().RemoveTag(StatusEffectTag);
+	StatusComponent->RemoveActiveStatusEffect(StatusEffectTag);
 }
 
 void UStatusEffectBase::Tick(float DeltaTime)
