@@ -2,7 +2,7 @@
 
 
 #include "PlayerUsingDashEffect.h"
-#include "DominionProtocolCharacter.h"
+#include "Player/Characters/DomiCharacter.h"
 
 UPlayerUsingDashEffect::UPlayerUsingDashEffect()
 {
@@ -27,9 +27,10 @@ void UPlayerUsingDashEffect::Activate(float Duration)
 void UPlayerUsingDashEffect::Deactivate()
 {
 	Super::Deactivate();
-	if (ADominionProtocolCharacter* DominionChar = Cast<ADominionProtocolCharacter>(OwnerCharacter))
+	if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter)) 
 	{
-		DominionChar->EndDash();
+		DomiChar->EndDash();
+		UE_LOG(LogTemp, Warning, TEXT(">> Dash End"));
 	}
 }
 

@@ -73,12 +73,7 @@ protected:
 	float DashStaminaCost = 20.f;
 
 	UPROPERTY(VisibleAnywhere, Category = "Dash")
-	bool bIsDashing = false;
-
-	UPROPERTY(VisibleAnywhere, Category = "Dash")
 	bool bIsInvincible = false;
-
-	FTimerHandle DashEndTimerHandle;
 
 	FVector GetDashDirection() const;
 
