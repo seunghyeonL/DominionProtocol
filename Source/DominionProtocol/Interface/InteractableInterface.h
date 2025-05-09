@@ -23,5 +23,5 @@ public:
 	void Interact(AActor* Interactor);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interact")
-	FText GetInteractMessage();
+	FText GetInteractMessage() const;
 };
