@@ -12,6 +12,6 @@ class DOMINIONPROTOCOL_API USaveManagerSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
-	void SaveGame(const FString& SlotName, int32 UserIndex = 0);
+	bool SaveGame(const FString& SlotName, int32 UserIndex = 0);
 	bool LoadGame(const FString& SlotName, int32 UserIndex = 0);
 };

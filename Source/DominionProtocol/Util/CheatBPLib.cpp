@@ -11,9 +11,12 @@
 void UCheatBPLib::Save(const UWorld* World)
 {
 	USaveManagerSubsystem* SaveSubsystem = World->GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
-	SaveSubsystem->SaveGame("SaveGame1.sav", 0);
+	if (SaveSubsystem->SaveGame("SaveGame1", 0))
+	{
+		Debug::Print("Save Game Success");
+	}
 
 	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(World->GetGameInstance());
-	Debug::Print(TEXT("Save Game in SaveGame1.sav"));
+	Debug::Print(TEXT("Save Game in SaveGame1"));
 	Debug::Print(FString::Printf(TEXT("SaveData[CurrentLevelName] : %s"), *GameInstance->GetCurrentLevelName()));
 }

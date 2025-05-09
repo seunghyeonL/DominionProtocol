@@ -10,7 +10,7 @@
 
 #include "Util/DebugHelper.h"
 
-void USaveManagerSubsystem::SaveGame(const FString& SlotName, int32 UserIndex)
+bool USaveManagerSubsystem::SaveGame(const FString& SlotName, int32 UserIndex)
 {
 	//저장 인스턴스 생성
 	UDomiSaveGame* SaveGameInstance = Cast<UDomiSaveGame>(UGameplayStatics::CreateSaveGameObject(UDomiSaveGame::StaticClass()));
@@ -31,7 +31,7 @@ void USaveManagerSubsystem::SaveGame(const FString& SlotName, int32 UserIndex)
 	}
 
 	//저장 실행
-	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SlotName, UserIndex);
+	return UGameplayStatics::SaveGameToSlot(SaveGameInstance, SlotName, UserIndex);
 }
 
 bool USaveManagerSubsystem::LoadGame(const FString& SlotName, int32 UserIndex)
