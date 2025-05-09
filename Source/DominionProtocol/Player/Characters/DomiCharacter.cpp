@@ -18,6 +18,7 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Components/StatusComponent/StatusEffects/AttackDownEffect/AttackDownEffect.h"
 #include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
@@ -241,7 +242,6 @@ void ADomiCharacter::InitializeStatusComponent()
 
 	// Initializing Data for BattleStats
 	InitializeData.StatDatas.Add({StatTags::MaxHealth, 100.f});
-	InitializeData.StatDatas.Add({StatTags::MaxStamina, 100.f});
 	InitializeData.StatDatas.Add({StatTags::AttackPower, 100.f});
 	InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
 	InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
@@ -252,7 +252,6 @@ void ADomiCharacter::InitializeStatusComponent()
 
 	// Initializing Data for BattleStatMultipliers
 	InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::MaxStamina, 1.f});
 	InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});
 	InitializeData.StatMultiplierDatas.Add({StatTags::Defense, 1.f});
 	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});

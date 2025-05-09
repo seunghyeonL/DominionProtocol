@@ -38,7 +38,7 @@ protected:
 	FGameplayTagContainer ActiveControlEffectTags;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effect")
-	TMap<FGameplayTag, UPlayerControlEffectBase*> ControlEffectMapper;
+	TMap<FGameplayTag, UPlayerControlEffectBase*> ControlEffectMap;
 
 public:
 	// Called every frame

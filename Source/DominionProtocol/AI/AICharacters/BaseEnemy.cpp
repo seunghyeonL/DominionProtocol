@@ -5,6 +5,9 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/CapsuleComponent.h"
 
+#include "Components/StatusComponent/StatusComponentInitializeData.h"
+#include "Components/StatusComponent/StatusEffects/AttackDownEffect/AttackDownEffect.h"
+#include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -60,6 +63,24 @@ FGameplayTagContainer ABaseEnemy::GetActiveStatusEffectTags()
 void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);
+
+	if (!IsValid(StatusComponent))
+	{
+		Debug::PrintError(TEXT("ABaseEnemy::OnAttacked_Implementation : StatusComponent is not valid"));
+		return;
+	}
+
+	float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
+	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
+
+	LaunchCharacter(AttackData.LaunchVector, true, true);
+
+	for (FEffectData EffectData : AttackData.Effects)
+	{
+		auto [EffectTag, Magnitude, Duration] = EffectData;
+		
+		StatusComponent->ActivateStatusEffectWithDuration(EffectTag, Magnitude, Duration);
+	}
 }
 
 void ABaseEnemy::ExecutePattern(FGameplayTag SkillGroupTag)
@@ -70,7 +91,7 @@ void ABaseEnemy::ShowControlEffectTags_Implementation()
 {
 	IEffectReceivable::ShowControlEffectTags_Implementation();
 
-	// Not Use ControlComponent
+	// This Actor Doesn't Use ControlComponent
 }
 
 void ABaseEnemy::ShowStatusEffectTags_Implementation()
@@ -85,6 +106,30 @@ void ABaseEnemy::ShowStatusEffectTags_Implementation()
 
 void ABaseEnemy::InitializeStatusComponent()
 {
-	
+	FStatusComponentInitializeData InitializeData;
+
+	// Initializing Data for BattleStats
+	InitializeData.StatDatas.Add({StatTags::MaxHealth, 100.f});
+	InitializeData.StatDatas.Add({StatTags::AttackPower, 100.f});
+	InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
+	InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
+
+	// Initializing Data for VariableStats
+	InitializeData.StatDatas.Add({StatTags::Health, 100.f});
+
+	// Initializing Data for BattleStatMultipliers
+	InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
+	InitializeData.StatMultiplierDatas.Add({StatTags::MaxStamina, 1.f});
+	InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});
+	InitializeData.StatMultiplierDatas.Add({StatTags::Defense, 1.f});
+	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
+
+	// Initializing Data for StatusEffectClasses
+	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
+	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
+
+	Debug::Print(TEXT("ABaseEnemy::InitializeStatusComponent : Call."));
+	StatusComponent->InitializeStatusComponent(InitializeData);
 }
+
 
