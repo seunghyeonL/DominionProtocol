@@ -65,3 +65,8 @@ void UPlayerDeathEffect::MagicSkill()
 {
 	// Super::MagicSkill();
 }
+
+void UPlayerDeathEffect::Interact()
+{
+	// Super::Interact();
+}

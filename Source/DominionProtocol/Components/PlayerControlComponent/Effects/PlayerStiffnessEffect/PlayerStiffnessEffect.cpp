@@ -65,3 +65,8 @@ void UPlayerStiffnessEffect::MagicSkill()
 {
 	// Super::MagicSkill();
 }
+
+void UPlayerStiffnessEffect::Interact()
+{
+	// Super::Interact();
+}

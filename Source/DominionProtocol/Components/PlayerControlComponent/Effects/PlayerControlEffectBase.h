@@ -43,6 +43,7 @@ public:
 	virtual void BaseAttack() override;
 	virtual void WeaponSkill() override;
 	virtual void MagicSkill() override;
+	virtual void Interact() override;
 	
 	FORCEINLINE UPlayerControlStateBase* GetInnerState() const { return InnerState; }
 	FORCEINLINE void SetInnerState(UPlayerControlStateBase* NewInnerState) { InnerState = NewInnerState; }

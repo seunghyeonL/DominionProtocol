@@ -65,3 +65,8 @@ void UPlayerStunEffect::MagicSkill()
 {
 	// Super::MagicSkill();
 }
+
+void UPlayerStunEffect::Interact()
+{
+	// Super::Interact();
+}

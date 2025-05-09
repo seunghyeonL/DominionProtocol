@@ -72,3 +72,8 @@ void UPlayerUsingDashEffect::MagicSkill()
 {
 	// Super::MagicSkill();
 }
+
+void UPlayerUsingDashEffect::Interact()
+{
+	// Super::Interact();
+}

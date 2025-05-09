@@ -64,4 +64,5 @@ public:
 	void BaseAttack();
 	void WeaponSkill();
 	void MagicSkill();
+	void Interact();
 };

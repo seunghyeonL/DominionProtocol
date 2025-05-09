@@ -168,6 +168,13 @@ void ADomiCharacter::BindInputFunctions()
 				EnhancedInputComponent->BindAction(PlayerController->MagicSkillAction, ETriggerEvent::Started, ControlComponent.Get(),
 				                                   &UPlayerControlComponent::MagicSkill);
 			}
+
+			// InteractSkill
+			if (IsValid(PlayerController->InteractAction))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->InteractAction, ETriggerEvent::Started, ControlComponent.Get(),
+												   &UPlayerControlComponent::Interact);
+			}
 		}
 		else
 		{

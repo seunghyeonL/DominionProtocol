@@ -65,3 +65,8 @@ void UPlayerSilenceEffect::MagicSkill()
 {
 	// Super::MagicSkill();
 }
+
+void UPlayerSilenceEffect::Interact()
+{
+	Super::Interact();
+}

@@ -219,3 +219,17 @@ void UPlayerControlEffectBase::MagicSkill()
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::MagicSkill : Invalid InnerState"));
 	}
 }
+
+void UPlayerControlEffectBase::Interact()
+{
+	Super::Interact();
+
+	if (IsValid(InnerState))
+	{
+		InnerState->Interact();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::Interact : Invalid InnerState"));
+	}
+}

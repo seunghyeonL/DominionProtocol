@@ -32,6 +32,7 @@ public:
 	virtual void BaseAttack() {}
 	virtual void WeaponSkill() {}
 	virtual void MagicSkill() {}
+	virtual void Interact() {}
 
 	// Getter/Setter
 	FORCEINLINE void SetOwnerCharacter(ACharacter* NewOwnerCharacter) { OwnerCharacter = NewOwnerCharacter; }

@@ -69,3 +69,8 @@ void UPlayerConfusedEffect::MagicSkill()
 {
 	Super::MagicSkill();
 }
+
+void UPlayerConfusedEffect::Interact()
+{
+	Super::Interact();
+}

@@ -108,3 +108,10 @@ void UPlayerControlState::MagicSkill()
 
 	Debug::Print(TEXT("UPlayerControlState::MagicSkill : Call."));
 }
+
+void UPlayerControlState::Interact()
+{
+	Super::Interact();
+
+	Debug::Print(TEXT("UPlayerControlState::Interact : Call."));
+}

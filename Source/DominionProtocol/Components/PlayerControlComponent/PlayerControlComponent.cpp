@@ -242,3 +242,15 @@ void UPlayerControlComponent::MagicSkill()
 	}
 }
 
+void UPlayerControlComponent::Interact()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->Interact();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::MagicSkill : Invalid ControlState."));
+	}
+}
+
