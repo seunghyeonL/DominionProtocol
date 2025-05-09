@@ -69,8 +69,3 @@ namespace ItemTags
 {
 	inline const FGameplayTag ItemBase = FGameplayTag::RequestGameplayTag(TEXT("Item.Base"));
 }
-
-namespace SkillTags
-{
-	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Weapon.BaseAttack"));
-}
