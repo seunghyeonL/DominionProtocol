@@ -18,9 +18,9 @@ class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
 	//Functions
 public:
 	ACrack();
-
+	
 	FORCEINLINE void SwitchActivate() { bIsActivate = !bIsActivate; }
-
+	
 protected:
 	virtual void BeginPlay() override;
 	

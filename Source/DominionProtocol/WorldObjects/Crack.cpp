@@ -54,7 +54,6 @@ void ACrack::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
     CachedCharacter = PlayerCharacter;
     
     PlayerCharacter->SetCurrentInteractableObject(this);
-    //ShowWidget();
 }
 
 void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -67,7 +66,6 @@ void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
 
         CachedCharacter = nullptr;
         PlayerCharacter->SetCurrentInteractableObject(nullptr);
-        //HideWidget();
     }
     else
     {

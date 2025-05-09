@@ -6,6 +6,17 @@
 
 #include "Util/DebugHelper.h"
 
+ABaseGameState::ABaseGameState()
+{
+}
+
+FSkillData* ABaseGameState::GetSkillData(const FGameplayTag SkillTag) const
+{
+	check(SkillDataTable);
+	
+	return SkillDataTable->FindRow<FSkillData>(SkillTag.GetTagName(), TEXT(""));
+}
+
 void ABaseGameState::BeginPlay()
 {
 	Super::BeginPlay();
