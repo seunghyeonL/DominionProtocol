@@ -10,4 +10,7 @@ UCLASS()
 class DOMINIONPROTOCOL_API UCheatBPLib : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+
+public:
+	static void Save(const UWorld* World);
 };

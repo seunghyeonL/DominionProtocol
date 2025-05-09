@@ -11,4 +11,8 @@ UCLASS()
 class DOMINIONPROTOCOL_API UDevCheatManager : public UCheatManager
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(Exec)
+	void Save();
 };
