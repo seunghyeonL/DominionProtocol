@@ -7,6 +7,8 @@
 #include "Components/BoxComponent.h"
 #include "ZoneBarrier.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerEnterZone);
+
 UCLASS()
 class DOMINIONPROTOCOL_API AZoneBarrier : public AActor
 {
@@ -14,6 +16,9 @@ class DOMINIONPROTOCOL_API AZoneBarrier : public AActor
 	
 public:	
 	AZoneBarrier();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerEnterZone OnPlayerEnterZoneDelegate;
 
 	void ActivateBarrier();
 	void DeactivateBarrier();
@@ -26,15 +31,12 @@ public:
 		bool bFromSweep, 
 		const FHitResult& SweepResult);
 
-public:	
+protected:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* CollisionBox;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+
 	UBoxComponent* Wall_Left;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* Wall_Right;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* Wall_Front;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* Wall_Back;
 };

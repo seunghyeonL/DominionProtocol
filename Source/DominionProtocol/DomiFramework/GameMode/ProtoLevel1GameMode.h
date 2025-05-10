@@ -16,13 +16,12 @@ class DOMINIONPROTOCOL_API AProtoLevel1GameMode : public ABaseGameMode
 {
 	GENERATED_BODY()
 	
-public:
+protected:
 	virtual void StartPlay() override;
 
+	UFUNCTION()
 	void StartBattle() override;
 	void EndBattle() override;
-		
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
+		 
 	AZoneBarrier* ZoneBarrier;
 };

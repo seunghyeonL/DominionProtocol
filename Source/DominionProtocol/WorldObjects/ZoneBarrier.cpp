@@ -38,6 +38,8 @@ AZoneBarrier::AZoneBarrier()
 
 void AZoneBarrier::ActivateBarrier()
 {
+    Debug::Print(TEXT("Activate Barrier"));
+
     TArray<UBoxComponent*> Walls = { Wall_Left, Wall_Right, Wall_Front, Wall_Back };
     for (UBoxComponent* Wall : Walls)
     {
@@ -48,6 +50,8 @@ void AZoneBarrier::ActivateBarrier()
 
 void AZoneBarrier::DeactivateBarrier()
 {
+    Debug::Print(TEXT("Deactivate Barrier"));
+
     TArray<UBoxComponent*> Walls = { Wall_Left, Wall_Right, Wall_Front, Wall_Back };
     for (UBoxComponent* Wall : Walls)
     {
@@ -65,9 +69,6 @@ void AZoneBarrier::OnPlayerOverlap(
 {
     if (OtherActor && OtherActor->ActorHasTag("Player"))
     {
-        if (AProtoLevel1GameMode* GM = Cast<AProtoLevel1GameMode>(UGameplayStatics::GetGameMode(this)))
-        {
-            GM->StartBattle();
-        }
+        OnPlayerEnterZoneDelegate.Broadcast();
     }
 }
