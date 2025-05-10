@@ -3,6 +3,7 @@
 
 #include "CheatBPLib.h"
 
+#include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
 
@@ -19,4 +20,9 @@ void UCheatBPLib::Save(const UWorld* World)
 	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(World->GetGameInstance());
 	Debug::Print(TEXT("Save Game in SaveGame1"));
 	Debug::Print(FString::Printf(TEXT("SaveData[CurrentLevelName] : %s"), *GameInstance->GetCurrentLevelName()));
+}
+
+void UCheatBPLib::InfiniteStamina(const TObjectPtr<UStatusComponent> StatusComponent)
+{
+	StatusComponent->SwitchInfiniteStaminaMode();
 }

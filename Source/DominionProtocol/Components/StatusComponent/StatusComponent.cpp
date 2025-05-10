@@ -36,6 +36,12 @@ float UStatusComponent::GetStat(const FGameplayTag& StatTag) const
 
 void UStatusComponent::SetStat(const FGameplayTag& StatTag, float Value)
 {
+	//CheatManager
+	if (bIsInfiniteStaminaMode && StatTag == StatTags::Stamina)
+	{
+		return;
+	}
+	
 	if (float* FoundStat = StatMap.Find(StatTag))
 	{
 		*FoundStat = Value;

@@ -47,6 +47,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	FGameplayTagContainer ActiveStatusEffectTags;
 
+private:
+	//CheatManager
+	bool bIsInfiniteStaminaMode = false;
+
 public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
@@ -78,4 +82,7 @@ public:
 	virtual void ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration);
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	virtual void DeactivateStatusEffect(const FGameplayTag& StatusEffectTag);
+
+	//CheatManager
+	FORCEINLINE void SwitchInfiniteStaminaMode() { bIsInfiniteStaminaMode = !bIsInfiniteStaminaMode; }
 };

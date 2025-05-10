@@ -15,4 +15,7 @@ class DOMINIONPROTOCOL_API UDevCheatManager : public UCheatManager
 public:
 	UFUNCTION(Exec)
 	void Save();
+
+	UFUNCTION(Exec)
+	void InfiniteStamina();
 };

@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CheatBPLib.generated.h"
 
+class UStatusComponent;
+
 UCLASS()
 class DOMINIONPROTOCOL_API UCheatBPLib : public UBlueprintFunctionLibrary
 {
@@ -13,4 +15,6 @@ class DOMINIONPROTOCOL_API UCheatBPLib : public UBlueprintFunctionLibrary
 
 public:
 	static void Save(const UWorld* World);
+
+	static void InfiniteStamina(const TObjectPtr<UStatusComponent> StatusComponent);
 };
