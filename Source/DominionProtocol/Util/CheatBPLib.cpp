@@ -24,5 +24,8 @@ void UCheatBPLib::Save(const UWorld* World)
 
 void UCheatBPLib::InfiniteStamina(const TObjectPtr<UStatusComponent> StatusComponent)
 {
-	StatusComponent->SwitchInfiniteStaminaMode();
+	if (IsValid(StatusComponent))
+	{
+		StatusComponent->SwitchInfiniteStaminaMode();
+	}
 }
