@@ -118,6 +118,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashStaminaCost = 20.f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Dash")
+	float DashMovedDistance = 0.f;
+
+	UPROPERTY()
+	FVector DashMoveDirection;
+
+
 	// === Dash 이동용 변수 ===
 
 	UPROPERTY()
@@ -133,5 +140,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "State")
 	bool bIsInvincible = false;
-
 };

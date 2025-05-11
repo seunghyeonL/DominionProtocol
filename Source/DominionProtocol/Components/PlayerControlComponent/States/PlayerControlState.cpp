@@ -13,20 +13,27 @@
 void UPlayerControlState::Tick(float DeltaTime)
 {
 	if (!OwnerCharacter) return;
-
 	if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter))
 	{
-		// 상태 이펙트가 자동으로 막기 때문에 단순 시간 비교로 이동만 처리
-		if (DomiChar->DashElapsed >= DomiChar->DashDuration)
-		{
-			return; // 이동 완료
-		}
-
 		DomiChar->DashElapsed += DeltaTime;
 
-		float Alpha = FMath::Clamp(DomiChar->DashElapsed / DomiChar->DashDuration, 0.f, 1.f);
-		FVector NewLocation = FMath::Lerp(DomiChar->DashStartLocation, DomiChar->DashTargetLocation, Alpha);
-		DomiChar->SetActorLocation(NewLocation, true);
+		if (DomiChar->DashElapsed >= DomiChar->DashDuration)
+		{
+			bDashTickActive = false;
+			DomiChar->EndDash();
+			return;
+		}
+
+		float DashSpeed = DomiChar->DashDistance / DomiChar->DashDuration;
+		FVector Step = DomiChar->DashMoveDirection * DashSpeed * DeltaTime;
+
+		FHitResult Hit;
+		DomiChar->GetCharacterMovement()->SafeMoveUpdatedComponent(
+			Step,
+			DomiChar->GetActorRotation(),
+			true,
+			Hit
+		);
 	}
 }
 
@@ -95,16 +102,14 @@ void UPlayerControlState::Dash()
 	Super::Dash();
 
 	if (!OwnerCharacter) return;
-
 	if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter))
 	{
-		if (!DomiChar->StartDash())return;
+		if (!DomiChar->StartDash()) return;
 
-		DomiChar->DashStartLocation = DomiChar->GetActorLocation();
-		DomiChar->DashTargetLocation = DomiChar->DashStartLocation + DomiChar->GetDashDirection() * DomiChar->DashDistance;
-		DomiChar->DashElapsed = 0.f;
+		DomiChar->DashElapsed = 0.f; // 캐릭터가 보관
+		bDashTickActive = true;
 
-		Debug::Print(TEXT(">> Dash Started"));
+		DomiChar->DashMoveDirection = DomiChar->GetDashDirection();
 	}
 }
 

@@ -27,6 +27,7 @@ public:
 	virtual void RockOn() override;
 	
 	virtual void Tick(float DeltaTime) override;
-	virtual bool IsTickable() const override { return true; }
+	virtual bool IsTickable() const override{return bDashTickActive;}
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UPlayerControlState, STATGROUP_Tickables); }
+	bool bDashTickActive = false;
 };
