@@ -76,7 +76,7 @@ void UStatusComponent::SetHealth(float NewHealth)
 	}
 }
 
-void UStatusComponent::SetShield(float NewShield)
+void UStatusComponent::SetShield(const float NewShield)
 {
 	ensure(StatMap.Contains(StatTags::MaxShield));
 
@@ -87,12 +87,12 @@ void UStatusComponent::SetShield(float NewShield)
 	OnShieldChanged.Broadcast(ClampedShield);
 }
 
-bool UStatusComponent::HasEnoughStamina(float RequiredAmount) const
+bool UStatusComponent::HasEnoughStamina(const float RequiredAmount) const
 {
 	return GetStat(StatTags::Stamina) >= RequiredAmount;
 }
 
-void UStatusComponent::ConsumeStamina(float Amount)
+void UStatusComponent::ConsumeStamina(const float Amount)
 {
 	SetStat(StatTags::Stamina, FMath::Max(0.f, GetStat(StatTags::Stamina) - Amount));
 }

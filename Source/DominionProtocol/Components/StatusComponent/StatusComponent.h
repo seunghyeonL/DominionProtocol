@@ -75,10 +75,10 @@ public:
 	void SetStat(const FGameplayTag& StatTag, float Value);
 	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
-	void SetHealth(float NewHealth);
+	void SetHealth(const float NewHealth);
 
 	UFUNCTION(BlueprintCallable, Category = "Effects")
-	void SetShield(float NewShield);
+	void SetShield(const float NewShield);
 
 	UFUNCTION(BlueprintCallable, Category = "Stamina")
 	bool HasEnoughStamina(float RequiredAmount) const;
@@ -88,7 +88,7 @@ public:
 	
 	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
 
-	void RemoveActiveStatusEffect(FGameplayTag StatusEffectTag);
+	void RemoveActiveStatusEffect(const FGameplayTag StatusEffectTag);
 	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);
