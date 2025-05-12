@@ -7,8 +7,9 @@ void UDomiInGameHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	ensure(StatusBar);
-	ensure(AbilitySlots);
-	ensure(ItemSlots);
+	ensure(StatusBarWidget);
+	ensure(AbilitySlotsWidget);
+	ensure(ItemSlotsWidget);
+	ensure(InteractionWidget);
 	
 }

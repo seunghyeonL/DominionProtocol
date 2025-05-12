@@ -22,12 +22,15 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UDomiStatusBarWidget> StatusBar;
+	TObjectPtr<class UDomiStatusBarWidget> StatusBarWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UDomiAbilitySlotsWidget> AbilitySlots;
+	TObjectPtr<class UDomiAbilitySlotsWidget> AbilitySlotsWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UDomiItemSlotsWidget> ItemSlots;
+	TObjectPtr<class UDomiItemSlotsWidget> ItemSlotsWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UDomiInteractionWidget> InteractionWidget;
 	
 };
