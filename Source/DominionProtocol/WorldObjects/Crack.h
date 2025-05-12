@@ -7,6 +7,7 @@
 #include "Interface/InteractableInterface.h"
 #include "Crack.generated.h"
 
+class ATargetPoint;
 class ADomiCharacter;
 class USphereComponent;
 
@@ -15,14 +16,21 @@ class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 
-	//Functions
+#pragma region Functions
+	
 public:
 	ACrack();
 	
 	FORCEINLINE void SwitchActivate() { bIsActivate = !bIsActivate; }
+
+	FORCEINLINE FVector GetRespawnTargetPointLocation() const;
 	
 protected:
 	virtual void BeginPlay() override;
+	
+	//Interact
+	virtual void Interact_Implementation(AActor* Interactor) override;
+	virtual FText GetInteractMessage_Implementation() const override;
 	
 	void MoveToLevel();
 	
@@ -42,24 +50,38 @@ protected:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
-	//Interact
-	virtual void Interact_Implementation(AActor* Interactor) override;
-	virtual FText GetInteractMessage_Implementation() const override;
+#pragma endregion
 
-	//Variables
-public:
+	
+	
+#pragma region Variables
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USceneComponent* SceneComp;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	USphereComponent* SphereCollisionComp;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMeshComp;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	UChildActorComponent* RespawnTargetPointComp;
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	FText CrackName;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	int32 CrackIndex;
+
 private:
+	ATargetPoint* RespawnTargetPoint;
+	
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;
-
+	
 	bool bIsActivate;
+	
+#pragma endregion
 };
