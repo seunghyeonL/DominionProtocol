@@ -4,6 +4,7 @@
 #include "BaseEnemy.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/SkillComponent/Skills/BaseAttack.h"
@@ -14,7 +15,7 @@
 #include "Components/StatusComponent/StatusEffects/AIStunEffect/AIStunEffect.h"
 #include "Components/StatusComponent/StatusEffects/AttackDownEffect/AttackDownEffect.h"
 #include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
-#include "UI/DomiWidgetComponent.h"
+#include "Components/WidgetComponent/DomiWidgetComponent.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()

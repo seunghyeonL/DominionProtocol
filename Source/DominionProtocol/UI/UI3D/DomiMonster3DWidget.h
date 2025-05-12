@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/DomiCharacter3DWidget.h"
+#include "DomiCharacter3DWidget.h"
 #include "DomiMonster3DWidget.generated.h"
 
 UCLASS()

@@ -2,9 +2,7 @@
 
 
 #include "TitleController.h"
-
-#include "UI/DomiMainMenuWidget.h"
-#include "UI/DomiTitleHUDWidget.h"
+#include "UI/UITitle/DomiTitleHUDWidget.h"
 
 ATitleController::ATitleController()
 {

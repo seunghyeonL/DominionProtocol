@@ -2,7 +2,8 @@
 
 
 #include "DomiWidgetComponent.h"
-#include "DomiCharacter3DWidget.h"
+
+#include "UI/UI3D/DomiCharacter3DWidget.h"
 
 void UDomiWidgetComponent::InitWidget()
 {

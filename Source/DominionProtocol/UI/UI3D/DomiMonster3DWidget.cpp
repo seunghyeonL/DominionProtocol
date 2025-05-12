@@ -3,8 +3,8 @@
 
 #include "DomiMonster3DWidget.h"
 
-#include "DomiWidgetComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/WidgetComponent/DomiWidgetComponent.h"
 
 void UDomiMonster3DWidget::NativeConstruct()
 {

@@ -3,7 +3,7 @@
 
 #include "InGameController.h"
 #include "Util/DevCheatManager.h"
-#include "UI/DomiInGameHUDWidget.h"
+#include "UI/UIInGame/DomiInGameHUDWidget.h"
 
 AInGameController::AInGameController()
 {
