@@ -21,7 +21,7 @@ public:
 
 	float GetStamina() const;
 
-private:
+protected:
 	float GetFinalAttackData(const float AttackPower) const;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))

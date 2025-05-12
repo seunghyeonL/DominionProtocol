@@ -9,7 +9,6 @@
 
 UBaseSkill::UBaseSkill() : Super()
 {
-	SkillTag = SkillGroupTags::BaseAttack; // 프로토타입에서만 사용
 }
 
 void UBaseSkill::Initialize()

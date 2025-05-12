@@ -13,5 +13,7 @@ UCLASS()
 class DOMINIONPROTOCOL_API UBaseAttack : public UBaseSkill
 {
 	GENERATED_BODY()
-	
+
+public:
+	UBaseAttack();
 };
