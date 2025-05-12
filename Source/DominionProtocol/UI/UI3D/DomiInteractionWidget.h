@@ -18,5 +18,8 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UVerticalBox> VerticalBoxWidget;
+
+	UPROPERTY()
+	TArray<UUserWidget*> InteractionList; 
 	
 };

@@ -29,4 +29,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UDomiItemSlotsWidget> ItemSlotsWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UDomiInGameMenuWidget> InGameMenuWidget;
 };
