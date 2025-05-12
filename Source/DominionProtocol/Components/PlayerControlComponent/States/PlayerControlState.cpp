@@ -106,7 +106,7 @@ void UPlayerControlState::Dash()
 	{
 		if (!DomiChar->StartDash()) return;
 
-		DomiChar->DashElapsed = 0.f; // 캐릭터가 보관
+		DomiChar->DashElapsed = 0.f;
 		bDashTickActive = true;
 
 		DomiChar->DashMoveDirection = DomiChar->GetDashDirection();
