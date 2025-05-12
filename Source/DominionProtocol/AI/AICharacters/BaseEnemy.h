@@ -59,9 +59,6 @@ public:
 	virtual void ShowStatusEffectTags_Implementation() override;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UStatusComponent> StatusComponent;
-
 	// UI Section
 	UPROPERTY(BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UDomiWidgetComponent> HPWidgetComponent;
