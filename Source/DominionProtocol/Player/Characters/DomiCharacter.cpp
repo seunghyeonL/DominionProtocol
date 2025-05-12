@@ -69,6 +69,7 @@ ADomiCharacter::ADomiCharacter()
 	// Battle Components
 	ControlComponent = CreateDefaultSubobject<UPlayerControlComponent>(TEXT("ControlComponent"));
 	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
+	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -286,12 +287,29 @@ void ADomiCharacter::InitializeSkillComponent()
 	FSkillComponentInitializeData InitializeData;
 
 	// Initializing Data for SkillGroups
+	// 추후에 데이터 에셋화 혹은 테이터 테이블화
+	
 	FSkillGroupInitializeData BaseSkillGroupInitializeData;
 	BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
 	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());
 	InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
 
-	SkillComponent->InitializeSkillComponent(InitializeData);
+	if (IsValid(SkillComponent))
+	{
+		SkillComponent->InitializeSkillComponent(InitializeData);
+	}
+}
+
+void ADomiCharacter::ExecuteSkill(FGameplayTag SkillGroupTag)
+{
+	if (IsValid(SkillComponent))
+	{
+		SkillComponent->ExecuteSkill(SkillGroupTag);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("ADomiCharacter::ExecuteSkill : Invalid SkillComponent."));
+	}
 }
 
 void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)

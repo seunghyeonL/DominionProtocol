@@ -131,7 +131,18 @@ void UPlayerControlState::BaseAttack()
 {
 	Super::BaseAttack();
 
-	Debug::Print(TEXT("UPlayerControlState::BaseAttack : Call."));
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	check(PlayerCharacter);
+
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
+	{
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::BaseAttack);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::BaseAttack : Character doesn't implement ISkillComponentUser."));
+	}
+
 }
 
 void UPlayerControlState::WeaponSkill()

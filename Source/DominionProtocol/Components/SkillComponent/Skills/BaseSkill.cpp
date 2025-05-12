@@ -9,6 +9,7 @@
 
 UBaseSkill::UBaseSkill() : Super()
 {
+	SkillTag = SkillGroupTags::BaseAttack; // 프로토타입에서만 사용
 }
 
 void UBaseSkill::Initialize()
@@ -33,17 +34,32 @@ void UBaseSkill::Initialize()
 				AttackForwardOffset = SkillData->AttackForwardOffset;
 				DamageCoefficient = SkillData->DamageCoefficient;
 			}
+			else
+			{
+				Debug::PrintError(TEXT("UBaseSkill::Initialize : Invalid SkillData."));
+			}
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UBaseSkill::Initialize : Invalid BaseGameState."));
 		}
 	}
 }
 
 void UBaseSkill::Execute(ACharacter* Owner)
 {
-	check(AnimMontage);
+	// check(AnimMontage);
 
 	if (IsValid(Owner))
 	{
-		Owner->PlayAnimMontage(AnimMontage);
+		if (IsValid(AnimMontage))
+		{
+			Owner->PlayAnimMontage(AnimMontage);
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UBaseSkill::Execute : Invalid AnimMontage."));
+		}
 	}
 }
 

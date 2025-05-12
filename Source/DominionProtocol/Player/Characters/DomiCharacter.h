@@ -78,6 +78,7 @@ public:
 
 	// SkillComponentUser
 	virtual void InitializeSkillComponent() override;
+	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) override;
 	
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;

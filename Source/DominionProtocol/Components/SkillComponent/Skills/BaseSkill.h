@@ -24,10 +24,13 @@ public:
 private:
 	float GetFinalAttackData(const float AttackPower) const;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UAnimMontage> AnimMontage = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))
 	TObjectPtr<USoundBase> Sound = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UParticleSystem> Particle = nullptr;
 
 	float Stamina;
@@ -38,8 +41,9 @@ private:
 
 	float DamageCoefficient;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
 	FGameplayTag SkillTag;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AttackData", meta=(AllowPrivateAccess=true))
 	FAttackData BaseAttackData;
 };

@@ -16,5 +16,6 @@ class DOMINIONPROTOCOL_API ISkillComponentUser
 
 public:
 	virtual void InitializeSkillComponent() = 0;
+	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) = 0;
 
 };
