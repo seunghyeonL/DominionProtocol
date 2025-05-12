@@ -52,7 +52,7 @@ public:
 	FORCEINLINE FGameplayTagContainer& GetActiveControlEffectTags() { return ActiveControlEffectTags; }
 
 	virtual void ActivateControlEffect(const FGameplayTag& ControlEffectTag);
-	virtual void ActivateControlEffectWithDuration(const FGameplayTag& ControlEffectTag, float Duration);
+	virtual void ActivateControlEffect(const FGameplayTag& ControlEffectTag, float Duration);
 	virtual void DeactivateControlEffect(const FGameplayTag& ControlEffectTag);
 	
 	// Input Binding Functions

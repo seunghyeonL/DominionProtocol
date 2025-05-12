@@ -84,9 +84,9 @@ void UStatusComponent::SetHealth(float NewHealth)
 	// OnDeath 
 	if (FMath::IsNearlyZero(GetStat(StatTags::Health)))
 	{
-		if (auto OwnerCharacter = Cast<IStatusComponentUser>(GetOuter()))
+		if (OnDeath.IsBound())
 		{
-			OwnerCharacter->OnDeath();
+			OnDeath.Execute();
 		}
 		else
 		{
@@ -205,7 +205,7 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 	}
 }
 
-void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration)
+void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration)
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{

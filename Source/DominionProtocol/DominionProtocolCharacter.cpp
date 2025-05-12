@@ -144,7 +144,7 @@ void ADominionProtocolCharacter::Dash()
 
 	if (ControlComponent)
 	{
-		ControlComponent->ActivateControlEffectWithDuration(EffectTags::UsingDash, DashDuration);
+		ControlComponent->ActivateControlEffect(EffectTags::UsingDash, DashDuration);
 	}
 
 

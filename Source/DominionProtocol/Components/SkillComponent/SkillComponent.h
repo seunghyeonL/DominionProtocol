@@ -9,7 +9,7 @@
 
 class UBaseSkill;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API USkillComponent : public UActorComponent
 {
 	GENERATED_BODY()

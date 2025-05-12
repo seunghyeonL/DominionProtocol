@@ -43,8 +43,8 @@ public:
 	
 	// StatusComponentUser
 	virtual void InitializeStatusComponent() override;
-	virtual void OnDeath() override;
-	virtual void OnGroggy() override;
+	virtual void OnDeath();
+	virtual void OnGroggy();
 	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
 
 	// SkillComponentUser

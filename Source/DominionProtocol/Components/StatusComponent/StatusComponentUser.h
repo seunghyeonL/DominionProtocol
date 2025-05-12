@@ -26,7 +26,5 @@ class DOMINIONPROTOCOL_API IStatusComponentUser
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void InitializeStatusComponent() = 0;
-	virtual void OnDeath() = 0;
-	virtual void OnGroggy() = 0;
 	virtual FGameplayTagContainer GetActiveStatusEffectTags() = 0;
 };

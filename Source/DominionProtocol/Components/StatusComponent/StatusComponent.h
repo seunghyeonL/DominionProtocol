@@ -14,6 +14,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
 
+DECLARE_DELEGATE(FOnDeath);
+DECLARE_DELEGATE(FOnGroggy);
+
 class UStatusEffectBase;
 struct FStatusComponentInitializeData;
 
@@ -34,6 +37,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnShieldChanged OnShieldChanged;
+
+	FOnDeath OnDeath;
+	FOnGroggy OnGroggy;
 
 protected:
 	virtual void BeginPlay() override;
@@ -91,7 +97,7 @@ public:
 	void RemoveActiveStatusEffect(const FGameplayTag StatusEffectTag);
 	
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);
-	virtual void ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration);
+	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration);
 	virtual void DeactivateStatusEffect(const FGameplayTag& StatusEffectTag);
 
 	//CheatManager

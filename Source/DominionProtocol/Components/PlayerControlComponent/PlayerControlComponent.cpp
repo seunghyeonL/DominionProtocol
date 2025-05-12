@@ -103,7 +103,7 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	}
 }
 
-void UPlayerControlComponent::ActivateControlEffectWithDuration(const FGameplayTag& ControlEffectTag, float Duration)
+void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag, float Duration)
 {
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{

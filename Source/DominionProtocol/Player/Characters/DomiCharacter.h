@@ -57,10 +57,11 @@ public:
 	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableObject = NewActor; }
 	
 protected:
-	// Bind After ControlComponent Ready
+	// Bind Matched Input Functions
 	void BindInputFunctions();
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void OnDeath();
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -73,8 +74,6 @@ public:
 
 	// StatusComponentUser
 	virtual void InitializeStatusComponent() override;
-	virtual void OnDeath() override;
-	virtual void OnGroggy() override { /* Not used in player*/ };
 	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
 
 	// SkillComponentUser

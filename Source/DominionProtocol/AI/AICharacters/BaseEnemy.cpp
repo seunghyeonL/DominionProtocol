@@ -122,7 +122,7 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 	{
 		auto [EffectTag, Magnitude, Duration] = EffectData;
 		
-		StatusComponent->ActivateStatusEffectWithDuration(EffectTag, Magnitude, Duration);
+		StatusComponent->ActivateStatusEffect(EffectTag, Magnitude, Duration);
 	}
 }
 
@@ -170,6 +170,8 @@ void ABaseEnemy::InitializeStatusComponent()
 	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
 
+	StatusComponent->OnDeath.BindUObject(this, &ABaseEnemy::OnDeath);
+	
 	Debug::Print(TEXT("ABaseEnemy::InitializeStatusComponent : Call."));
 	StatusComponent->InitializeStatusComponent(InitializeData);
 

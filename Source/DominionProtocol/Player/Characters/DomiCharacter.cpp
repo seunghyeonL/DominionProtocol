@@ -273,6 +273,8 @@ void ADomiCharacter::InitializeStatusComponent()
 	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
 
+	StatusComponent->OnDeath.BindUObject(this, &ADomiCharacter::OnDeath);
+	
 	Debug::Print(TEXT("ADomiCharacter::InitializeStatusComponent : Call."));
 	StatusComponent->InitializeStatusComponent(InitializeData);
 }
@@ -281,9 +283,7 @@ void ADomiCharacter::OnDeath()
 {
 	ControlComponent->ActivateControlEffect(EffectTags::Death);
 
-	// Ignore Collision with Pawn
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-
+	// 델리게이트로?
 	ABaseGameMode* GameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
 	if (IsValid(GameMode))
 	{
@@ -353,11 +353,11 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 
 		if (EffectTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Control"))))
 		{
-			ControlComponent->ActivateControlEffectWithDuration(EffectTag, Duration);
+			ControlComponent->ActivateControlEffect(EffectTag, Duration);
 		}
 		else
 		{
-			StatusComponent->ActivateStatusEffectWithDuration(EffectTag, Magnitude, Duration);
+			StatusComponent->ActivateStatusEffect(EffectTag, Magnitude, Duration);
 		}
 	}
 }
@@ -409,7 +409,7 @@ bool ADomiCharacter::StartDash()
 		return false;
 	}
 	StatusComponent->ConsumeStamina(DashStaminaCost);
-	ControlComponent->ActivateControlEffectWithDuration(EffectTags::UsingDash, DashDuration);
+	ControlComponent->ActivateControlEffect(EffectTags::UsingDash, DashDuration);
 	SetInvincible(true);
 
 	return true;
