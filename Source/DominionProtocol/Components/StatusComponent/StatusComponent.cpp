@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "StatusComponent.h"
 #include "StatusComponentUser.h"
@@ -9,6 +9,7 @@
 UStatusComponent::UStatusComponent()
 {
 	bWantsInitializeComponent = true;
+	PrimaryComponentTick.bCanEverTick = true;
 	AIState = nullptr;
 }
 
@@ -19,10 +20,26 @@ void UStatusComponent::BeginPlay()
 }
 
 void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
-                                         FActorComponentTickFunction* ThisTickFunction)
+	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (bIsRecoveringStamina)
+	{
+		float Current = GetStat(StatTags::Stamina);
+		float Max = GetStat(StatTags::MaxStamina);
+
+		if (Current < Max)
+		{
+			SetStamina(Current + StaminaRecoveryRate * DeltaTime);
+		}
+		else
+		{
+			bIsRecoveringStamina = false;
+		}
+	}
 }
+
 
 float UStatusComponent::GetStat(const FGameplayTag& StatTag) const
 {
@@ -32,6 +49,8 @@ float UStatusComponent::GetStat(const FGameplayTag& StatTag) const
 	}
 
 	Debug::PrintError(TEXT("UStatusComponent::GetStat : Finding StatTag is not set."));
+	Debug::PrintError(FString::Printf(TEXT("UStatusComponent::GetStat : StatTag '%s' is not set."), *StatTag.ToString()));
+
 	return -1.f;
 }
 
@@ -87,6 +106,21 @@ void UStatusComponent::SetShield(const float NewShield)
 	OnShieldChanged.Broadcast(ClampedShield);
 }
 
+void UStatusComponent::SetStamina(float NewStamina)
+{
+	if (!StatMap.Contains(StatTags::MaxStamina))
+	{
+		Debug::PrintError(TEXT("SetStamina: MaxStamina is not set."));
+		return;
+	}
+
+	float MaxStamina = GetStat(StatTags::MaxStamina);
+	float ClampedStamina = FMath::Clamp(NewStamina, 0.f, MaxStamina);
+	SetStat(StatTags::Stamina, ClampedStamina);
+	OnStaminaChanged.Broadcast(ClampedStamina);
+}
+
+
 bool UStatusComponent::HasEnoughStamina(const float RequiredAmount) const
 {
 	return GetStat(StatTags::Stamina) >= RequiredAmount;
@@ -94,7 +128,14 @@ bool UStatusComponent::HasEnoughStamina(const float RequiredAmount) const
 
 void UStatusComponent::ConsumeStamina(const float Amount)
 {
-	SetStat(StatTags::Stamina, FMath::Max(0.f, GetStat(StatTags::Stamina) - Amount));
+	SetStamina(GetStat(StatTags::Stamina) - Amount);
+
+	bIsRecoveringStamina = false;
+	GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryDelayTimer);
+
+	GetWorld()->GetTimerManager().SetTimer(StaminaRecoveryDelayTimer, this, &UStatusComponent::StartStaminaRecovery, StaminaRecoveryDelay, false);
+	
+	UE_LOG(LogTemp, Warning, TEXT("ConsumeStamina called, Timer set"));
 }
 
 void UStatusComponent::InitializeComponent()
@@ -119,7 +160,7 @@ void UStatusComponent::InitializeStatusComponent(const FStatusComponentInitializ
 		Debug::PrintError(TEXT("UStatusComponent::InitializeStatusComponent : Invalid OwnerCharacter."));
 		return;
 	}
-	
+
 	const auto& [StatDatas, StatMultiplierDatas, EffectClassDatas] = InitializeData;
 
 	for (auto [StatTag, StatValue] : StatDatas)
@@ -186,4 +227,9 @@ void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTa
 	{
 		Debug::PrintError(TEXT("UStatusComponent::DeactivateStatusEffect : Tag Not Initialized in Mapper."));
 	}
+}
+
+void UStatusComponent::StartStaminaRecovery()
+{
+	bIsRecoveringStamina = true;
 }

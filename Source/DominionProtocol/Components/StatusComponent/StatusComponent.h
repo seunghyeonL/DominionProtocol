@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -80,12 +80,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	void SetShield(const float NewShield);
 
+	UFUNCTION(BlueprintCallable, Category = "Effects")
+	void SetStamina(float NewHealth);
+
 	UFUNCTION(BlueprintCallable, Category = "Stamina")
 	bool HasEnoughStamina(float RequiredAmount) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Stamina")
 	void ConsumeStamina(float Amount);
 	
+	void StartStaminaRecovery();
+
+	FTimerHandle StaminaRecoveryDelayTimer;
+	bool bIsRecoveringStamina = false;
+
+	UPROPERTY(EditAnywhere, Category = "Stamina")
+	float StaminaRecoveryRate = 10.f;
+
+	UPROPERTY(EditAnywhere, Category = "Stamina")
+	float StaminaRecoveryDelay = 1.f;
+
 	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
 
 	void RemoveActiveStatusEffect(const FGameplayTag StatusEffectTag);
