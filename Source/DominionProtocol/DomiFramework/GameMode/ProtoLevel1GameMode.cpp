@@ -5,6 +5,7 @@
 #include "Util/DebugHelper.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "Engine/TargetPoint.h"
 
 void AProtoLevel1GameMode::StartPlay()
 {
@@ -51,12 +52,26 @@ void AProtoLevel1GameMode::StartBattle()
 				{
 					ZoneBarrier->ActivateBarrier();
 				}
-				if (BossClass && BossSpawnPoint)
+				if (BossClass)
 				{
-					FTransform SpawnTransform = BossSpawnPoint->GetActorTransform();
+					TArray<AActor*> BossSpawnTargetPoints;
+					UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATargetPoint::StaticClass(), BossSpawnTargetPoints);
 
+					FTransform SpawnTransform;
+
+					for (AActor* Point : BossSpawnTargetPoints)
+					{
+						if (IsValid(Point))
+						{
+							if (Point->GetActorLabel().Contains("BossSpawnPoint"))
+							{
+								Debug::Print(Point->GetActorTransform().ToString());
+								SpawnTransform = Point->GetActorTransform();
+								BossSpawnPoint = Cast<ATargetPoint>(Point);
+							}
+						}
+					}
 					
-
 					ABaseEnemy* SpawnedBoss = GetWorld()->SpawnActor<ABaseEnemy>(BossClass,SpawnTransform);
 
 					if (IsValid(SpawnedBoss))
@@ -70,7 +85,7 @@ void AProtoLevel1GameMode::StartBattle()
 				}
 				else
 				{
-					Debug::Print(TEXT("Invalid BossClass, BossSpawnPoint"));
+					Debug::Print(TEXT("Invalid BossClass"));
 				}
 			},
 			0.5f, false);

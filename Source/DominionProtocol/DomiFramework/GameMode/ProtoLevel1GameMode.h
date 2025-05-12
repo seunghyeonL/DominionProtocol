@@ -7,6 +7,7 @@
 #include "Engine/TriggerBox.h"
 #include "WorldObjects/ZoneBarrier.h"
 #include "AI/AICharacters/BaseEnemy.h"
+#include "Engine/TargetPoint.h"
 #include "ProtoLevel1GameMode.generated.h"
 
 /**
@@ -31,5 +32,5 @@ private:
 	TSubclassOf<ABaseEnemy> BossClass;
 
 	UPROPERTY(EditAnywhere, Category = "Boss")
-	AActor* BossSpawnPoint;
+	ATargetPoint* BossSpawnPoint;
 };
