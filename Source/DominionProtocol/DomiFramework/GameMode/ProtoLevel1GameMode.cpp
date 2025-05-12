@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Engine/TargetPoint.h"
+#include "AI/ProtoBoss/ProtoBossEnemy.h"
 
 void AProtoLevel1GameMode::StartPlay()
 {
@@ -72,11 +73,12 @@ void AProtoLevel1GameMode::StartBattle()
 						}
 					}
 					
-					ABaseEnemy* SpawnedBoss = GetWorld()->SpawnActor<ABaseEnemy>(BossClass,SpawnTransform);
+					AProtoBossEnemy* SpawnedBoss = GetWorld()->SpawnActor<AProtoBossEnemy>(BossClass,SpawnTransform);
 
 					if (IsValid(SpawnedBoss))
 					{
 						Debug::Print(TEXT("Boss Spawn"));
+						SpawnedBoss->OnBossDeathDelegate.AddDynamic(this, &AProtoLevel1GameMode::EndBattle);
 					}
 					else
 					{

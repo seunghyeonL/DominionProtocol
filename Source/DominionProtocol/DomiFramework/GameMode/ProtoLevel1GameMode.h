@@ -23,6 +23,7 @@ protected:
 
 	UFUNCTION()
 	void StartBattle() override;
+	UFUNCTION()
 	void EndBattle() override;
 		 
 	AZoneBarrier* ZoneBarrier;
