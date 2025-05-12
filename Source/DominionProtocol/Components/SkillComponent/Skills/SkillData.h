@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Util/GameTagList.h"
+#include "Util/BattleDataTypes.h"
 #include "SkillData.generated.h"
 
 USTRUCT(BlueprintType)
@@ -21,6 +22,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TObjectPtr<UParticleSystem> Particle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
+	TArray<FEffectData> Effects;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	float Stamina;

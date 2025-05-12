@@ -28,6 +28,7 @@ void UBaseSkill::Initialize()
 				AttackRadius = SkillData->AttackRadius;
 				AttackForwardOffset = SkillData->AttackForwardOffset;
 				DamageCoefficient = SkillData->DamageCoefficient;
+				Effects = SkillData->Effects;
 			}
 			else
 			{
@@ -43,18 +44,11 @@ void UBaseSkill::Initialize()
 
 void UBaseSkill::Execute(ACharacter* Owner)
 {
-	// check(AnimMontage);
+	check(AnimMontage);
 
 	if (IsValid(Owner))
 	{
-		if (IsValid(AnimMontage))
-		{
-			Owner->PlayAnimMontage(AnimMontage);
-		}
-		else
-		{
-			Debug::PrintError(TEXT("UBaseSkill::Execute : Invalid AnimMontage."));
-		}
+		Owner->PlayAnimMontage(AnimMontage);
 	}
 }
 
@@ -82,7 +76,7 @@ void UBaseSkill::AttackTrace(ACharacter* Owner) const
 		Start,               // 시작 위치
 		End,                 // 끝 위치
 		FQuat::Identity,     // 회전값 (회전 없이)
-		ECollisionChannel::ECC_OverlapAll_Deprecated, // 충돌 채널
+		ECollisionChannel::ECC_Pawn, // 충돌 채널
 		FCollisionShape::MakeSphere(100.f), // 범위 설정 (구체 모양)
 		QueryParams
 	);

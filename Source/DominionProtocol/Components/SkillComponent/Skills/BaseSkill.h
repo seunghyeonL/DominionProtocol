@@ -20,6 +20,10 @@ public:
 	float GetStamina() const;
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
+	FGameplayTag SkillTag;
+
+private:
 	float GetFinalAttackData(const float AttackPower) const;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))
@@ -31,6 +35,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UParticleSystem> Particle = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects", meta = (AllowPrivateAccess = true))
+	TArray<FEffectData> Effects;
+
 	float Stamina;
 
 	float AttackRadius;
@@ -38,10 +45,4 @@ protected:
 	float AttackForwardOffset;
 
 	float DamageCoefficient;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
-	FGameplayTag SkillTag;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AttackData", meta=(AllowPrivateAccess=true))
-	FAttackData BaseAttackData;
 };
