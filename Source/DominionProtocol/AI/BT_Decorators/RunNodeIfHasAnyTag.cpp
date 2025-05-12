@@ -9,11 +9,19 @@
 URunNodeIfHasAnyTag::URunNodeIfHasAnyTag()
 {
 	NodeName = TEXT("Run Node If Has Any Tag");
+	bNotifyCeaseRelevant = true; // for use AbortMode Self
 }
 
 bool URunNodeIfHasAnyTag::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
-	AActor* OwnerActor = OwnerComp.GetAIOwner() ? OwnerComp.GetAIOwner()->GetPawn() : nullptr;
+	AAIController* AIController = OwnerComp.GetAIOwner();
+	if (!AIController)
+	{
+		Debug::PrintError(TEXT("URunNodeIfHasAnyTag::CalculateRawConditionValue : Invalid AIController."));
+		return false;
+	}
+
+	AActor* OwnerActor = AIController->GetPawn();
 	if (!OwnerActor)
 	{
 		Debug::PrintError(TEXT("URunNodeIfHasAnyTag::CalculateRawConditionValue : Invalid OwnerActor."));

@@ -9,11 +9,19 @@
 UBlockNodeIfHasAllTag::UBlockNodeIfHasAllTag()
 {
 	NodeName = TEXT("Block Node If Has All Tag");
+	bNotifyCeaseRelevant = true; // for use AbortMode Self
 }
 
 bool UBlockNodeIfHasAllTag::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
-	AActor* OwnerActor = OwnerComp.GetAIOwner() ? OwnerComp.GetAIOwner()->GetPawn() : nullptr;
+	AAIController* AIController = OwnerComp.GetAIOwner();
+	if (!AIController)
+	{
+		Debug::PrintError(TEXT("UBlockNodeIfHasAllTag::CalculateRawConditionValue : Invalid AIController."));
+		return false;
+	}
+
+	AActor* OwnerActor = AIController->GetPawn();
 	if (!OwnerActor)
 	{
 		Debug::PrintError(TEXT("UBlockNodeIfHasAllTag::CalculateRawConditionValue : Invalid OwnerActor."));

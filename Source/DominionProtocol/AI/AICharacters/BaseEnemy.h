@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SkillComponent/SkillComponentUser.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "GameFramework/Character.h"
 #include "Util/GameTagList.h"
@@ -10,11 +11,12 @@
 #include "Player/EffectReceivable.h"
 #include "BaseEnemy.generated.h"
 
+class USkillComponent;
 class UStatusComponent;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseEnemy :
-public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser
+public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser, public ISkillComponentUser
 {
 	GENERATED_BODY()
 
@@ -26,22 +28,28 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStatusComponent> StatusComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkillComponent> SkillComponent;
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI|State")
 	bool bIsAttacking = true;
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Attack Function
-	UFUNCTION(BlueprintCallable, Category = "AI|Attack")
-	void ExecutePattern(FGameplayTag SkillGroupTag);
 	
 	// StatusComponentUser
 	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath() override;
 	virtual void OnGroggy() override;
 	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
+
+	// SkillComponentUser
+	virtual void InitializeSkillComponent() override;
+	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) override;
 	
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;

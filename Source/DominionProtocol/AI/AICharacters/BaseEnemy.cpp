@@ -4,6 +4,9 @@
 #include "BaseEnemy.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Components/SkillComponent/SkillComponentInitializeData.h"
+#include "Components/SkillComponent/Skills/BaseAttack.h"
 
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Components/StatusComponent/StatusEffects/AIDeathEffect/AIDeathEffect.h"
@@ -18,9 +21,10 @@ ABaseEnemy::ABaseEnemy()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	// BattleComponents
 	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
+	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 
 	// UI Section
 	HPWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("DomiWidgetComponent"));
@@ -73,6 +77,32 @@ FGameplayTagContainer ABaseEnemy::GetActiveStatusEffectTags()
 	return StatusComponent->GetActiveStatusEffectTags();
 }
 
+void ABaseEnemy::InitializeSkillComponent()
+{
+	FSkillComponentInitializeData InitializeData;
+
+	// Initializing Data for SkillGroups
+	// 추후에 데이터 에셋화 혹은 테이터 테이블화
+	
+	FSkillGroupInitializeData BaseSkillGroupInitializeData;
+	BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
+	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());
+	InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
+	
+	if (IsValid(SkillComponent))
+	{
+		SkillComponent->InitializeSkillComponent(InitializeData);
+	}
+}
+
+void ABaseEnemy::ExecuteSkill(FGameplayTag SkillGroupTag)
+{
+	if (IsValid(SkillComponent))
+	{
+		SkillComponent->ExecuteSkill(SkillGroupTag);
+	}
+}
+
 void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);
@@ -94,10 +124,6 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 		
 		StatusComponent->ActivateStatusEffectWithDuration(EffectTag, Magnitude, Duration);
 	}
-}
-
-void ABaseEnemy::ExecutePattern(FGameplayTag SkillGroupTag)
-{
 }
 
 void ABaseEnemy::ShowControlEffectTags_Implementation()
@@ -132,13 +158,11 @@ void ABaseEnemy::InitializeStatusComponent()
 
 	// Initializing Data for BattleStatMultipliers
 	InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::MaxStamina, 1.f});
 	InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});
 	InitializeData.StatMultiplierDatas.Add({StatTags::Defense, 1.f});
 	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
 
 	// Initializing Data for StatusEffectClasses
-	InitializeData.EffectClassDatas.Add({EffectTags::Stun, UAIStunEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::Stiffness, UAIStiffnessEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::Death, UAIDeathEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});

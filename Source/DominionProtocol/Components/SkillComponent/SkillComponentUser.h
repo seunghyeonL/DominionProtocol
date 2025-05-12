@@ -4,6 +4,8 @@
 #include "UObject/Interface.h"
 #include "SkillComponentUser.generated.h"
 
+struct FGameplayTag;
+
 UINTERFACE(MinimalAPI)
 class USkillComponentUser : public UInterface
 {

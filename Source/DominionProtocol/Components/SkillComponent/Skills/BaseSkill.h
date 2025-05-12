@@ -11,8 +11,6 @@ class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 	GENERATED_BODY()
 	
 public:
-	UBaseSkill();
-
 	void Initialize();
 
 	void Execute(ACharacter* Owner);

@@ -7,10 +7,6 @@
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
 
-UBaseSkill::UBaseSkill() : Super()
-{
-}
-
 void UBaseSkill::Initialize()
 {
 	UWorld* World = GetWorld();
