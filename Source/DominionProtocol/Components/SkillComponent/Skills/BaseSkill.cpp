@@ -118,8 +118,8 @@ void UBaseSkill::AttackTrace(ACharacter* Owner) const
 				AttackData.Damage = GetFinalAttackData(AttackPower);
 			}
 
-			AttackData.Effects = Effects;
 			AttackData.Instigator = Owner;
+			AttackData.Effects = Effects;
 		}
 	}
 
