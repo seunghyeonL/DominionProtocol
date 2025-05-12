@@ -23,7 +23,10 @@ public:
 	
 	FORCEINLINE void SwitchActivate() { bIsActivate = !bIsActivate; }
 
+	//Getter
 	FORCEINLINE FVector GetRespawnTargetPointLocation() const;
+	FORCEINLINE FRotator GetRespawnTargetPointRotation() const;
+	//Setter
 	
 protected:
 	virtual void BeginPlay() override;

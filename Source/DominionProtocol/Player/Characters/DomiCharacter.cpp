@@ -26,6 +26,8 @@
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/SkillComponent/Skills/BaseAttack.h"
 
+#include "DomiFramework/GameMode/BaseGameMode.h"
+
 
 class UPoisonEffect;
 //////////////////////////////////////////////////////////////////////////
@@ -280,6 +282,12 @@ void ADomiCharacter::OnDeath()
 
 	// Ignore Collision with Pawn
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+
+	ABaseGameMode* GameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
+	if (IsValid(GameMode))
+	{
+		GameMode->OnPlayerDeath();
+	}
 }
 
 void ADomiCharacter::InitializeSkillComponent()

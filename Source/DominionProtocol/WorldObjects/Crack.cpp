@@ -51,6 +51,12 @@ void ACrack::BeginPlay()
 
     GameInstance->SetRecentCrackName(CrackName);
     GameInstance->SetRecentCrackIndex(CrackIndex);
+    
+    //*===BaseGameMode의 ACrack* RecentCrack 업데이트===*
+    ABaseGameMode* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
+    GameMode->SetRecentCrackCache(this);
+    //*===============================================*
+    
     //***================================***
     
     SphereCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ACrack::OnOverlapBegin);
@@ -97,7 +103,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 {
     FName TargetLevelName = NAME_None;
     
-    AGameModeBase* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
+    ABaseGameMode* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
     if (GameMode)
     {
         if (GameMode->IsA(AProtoLevel1GameMode::StaticClass()))
@@ -133,5 +139,18 @@ FVector ACrack::GetRespawnTargetPointLocation() const
     {
         Debug::PrintError(TEXT("Invalid RespawnTargetPoint"));
         return FVector::ZeroVector;
+    }
+}
+
+FRotator ACrack::GetRespawnTargetPointRotation() const
+{
+    if (IsValid(RespawnTargetPoint))
+    {
+        return RespawnTargetPoint->GetActorRotation();
+    }
+    else
+    {
+        Debug::PrintError(TEXT("Invalid RespawnTargetPoint"));
+        return FRotator::ZeroRotator;
     }
 }

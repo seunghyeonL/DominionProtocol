@@ -7,9 +7,9 @@
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "BaseGameMode.generated.h"
 
-/**
- * 
- */
+class ADomiCharacter;
+class ACrack;
+
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
 {
@@ -17,12 +17,31 @@ class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
 
 public:
 	ABaseGameMode();
+	
 	virtual void StartPlay() override;
 	virtual void StartBattle();
 	virtual void EndBattle();
 
-public:
+	void OnPlayerDeath();
+	void RespawnPlayerCharacter();
+
+	//Getter
+	
+	//Setter
+	FORCEINLINE void SetRecentCrackCache(ACrack* NewCrack) { RecentCrackCache = NewCrack ; } 
+
+protected:
 	UPROPERTY()
 	UDomiGameInstance* GameInstance;
-	FName CurrentLevel;
+
+	UPROPERTY()
+	ADomiCharacter* PlayerCharacter;
+	
+	UPROPERTY()
+	ACrack* RecentCrackCache;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float RespawnDelay;
+	
+	FString CurrentLevel;
 };

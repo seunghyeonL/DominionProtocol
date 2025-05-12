@@ -52,6 +52,7 @@ public:
 	//Getter
 	FORCEINLINE AActor* GetCurrentInteractableObject() const;
 	FORCEINLINE TObjectPtr<UStatusComponent> GetStatusComponent() const { return StatusComponent; }
+	FORCEINLINE TObjectPtr<UPlayerControlComponent> GetPlayerControlComponent() const {return ControlComponent; }
 	//Setter
 	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableObject = NewActor; }
 	

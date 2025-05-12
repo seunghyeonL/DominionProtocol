@@ -4,9 +4,19 @@
 #include "BaseGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "Player/Characters/DomiCharacter.h"
+#include "WorldObjects/Crack.h"
+#include "Components/StatusComponent/StatusComponent.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
+
+#include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
 
 ABaseGameMode::ABaseGameMode()
+	:	GameInstance(nullptr),
+		PlayerCharacter(nullptr),
+		RecentCrackCache(nullptr),
+		RespawnDelay(2.f)
 {/*
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
@@ -21,17 +31,12 @@ void ABaseGameMode::StartPlay()
 {
 	Super::StartPlay();
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-	check(GameInstance);
+	checkf(GameInstance, TEXT("GI Fail"));
 
-	if (!GameInstance)
+	PlayerCharacter = Cast<ADomiCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (IsValid(PlayerCharacter) && !PlayerCharacter->ActorHasTag("Player"))
 	{
-		Debug::Print(TEXT("GI Fail"));
-	}
-
-	APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if (IsValid(Pawn) && !Pawn->ActorHasTag("Player"))
-	{
-		Pawn->Tags.Add("Player");
+		PlayerCharacter->Tags.Add("Player");
 	}
 }
 
@@ -41,4 +46,37 @@ void ABaseGameMode::StartBattle()
 
 void ABaseGameMode::EndBattle()
 {
+}
+
+void ABaseGameMode::OnPlayerDeath()
+{
+	checkf(RecentCrackCache, TEXT("ABaseGameMode::OnPlayerDeath : RecentCrackCache is Nullptr"));
+	
+	Debug::Print("ABaseGameMode::OnPlayerDeath : Respawn Player");
+	
+	FTimerHandle RespawnTimerHandle;
+	GetWorldTimerManager().SetTimer(
+		RespawnTimerHandle,
+		this,
+		&ABaseGameMode::RespawnPlayerCharacter,
+		RespawnDelay,
+		false);
+}
+
+void ABaseGameMode::RespawnPlayerCharacter()
+{
+	FVector RespawnLocation = RecentCrackCache->GetRespawnTargetPointLocation();
+	FRotator RespawnRotation = RecentCrackCache->GetRespawnTargetPointRotation();
+	
+	if (IsValid(PlayerCharacter))
+	{
+		PlayerCharacter->SetActorLocation(RespawnLocation);
+		PlayerCharacter->SetActorRotation(RespawnRotation);
+
+		//일단은 체력회복하고 EffectTags::Death 상태 해제
+		TObjectPtr<UStatusComponent> StatusComponent = PlayerCharacter->GetStatusComponent();
+		StatusComponent->SetHealth(FLT_MAX);
+		TObjectPtr<UPlayerControlComponent> PlayerControlComponent = PlayerCharacter->GetPlayerControlComponent();
+		PlayerControlComponent->DeactivateControlEffect(EffectTags::Death);
+	}
 }
