@@ -16,12 +16,18 @@ AInGameController::AInGameController()
 	CheatClass = UDevCheatManager::StaticClass();
 }
 
+void AInGameController::HandleSetupInGameHUD()
+{
+	CreateHUDWidget();
+	AddHUDToViewport();
+	SetupInputModeGameAndUI();
+}
+
 void AInGameController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CreateHUDWidget();
-	AddHUDToViewport();
+	HandleSetupInGameHUD();
 }
 
 void AInGameController::CreateHUDWidget()
@@ -36,4 +42,13 @@ void AInGameController::AddHUDToViewport() const
 	check(InGameHUDWidgetInstance);
 
 	InGameHUDWidgetInstance->AddToViewport();
+}
+
+void AInGameController::SetupInputModeGameAndUI()
+{
+	const FInputModeGameAndUI CurrentInputMode;
+	SetInputMode(CurrentInputMode);
+	bShowMouseCursor = false;
+
+	// Focus Setting -> HUD Widget, not Controller
 }

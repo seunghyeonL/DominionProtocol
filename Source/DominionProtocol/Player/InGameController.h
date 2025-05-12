@@ -17,12 +17,14 @@ class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 public:
 	AInGameController();
 
+	void HandleSetupInGameHUD();
 
 protected:
 	virtual void BeginPlay() override;
 
 	void CreateHUDWidget();
 	void AddHUDToViewport() const;
+	void SetupInputModeGameAndUI();
 
 	
 public:
