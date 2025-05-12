@@ -39,7 +39,7 @@ void ABaseGameMode::BeginPlay()
 	for (AActor* Enemy : Enemies)
 	{
 		//FGameplayTag 정해지면 그거로 바꿔야할 듯?
-		if (Enemy->ActorHasTag("Boss")) continue;
+		if (Enemy->GetName().Contains("Boss")) continue;
 
 		FEnemySpawnInfo Info;
 		Info.EnemyClass = Enemy->GetClass();
@@ -88,11 +88,13 @@ void ABaseGameMode::OnPlayerDeath()
 
 void ABaseGameMode::RespawnPlayerCharacter()
 {
-	FVector RespawnLocation = RecentCrackCache->GetRespawnTargetPointLocation();
-	FRotator RespawnRotation = RecentCrackCache->GetRespawnTargetPointRotation();
+	DestroyAllNormalEnemy();
 	
 	if (IsValid(PlayerCharacter))
 	{
+		FVector RespawnLocation = RecentCrackCache->GetRespawnTargetPointLocation();
+		FRotator RespawnRotation = RecentCrackCache->GetRespawnTargetPointRotation();
+		
 		PlayerCharacter->SetActorLocation(RespawnLocation);
 		PlayerCharacter->SetActorRotation(RespawnRotation);
 
@@ -101,6 +103,8 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		StatusComponent->SetHealth(FLT_MAX);
 		TObjectPtr<UPlayerControlComponent> PlayerControlComponent = PlayerCharacter->GetPlayerControlComponent();
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::Death);
+
+		RespawnEnemies();
 	}
 }
 
