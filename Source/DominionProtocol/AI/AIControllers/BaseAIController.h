@@ -32,7 +32,7 @@ protected:
 	UBehaviorTree* BehaviorTreeAsset;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	UAIPerceptionComponent* AIPerception;
+	UAIPerceptionComponent* AIPerceptionComponent;
 
 	UPROPERTY()
 	UAISenseConfig_Sight* SightConfig;

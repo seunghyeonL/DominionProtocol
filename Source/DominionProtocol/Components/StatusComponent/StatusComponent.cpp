@@ -9,6 +9,7 @@
 UStatusComponent::UStatusComponent()
 {
 	bWantsInitializeComponent = true;
+	AIState = nullptr;
 }
 
 void UStatusComponent::BeginPlay()
@@ -69,7 +70,7 @@ void UStatusComponent::SetHealth(float NewHealth)
 		}
 		else
 		{
-			Debug::PrintError(TEXT("UPlayerStatusComponentBase::SetHealth : OwnerCharacter need to implement IStatusComponentUser."));
+			Debug::PrintError(TEXT("UStatusComponentBase::SetHealth : OwnerCharacter need to implement IStatusComponentUser."));
 		}
 	}
 }
@@ -147,7 +148,7 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 	}
 	else
 	{
-		Debug::PrintError(TEXT("UPlayerStatusComponent::ActivateStatusEffect : Tag Not Initialized in Mapper."));
+		Debug::PrintError(TEXT("UStatusComponent::ActivateStatusEffect : Tag Not Initialized in Mapper."));
 	}
 }
 
@@ -159,7 +160,7 @@ void UStatusComponent::ActivateStatusEffectWithDuration(const FGameplayTag& Stat
 	}
 	else
 	{
-		Debug::PrintError(TEXT("UPlayerStatusComponent::ActivateStatusEffectWithDuration : Tag Not Initialized in Mapper."));
+		Debug::PrintError(TEXT("UStatusComponent::ActivateStatusEffectWithDuration : Tag Not Initialized in Mapper."));
 	}
 }
 
@@ -171,6 +172,6 @@ void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTa
 	}
 	else
 	{
-		Debug::PrintError(TEXT("UPlayerStatusComponent::DeactivateStatusEffect : Tag Not Initialized in Mapper."));
+		Debug::PrintError(TEXT("UStatusComponent::DeactivateStatusEffect : Tag Not Initialized in Mapper."));
 	}
 }

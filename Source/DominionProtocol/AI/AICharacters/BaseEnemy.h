@@ -36,9 +36,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-	void LookAtTarget(const AActor* TargetActor);
-
 	// Attack Function
 	UFUNCTION(BlueprintCallable, Category = "AI|Attack")
 	void ExecutePattern(FGameplayTag SkillGroupTag);

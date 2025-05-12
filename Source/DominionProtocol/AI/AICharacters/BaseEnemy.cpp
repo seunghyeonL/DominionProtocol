@@ -6,6 +6,9 @@
 #include "Components/CapsuleComponent.h"
 
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
+#include "Components/StatusComponent/StatusEffects/AIDeathEffect/AIDeathEffect.h"
+#include "Components/StatusComponent/StatusEffects/AIStiffnessEffect/AIStiffnessEffect.h"
+#include "Components/StatusComponent/StatusEffects/AIStunEffect/AIStunEffect.h"
 #include "Components/StatusComponent/StatusEffects/AttackDownEffect/AttackDownEffect.h"
 #include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
 
@@ -43,10 +46,6 @@ void ABaseEnemy::OnGroggy()
 void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void ABaseEnemy::LookAtTarget(const AActor* TargetActor)
-{
 }
 
 FGameplayTagContainer ABaseEnemy::GetActiveStatusEffectTags()
@@ -125,11 +124,16 @@ void ABaseEnemy::InitializeStatusComponent()
 	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
 
 	// Initializing Data for StatusEffectClasses
+	InitializeData.EffectClassDatas.Add({EffectTags::Stun, UAIStunEffect::StaticClass()});
+	InitializeData.EffectClassDatas.Add({EffectTags::Stiffness, UAIStiffnessEffect::StaticClass()});
+	InitializeData.EffectClassDatas.Add({EffectTags::Death, UAIDeathEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
 
 	Debug::Print(TEXT("ABaseEnemy::InitializeStatusComponent : Call."));
 	StatusComponent->InitializeStatusComponent(InitializeData);
+
+	//현재 상태 바꾸는 로직 필요
 }
 
 

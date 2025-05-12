@@ -14,7 +14,7 @@ ABaseAIController::ABaseAIController()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Perception 컴포넌트 생성
-	AIPerception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
+	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 
 	// 시야 감각 구성
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
@@ -25,11 +25,11 @@ ABaseAIController::ABaseAIController()
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	AIPerception->ConfigureSense(*SightConfig);
-	AIPerception->SetDominantSense(SightConfig->GetSenseImplementation());
+	AIPerceptionComponent->ConfigureSense(*SightConfig);
+	AIPerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
 
 	// 델리게이트 바인딩
-	AIPerception->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAIController::OnTargetPerceptionUpdated);
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAIController::OnTargetPerceptionUpdated);
 }
 
 // Called when the game starts or when spawned
@@ -59,7 +59,7 @@ void ABaseAIController::EvaluateTargetPriority()
 	if (!IsValid(GetPawn())) return;
 
 	TArray<AActor*> PerceivedActors;
-	AIPerception->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PerceivedActors);
+	AIPerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PerceivedActors);
 
 	AActor* BestTarget = nullptr;
 	float ClosestDist = FLT_MAX;
