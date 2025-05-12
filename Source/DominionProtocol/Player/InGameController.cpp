@@ -20,7 +20,7 @@ void AInGameController::HandleSetupInGameHUD()
 {
 	CreateHUDWidget();
 	AddHUDToViewport();
-	SetupInputModeGameAndUI();
+	SetupInputModeGameOnly();
 }
 
 void AInGameController::BeginPlay()
