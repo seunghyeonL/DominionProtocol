@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "StatusComponentUser.generated.h"
 
+class UStatusComponent;
 class UStatusComponentBase;
 struct FGameplayTagContainer;
 
@@ -25,6 +26,7 @@ class DOMINIONPROTOCOL_API IStatusComponentUser
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	virtual UStatusComponent* GetStatusComponent() const = 0;
 	virtual void InitializeStatusComponent() = 0;
 	virtual FGameplayTagContainer GetActiveStatusEffectTags() = 0;
 };

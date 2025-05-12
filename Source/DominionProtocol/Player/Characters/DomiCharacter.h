@@ -51,8 +51,7 @@ public:
 
 	//Getter
 	FORCEINLINE AActor* GetCurrentInteractableObject() const;
-	FORCEINLINE TObjectPtr<UStatusComponent> GetStatusComponent() const { return StatusComponent; }
-	FORCEINLINE TObjectPtr<UPlayerControlComponent> GetPlayerControlComponent() const {return ControlComponent; }
+	 
 	//Setter
 	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableObject = NewActor; }
 	
@@ -71,12 +70,15 @@ public:
 
 	// ControlComponentUser
 	virtual FGameplayTagContainer GetActiveControlEffectTags() override;
+	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
 
 	// StatusComponentUser
+	FORCEINLINE virtual UStatusComponent* GetStatusComponent() const override { return StatusComponent; }
 	virtual void InitializeStatusComponent() override;
 	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
 
 	// SkillComponentUser
+	FORCEINLINE virtual USkillComponent* GetSkillComponent() const override { return SkillComponent; }
 	virtual void InitializeSkillComponent() override;
 	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) override;
 	

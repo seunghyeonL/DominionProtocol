@@ -42,12 +42,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	// StatusComponentUser
+	FORCEINLINE virtual UStatusComponent* GetStatusComponent() const override { return StatusComponent; }
 	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath();
 	virtual void OnGroggy();
 	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
 
 	// SkillComponentUser
+	FORCEINLINE virtual USkillComponent* GetSkillComponent() const override { return SkillComponent; }
 	virtual void InitializeSkillComponent() override;
 	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) override;
 	
