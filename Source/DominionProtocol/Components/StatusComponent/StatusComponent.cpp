@@ -62,6 +62,7 @@ void UStatusComponent::SetHealth(float NewHealth)
 	SetStat(StatTags::Health ,ClampedHealth);
 	OnHealthChanged.Broadcast(ClampedHealth);
 	
+	// OnDeath 
 	if (FMath::IsNearlyZero(GetStat(StatTags::Health)))
 	{
 		if (auto OwnerCharacter = Cast<IStatusComponentUser>(GetOuter()))
@@ -73,6 +74,17 @@ void UStatusComponent::SetHealth(float NewHealth)
 			Debug::PrintError(TEXT("UStatusComponentBase::SetHealth : OwnerCharacter need to implement IStatusComponentUser."));
 		}
 	}
+}
+
+void UStatusComponent::SetShield(float NewShield)
+{
+	ensure(StatMap.Contains(StatTags::MaxShield));
+
+	const float MaxShield = GetStat(StatTags::MaxShield);
+	const float ClampedShield = FMath::Clamp(NewShield, 0.f, MaxShield);
+
+	SetStat(StatTags::Shield ,ClampedShield);
+	OnShieldChanged.Broadcast(ClampedShield);
 }
 
 bool UStatusComponent::HasEnoughStamina(float RequiredAmount) const

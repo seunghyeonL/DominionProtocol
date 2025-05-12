@@ -2,24 +2,36 @@
 
 
 #include "DomiMonster3DWidget.h"
-#include "Components/ProgressBar.h"
+
+#include "DomiWidgetComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
-
-void UDomiMonster3DWidget::UpdateMonsterHPBar(const float NewHP)
-{
-	CurrentMonsterHP = NewHP;
-	MonsterHPBar->SetPercent(CurrentMonsterHP / MaxMonsterHP);
-}
-
-void UDomiMonster3DWidget::UpdateMonsterShield(const float NewShield)
-{
-	CurrentMonsterShield = NewShield;
-	MonsterShieldBar->SetPercent(CurrentMonsterShield / MaxMonsterShield);
-}
 
 void UDomiMonster3DWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	WidgetComponent = OwningActor->FindComponentByClass<UDomiWidgetComponent>();
+}
+
+void UDomiMonster3DWidget::UpdateMonsterHPBar(const float NewHP)
+{
+	AlphaForAnimMonsterHP = 0.f;
+	PreMonsterHP = CurrentMonsterHP;
+	CurrentMonsterHP = NewHP;
+}
+
+void UDomiMonster3DWidget::UpdateMonsterShield(const float NewShield)
+{
+	AlphaForAnimMonsterShield = 0.f;
+	PreMonsterShield = CurrentMonsterShield;
+	CurrentMonsterShield = NewShield;
+}
+
+void UDomiMonster3DWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	SetWidgetRotation();
 }
 
 void UDomiMonster3DWidget::SetOwningActor(AActor* NewOwner)
@@ -38,10 +50,25 @@ void UDomiMonster3DWidget::SetupMonster3dWidget()
 	if (StatusComp)
 	{
 		// Initialize
-		UpdateMonsterHPBar(StatusComp->GetStat(StatTags::Health));
-		UpdateMonsterShield(StatusComp->GetStat(StatTags::Shield));
+		CurrentMonsterHP = StatusComp->GetStat(StatTags::Health);
+		CurrentMonsterShield = StatusComp->GetStat(StatTags::Shield);
+		MaxMonsterHP = StatusComp->GetStat(StatTags::MaxHealth);
+		MaxMonsterShield = StatusComp->GetStat(StatTags::MaxShield);
 		
 		// DelegateBinding
-		
+		StatusComp->OnHealthChanged.AddDynamic(this, &UDomiMonster3DWidget::UpdateMonsterHPBar);
+		StatusComp->OnShieldChanged.AddDynamic(this, &UDomiMonster3DWidget::UpdateMonsterShield);
 	}
+}
+
+void UDomiMonster3DWidget::SetWidgetRotation() const
+{
+	check(IsValid(WidgetComponent));
+	
+	const auto* PlayerController = GetWorld()->GetFirstPlayerController();
+	const FVector CameraLocation = PlayerController->PlayerCameraManager->GetCameraLocation(); 
+	const FVector WidgetLocation = OwningActor->GetActorLocation();
+	const FRotator LookAtRotation = FRotationMatrix::MakeFromX(CameraLocation - WidgetLocation).Rotator();
+	
+	WidgetComponent->SetWorldRotation(LookAtRotation);
 }

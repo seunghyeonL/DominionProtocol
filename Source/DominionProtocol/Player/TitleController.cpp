@@ -3,6 +3,7 @@
 
 #include "TitleController.h"
 
+#include "UI/DomiMainMenuWidget.h"
 #include "UI/DomiTitleHUDWidget.h"
 
 ATitleController::ATitleController()
@@ -14,12 +15,27 @@ ATitleController::ATitleController()
 	}
 }
 
+void ATitleController::HandleSetupTitleHUD()
+{
+	CreateHUDWidget();
+	AddHUDToViewport();
+	SetupInputModeUIOnly();
+}
+
+void ATitleController::SetupInputModeUIOnly()
+{
+	const FInputModeUIOnly CurrentInputMode;
+	SetInputMode(CurrentInputMode);
+	bShowMouseCursor = true;
+
+	// Focus Setting -> HUD Widget, not Controller
+}
+
 void ATitleController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CreateHUDWidget();
-	AddHUDToViewport();
+	HandleSetupTitleHUD();
 }
 
 void ATitleController::CreateHUDWidget()

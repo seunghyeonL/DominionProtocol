@@ -15,12 +15,14 @@ class DOMINIONPROTOCOL_API ATitleController : public APlayerController
 public:
 	ATitleController();
 
+	void HandleSetupTitleHUD();
 	
 protected:
 	virtual void BeginPlay() override;
 
 	void CreateHUDWidget();
 	void AddHUDToViewport() const;
+	void SetupInputModeUIOnly();
 	
 
 protected:
