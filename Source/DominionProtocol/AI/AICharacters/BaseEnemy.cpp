@@ -52,8 +52,7 @@ void ABaseEnemy::OnDeath()
 {
 	StatusComponent->ActivateStatusEffect(EffectTags::Death, 0);
 
-	// Ignore Collision with Pawn
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	
 }
 
 void ABaseEnemy::OnGroggy()

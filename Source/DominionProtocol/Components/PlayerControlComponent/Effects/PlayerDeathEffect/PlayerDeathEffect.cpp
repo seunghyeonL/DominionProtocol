@@ -2,6 +2,8 @@
 
 
 #include "PlayerDeathEffect.h"
+#include "GameFramework/Character.h"
+#include "Components/CapsuleComponent.h"
 
 UPlayerDeathEffect::UPlayerDeathEffect()
 {
@@ -14,6 +16,12 @@ UPlayerDeathEffect::UPlayerDeathEffect()
 void UPlayerDeathEffect::Activate()
 {
 	Super::Activate();
+
+	// Ignore Collision with Pawn
+	if (IsValid(OwnerCharacter))
+	{
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	}
 }
 
 void UPlayerDeathEffect::Activate(float Duration)
@@ -24,6 +32,12 @@ void UPlayerDeathEffect::Activate(float Duration)
 void UPlayerDeathEffect::Deactivate()
 {
 	Super::Deactivate();
+
+	// Ignore Collision with Pawn
+	if (IsValid(OwnerCharacter))
+	{
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	}
 }
 
 void UPlayerDeathEffect::Move(const FInputActionValue& Value)
