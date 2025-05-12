@@ -48,7 +48,7 @@ public:
 	FORCEINLINE UPlayerControlStateBase* GetPlayerControlState() const { return PlayerControlState; };
 	FORCEINLINE void SetPlayerControlState(UPlayerControlStateBase* NewState) { PlayerControlState = NewState; };
 
-	UFUNCTION(BlueprintCallable, Category = "Effects")
+	// UFUNCTION(BlueprintCallable, Category = "Effects")
 	FORCEINLINE FGameplayTagContainer& GetActiveControlEffectTags() { return ActiveControlEffectTags; }
 
 	virtual void ActivateControlEffect(const FGameplayTag& ControlEffectTag);

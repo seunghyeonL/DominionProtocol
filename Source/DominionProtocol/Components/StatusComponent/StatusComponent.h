@@ -40,7 +40,7 @@ protected:
 
 	virtual void InitializeComponent() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UAIStateBase> AIState;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
@@ -52,63 +52,46 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	TMap<FGameplayTag, UStatusEffectBase*> StatusEffectMap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats", meta=(AllowPrivateAccess=true))
 	FGameplayTagContainer ActiveStatusEffectTags;
 
-private:
-	//CheatManager
-	bool bIsInfiniteStaminaMode = false;
-
-public:
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
-	UFUNCTION(BlueprintCallable, Category = "Effects")
-	FORCEINLINE FGameplayTagContainer& GetActiveStatusEffectTags() { return ActiveStatusEffectTags; }
-
-	FORCEINLINE UAIStateBase* GetAIState() { return AIState; }
-	FORCEINLINE void SetAIState(UAIStateBase* InAIState) { AIState = InAIState; }
-
-	UFUNCTION(BlueprintCallable, Category = "Effects")
-	float GetStat(const FGameplayTag& StatTag) const;
-
-	UFUNCTION(BlueprintCallable, Category = "Effects")
-	void SetStat(const FGameplayTag& StatTag, float Value);
-	
-	UFUNCTION(BlueprintCallable, Category = "Effects")
-	void SetHealth(const float NewHealth);
-
-	UFUNCTION(BlueprintCallable, Category = "Effects")
-	void SetShield(const float NewShield);
-
-	UFUNCTION(BlueprintCallable, Category = "Effects")
-	void SetStamina(float NewHealth);
-
-	UFUNCTION(BlueprintCallable, Category = "Stamina")
-	bool HasEnoughStamina(float RequiredAmount) const;
-
-	UFUNCTION(BlueprintCallable, Category = "Stamina")
-	void ConsumeStamina(float Amount);
-	
-	void StartStaminaRecovery();
-
 	FTimerHandle StaminaRecoveryDelayTimer;
-	bool bIsRecoveringStamina = false;
-
+	
 	UPROPERTY(EditAnywhere, Category = "Stamina")
 	float StaminaRecoveryRate = 10.f;
 
 	UPROPERTY(EditAnywhere, Category = "Stamina")
 	float StaminaRecoveryDelay = 1.f;
 
-	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
+	bool bIsRecoveringStamina = false;
+	
+	//CheatManager
+	bool bIsInfiniteStaminaMode = false;
 
+public:
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	FORCEINLINE FGameplayTagContainer& GetActiveStatusEffectTags() { return ActiveStatusEffectTags; }
+
+	FORCEINLINE UAIStateBase* GetAIState() { return AIState; }
+	FORCEINLINE void SetAIState(UAIStateBase* InAIState) { AIState = InAIState; }
+	
+	float GetStat(const FGameplayTag& StatTag) const;
+	void SetStat(const FGameplayTag& StatTag, float Value);
+	
+	void SetHealth(const float NewHealth);
+	void SetShield(const float NewShield);
+	void SetStamina(float NewHealth);
+	
+	bool HasEnoughStamina(float RequiredAmount) const;
+	void ConsumeStamina(float Amount);
+	void StartStaminaRecovery();
+	
+	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
 	void RemoveActiveStatusEffect(const FGameplayTag StatusEffectTag);
 	
-	UFUNCTION(BlueprintCallable, Category = "Effects")
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);
-	UFUNCTION(BlueprintCallable, Category = "Effects")
 	virtual void ActivateStatusEffectWithDuration(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration);
-	UFUNCTION(BlueprintCallable, Category = "Effects")
 	virtual void DeactivateStatusEffect(const FGameplayTag& StatusEffectTag);
 
 	//CheatManager
