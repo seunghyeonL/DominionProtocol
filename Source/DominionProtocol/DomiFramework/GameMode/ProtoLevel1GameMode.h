@@ -6,6 +6,7 @@
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Engine/TriggerBox.h"
 #include "WorldObjects/ZoneBarrier.h"
+#include "AI/AICharacters/BaseEnemy.h"
 #include "ProtoLevel1GameMode.generated.h"
 
 /**
@@ -24,4 +25,11 @@ protected:
 	void EndBattle() override;
 		 
 	AZoneBarrier* ZoneBarrier;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Boss")
+	TSubclassOf<ABaseEnemy> BossClass;
+
+	UPROPERTY(EditAnywhere, Category = "Boss")
+	AActor* BossSpawnPoint;
 };

@@ -5,6 +5,7 @@
 #include "DomiFramework/GameMode/ProtoLevel1GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Util/DebugHelper.h"
+#include "Player/Characters/DomiCharacter.h"
 
 AZoneBarrier::AZoneBarrier()
 {
@@ -17,8 +18,10 @@ AZoneBarrier::AZoneBarrier()
     CollisionBox->SetGenerateOverlapEvents(true);
     CollisionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic")); 
 
-    CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AZoneBarrier::OnPlayerOverlap);
-    
+    CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AZoneBarrier::OnOverlapBegin);
+    CollisionBox->OnComponentEndOverlap.AddDynamic(this, &AZoneBarrier::OnOverlapEnd);
+
+
     Wall_Left = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Left"));
     Wall_Left->SetupAttachment(RootComponent);
     Wall_Right = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Right"));
@@ -59,16 +62,38 @@ void AZoneBarrier::DeactivateBarrier()
     }
 }
 
-void AZoneBarrier::OnPlayerOverlap(
-    UPrimitiveComponent* OverlappedComponent,
-    AActor* OtherActor,
-    UPrimitiveComponent* OtherComp,
-    int32 OtherBodyIndex,
-    bool bFromSweep,
-    const FHitResult& SweepResult)
+void AZoneBarrier::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (OtherActor && OtherActor->ActorHasTag("Player"))
+    if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
     {
-        OnPlayerEnterZoneDelegate.Broadcast();
+        return;
     }
+
+    ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
+    ensure(PlayerCharacter);
+    CachedCharacter = PlayerCharacter;
+
+    PlayerCharacter->SetCurrentInteractableObject(this);
+}
+
+void AZoneBarrier::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    if (IsValid(OtherActor) && OtherActor == CachedCharacter)
+    {
+        ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
+        ensure(PlayerCharacter);
+
+        CachedCharacter = nullptr;
+        PlayerCharacter->SetCurrentInteractableObject(nullptr);
+    }
+}
+
+void AZoneBarrier::Interact_Implementation(AActor* Interactor)
+{
+    OnPlayerEnterZoneDelegate.Broadcast();
+}
+
+FText AZoneBarrier::GetInteractMessage_Implementation() const
+{
+    return FText::FromString(TEXT("F 키를 눌러 보스와 전투 시작"));
 }
