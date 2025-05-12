@@ -25,11 +25,4 @@ struct FSkillComponentInitializeData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FSkillGroupInitializeData> SkillGroupInitializeDatas;
-	
-	// SkillTags::BaseAttack
-	// "Skill.BaseAttack", { UDomiCharacterBaseAttackCombo1::StaticClass(),UDomiCharacterBaseAttackCombo2::StaticClass())
-	//							Skill.BaseAttack.first							Skill.BaseAttack.Second
-
-	// "Skill.BaseAttack", { UBaseAttack::StaticClass() }
-	//							Skill.BaseAttack.first
 };
