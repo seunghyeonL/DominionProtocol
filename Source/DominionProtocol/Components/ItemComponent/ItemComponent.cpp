@@ -1,7 +1,7 @@
-#include "ItemInventory/ItemComponent.h"
+#include "ItemComponent.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
-#include "ItemData.h"
+#include "ItemInventory/ItemData.h"
 
 UItemComponent::UItemComponent()
 {

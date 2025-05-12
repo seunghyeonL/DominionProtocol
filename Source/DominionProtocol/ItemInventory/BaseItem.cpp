@@ -1,7 +1,7 @@
 #include "ItemInventory/BaseItem.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
-#include "ItemInventory/ItemComponent.h"
+#include "Components/ItemComponent/ItemComponent.h"
 
 ABaseItem::ABaseItem()
 {
