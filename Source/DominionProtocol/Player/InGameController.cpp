@@ -20,7 +20,7 @@ void AInGameController::HandleSetupInGameHUD()
 {
 	CreateHUDWidget();
 	AddHUDToViewport();
-	SetupInputModeGameAndUI();
+	SetupInputModeGameOnly();
 }
 
 void AInGameController::BeginPlay()
@@ -44,9 +44,9 @@ void AInGameController::AddHUDToViewport() const
 	InGameHUDWidgetInstance->AddToViewport();
 }
 
-void AInGameController::SetupInputModeGameAndUI()
+void AInGameController::SetupInputModeGameOnly()
 {
-	const FInputModeGameAndUI CurrentInputMode;
+	const FInputModeGameOnly CurrentInputMode;
 	SetInputMode(CurrentInputMode);
 	bShowMouseCursor = false;
 

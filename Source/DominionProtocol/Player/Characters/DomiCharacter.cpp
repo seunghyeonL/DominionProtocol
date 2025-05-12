@@ -254,7 +254,7 @@ void ADomiCharacter::InitializeStatusComponent()
 
 	// Initializing Data for BattleStats
 	InitializeData.StatDatas.Add({StatTags::MaxHealth, 100.f});
-	InitializeData.StatDatas.Add({StatTags::AttackPower, 100.f});
+	InitializeData.StatDatas.Add({StatTags::AttackPower, 10.f});
 	InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
 	InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
 

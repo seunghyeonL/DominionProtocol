@@ -28,6 +28,7 @@ void AProtoLevel1GameMode::StartPlay()
 void AProtoLevel1GameMode::StartBattle()
 {
 	Super::StartBattle();
+	Debug::Print(TEXT("StartBattle"));
 
 	if (!GameInstance)
 	{
@@ -50,8 +51,29 @@ void AProtoLevel1GameMode::StartBattle()
 				{
 					ZoneBarrier->ActivateBarrier();
 				}
+				if (BossClass && BossSpawnPoint)
+				{
+					FTransform SpawnTransform = BossSpawnPoint->GetActorTransform();
+
+					
+
+					ABaseEnemy* SpawnedBoss = GetWorld()->SpawnActor<ABaseEnemy>(BossClass,SpawnTransform);
+
+					if (IsValid(SpawnedBoss))
+					{
+						Debug::Print(TEXT("Boss Spawn"));
+					}
+					else
+					{
+						Debug::Print(TEXT("Failed Boss Spawn"));
+					}
+				}
+				else
+				{
+					Debug::Print(TEXT("Invalid BossClass, BossSpawnPoint"));
+				}
 			},
-			1.0f, false);
+			0.5f, false);
 	}
 	else
 	{
@@ -62,6 +84,7 @@ void AProtoLevel1GameMode::StartBattle()
 void AProtoLevel1GameMode::EndBattle()
 {
 	Super::EndBattle();
+	Debug::Print(TEXT("EndBattle"));
 	
 	GameInstance->SetIsBossDead(0);
 
