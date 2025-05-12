@@ -12,6 +12,7 @@ class UAIStateBase;
 //UI Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
 
 class UStatusEffectBase;
 struct FStatusComponentInitializeData;
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnStaminaChanged OnStaminaChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
+	FOnShieldChanged OnShieldChanged;
 
 protected:
 	virtual void BeginPlay() override;
@@ -72,6 +76,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	void SetHealth(float NewHealth);
+
+	UFUNCTION(BlueprintCallable, Category = "Effects")
+	void SetShield(float NewShield);
 
 	UFUNCTION(BlueprintCallable, Category = "Stamina")
 	bool HasEnoughStamina(float RequiredAmount) const;
