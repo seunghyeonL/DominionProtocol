@@ -29,13 +29,13 @@ ABaseEnemy::ABaseEnemy()
 	// UI Section
 	HPWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("DomiWidgetComponent"));
 	HPWidgetComponent->SetupAttachment(GetMesh());
-	HPWidgetComponent->SetRelativeLocation(FVector(0, 0, 180));
+	HPWidgetComponent->SetRelativeLocation(FVector(0, 0, 190));
 	static ConstructorHelpers::FClassFinder<UUserWidget> HPBarWidgetRef (TEXT("/Game/Blueprints/UI/WBP_DomiMonster3DWidget.WBP_DomiMonster3DWidget_C"));
 	if (HPBarWidgetRef.Class)
 	{
 		HPWidgetComponent->SetWidgetClass(HPBarWidgetRef.Class);
 		HPWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
-		HPWidgetComponent->SetDrawSize(FVector2D(100.f, 15.f));
+		HPWidgetComponent->SetDrawSize(FVector2D(80.f, 10.f));
 		HPWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
