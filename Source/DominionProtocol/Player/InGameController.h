@@ -24,7 +24,7 @@ protected:
 
 	void CreateHUDWidget();
 	void AddHUDToViewport() const;
-	void SetupInputModeGameAndUI();
+	void SetupInputModeGameOnly();
 
 	
 public:
