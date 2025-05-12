@@ -19,7 +19,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere)
+	int32 BossID;
+
 public:
+	FORCEINLINE int32 GetBossID() { return BossID; }
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

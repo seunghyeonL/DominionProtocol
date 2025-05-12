@@ -325,6 +325,11 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);
 
+	if (bIsInvincible)
+	{
+		return;
+	}
+
 	if (!IsValid(ControlComponent))
 	{
 		Debug::PrintError(TEXT("ADomiCharacter::OnAttacked : ControlComponent is not valid"));
