@@ -11,10 +11,11 @@ struct FSkillGroup
 {
 	GENERATED_BODY()
 
-	// 스킬 그룹 내 스킬 목록
+	// Skills[i] == i번째 콤보 단계의 스킬 (0번째가 첫 번째 콤보, 1번째가 두 번째 콤보 ...)
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<UBaseSkill*> Skills;
 
+	// Skills 배열에서 현재 진행 중인 콤보 공격의 인덱스
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 ComboIdx { 0 };
 };
