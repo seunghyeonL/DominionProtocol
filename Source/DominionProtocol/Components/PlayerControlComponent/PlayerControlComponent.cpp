@@ -10,7 +10,6 @@
 #include "Effects/PlayerSilenceEffect/PlayerSilenceEffect.h"
 #include "Effects/PlayerStiffnessEffect/PlayerStiffnessEffect.h"
 #include "Effects/PlayerStunEffect/PlayerStunEffect.h"
-#include "Effects/PlayerUsingDashEffect/PlayerUsingDashEffect.h"
 #include "Effects/PlayerUsingSkillEffect/PlayerUsingSkillEffect.h"
 
 
@@ -64,9 +63,7 @@ void UPlayerControlComponent::InitializeComponent()
 	ControlEffectMap.Add(EffectTags::Confused, NewObject<UPlayerConfusedEffect>(this));  
 	
 	ControlEffectMap.Add(EffectTags::Death, NewObject<UPlayerDeathEffect>(this));
-	// ControlEffectMapper.Add(EffectTags::UsingSkill, NewObject<UUsingSkillEffect>(this));
-	// ControlEffectMapper.Add(EffectTags::UsingParry, NewObject<UUsingParryEffect>(this));
-	ControlEffectMap.Add(EffectTags::UsingDash, NewObject<UPlayerUsingDashEffect>(this));
+	ControlEffectMap.Add(EffectTags::UsingSkill, NewObject<UPlayerUsingSkillEffect>(this));
 
 	// Set OwnerCharacter to ControlEffects
 	for (auto& [ControlEffectTag, ControlEffect] : ControlEffectMap)
@@ -124,6 +121,24 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag, float Duration)
 {
+	if (ControlEffectTag.MatchesTag(EffectTags::UsingSkill))
+	{
+		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
+		{
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
+			{
+				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
+				(*ControlEffect)->Activate(Duration);
+			}
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlComponent::ActivateControlEffect : UsingSkill Tag Not Initialized in Mapper."));
+		}
+		
+		return;
+	}
+	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
 		(*ControlEffect)->Activate(Duration);
