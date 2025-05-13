@@ -15,6 +15,7 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/PlayerControlComponent/States/PlayerControlState.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/ItemComponent/ItemComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -59,6 +60,7 @@ ADominionProtocolCharacter::ADominionProtocolCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 	ControlComponent = CreateDefaultSubobject<UPlayerControlComponent>(TEXT("ControlComponent"));
+	ItemComponent = CreateDefaultSubobject<UItemComponent>(TEXT("ItemComponent"));
 }
 
 //////////////////////////////////////////////////////////////////////////
