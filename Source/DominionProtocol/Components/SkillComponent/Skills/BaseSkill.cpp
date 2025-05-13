@@ -77,7 +77,7 @@ void UBaseSkill::AttackTrace(ACharacter* Owner) const
 		End,                 // 끝 위치
 		FQuat::Identity,     // 회전값 (회전 없이)
 		ECollisionChannel::ECC_Pawn, // 충돌 채널
-		FCollisionShape::MakeSphere(100.f), // 범위 설정 (구체 모양)
+		FCollisionShape::MakeSphere(AttackRadius), // 범위 설정 (구체 모양)
 		QueryParams
 	);
 
@@ -135,6 +135,8 @@ void UBaseSkill::AttackTrace(ACharacter* Owner) const
 		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 		{
 			AttackData.LaunchVector = HitActor->GetActorLocation() - Owner->GetActorLocation();
+
+			AttackData.LaunchVector.Normalize();
 
 			IDamagable::Execute_OnAttacked(HitActor, AttackData);
 		}
