@@ -15,6 +15,7 @@
 
 class UStatusComponent;
 class USkillComponent;
+class UItemComponent;
 class UPlayerControlComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -38,6 +39,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkillComponent> SkillComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UItemComponent* ItemComponent;
 	
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

@@ -14,7 +14,6 @@ class UInputAction;
 struct FInputActionValue;
 class UPlayerControlComponent;
 class UStatusComponent;
-class UItemComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -60,9 +59,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStatusComponent* StatusComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UItemComponent* ItemComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	UAnimMontage* DashMontage;

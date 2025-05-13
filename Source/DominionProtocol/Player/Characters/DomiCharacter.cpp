@@ -16,6 +16,7 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/PlayerControlComponent/States/PlayerControlState.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/ItemComponent/ItemComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
 
@@ -73,6 +74,7 @@ ADomiCharacter::ADomiCharacter()
 	ControlComponent = CreateDefaultSubobject<UPlayerControlComponent>(TEXT("ControlComponent"));
 	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
+	ItemComponent = CreateDefaultSubobject<UItemComponent>(TEXT("ItemComponent"));
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
