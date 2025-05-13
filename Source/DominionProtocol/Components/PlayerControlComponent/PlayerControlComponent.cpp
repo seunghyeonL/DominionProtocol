@@ -11,6 +11,7 @@
 #include "Effects/PlayerStiffnessEffect/PlayerStiffnessEffect.h"
 #include "Effects/PlayerStunEffect/PlayerStunEffect.h"
 #include "Effects/PlayerUsingDashEffect/PlayerUsingDashEffect.h"
+#include "Effects/PlayerUsingSkillEffect/PlayerUsingSkillEffect.h"
 
 
 // Sets default values for this component's properties
@@ -93,6 +94,24 @@ void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag)
 {
+	if (ControlEffectTag.MatchesTag(EffectTags::UsingSkill))
+	{
+		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
+		{
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
+			{
+				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
+				(*ControlEffect)->Activate();
+			}
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlComponent::ActivateControlEffect : UsingSkill Tag Not Initialized in Mapper."));
+		}
+		
+		return;
+	}
+	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
 		(*ControlEffect)->Activate();
