@@ -80,7 +80,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                 Skill->Execute(OwnerCharacter); // 해당 스킬 실행
                 if (OnSkillStart.IsBound())
                 {
-                    OnSkillStart.Execute(Skill->GetSkillTag());
+                    OnSkillStart.Execute(Skill->GetControlEffectTag());
                 }
 
                 // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴

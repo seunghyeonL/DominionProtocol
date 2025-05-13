@@ -13,6 +13,8 @@ class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 	GENERATED_BODY()
 	
 public:
+	UBaseSkill();
+
 	virtual void Initialize();
 
 	virtual void Execute(ACharacter* Owner);
@@ -22,10 +24,14 @@ public:
 	virtual float GetStamina() const;
 
 	FORCEINLINE FGameplayTag GetSkillTag() const { return SkillTag; }
+	FORCEINLINE FGameplayTag GetControlEffectTag() const { return ControlEffectTag; }
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
 	FGameplayTag SkillTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag ControlEffectTag;
 	
 	float GetFinalAttackData(const float AttackPower) const;
 

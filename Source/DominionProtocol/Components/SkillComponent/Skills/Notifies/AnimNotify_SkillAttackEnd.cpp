@@ -21,7 +21,7 @@ void UAnimNotify_SkillAttackEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimS
 				{
 					if (auto CurrentSkill = SkillComponent->GetCurrentSkill())
 					{
-						SkillComponent->OnSkillEnd.Execute(CurrentSkill->GetSkillTag());
+						SkillComponent->OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
 					}
 				}
 				else

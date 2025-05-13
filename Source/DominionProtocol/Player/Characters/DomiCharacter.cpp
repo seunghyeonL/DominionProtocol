@@ -238,14 +238,14 @@ FGameplayTagContainer ADomiCharacter::GetActiveControlEffectTags()
 	return ControlComponent->GetActiveControlEffectTags();
 }
 
-void ADomiCharacter::SkillStart(FGameplayTag SkillTag)
+void ADomiCharacter::SkillStart(FGameplayTag ControlEffectTag)
 {
-	ControlComponent->ActivateControlEffect(EffectTags::UsingSkill);
+	ControlComponent->ActivateControlEffect(ControlEffectTag);
 }
 
-void ADomiCharacter::SkillEnd(FGameplayTag SkillTag)
+void ADomiCharacter::SkillEnd(FGameplayTag ControlEffectTag)
 {
-	ControlComponent->DeactivateControlEffect(EffectTags::UsingSkill);
+	ControlComponent->DeactivateControlEffect(ControlEffectTag);
 }
 
 

@@ -9,6 +9,11 @@
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
 
+UBaseSkill::UBaseSkill()
+{
+	ControlEffectTag = EffectTags::UsingSkill;
+}
+
 void UBaseSkill::Initialize()
 {
 	UWorld* World = GetWorld();

@@ -76,8 +76,8 @@ public:
 	// ControlComponentUser
 	virtual FGameplayTagContainer GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
-	virtual void SkillStart(FGameplayTag SkillTag) override;
-	virtual void SkillEnd(FGameplayTag SkillTag) override;
+	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
+	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
 
 	// StatusComponentUser
 	FORCEINLINE virtual UStatusComponent* GetStatusComponent() const override { return StatusComponent; }
