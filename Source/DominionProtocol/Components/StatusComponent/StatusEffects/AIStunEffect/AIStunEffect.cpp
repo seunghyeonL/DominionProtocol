@@ -6,17 +6,16 @@
 UAIStunEffect::UAIStunEffect()
 {
 	StatusEffectTag = EffectTags::Stun;
-	bIsActive = false;
 }
 
-void UAIStunEffect::Activate(float Magnitude)
+void UAIStunEffect::Activate()
 {
-	Super::Activate(Magnitude);
+	Super::Activate();
 }
 
-void UAIStunEffect::Activate(float Magnitude, float Duration)
+void UAIStunEffect::Activate(float Duration)
 {
-	Super::Activate(Magnitude, Duration);
+	Super::Activate(Duration);
 }
 
 void UAIStunEffect::Deactivate()

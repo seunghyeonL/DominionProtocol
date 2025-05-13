@@ -6,17 +6,16 @@
 UPoisonEffect::UPoisonEffect()
 {
 	StatusEffectTag = EffectTags::Poison;
-	bIsActive = false;
 }
 
-void UPoisonEffect::Activate(float Magnitude)
+void UPoisonEffect::Activate()
 {
-	Super::Activate(Magnitude);
+	Super::Activate();
 }
 
-void UPoisonEffect::Activate(float Magnitude, float Duration)
+void UPoisonEffect::Activate(float Duration)
 {
-	Super::Activate(Magnitude, Duration);
+	Super::Activate(Duration);
 }
 
 void UPoisonEffect::Deactivate()

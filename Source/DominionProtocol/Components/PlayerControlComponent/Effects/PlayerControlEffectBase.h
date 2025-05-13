@@ -29,6 +29,8 @@ protected:
 	TObjectPtr<UPlayerControlStateBase> InnerState;
 
 public:
+	UPlayerControlEffectBase();
+	
 	virtual void Activate();
 	virtual void Activate(float Duration);
 	virtual void Deactivate();

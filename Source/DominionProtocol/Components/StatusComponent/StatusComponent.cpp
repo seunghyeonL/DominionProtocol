@@ -197,7 +197,8 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		(*StatusEffect)->Activate(Magnitude);
+		(*StatusEffect)->SetMagnitude(Magnitude);
+		(*StatusEffect)->Activate();
 	}
 	else
 	{
@@ -209,7 +210,8 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		(*StatusEffect)->Activate(Magnitude, Duration);
+		(*StatusEffect)->SetMagnitude(Magnitude);
+		(*StatusEffect)->Activate(Duration);
 	}
 	else
 	{

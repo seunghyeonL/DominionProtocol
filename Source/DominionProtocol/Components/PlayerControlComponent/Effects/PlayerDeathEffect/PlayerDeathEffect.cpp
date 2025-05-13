@@ -8,9 +8,6 @@
 UPlayerDeathEffect::UPlayerDeathEffect()
 {
 	ControlEffectTag = EffectTags::Death;
-	bIsActive = false;
-	OuterState = nullptr;
-	InnerState = nullptr;
 }
 
 void UPlayerDeathEffect::Activate()

@@ -6,17 +6,16 @@
 UAttackDownEffect::UAttackDownEffect()
 {
 	StatusEffectTag = EffectTags::AttackDown;
-	bIsActive = false;
 }
 
-void UAttackDownEffect::Activate(float Magnitude)
+void UAttackDownEffect::Activate()
 {
-	Super::Activate(Magnitude);
+	Super::Activate();
 }
 
-void UAttackDownEffect::Activate(float Magnitude, float Duration)
+void UAttackDownEffect::Activate(float Duration)
 {
-	Super::Activate(Magnitude, Duration);
+	Super::Activate(Duration);
 }
 
 void UAttackDownEffect::Deactivate()

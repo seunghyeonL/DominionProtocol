@@ -6,17 +6,16 @@
 UAIDeathEffect::UAIDeathEffect()
 {
 	StatusEffectTag = EffectTags::Death;
-	bIsActive = false;
 }
 
-void UAIDeathEffect::Activate(float Magnitude)
+void UAIDeathEffect::Activate()
 {
-	Super::Activate(Magnitude);
+	Super::Activate();
 }
 
-void UAIDeathEffect::Activate(float Magnitude, float Duration)
+void UAIDeathEffect::Activate(float Duration)
 {
-	Super::Activate(Magnitude, Duration);
+	Super::Activate(Duration);
 }
 
 void UAIDeathEffect::Deactivate()

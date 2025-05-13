@@ -9,14 +9,14 @@ UAIStiffnessEffect::UAIStiffnessEffect()
 	bIsActive = false;
 }
 
-void UAIStiffnessEffect::Activate(float Magnitude)
+void UAIStiffnessEffect::Activate()
 {
-	Super::Activate(Magnitude);
+	Super::Activate();
 }
 
-void UAIStiffnessEffect::Activate(float Magnitude, float Duration)
+void UAIStiffnessEffect::Activate(float Duration)
 {
-	Super::Activate(Magnitude, Duration);
+	Super::Activate(Duration);
 }
 
 void UAIStiffnessEffect::Deactivate()

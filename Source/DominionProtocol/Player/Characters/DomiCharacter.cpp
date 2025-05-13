@@ -165,6 +165,9 @@ void ADomiCharacter::BindInputFunctions()
 				EnhancedInputComponent->BindAction(PlayerController->SprintAction, ETriggerEvent::Started,
 				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::Sprint);
+				EnhancedInputComponent->BindAction(PlayerController->SprintAction, ETriggerEvent::Completed,
+												   ControlComponent.Get(),
+												   &UPlayerControlComponent::Sprint);
 			}
 
 			// Parry

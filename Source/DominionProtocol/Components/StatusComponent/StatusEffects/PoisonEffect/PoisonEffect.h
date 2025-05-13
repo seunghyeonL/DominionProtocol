@@ -17,8 +17,8 @@ class DOMINIONPROTOCOL_API UPoisonEffect : public UStatusEffectBase
 public:
 	UPoisonEffect();
 
-	virtual void Activate(float Magnitude) override;
-	virtual void Activate(float Magnitude, float Duration) override;
+	virtual void Activate() override;
+	virtual void Activate(float Duration) override;
 	virtual void Deactivate() override;
 	
 };

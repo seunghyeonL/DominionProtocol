@@ -10,6 +10,12 @@
 #include "Interface/InteractableInterface.h"
 #include "Player/Characters/DomiCharacter.h"
 
+UPlayerControlState::UPlayerControlState()
+{
+	bDashTickActive = false;
+	OwnerCharacter = nullptr;
+	OuterState = nullptr;
+}
 
 void UPlayerControlState::Tick(float DeltaTime)
 {
@@ -37,7 +43,6 @@ void UPlayerControlState::Tick(float DeltaTime)
 		);
 	}
 }
-
 
 void UPlayerControlState::Move(const FInputActionValue& Value)
 {

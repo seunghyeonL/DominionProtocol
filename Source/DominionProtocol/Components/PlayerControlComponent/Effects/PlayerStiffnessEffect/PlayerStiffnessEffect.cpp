@@ -6,9 +6,6 @@
 UPlayerStiffnessEffect::UPlayerStiffnessEffect()
 {
 	ControlEffectTag = EffectTags::Stiffness;
-	bIsActive = false;
-	OuterState = nullptr;
-	InnerState = nullptr;
 }
 
 void UPlayerStiffnessEffect::Activate()

@@ -6,9 +6,6 @@
 UPlayerStunEffect::UPlayerStunEffect()
 {
 	ControlEffectTag = EffectTags::Stun;
-	bIsActive = false;
-	OuterState = nullptr;
-	InnerState = nullptr;
 }
 
 void UPlayerStunEffect::Activate()

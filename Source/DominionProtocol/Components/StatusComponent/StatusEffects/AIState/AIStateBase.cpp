@@ -5,9 +5,9 @@
 
 #include "Components/StatusComponent/StatusComponent.h"
 
-void UAIStateBase::Activate(float Magnitude)
+void UAIStateBase::Activate()
 {
-	Super::Activate(Magnitude);
+	Super::Activate();
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (auto CurrentAIState = StatusComponent->GetAIState())
@@ -21,9 +21,9 @@ void UAIStateBase::Activate(float Magnitude)
 	}
 }
 
-void UAIStateBase::Activate(float Magnitude, float Duration)
+void UAIStateBase::Activate(float Duration)
 {
-	// Super::Activate(Magnitude, Duration);
+	// Super::Activate(Duration);
 	Debug::PrintError(TEXT("UAIStateBase::Activate : Use Activate function with no Duration parameter."));
 }
 

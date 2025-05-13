@@ -15,6 +15,10 @@ class DOMINIONPROTOCOL_API UPlayerControlState : public UPlayerControlStateBase,
 	GENERATED_BODY()
 
 public:
+	UPlayerControlState();
+
+	bool bDashTickActive;
+	
 	virtual void Move(const FInputActionValue& Value) override;
 	virtual void Look(const FInputActionValue& Value) override;
 	virtual void Dash() override;
@@ -29,5 +33,4 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual bool IsTickable() const override{return bDashTickActive;}
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UPlayerControlState, STATGROUP_Tickables); }
-	bool bDashTickActive = false;
 };

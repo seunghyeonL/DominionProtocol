@@ -7,9 +7,6 @@
 UPlayerConfusedEffect::UPlayerConfusedEffect()
 {
 	ControlEffectTag = EffectTags::Confused;
-	bIsActive = false;
-	OuterState = nullptr;
-	InnerState = nullptr;
 }
 
 void UPlayerConfusedEffect::Activate()

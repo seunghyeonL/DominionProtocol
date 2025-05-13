@@ -8,13 +8,12 @@
 UPlayerRunningEffect::UPlayerRunningEffect()
 {
 	StatusEffectTag = EffectTags::Running;
-	bIsActive = false;
 	SpeedCoefficient = 1.5f;
 }
 
-void UPlayerRunningEffect::Activate(float Magnitude)
+void UPlayerRunningEffect::Activate()
 {
-	Super::Activate(Magnitude);
+	Super::Activate();
 
 	if (IsValid(OwnerCharacter))
 	{
@@ -23,9 +22,9 @@ void UPlayerRunningEffect::Activate(float Magnitude)
 	}
 }
 
-void UPlayerRunningEffect::Activate(float Magnitude, float Duration)
+void UPlayerRunningEffect::Activate(float Duration)
 {
-	Super::Activate(Magnitude, Duration);
+	Super::Activate(Duration);
 
 	if (IsValid(OwnerCharacter))
 	{

@@ -6,9 +6,6 @@
 UPlayerSilenceEffect::UPlayerSilenceEffect()
 {
 	ControlEffectTag = EffectTags::Silence;
-	bIsActive = false;
-	OuterState = nullptr;
-	InnerState = nullptr;
 }
 
 void UPlayerSilenceEffect::Activate()

@@ -5,6 +5,14 @@
 #include "Util/DebugHelper.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 
+UPlayerControlEffectBase::UPlayerControlEffectBase()
+{
+	bIsActive = false;
+	OwnerCharacter = nullptr;
+	InnerState = nullptr;
+	OuterState = nullptr;
+}
+
 void UPlayerControlEffectBase::Activate()
 {
 	if (bIsActive)

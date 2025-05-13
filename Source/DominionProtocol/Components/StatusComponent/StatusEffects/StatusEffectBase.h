@@ -17,6 +17,8 @@ class DOMINIONPROTOCOL_API UStatusEffectBase : public UObject
 	GENERATED_BODY()
 
 protected:
+	UStatusEffectBase();
+	
 	FTimerHandle DurationTimer;
 	FTimerHandle DoTTimer;
 	
@@ -29,11 +31,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
 	bool bIsActive;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
+	float Magnitude;
+
 public:
 	FORCEINLINE void SetOwnerCharacter(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
+	FORCEINLINE void SetMagnitude(float InMagnitude) { Magnitude = InMagnitude; }
 	
-	virtual void Activate(float Magnitude);
-	virtual void Activate(float Magnitude, float Duration);
+	virtual void Activate();
+	virtual void Activate(float Duration);
 	virtual void Deactivate();
 	virtual void Tick(float DeltaTime);
 };

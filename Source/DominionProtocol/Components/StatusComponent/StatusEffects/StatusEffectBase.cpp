@@ -5,7 +5,13 @@
 
 #include "Components/StatusComponent/StatusComponent.h"
 
-void UStatusEffectBase::Activate(float Magnitude)
+UStatusEffectBase::UStatusEffectBase()
+{
+	Magnitude = 0.f;
+	bIsActive = false;
+}
+
+void UStatusEffectBase::Activate()
 {
 	if (bIsActive)
 	{
@@ -23,7 +29,7 @@ void UStatusEffectBase::Activate(float Magnitude)
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
 }
 
-void UStatusEffectBase::Activate(float Magnitude, float Duration)
+void UStatusEffectBase::Activate(float Duration)
 {
 	if (bIsActive)
 	{

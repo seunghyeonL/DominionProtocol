@@ -6,9 +6,6 @@
 UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
-	bIsActive = false;
-	OuterState = nullptr;
-	InnerState = nullptr;
 }
 
 void UPlayerUsingSkillEffect::Activate()
