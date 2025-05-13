@@ -2,6 +2,8 @@
 
 
 #include "PlayerRunningEffect.h"
+
+#include "Components/StatusComponent/StatusComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -9,37 +11,69 @@ UPlayerRunningEffect::UPlayerRunningEffect()
 {
 	StatusEffectTag = EffectTags::Running;
 	SpeedCoefficient = 1.5f;
+	StaminaPerSecond = 5.0f;
 }
 
 void UPlayerRunningEffect::Activate()
 {
 	Super::Activate();
 
-	if (IsValid(OwnerCharacter))
+	if (!IsValid(OwnerCharacter))
 	{
-		auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
-		MovementComponent->MaxWalkSpeed *= SpeedCoefficient;
+		Debug::PrintError(TEXT("UPlayerRunningEffect::Activate : Invalid OwnerCharacter."));
+		return;
 	}
+
+	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
+	if (!StatusComponent)
+	{
+		Debug::PrintError(TEXT("UPlayerRunningEffect::Activate : Invalid StatusComponent."));
+		return;
+	}
+
+	StatusComponent->StopStaminaRecovery();
+	auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
+	MovementComponent->MaxWalkSpeed *= SpeedCoefficient;
 }
 
 void UPlayerRunningEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
-
-	if (IsValid(OwnerCharacter))
-	{
-		auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
-		MovementComponent->MaxWalkSpeed *= SpeedCoefficient;
-	}
+	// Super::Activate(Duration);
+	Debug::PrintError(TEXT("UPlayerRunningEffect::Activate : Use Activate()!"));
 }
 
 void UPlayerRunningEffect::Deactivate()
 {
 	Super::Deactivate();
 
-	if (IsValid(OwnerCharacter))
+	if (!IsValid(OwnerCharacter))
 	{
-		auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
-		MovementComponent->MaxWalkSpeed /= SpeedCoefficient;
+		Debug::PrintError(TEXT("UPlayerRunningEffect::Deactivate : Invalid OwnerCharacter."));
+		return;
 	}
+
+	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
+	if (!StatusComponent)
+	{
+		Debug::PrintError(TEXT("UPlayerRunningEffect::Deactivate : Invalid StatusComponent."));
+		return;
+	}
+
+	StatusComponent->BlockStaminaRecovery();
+	auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
+	MovementComponent->MaxWalkSpeed /= SpeedCoefficient;
+}
+
+void UPlayerRunningEffect::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
+	if (!StatusComponent)
+	{
+		Debug::PrintError(TEXT("UPlayerRunningEffect::Deactivate : Invalid StatusComponent."));
+		return;
+	}
+
+	StatusComponent->SetStamina(StatusComponent->GetStat(StatTags::Stamina) - StaminaPerSecond * DeltaTime);
 }

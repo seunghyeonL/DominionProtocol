@@ -29,6 +29,8 @@ public:
 	// Sets default values for this component's properties
 	UStatusComponent();
 
+	FTimerHandle StaminaRecoveryDelayTimer;
+	
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnHealthChanged OnHealthChanged;
 
@@ -60,8 +62,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats", meta=(AllowPrivateAccess=true))
 	FGameplayTagContainer ActiveStatusEffectTags;
-
-	FTimerHandle StaminaRecoveryDelayTimer;
 	
 	UPROPERTY(EditAnywhere, Category = "Stamina")
 	float StaminaRecoveryRate = 10.f;
@@ -92,6 +92,8 @@ public:
 	bool HasEnoughStamina(float RequiredAmount) const;
 	void ConsumeStamina(float Amount);
 	void StartStaminaRecovery();
+	void StopStaminaRecovery();
+	void BlockStaminaRecovery();
 	
 	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
 	void RemoveActiveStatusEffect(const FGameplayTag StatusEffectTag);

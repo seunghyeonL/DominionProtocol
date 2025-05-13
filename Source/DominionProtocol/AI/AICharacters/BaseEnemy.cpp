@@ -51,8 +51,6 @@ void ABaseEnemy::BeginPlay()
 void ABaseEnemy::OnDeath()
 {
 	StatusComponent->ActivateStatusEffect(EffectTags::Death, 0);
-
-	
 }
 
 void ABaseEnemy::OnGroggy()

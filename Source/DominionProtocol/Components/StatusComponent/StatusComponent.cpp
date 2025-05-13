@@ -38,6 +38,11 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 			bIsRecoveringStamina = false;
 		}
 	}
+
+	for (auto ActiveEffectTag : ActiveStatusEffectTags.GetGameplayTagArray())
+	{
+		StatusEffectMap[ActiveEffectTag]->Tick(DeltaTime);
+	}
 }
 
 
@@ -129,14 +134,29 @@ bool UStatusComponent::HasEnoughStamina(const float RequiredAmount) const
 void UStatusComponent::ConsumeStamina(const float Amount)
 {
 	SetStamina(GetStat(StatTags::Stamina) - Amount);
+	BlockStaminaRecovery();
+}
 
+void UStatusComponent::StartStaminaRecovery()
+{
+	bIsRecoveringStamina = true;
+}
+
+void UStatusComponent::StopStaminaRecovery()
+{
+	bIsRecoveringStamina = false;
+}
+
+void UStatusComponent::BlockStaminaRecovery()
+{
 	bIsRecoveringStamina = false;
 	GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryDelayTimer);
-
 	GetWorld()->GetTimerManager().SetTimer(StaminaRecoveryDelayTimer, this, &UStatusComponent::StartStaminaRecovery, StaminaRecoveryDelay, false);
 	
 	UE_LOG(LogTemp, Warning, TEXT("ConsumeStamina called, Timer set"));
 }
+
+
 
 void UStatusComponent::InitializeComponent()
 {
@@ -220,6 +240,7 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 }
 
 void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTag)
+
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
@@ -231,7 +252,3 @@ void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTa
 	}
 }
 
-void UStatusComponent::StartStaminaRecovery()
-{
-	bIsRecoveringStamina = true;
-}

@@ -17,10 +17,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Coefficient")
 	float SpeedCoefficient;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Coefficient")
+	float StaminaPerSecond;
+
 public:
 	UPlayerRunningEffect();
 
 	virtual void Activate() override;
 	virtual void Activate(float Duration) override;
 	virtual void Deactivate() override;
+
+	virtual void Tick(float DeltaTime) override;
 };
