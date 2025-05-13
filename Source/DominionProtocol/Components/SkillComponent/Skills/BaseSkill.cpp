@@ -48,6 +48,15 @@ void UBaseSkill::Execute(ACharacter* Owner)
 
 	if (IsValid(Owner))
 	{
+		if (OnSkillStart.IsBound())
+		{
+			OnSkillStart.Execute();
+		}
+		else
+		{
+			Debug::PrintError(TEXT("OnSkillStart Delegate is not bound."));
+		}
+
 		Owner->PlayAnimMontage(AnimMontage);
 	}
 }

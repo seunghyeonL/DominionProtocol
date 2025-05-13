@@ -1,6 +1,7 @@
 #include "SkillComponent.h"
 #include "SkillComponentUser.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "SkillComponentInitializeData.h"
 #include "Gameframework/Character.h"
 #include "Util/DebugHelper.h"
@@ -28,6 +29,9 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
 {
     for (const auto& [SkillGroupTag, SkillGroupData] : InitializeData.SkillGroupInitializeDatas)
     {
+        ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+        check(IsValid(OwnerCharacter));
+
         FSkillGroup SkillGroup;
         for (const auto& SkillClass : SkillGroupData)
         {
@@ -35,6 +39,16 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
             {
                 Skill->Initialize();
                 SkillGroup.Skills.Add(Skill);
+
+                UPlayerControlComponent* PlayerControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
+
+                // 스킬 시작 및 끝나는 시점 델리게이트 바인딩
+                Skill->OnSkillStart.BindUObject(PlayerControlComponent, &UPlayerControlComponent::UsingSkillEffectDeactivate);
+                Skill->OnSkillEnd.BindUObject(PlayerControlComponent, &UPlayerControlComponent::UsingSkillEffectActivate);
+
+                Debug::Print(TEXT("USkillComponent::OnSkillStart is Bound (Player)"));
+                Debug::Print(TEXT("USkillComponent::OnSkillEnd is Bound (Player)"));
+
             }
             else
             {
@@ -62,6 +76,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
             if (IsValid(Skill))
             {
                 SetCurrentSkill(Skill);
+
                 Skill->Execute(OwnerCharacter); // 해당 스킬 실행
 
                 // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴

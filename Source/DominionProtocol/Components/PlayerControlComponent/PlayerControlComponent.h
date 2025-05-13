@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -66,4 +66,8 @@ public:
 	void MagicSkill();
 	void Interact();
 	void RockOn();
+
+	// 승현님이 작업해야하는 함수
+	void UsingSkillEffectDeactivate();
+	void UsingSkillEffectActivate();
 };

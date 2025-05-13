@@ -5,6 +5,9 @@
 #include "Util/BattleDataTypes.h"
 #include "BaseSkill.generated.h"
 
+DECLARE_DELEGATE(FOnSkillStart);
+DECLARE_DELEGATE(FOnSkillEnd);
+
 UCLASS(Blueprintable)
 class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 {
@@ -18,6 +21,10 @@ public:
 	void AttackTrace(ACharacter* Owner) const;
 
 	float GetStamina() const;
+
+	FOnSkillStart OnSkillStart;
+
+	FOnSkillEnd OnSkillEnd;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")

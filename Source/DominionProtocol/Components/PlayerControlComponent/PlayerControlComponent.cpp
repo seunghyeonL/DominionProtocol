@@ -1,10 +1,11 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerControlComponent.h"
 #include "Util/DebugHelper.h"
 #include "GameFramework/Character.h"
 #include "./States/PlayerControlState.h"
+#include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "Effects/PlayerConfusedEffect/PlayerConfusedEffect.h"
 #include "Effects/PlayerDeathEffect/PlayerDeathEffect.h"
 #include "Effects/PlayerSilenceEffect/PlayerSilenceEffect.h"
@@ -280,5 +281,15 @@ void UPlayerControlComponent::RockOn()
 	{
 		Debug::PrintError(TEXT("UPlayerControlComponent::RockOn : Invalid ControlState."));
 	}
+}
+
+void UPlayerControlComponent::UsingSkillEffectDeactivate()
+{
+	Debug::Print(TEXT("UPlayerControlComponent::UsingSkillEffectDeactivate."));
+}
+
+void UPlayerControlComponent::UsingSkillEffectActivate()
+{
+	Debug::Print(TEXT("UPlayerControlComponent::UsingSkillEffectActivate."));
 }
 
