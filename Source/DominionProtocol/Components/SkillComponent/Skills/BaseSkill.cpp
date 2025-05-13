@@ -1,6 +1,8 @@
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "GameFramework/Character.h"
 #include "CollisionQueryParams.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Components/SkillComponent/SkillComponentUser.h"
 #include "Player/Damagable.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Util/GameTagList.h"
@@ -48,15 +50,6 @@ void UBaseSkill::Execute(ACharacter* Owner)
 
 	if (IsValid(Owner))
 	{
-		if (OnSkillStart.IsBound())
-		{
-			OnSkillStart.Execute();
-		}
-		else
-		{
-			Debug::PrintError(TEXT("OnSkillStart Delegate is not bound."));
-		}
-
 		Owner->PlayAnimMontage(AnimMontage);
 	}
 }

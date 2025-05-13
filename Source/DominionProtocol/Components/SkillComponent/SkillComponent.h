@@ -9,6 +9,9 @@
 
 class UBaseSkill;
 
+DECLARE_DELEGATE_OneParam(FOnSkillStart, FGameplayTag);
+DECLARE_DELEGATE_OneParam(FOnSkillEnd, FGameplayTag);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API USkillComponent : public UActorComponent
 {
@@ -25,6 +28,9 @@ public:
 
 	UBaseSkill* GetCurrentSkill() const { return CurrentSkill; }
 	void SetCurrentSkill(UBaseSkill* Skill) { CurrentSkill = Skill; }
+
+	FOnSkillStart OnSkillStart;
+	FOnSkillEnd OnSkillEnd;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")

@@ -8,6 +8,7 @@
 
 class UPlayerControlComponent;
 struct FGameplayTagContainer;
+struct FGameplayTag;
 
 // This class does not need to be modified.
 UINTERFACE(BlueprintType, Blueprintable)
@@ -27,4 +28,6 @@ class DOMINIONPROTOCOL_API IControlComponentUser
 public:
 	virtual UPlayerControlComponent* GetPlayerControlComponent() const = 0;
 	virtual FGameplayTagContainer GetActiveControlEffectTags() = 0;
+	virtual void SkillStart(FGameplayTag SkillTag) = 0;
+	virtual void SkillEnd(FGameplayTag SkillTag) = 0;
 };

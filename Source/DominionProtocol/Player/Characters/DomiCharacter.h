@@ -7,6 +7,7 @@
 #include "../Damagable.h"
 #include "../EffectReceivable.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Util/DebugHelper.h"
 #include "Components/SkillComponent/SkillComponentUser.h"
@@ -71,6 +72,8 @@ public:
 	// ControlComponentUser
 	virtual FGameplayTagContainer GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
+	virtual void SkillStart(FGameplayTag SkillTag) override;
+	virtual void SkillEnd(FGameplayTag SkillTag) override;
 
 	// StatusComponentUser
 	FORCEINLINE virtual UStatusComponent* GetStatusComponent() const override { return StatusComponent; }
@@ -144,3 +147,4 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "State")
 	bool bIsInvincible = false;
 };
+

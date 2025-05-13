@@ -66,8 +66,4 @@ public:
 	void MagicSkill();
 	void Interact();
 	void RockOn();
-
-	// 승현님이 작업해야하는 함수
-	void UsingSkillEffectDeactivate();
-	void UsingSkillEffectActivate();
 };

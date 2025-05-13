@@ -21,5 +21,5 @@ public:
 	virtual USkillComponent* GetSkillComponent() const = 0;
 	virtual void InitializeSkillComponent() = 0;
 	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) = 0;
-
+	
 };

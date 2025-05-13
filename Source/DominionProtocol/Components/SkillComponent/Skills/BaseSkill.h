@@ -5,8 +5,7 @@
 #include "Util/BattleDataTypes.h"
 #include "BaseSkill.generated.h"
 
-DECLARE_DELEGATE(FOnSkillStart);
-DECLARE_DELEGATE(FOnSkillEnd);
+
 
 UCLASS(Blueprintable)
 class DOMINIONPROTOCOL_API UBaseSkill : public UObject
@@ -22,15 +21,12 @@ public:
 
 	float GetStamina() const;
 
-	FOnSkillStart OnSkillStart;
-
-	FOnSkillEnd OnSkillEnd;
+	FORCEINLINE FGameplayTag GetSkillTag() const { return SkillTag; }
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
 	FGameplayTag SkillTag;
-
-private:
+	
 	float GetFinalAttackData(const float AttackPower) const;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))

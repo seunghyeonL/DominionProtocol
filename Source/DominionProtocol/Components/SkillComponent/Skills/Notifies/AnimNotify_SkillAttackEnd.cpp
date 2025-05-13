@@ -16,12 +16,13 @@ void UAnimNotify_SkillAttackEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimS
 
 			if (IsValid(SkillComponent))
 			{
-				// 현재 실행중인 스킬의 OnSkillEnd 델리게이트 실행
-				UBaseSkill* BaseSkill = SkillComponent->GetCurrentSkill();
-
-				if (BaseSkill->OnSkillEnd.IsBound())
+				// 스킬을 실행한 SkillComponent의 OnSkillEnd 델리게이트 실행
+				if (SkillComponent->OnSkillEnd.IsBound())
 				{
-					BaseSkill->OnSkillEnd.Execute();
+					if (auto CurrentSkill = SkillComponent->GetCurrentSkill())
+					{
+						SkillComponent->OnSkillEnd.Execute(CurrentSkill->GetSkillTag());
+					}
 				}
 				else
 				{

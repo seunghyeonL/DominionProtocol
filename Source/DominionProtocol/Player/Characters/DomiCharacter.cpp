@@ -236,6 +236,17 @@ FGameplayTagContainer ADomiCharacter::GetActiveControlEffectTags()
 	return ControlComponent->GetActiveControlEffectTags();
 }
 
+void ADomiCharacter::SkillStart(FGameplayTag SkillTag)
+{
+	ControlComponent->ActivateControlEffect(EffectTags::UsingSkill);
+}
+
+void ADomiCharacter::SkillEnd(FGameplayTag SkillTag)
+{
+	ControlComponent->DeactivateControlEffect(EffectTags::UsingSkill);
+}
+
+
 FGameplayTagContainer ADomiCharacter::GetActiveStatusEffectTags()
 {
 	if (!IsValid(StatusComponent))
@@ -311,6 +322,8 @@ void ADomiCharacter::InitializeSkillComponent()
 	if (IsValid(SkillComponent))
 	{
 		SkillComponent->InitializeSkillComponent(InitializeData);
+		SkillComponent->OnSkillStart.BindUObject(this, &ADomiCharacter::SkillStart);
+		SkillComponent->OnSkillEnd.BindUObject(this, &ADomiCharacter::SkillEnd);
 	}
 }
 

@@ -283,13 +283,3 @@ void UPlayerControlComponent::RockOn()
 	}
 }
 
-void UPlayerControlComponent::UsingSkillEffectDeactivate()
-{
-	Debug::Print(TEXT("UPlayerControlComponent::UsingSkillEffectDeactivate."));
-}
-
-void UPlayerControlComponent::UsingSkillEffectActivate()
-{
-	Debug::Print(TEXT("UPlayerControlComponent::UsingSkillEffectActivate."));
-}
-

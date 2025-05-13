@@ -43,11 +43,11 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
                 UPlayerControlComponent* PlayerControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
 
                 // 스킬 시작 및 끝나는 시점 델리게이트 바인딩
-                Skill->OnSkillStart.BindUObject(PlayerControlComponent, &UPlayerControlComponent::UsingSkillEffectDeactivate);
-                Skill->OnSkillEnd.BindUObject(PlayerControlComponent, &UPlayerControlComponent::UsingSkillEffectActivate);
-
-                Debug::Print(TEXT("USkillComponent::OnSkillStart is Bound (Player)"));
-                Debug::Print(TEXT("USkillComponent::OnSkillEnd is Bound (Player)"));
+                // Skill->OnSkillStart.BindUObject(PlayerControlComponent, &UPlayerControlComponent::UsingSkillEffectDeactivate);
+                // Skill->OnSkillEnd.BindUObject(PlayerControlComponent, &UPlayerControlComponent::UsingSkillEffectActivate);
+                //
+                // Debug::Print(TEXT("USkillComponent::OnSkillStart is Bound (Player)"));
+                // Debug::Print(TEXT("USkillComponent::OnSkillEnd is Bound (Player)"));
 
             }
             else
@@ -76,8 +76,12 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
             if (IsValid(Skill))
             {
                 SetCurrentSkill(Skill);
-
+                
                 Skill->Execute(OwnerCharacter); // 해당 스킬 실행
+                if (OnSkillStart.IsBound())
+                {
+                    OnSkillStart.Execute(Skill->GetSkillTag());
+                }
 
                 // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴
                 ComboIdx = (ComboIdx + 1) % SkillGroup->Skills.Num();
