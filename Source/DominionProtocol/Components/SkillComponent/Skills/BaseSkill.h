@@ -13,13 +13,13 @@ class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 	GENERATED_BODY()
 	
 public:
-	void Initialize();
+	virtual void Initialize();
 
-	void Execute(ACharacter* Owner);
+	virtual void Execute(ACharacter* Owner);
 
-	void AttackTrace(ACharacter* Owner) const;
+	virtual void AttackTrace(ACharacter* Owner) const;
 
-	float GetStamina() const;
+	virtual float GetStamina() const;
 
 	FORCEINLINE FGameplayTag GetSkillTag() const { return SkillTag; }
 
