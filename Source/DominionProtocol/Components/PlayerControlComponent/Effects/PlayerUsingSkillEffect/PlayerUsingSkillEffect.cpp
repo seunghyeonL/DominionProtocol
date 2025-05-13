@@ -44,7 +44,7 @@ void UPlayerUsingSkillEffect::Dash()
 
 void UPlayerUsingSkillEffect::Sprint()
 {
-	// Super::Sprint();
+	Super::Sprint();
 }
 
 void UPlayerUsingSkillEffect::Parry()

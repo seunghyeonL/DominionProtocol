@@ -25,6 +25,7 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/SkillComponent/Skills/BaseAttack.h"
+#include "Components/StatusComponent/StatusEffects/PlayerRunningEffect/PlayerRunningEffect.h"
 
 #include "DomiFramework/GameMode/BaseGameMode.h"
 
@@ -270,6 +271,7 @@ void ADomiCharacter::InitializeStatusComponent()
 	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
 
 	// Initializing Data for StatusEffectClasses
+	InitializeData.EffectClassDatas.Add({EffectTags::Running, UPlayerRunningEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
 

@@ -57,7 +57,7 @@ void UPlayerDeathEffect::Dash()
 
 void UPlayerDeathEffect::Sprint()
 {
-	// Super::Sprint();
+	Super::Sprint();
 }
 
 void UPlayerDeathEffect::Parry()

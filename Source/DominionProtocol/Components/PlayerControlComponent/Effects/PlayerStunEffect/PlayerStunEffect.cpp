@@ -43,7 +43,7 @@ void UPlayerStunEffect::Dash()
 
 void UPlayerStunEffect::Sprint()
 {
-	// Super::Sprint();
+	Super::Sprint();
 }
 
 void UPlayerStunEffect::Parry()

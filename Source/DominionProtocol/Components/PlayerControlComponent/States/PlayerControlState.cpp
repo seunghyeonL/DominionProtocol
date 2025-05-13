@@ -5,6 +5,7 @@
 #include "Util/DebugHelper.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Components/StatusComponent/StatusComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/InteractableInterface.h"
 #include "Player/Characters/DomiCharacter.h"
@@ -117,7 +118,20 @@ void UPlayerControlState::Sprint()
 {
 	Super::Sprint();
 
-	Debug::Print(TEXT("UPlayerControlState::Sprint : Call."));
+	if (auto StatusComponentUser = Cast<IStatusComponentUser>(OwnerCharacter))
+	{
+		auto StatusComponent = StatusComponentUser->GetStatusComponent();
+		auto ActiveStatusEffectTags = StatusComponentUser->GetActiveStatusEffectTags();
+
+		if (!ActiveStatusEffectTags.HasTag(EffectTags::Running))
+		{
+			StatusComponent->ActivateStatusEffect(EffectTags::Running, 0.f);
+		}
+		else
+		{
+			StatusComponent->DeactivateStatusEffect(EffectTags::Running);
+		}
+	}
 }
 
 void UPlayerControlState::Parry()
