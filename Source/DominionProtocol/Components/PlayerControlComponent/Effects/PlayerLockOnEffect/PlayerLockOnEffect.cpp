@@ -36,11 +36,12 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 	// 타겟방향의 벡터 계산
 	const FVector Target = FVector::ZeroVector;
 	FRotator NewRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
+	FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
 	if (!OwnerCharacter) return;
 	
 	// 타겟을 바라보도록 회전 변경
 	OwnerCharacter->SetActorRotation(NewRotator);
-	OwnerCharacter->GetController()->SetControlRotation(NewRotator);
+	OwnerCharacter->GetController()->SetControlRotation(FMath::RInterpTo(CurrentControlRotation, NewRotator, DeltaTime, 10.0f));
 }
 
 void UPlayerLockOnEffect::Move(const FInputActionValue& Value)
