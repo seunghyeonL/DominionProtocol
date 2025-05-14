@@ -11,6 +11,7 @@
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "Effects/PlayerConfusedEffect/PlayerConfusedEffect.h"
 #include "Effects/PlayerDeathEffect/PlayerDeathEffect.h"
+#include "Effects/PlayerLockOnEffect/PlayerLockOnEffect.h"
 #include "Effects/PlayerSilenceEffect/PlayerSilenceEffect.h"
 #include "Effects/PlayerStiffnessEffect/PlayerStiffnessEffect.h"
 #include "Effects/PlayerStunEffect/PlayerStunEffect.h"
@@ -68,6 +69,7 @@ void UPlayerControlComponent::InitializeComponent()
 	
 	ControlEffectMap.Add(EffectTags::Death, NewObject<UPlayerDeathEffect>(this));
 	ControlEffectMap.Add(EffectTags::UsingSkill, NewObject<UPlayerUsingSkillEffect>(this));
+	ControlEffectMap.Add(EffectTags::LockOn, NewObject<UPlayerLockOnEffect>(this));
 
 	// Set OwnerCharacter to ControlEffects
 	for (auto& [ControlEffectTag, ControlEffect] : ControlEffectMap)
