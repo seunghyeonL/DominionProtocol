@@ -104,6 +104,9 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		TObjectPtr<UPlayerControlComponent> PlayerControlComponent = PlayerCharacter->GetPlayerControlComponent();
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::Death);
 
+		// Using InGameHUD
+		OnPlayerSpawn.Broadcast();
+
 		RespawnEnemies();
 	}
 }

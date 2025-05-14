@@ -22,6 +22,8 @@ struct FEnemySpawnInfo
 	FTransform OriginTransform;
 };
 
+DECLARE_MULTICAST_DELEGATE(FOnPlayerSpawn);
+
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
 {
@@ -45,7 +47,11 @@ public:
 	//Getter
 	
 	//Setter
-	FORCEINLINE void SetRecentCrackCache(ACrack* NewCrack) { RecentCrackCache = NewCrack ; } 
+	FORCEINLINE void SetRecentCrackCache(ACrack* NewCrack) { RecentCrackCache = NewCrack ; }
+
+public:
+	// Delegate
+	FOnPlayerSpawn OnPlayerSpawn;
 
 protected:
 	UPROPERTY()

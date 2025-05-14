@@ -4,10 +4,16 @@
 #include "DomiInGameHUDWidget.h"
 
 #include "Components/StatusComponent/StatusComponent.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 
 void UDomiInGameHUDWidget::OnPlayerDeath()
 {
 	ShowDeathScriptWidget();
+}
+
+void UDomiInGameHUDWidget::OnPlayerSpawn()
+{
+	HideDeathScriptWidget();
 }
 
 void UDomiInGameHUDWidget::NativeConstruct()
@@ -35,5 +41,11 @@ void UDomiInGameHUDWidget::SetupStatusBarWidget(const AActor* OwningActor)
 	if (StatusComp)
 	{
 		StatusComp->OnDeath.AddUObject(this, &UDomiInGameHUDWidget::OnPlayerDeath);
+	}
+
+	auto* GameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+	{
+		GameMode->OnPlayerSpawn.AddUObject(this, &UDomiInGameHUDWidget::OnPlayerSpawn);
 	}
 }
