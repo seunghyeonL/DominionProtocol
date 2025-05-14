@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer InvincibilityTags;
+	
 public:
 	ADomiCharacter();
 
@@ -136,12 +139,6 @@ public:
 
 
 	// === Dash 이동용 변수 ===
-
-	UPROPERTY()
-	FVector DashStartLocation;
-
-	UPROPERTY()
-	FVector DashTargetLocation;
 
 	UPROPERTY()
 	float DashElapsed = 0.f;

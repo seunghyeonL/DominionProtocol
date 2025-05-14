@@ -155,6 +155,14 @@ float UBaseSkill::GetStamina() const
 	return Stamina;
 }
 
+void UBaseSkill::Tick(float DeltaTime)
+{
+	if(!bIsExecuting)
+	{
+		return;
+	}
+}
+
 float UBaseSkill::GetFinalAttackData(const float AttackPower) const
 {
 	return AttackPower * DamageCoefficient;

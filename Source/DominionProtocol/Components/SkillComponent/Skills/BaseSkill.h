@@ -23,10 +23,14 @@ public:
 
 	virtual float GetStamina() const;
 
+	virtual void Tick(float DeltaTime);
+
 	FORCEINLINE FGameplayTag GetSkillTag() const { return SkillTag; }
 	FORCEINLINE FGameplayTag GetControlEffectTag() const { return ControlEffectTag; }
 
 protected:
+	bool bIsExecuting;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
 	FGameplayTag SkillTag;
 

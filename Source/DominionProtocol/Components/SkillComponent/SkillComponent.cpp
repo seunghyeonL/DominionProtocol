@@ -3,6 +3,8 @@
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "SkillComponentInitializeData.h"
+#include "Components/StatusComponent/StatusComponentUser.h"
+#include "Components/StatusComponent/StatusComponent.h"
 #include "Gameframework/Character.h"
 #include "Util/DebugHelper.h"
 
@@ -50,14 +52,6 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
                 SkillGroup.Skills.Add(Skill);
 
                 UPlayerControlComponent* PlayerControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
-
-                // 스킬 시작 및 끝나는 시점 델리게이트 바인딩
-                // Skill->OnSkillStart.BindUObject(PlayerControlComponent, &UPlayerControlComponent::UsingSkillEffectDeactivate);
-                // Skill->OnSkillEnd.BindUObject(PlayerControlComponent, &UPlayerControlComponent::UsingSkillEffectActivate);
-                //
-                // Debug::Print(TEXT("USkillComponent::OnSkillStart is Bound (Player)"));
-                // Debug::Print(TEXT("USkillComponent::OnSkillEnd is Bound (Player)"));
-
             }
             else
             {
@@ -74,6 +68,13 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
     check(IsValid(OwnerCharacter));
 
+    auto StatusComponentUser = Cast<IStatusComponentUser>(GetOuter());
+    check(StatusComponentUser);
+
+    auto StatusComponent = StatusComponentUser->GetStatusComponent();
+    check(IsValid(StatusComponent));
+    
+    
     if (FSkillGroup* SkillGroup = SkillGroupMap.Find(SkillGroupTag))
     {
         const TArray<UBaseSkill*>& Skills = SkillGroup->Skills;
@@ -85,6 +86,19 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
             if (IsValid(Skill))
             {
                 SetCurrentSkill(Skill);
+
+                // Check to use Stamina
+                if (float CurrentStamina = StatusComponent->GetStat(StatTags::Stamina))
+                {
+                    // Check to have enough Stamina 
+                    if (CurrentStamina < Skill->GetStamina())
+                    {
+                        return;
+                    }
+
+                    // Use Stamina
+                    StatusComponent->ConsumeStamina(Skill->GetStamina());
+                }
                 
                 Skill->Execute(OwnerCharacter); // 해당 스킬 실행
                 if (OnSkillStart.IsBound())
