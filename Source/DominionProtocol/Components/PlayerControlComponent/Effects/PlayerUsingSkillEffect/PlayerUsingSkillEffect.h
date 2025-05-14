@@ -33,4 +33,6 @@ public:
 	virtual void MagicSkill() override;
 	virtual void Interact() override;
 	virtual void LockOn() override;
+
+	virtual void Tick(float DeltaTime) override;
 };

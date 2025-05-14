@@ -74,3 +74,10 @@ void UPlayerUsingSkillEffect::LockOn()
 {
 	// Super::LockOn();
 }
+
+void UPlayerUsingSkillEffect::Tick(float DeltaTime)
+{
+	// Super::Tick(DeltaTime);
+	// Debug::Print(TEXT("DashTick!"));
+}
+

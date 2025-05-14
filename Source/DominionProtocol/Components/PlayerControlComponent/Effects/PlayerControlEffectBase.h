@@ -34,7 +34,7 @@ public:
 	virtual void Activate();
 	virtual void Activate(float Duration);
 	virtual void Deactivate();
-	virtual void Tick(float DeltaTime);
+	virtual void Tick(float DeltaTime) override;
 
 	// Input Binding Functions
 	virtual void Move(const FInputActionValue& Value) override;

@@ -21,9 +21,10 @@ UPlayerDashSkill::UPlayerDashSkill()
 void UPlayerDashSkill::Execute()
 {
 	Super::Execute();
+	SetDashDirection();
 }
 
-FVector UPlayerDashSkill::GetDashDirection() const
+void UPlayerDashSkill::SetDashDirection()
 {
 	check(OwnerCharacter);
 	if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
@@ -32,14 +33,17 @@ FVector UPlayerDashSkill::GetDashDirection() const
 		
 		if (LastMovementVector.IsNearlyZero())
 		{
-			return -OwnerCharacter->GetActorForwardVector();
+			DashMoveDirection = -OwnerCharacter->GetActorForwardVector();
 		}
-		
-		return LastMovementVector.GetSafeNormal();
+		else
+		{
+			DashMoveDirection = LastMovementVector.GetSafeNormal();
+		}
 	}
-
-	Debug::PrintError("UPlayerDashSkill::GetDashDirection : OwnerCharacter doesn't implement ControlComponentUser.");
-	return {0.f, 0.f, 0.f};
+	else
+	{
+		Debug::PrintError("UPlayerDashSkill::SetDashDirection : OwnerCharacter doesn't implement ControlComponentUser.");
+	}
 }
 
 void UPlayerDashSkill::Tick(float DeltaTime)
@@ -47,7 +51,7 @@ void UPlayerDashSkill::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	check(OwnerCharacter);
 	
-	FVector Step = GetDashDirection() * DashSpeed * DeltaTime;
+	FVector Step = DashMoveDirection * DashSpeed * DeltaTime;
 	
 	FHitResult Hit;
 	OwnerCharacter->GetCharacterMovement()->SafeMoveUpdatedComponent(

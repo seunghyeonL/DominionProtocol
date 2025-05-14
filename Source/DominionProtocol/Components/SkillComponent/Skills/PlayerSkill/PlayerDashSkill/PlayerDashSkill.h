@@ -17,11 +17,13 @@ class DOMINIONPROTOCOL_API UPlayerDashSkill : public UBaseSkill
 public:
 	UPlayerDashSkill();
 
+	FVector DashMoveDirection;
+
 	virtual void Execute() override;
 	virtual void Tick(float DeltaTime) override;
 
 	/** Dash 방향 계산 (입력 없으면 뒤로) */
-	FVector GetDashDirection() const;
+	void SetDashDirection();
 
 	FTimerHandle DurationTimer;
 	
@@ -29,8 +31,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashSpeed;
 	
-	UPROPERTY()
-	FVector DashMoveDirection;
+	
 };
 
 

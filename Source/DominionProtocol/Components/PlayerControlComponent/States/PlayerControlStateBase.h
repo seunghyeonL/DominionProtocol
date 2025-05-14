@@ -35,6 +35,8 @@ public:
 	virtual void Interact() {}
 	virtual void LockOn() {}
 
+	virtual void Tick(float DeltaTime) {}
+
 	// Getter/Setter
 	FORCEINLINE void SetOwnerCharacter(ACharacter* NewOwnerCharacter) { OwnerCharacter = NewOwnerCharacter; }
 	

@@ -46,8 +46,6 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 void UPlayerLockOnEffect::Move(const FInputActionValue& Value)
 {
 	Super::Move(Value);
-	
-	
 }
 
 void UPlayerLockOnEffect::Look(const FInputActionValue& Value)

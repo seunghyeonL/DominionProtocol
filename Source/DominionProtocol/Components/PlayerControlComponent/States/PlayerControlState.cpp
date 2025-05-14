@@ -12,36 +12,12 @@
 
 UPlayerControlState::UPlayerControlState()
 {
-	bDashTickActive = false;
 	OwnerCharacter = nullptr;
 	OuterState = nullptr;
 }
 
 void UPlayerControlState::Tick(float DeltaTime)
 {
-	// if (!OwnerCharacter) return;
-	// if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter))
-	// {
-	// 	DomiChar->DashElapsed += DeltaTime;
-	//
-	// 	if (DomiChar->DashElapsed >= DomiChar->DashDuration)
-	// 	{
-	// 		bDashTickActive = false;
-	// 		DomiChar->EndDash();
-	// 		return;
-	// 	}
-	//
-	// 	float DashSpeed = DomiChar->DashDistance / DomiChar->DashDuration;
-	// 	FVector Step = DomiChar->DashMoveDirection * DashSpeed * DeltaTime;
-	//
-	// 	FHitResult Hit;
-	// 	DomiChar->GetCharacterMovement()->SafeMoveUpdatedComponent(
-	// 		Step,
-	// 		DomiChar->GetActorRotation(),
-	// 		true,
-	// 		Hit
-	// 	);
-	// }
 }
 
 void UPlayerControlState::Move(const FInputActionValue& Value)
