@@ -68,7 +68,7 @@ void UPlayerStiffnessEffect::Interact()
 	// Super::Interact();
 }
 
-void UPlayerStiffnessEffect::RockOn()
+void UPlayerStiffnessEffect::LockOn()
 {
-	// Super::RockOn();
+	// Super::LockOn();
 }

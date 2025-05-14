@@ -68,7 +68,7 @@ void UPlayerSilenceEffect::Interact()
 	Super::Interact();
 }
 
-void UPlayerSilenceEffect::RockOn()
+void UPlayerSilenceEffect::LockOn()
 {
-	Super::RockOn();
+	Super::LockOn();
 }

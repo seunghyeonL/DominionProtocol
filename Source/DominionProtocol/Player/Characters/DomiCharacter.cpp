@@ -227,12 +227,12 @@ void ADomiCharacter::BindInputFunctions()
 				                                   &UPlayerControlComponent::Interact);
 			}
 
-			// RockOn
-			if (IsValid(PlayerController->RockOnAction))
+			// LockOn
+			if (IsValid(PlayerController->LockOnAction))
 			{
-				EnhancedInputComponent->BindAction(PlayerController->RockOnAction, ETriggerEvent::Started,
+				EnhancedInputComponent->BindAction(PlayerController->LockOnAction, ETriggerEvent::Started,
 												   ControlComponent.Get(),
-												   &UPlayerControlComponent::RockOn);
+												   &UPlayerControlComponent::LockOn);
 			}
 		}
 		else

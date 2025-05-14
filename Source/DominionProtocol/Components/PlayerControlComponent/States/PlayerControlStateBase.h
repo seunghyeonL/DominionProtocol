@@ -33,7 +33,7 @@ public:
 	virtual void WeaponSkill() {}
 	virtual void MagicSkill() {}
 	virtual void Interact() {}
-	virtual void RockOn() {}
+	virtual void LockOn() {}
 
 	// Getter/Setter
 	FORCEINLINE void SetOwnerCharacter(ACharacter* NewOwnerCharacter) { OwnerCharacter = NewOwnerCharacter; }

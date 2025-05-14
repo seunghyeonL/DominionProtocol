@@ -89,7 +89,7 @@ void UPlayerLockOnEffect::Interact()
 	Super::Interact();
 }
 
-void UPlayerLockOnEffect::RockOn()
+void UPlayerLockOnEffect::LockOn()
 {
-	Super::RockOn();
+	Super::LockOn();
 }

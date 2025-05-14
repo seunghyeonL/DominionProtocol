@@ -70,7 +70,7 @@ void UPlayerUsingSkillEffect::Interact()
 	// Super::Interact();
 }
 
-void UPlayerUsingSkillEffect::RockOn()
+void UPlayerUsingSkillEffect::LockOn()
 {
-	// Super::RockOn();
+	// Super::LockOn();
 }

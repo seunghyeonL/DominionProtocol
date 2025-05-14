@@ -70,7 +70,7 @@ public:
 
 	// RockOn Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> RockOnAction;
+	TObjectPtr<UInputAction> LockOnAction;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")

@@ -82,7 +82,7 @@ void UPlayerDeathEffect::Interact()
 	// Super::Interact();
 }
 
-void UPlayerDeathEffect::RockOn()
+void UPlayerDeathEffect::LockOn()
 {
-	// Super::RockOn();
+	// Super::LockOn();
 }

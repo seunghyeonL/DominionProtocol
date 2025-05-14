@@ -72,7 +72,7 @@ void UPlayerConfusedEffect::Interact()
 	Super::Interact();
 }
 
-void UPlayerConfusedEffect::RockOn()
+void UPlayerConfusedEffect::LockOn()
 {
-	Super::RockOn();
+	Super::LockOn();
 }

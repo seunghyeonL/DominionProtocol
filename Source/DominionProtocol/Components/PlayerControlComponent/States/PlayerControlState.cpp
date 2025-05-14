@@ -212,9 +212,9 @@ void UPlayerControlState::Interact()
 	Debug::Print(TEXT("UPlayerControlState::Interact : Call."));
 }
 
-void UPlayerControlState::RockOn()
+void UPlayerControlState::LockOn()
 {
-	Super::RockOn();
+	Super::LockOn();
 
-	Debug::Print(TEXT("UPlayerControlState::RockOn : Call."));
+	Debug::Print(TEXT("UPlayerControlState::LockOn : Call."));
 }

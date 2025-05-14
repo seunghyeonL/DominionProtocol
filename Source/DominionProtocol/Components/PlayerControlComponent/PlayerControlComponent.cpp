@@ -294,15 +294,15 @@ void UPlayerControlComponent::Interact()
 	}
 }
 
-void UPlayerControlComponent::RockOn()
+void UPlayerControlComponent::LockOn()
 {
 	if (IsValid(PlayerControlState))
 	{
-		PlayerControlState->RockOn();
+		PlayerControlState->LockOn();
 	}
 	else
 	{
-		Debug::PrintError(TEXT("UPlayerControlComponent::RockOn : Invalid ControlState."));
+		Debug::PrintError(TEXT("UPlayerControlComponent::LockOn : Invalid ControlState."));
 	}
 }
 
