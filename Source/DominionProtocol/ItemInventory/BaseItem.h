@@ -6,10 +6,11 @@
 #include "Components/BoxComponent.h"
 #include "ItemData.h"
 #include "Util/GameTagList.h"
+#include "Interface/InteractableInterface.h"
 #include "BaseItem.generated.h"
 
 UCLASS()
-class DOMINIONPROTOCOL_API ABaseItem : public AActor
+class DOMINIONPROTOCOL_API ABaseItem : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 	
@@ -32,11 +33,19 @@ protected:
 	UBoxComponent* InteractionVolume;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void Interact(APawn* InteractingPawn);
+	virtual void InteractItem(APawn* InteractingPawn);
+
+	//상호작용 인터페이스
+	virtual void Interact_Implementation(AActor* Interactor) override;
+	virtual FText GetInteractMessage_Implementation() const override;
 	
-	// 오버랩 획득 로직 (필요에 따라)
-	/*UFUNCTION()
-	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);*/
+	//상호작용을 위한 오버랩 Begin
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	//상호작용을 위한 오버랩 End
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
 	// 아이템 데이터 반환 (데이터 테이블에서 로드)
