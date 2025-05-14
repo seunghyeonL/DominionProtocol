@@ -45,7 +45,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void InitializeComponent() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats", meta=(AllowPrivateAccess=true))

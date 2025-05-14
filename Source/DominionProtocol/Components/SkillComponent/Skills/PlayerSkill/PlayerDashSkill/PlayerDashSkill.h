@@ -17,7 +17,7 @@ class DOMINIONPROTOCOL_API UPlayerDashSkill : public UBaseSkill
 public:
 	UPlayerDashSkill();
 
-	virtual void Execute(ACharacter* Owner) override;
+	virtual void Execute() override;
 	virtual void Tick(float DeltaTime) override;
 
 	/** Dash 시작: 스태미나 차감, 무적 시작, 이펙트 적용 */

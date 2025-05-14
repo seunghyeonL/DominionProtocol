@@ -15,11 +15,11 @@ class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 public:
 	UBaseSkill();
 
-	virtual void Initialize();
+	virtual void Initialize(ACharacter* OwnerCharacter);
 
-	virtual void Execute(ACharacter* Owner);
+	virtual void Execute();
 
-	virtual void AttackTrace(ACharacter* Owner) const;
+	virtual void AttackTrace() const;
 
 	virtual float GetStamina() const;
 
@@ -30,11 +30,14 @@ public:
 
 protected:
 	bool bIsExecuting;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner", meta=(AllowPrivateAccess=true))
+	ACharacter* OwnerCharacter;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta=(AllowPrivateAccess=true))
 	FGameplayTag SkillTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta=(AllowPrivateAccess=true))
 	FGameplayTag ControlEffectTag;
 	
 	float GetFinalAttackData(const float AttackPower) const;

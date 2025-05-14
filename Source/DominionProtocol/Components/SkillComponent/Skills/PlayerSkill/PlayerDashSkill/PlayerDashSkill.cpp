@@ -14,7 +14,7 @@ UPlayerDashSkill::UPlayerDashSkill()
 	ControlEffectTag = EffectTags::UsingDash;
 }
 
-void UPlayerDashSkill::Execute(ACharacter* Owner)
+void UPlayerDashSkill::Execute()
 {
 	// Super::Execute(Owner);
 	auto ControlComponentUser = Cast<IControlComponentUser>(GetOuter());
@@ -37,8 +37,18 @@ void UPlayerDashSkill::Tick(float DeltaTime)
 void UPlayerDashSkill::StartDash()
 {
 	
+	
+	
+}
 
-	
-	
-	
+FVector UPlayerDashSkill::GetDashDirection() const
+{
+	return {1, 1, 1};
+	// FVector Input = GetLastMovementInputVector();
+	//
+	// if (Input.IsNearlyZero())
+	// {
+	// 	return -GetActorForwardVector();
+	// }
+	// return Input.GetSafeNormal();
 }

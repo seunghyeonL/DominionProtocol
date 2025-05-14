@@ -12,11 +12,13 @@
 UBaseSkill::UBaseSkill()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
+	OwnerCharacter = nullptr;
 }
 
-void UBaseSkill::Initialize()
+void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 {
 	UWorld* World = GetWorld();
+	OwnerCharacter = InOwnerCharacter;
 
 	if (IsValid(World))
 	{
@@ -24,9 +26,7 @@ void UBaseSkill::Initialize()
 
 		if (IsValid(BaseGameState))
 		{
-			FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag);
-
-			if (SkillData)
+			if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
 			{
 				AnimMontage = SkillData->AnimMontage;
 				Sound = SkillData->Sound;
@@ -49,34 +49,34 @@ void UBaseSkill::Initialize()
 	}
 }
 
-void UBaseSkill::Execute(ACharacter* Owner)
+void UBaseSkill::Execute()
 {
 	check(AnimMontage);
 
-	if (IsValid(Owner))
+	if (IsValid(OwnerCharacter))
 	{
-		Owner->PlayAnimMontage(AnimMontage);
+		OwnerCharacter->PlayAnimMontage(AnimMontage);
 	}
 }
 
 // 애님 노티파이에서 실행
-void UBaseSkill::AttackTrace(ACharacter* Owner) const
+void UBaseSkill::AttackTrace() const
 {
-	if (!IsValid(Owner))
+	if (!IsValid(OwnerCharacter))
 	{
 		return;
 	}
 
-	FVector ForwardVector = Owner->GetActorForwardVector();
+	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
 
-	FVector Start = Owner->GetActorLocation() + ForwardVector * (AttackRadius + AttackForwardOffset);
+	FVector Start = OwnerCharacter->GetActorLocation() + ForwardVector * (AttackRadius + AttackForwardOffset);
 	FVector End = Start + ForwardVector * (AttackRadius + AttackForwardOffset);
 
 	TArray<FHitResult> HitResults;
 
 	// 트레이스 수행
 	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(Owner); // 자신은 무시하도록 설정
+	QueryParams.AddIgnoredActor(OwnerCharacter); // 자신은 무시하도록 설정
 
 	bool bHit = GetWorld()->SweepMultiByChannel(
 		HitResults,
@@ -116,7 +116,7 @@ void UBaseSkill::AttackTrace(ACharacter* Owner) const
 
 		if (IsValid(BaseGameState))
 		{
-			UStatusComponent* StatusComponent = Owner->FindComponentByClass<UStatusComponent>();
+			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
 
 			if (IsValid(StatusComponent))
 			{
@@ -125,7 +125,7 @@ void UBaseSkill::AttackTrace(ACharacter* Owner) const
 				AttackData.Damage = GetFinalAttackData(AttackPower);
 			}
 
-			AttackData.Instigator = Owner;
+			AttackData.Instigator = OwnerCharacter;
 			AttackData.Effects = Effects;
 		}
 	}
@@ -141,7 +141,7 @@ void UBaseSkill::AttackTrace(ACharacter* Owner) const
 
 		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 		{
-			AttackData.LaunchVector = HitActor->GetActorLocation() - Owner->GetActorLocation();
+			AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
 
 			AttackData.LaunchVector.Normalize();
 

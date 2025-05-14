@@ -50,10 +50,8 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
         {
             if (UBaseSkill* Skill = NewObject<UBaseSkill>(this, SkillClass))
             {
-                Skill->Initialize();
+                Skill->Initialize(OwnerCharacter);
                 SkillGroup.Skills.Add(Skill);
-
-                UPlayerControlComponent* PlayerControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
             }
             else
             {
@@ -102,7 +100,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     StatusComponent->ConsumeStamina(Skill->GetStamina());
                 }
                 
-                Skill->Execute(OwnerCharacter); // 해당 스킬 실행
+                Skill->Execute(); // 해당 스킬 실행
                 if (OnSkillStart.IsBound())
                 {
                     OnSkillStart.Execute(Skill->GetControlEffectTag());
@@ -157,7 +155,6 @@ void USkillComponent::EndSkill()
     }
 
     TWeakObjectPtr<ThisClass> WeakThis(this);
-
     GetWorld()->GetTimerManager().SetTimer(
         ResetComboTimer,
         [WeakThis]()

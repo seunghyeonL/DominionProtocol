@@ -17,11 +17,9 @@ void UAnimNotify_SkillAttackTrace::Notify(USkeletalMeshComponent* MeshComp, UAni
 				// 현재 실행중인 스킬의 AttackTrace 함수 실행
 				UBaseSkill* BaseSkill = SkillComponent->GetCurrentSkill();
 
-				ACharacter* OwnerCharacter = Cast<ACharacter>(Owner);
-
-				if (OwnerCharacter && IsValid(BaseSkill))
+				if (IsValid(BaseSkill))
 				{
-					BaseSkill->AttackTrace(OwnerCharacter);
+					BaseSkill->AttackTrace();
 				}
 			}
 		}
