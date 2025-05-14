@@ -79,6 +79,9 @@ public:
 	// ControlComponentUser
 	virtual FGameplayTagContainer GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
+	FORCEINLINE virtual void SetLastMovementVector(const FVector& InLastMovementVector) override { LastMovementVector = InLastMovementVector; }
+	FORCEINLINE virtual FVector GetLastMovementVector() const override { return LastMovementVector; }
+	FORCEINLINE virtual void ResetLastMovementVector() override { LastMovementVector = FVector::ZeroVector; }
 	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
 	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
 
@@ -103,50 +106,7 @@ private:
 	UPROPERTY()
 	AActor* InteractableObject;
 
-	// === Dash 실행 함수 ===
-public:
-
-	/** Dash 가능 여부 (스태미나 충분한지) */
-	bool HasEnoughStamina() const;
-
-	/** Dash 시작: 스태미나 차감, 무적 시작, 이펙트 적용 */
-	bool StartDash();
-
-	/** Dash 종료: 무적 해제 */
-	void EndDash();
-
-	/** 무적 상태 on/off */
-	void SetInvincible(bool bInvincible);
-
-	/** Dash 방향 계산 (입력 없으면 뒤로) */
-	FVector GetDashDirection() const;
-
-	// === Dash 수치 설정값 ===
-	UPROPERTY(EditDefaultsOnly, Category = "Dash")
-	float DashDistance = 600.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash")
-	float DashDuration = 0.3f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash")
-	float DashStaminaCost = 20.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash")
-	float DashMovedDistance = 0.f;
-
-	UPROPERTY()
-	FVector DashMoveDirection;
-
-
-	// === Dash 이동용 변수 ===
-
-	UPROPERTY()
-	float DashElapsed = 0.f;
-
-	// === 기타 상태 ===
-
-	UPROPERTY(VisibleAnywhere, Category = "State")
-	bool bIsInvincible = false;
-
+	// 마지막 이동 입력 방향벡터
+	FVector LastMovementVector;
 };
 

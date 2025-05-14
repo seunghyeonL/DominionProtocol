@@ -10,7 +10,19 @@
 USkillComponent::USkillComponent()
 {
     bWantsInitializeComponent = true;
+    PrimaryComponentTick.bCanEverTick = true;
     ComboResetDelay = 1.f;
+}
+
+void USkillComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
+    FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+    if (IsValid(CurrentSkill))
+    {
+        CurrentSkill->Tick(DeltaTime);
+    }
 }
 
 void USkillComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
@@ -85,8 +97,6 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
             UBaseSkill* Skill = Skills[ComboIdx];
             if (IsValid(Skill))
             {
-                SetCurrentSkill(Skill);
-
                 // Check to use Stamina
                 if (float CurrentStamina = StatusComponent->GetStat(StatTags::Stamina); CurrentStamina > 0.f)
                 {
@@ -100,6 +110,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     StatusComponent->ConsumeStamina(Skill->GetStamina());
                 }
                 
+                SetCurrentSkill(Skill);
                 Skill->Execute(); // 해당 스킬 실행
                 if (OnSkillStart.IsBound())
                 {
@@ -162,6 +173,8 @@ void USkillComponent::EndSkill()
     {
         OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
     }
+
+    CurrentSkill = nullptr;
 
     TWeakObjectPtr<ThisClass> WeakThis(this);
     GetWorld()->GetTimerManager().SetTimer(

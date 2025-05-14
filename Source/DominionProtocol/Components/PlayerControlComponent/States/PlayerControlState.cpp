@@ -19,36 +19,36 @@ UPlayerControlState::UPlayerControlState()
 
 void UPlayerControlState::Tick(float DeltaTime)
 {
-	if (!OwnerCharacter) return;
-	if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter))
-	{
-		DomiChar->DashElapsed += DeltaTime;
-
-		if (DomiChar->DashElapsed >= DomiChar->DashDuration)
-		{
-			bDashTickActive = false;
-			DomiChar->EndDash();
-			return;
-		}
-
-		float DashSpeed = DomiChar->DashDistance / DomiChar->DashDuration;
-		FVector Step = DomiChar->DashMoveDirection * DashSpeed * DeltaTime;
-
-		FHitResult Hit;
-		DomiChar->GetCharacterMovement()->SafeMoveUpdatedComponent(
-			Step,
-			DomiChar->GetActorRotation(),
-			true,
-			Hit
-		);
-	}
+	// if (!OwnerCharacter) return;
+	// if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter))
+	// {
+	// 	DomiChar->DashElapsed += DeltaTime;
+	//
+	// 	if (DomiChar->DashElapsed >= DomiChar->DashDuration)
+	// 	{
+	// 		bDashTickActive = false;
+	// 		DomiChar->EndDash();
+	// 		return;
+	// 	}
+	//
+	// 	float DashSpeed = DomiChar->DashDistance / DomiChar->DashDuration;
+	// 	FVector Step = DomiChar->DashMoveDirection * DashSpeed * DeltaTime;
+	//
+	// 	FHitResult Hit;
+	// 	DomiChar->GetCharacterMovement()->SafeMoveUpdatedComponent(
+	// 		Step,
+	// 		DomiChar->GetActorRotation(),
+	// 		true,
+	// 		Hit
+	// 	);
+	// }
 }
 
 void UPlayerControlState::Move(const FInputActionValue& Value)
 {
 	Super::Move(Value);
 	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	FVector2D InputVector = Value.Get<FVector2D>();
 
 	if (!OwnerCharacter)
 	{
@@ -68,9 +68,16 @@ void UPlayerControlState::Move(const FInputActionValue& Value)
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
+		// final movement vector
+		const FVector FinalMovementNormalVector = (ForwardDirection * InputVector.X  + RightDirection * InputVector.Y).GetSafeNormal();
+
+		if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
+		{
+			ControlComponentUser->SetLastMovementVector(FinalMovementNormalVector);
+		}
+
 		// add movement
-		OwnerCharacter->AddMovementInput(ForwardDirection, MovementVector.Y);
-		OwnerCharacter->AddMovementInput(RightDirection, MovementVector.X);
+		OwnerCharacter->AddMovementInput(FinalMovementNormalVector);
 	}
 	else
 	{
@@ -108,15 +115,24 @@ void UPlayerControlState::Dash()
 	Super::Dash();
 
 	if (!OwnerCharacter) return;
-	if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter))
+
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
 	{
-		if (!DomiChar->StartDash()) return;
-
-		DomiChar->DashElapsed = 0.f;
-		bDashTickActive = true;
-
-		DomiChar->DashMoveDirection = DomiChar->GetDashDirection();
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::Dash);
 	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::BaseAttack : Character doesn't implement ISkillComponentUser."));
+	}
+	// if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter))
+	// {
+	// 	if (!DomiChar->StartDash()) return;
+	//
+	// 	DomiChar->DashElapsed = 0.f;
+	// 	bDashTickActive = true;
+	//
+	// 	DomiChar->DashMoveDirection = DomiChar->GetDashDirection();
+	// }
 }
 
 void UPlayerControlState::Sprint()
@@ -150,8 +166,8 @@ void UPlayerControlState::BaseAttack()
 {
 	Super::BaseAttack();
 
-	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
-	check(PlayerCharacter);
+	// ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	check(OwnerCharacter);
 
 	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
 	{

@@ -2,6 +2,9 @@
 
 
 #include "PlayerControlComponent.h"
+
+#include "ControlComponentUser.h"
+#include "Components/SkillComponent/SkillComponent.h"
 #include "Util/DebugHelper.h"
 #include "GameFramework/Character.h"
 #include "./States/PlayerControlState.h"
@@ -12,7 +15,7 @@
 #include "Effects/PlayerStiffnessEffect/PlayerStiffnessEffect.h"
 #include "Effects/PlayerStunEffect/PlayerStunEffect.h"
 #include "Effects/PlayerUsingSkillEffect/PlayerUsingSkillEffect.h"
-
+#include "InputActionValue.h"
 
 // Sets default values for this component's properties
 UPlayerControlComponent::UPlayerControlComponent()

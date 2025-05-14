@@ -29,6 +29,7 @@
 #include "Components/SkillComponent/Skills/BaseFirstSword.h"
 #include "Components/SkillComponent/Skills/BaseSecondSword.h"
 #include "Components/SkillComponent/Skills/BaseThirdSword.h"
+#include "Components/SkillComponent/Skills/PlayerSkill/PlayerDashSkill/PlayerDashSkill.h"
 #include "Components/StatusComponent/StatusEffects/PlayerRunningEffect/PlayerRunningEffect.h"
 
 #include "DomiFramework/GameMode/BaseGameMode.h"
@@ -82,6 +83,9 @@ ADomiCharacter::ADomiCharacter()
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::UsingDash);
 	InvincibilityTags.AddTag(EffectTags::Death);
+
+	// Cashed MovementVector
+	LastMovementVector = {0.f, 0.f, 0.f};
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -150,6 +154,10 @@ void ADomiCharacter::BindInputFunctions()
 				EnhancedInputComponent->BindAction(PlayerController->MoveAction, ETriggerEvent::Triggered,
 				                                   ControlComponent.Get(),
 				                                   &UPlayerControlComponent::Move);
+
+				EnhancedInputComponent->BindAction(PlayerController->MoveAction, ETriggerEvent::Completed,
+												   this,
+												   &ADomiCharacter::ResetLastMovementVector);
 			}
 
 			// Looking
@@ -324,16 +332,23 @@ void ADomiCharacter::InitializeSkillComponent()
 	// Initializing Data for SkillGroups
 	// 추후에 데이터 에셋화 혹은 테이터 테이블화
 	
-	FSkillGroupInitializeData BaseSkillGroupInitializeData;
+	
 	//BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
 	//BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());
 	//InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
-
+	
+	FSkillGroupInitializeData BaseSkillGroupInitializeData;
 	BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
 	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseFirstSword::StaticClass());
 	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseSecondSword::StaticClass());
 	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseThirdSword::StaticClass());
+
+	FSkillGroupInitializeData DashSkillGroupInitializeData;
+	DashSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::Dash;
+	DashSkillGroupInitializeData.SkillGroupData.Add(UPlayerDashSkill::StaticClass());
+	
 	InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
+	InitializeData.SkillGroupInitializeDatas.Add(DashSkillGroupInitializeData);
 
 	if (IsValid(SkillComponent))
 	{
@@ -363,11 +378,6 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	if (ActiveControlEffects.HasAny(InvincibilityTags))
 	{
 		Debug::Print(TEXT("ADomiCharacter::OnAttacked : Invincible!"));
-		return;
-	}
-
-	if (bIsInvincible)
-	{
 		return;
 	}
 
@@ -421,47 +431,4 @@ void ADomiCharacter::ShowStatusEffectTags_Implementation()
 	{
 		Debug::Print(Tag.ToString());
 	}
-}
-
-FVector ADomiCharacter::GetDashDirection() const
-{
-	FVector Input = GetLastMovementInputVector();
-
-	if (Input.IsNearlyZero())
-	{
-		return -GetActorForwardVector();
-	}
-	return Input.GetSafeNormal();
-}
-
-bool ADomiCharacter::HasEnoughStamina() const
-{
-	if (!StatusComponent) return false;
-	return StatusComponent->GetStat(StatTags::Stamina) >= DashStaminaCost;
-}
-
-bool ADomiCharacter::StartDash()
-{
-	if (!StatusComponent || !ControlComponent) return false;
-	if (!HasEnoughStamina())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("StartDash failed: Not enough stamina."));
-
-		return false;
-	}
-	StatusComponent->ConsumeStamina(DashStaminaCost);
-	ControlComponent->ActivateControlEffect(EffectTags::UsingDash, DashDuration);
-	SetInvincible(true);
-
-	return true;
-}
-
-void ADomiCharacter::EndDash()
-{
-	SetInvincible(false);
-}
-
-void ADomiCharacter::SetInvincible(bool bInvincible)
-{
-	bIsInvincible = bInvincible;
 }

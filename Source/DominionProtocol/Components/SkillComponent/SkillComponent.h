@@ -19,6 +19,8 @@ class DOMINIONPROTOCOL_API USkillComponent : public UActorComponent
 
 public:
 	USkillComponent();
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
