@@ -114,22 +114,21 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 void USkillComponent::EndSkill()
 {
     ACharacter* Character = Cast<ACharacter>(GetOwner());
+
     if (Character)
     {
         USkeletalMeshComponent* Mesh = Character->GetMesh();
+
         if (Mesh)
         {
             UAnimInstance* AnimInstance = Mesh->GetAnimInstance();
+
             if (AnimInstance)
             {
-                // AnimInstance로 원하는 작업 수행
-
                 UAnimMontage* CurrentMontage = AnimInstance->GetCurrentActiveMontage();
 
                 if (CurrentMontage)
                 {
-                    // 현재 실행 중인 몽타주가 있음
-
                     AnimInstance->Montage_SetPlayRate(CurrentMontage, CurrentMontage->RateScale * 2);
                 }
             }

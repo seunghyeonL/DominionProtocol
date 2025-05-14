@@ -45,7 +45,7 @@ protected:
 
 private:
 	// 콤보 스킬 리셋 딜레이
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = true))
 	float ComboResetDelay;
 
 	FTimerHandle ResetComboTimer;
