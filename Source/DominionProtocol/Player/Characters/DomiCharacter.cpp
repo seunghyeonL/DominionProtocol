@@ -26,6 +26,9 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/SkillComponent/Skills/BaseAttack.h"
+#include "Components/SkillComponent/Skills/BaseFirstSword.h"
+#include "Components/SkillComponent/Skills/BaseSecondSword.h"
+#include "Components/SkillComponent/Skills/BaseThirdSword.h"
 #include "Components/StatusComponent/StatusEffects/PlayerRunningEffect/PlayerRunningEffect.h"
 
 #include "DomiFramework/GameMode/BaseGameMode.h"
@@ -317,8 +320,14 @@ void ADomiCharacter::InitializeSkillComponent()
 	// 추후에 데이터 에셋화 혹은 테이터 테이블화
 	
 	FSkillGroupInitializeData BaseSkillGroupInitializeData;
+	//BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
+	//BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());
+	//InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
+
 	BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
-	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());
+	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseFirstSword::StaticClass());
+	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseSecondSword::StaticClass());
+	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseThirdSword::StaticClass());
 	InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
 
 	if (IsValid(SkillComponent))

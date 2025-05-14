@@ -19,12 +19,15 @@ class DOMINIONPROTOCOL_API USkillComponent : public UActorComponent
 
 public:
 	USkillComponent();
+	~USkillComponent();
 
 	virtual void InitializeComponent() override;
 
 	void InitializeSkillComponent(const FSkillComponentInitializeData& InitializeData);
 
 	void ExecuteSkill(const FGameplayTag& SkillGroupTag);
+
+	void EndSkill();
 
 	UBaseSkill* GetCurrentSkill() const { return CurrentSkill; }
 	void SetCurrentSkill(UBaseSkill* Skill) { CurrentSkill = Skill; }
@@ -39,4 +42,13 @@ protected:
 	// 실행중인 스킬
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")
 	UBaseSkill* CurrentSkill = nullptr;
+
+private:
+	// 콤보 스킬 리셋 딜레이
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = true))
+	float ComboResetDelay;
+
+	FTimerHandle ResetComboTimer;
+
+	FGameplayTag CurrentSkillGroupTag;
 };

@@ -16,18 +16,19 @@ void UAnimNotify_SkillAttackEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimS
 
 			if (IsValid(SkillComponent))
 			{
-				// 스킬을 실행한 SkillComponent의 OnSkillEnd 델리게이트 실행
-				if (SkillComponent->OnSkillEnd.IsBound())
-				{
-					if (auto CurrentSkill = SkillComponent->GetCurrentSkill())
-					{
-						SkillComponent->OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
-					}
-				}
-				else
-				{
-					Debug::PrintError(TEXT("OnSkillEnd Delegate is not bound."));
-				}			
+				//// 스킬을 실행한 SkillComponent의 OnSkillEnd 델리게이트 실행
+				//if (SkillComponent->OnSkillEnd.IsBound())
+				//{
+				//	if (auto CurrentSkill = SkillComponent->GetCurrentSkill())
+				//	{
+				//		SkillComponent->OnSkillEnd.Execute(CurrentSkill->GetSkillTag());
+				//	}
+				//}
+				//else
+				//{
+				//	Debug::PrintError(TEXT("OnSkillEnd Delegate is not bound."));
+				//}		
+				SkillComponent->EndSkill();
 			}
 		}
 	}

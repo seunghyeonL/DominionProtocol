@@ -9,6 +9,15 @@
 USkillComponent::USkillComponent()
 {
     bWantsInitializeComponent = true;
+    ComboResetDelay = 1.f;
+}
+
+USkillComponent::~USkillComponent()
+{
+    if (GetWorld())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(ResetComboTimer);
+    }
 }
 
 void USkillComponent::InitializeComponent()
@@ -83,6 +92,10 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     OnSkillStart.Execute(Skill->GetControlEffectTag());
                 }
 
+                CurrentSkillGroupTag = SkillGroupTag;
+
+                GetWorld()->GetTimerManager().ClearTimer(ResetComboTimer);
+
                 // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴
                 ComboIdx = (ComboIdx + 1) % SkillGroup->Skills.Num();
             }
@@ -96,6 +109,57 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
     {
         Debug::PrintError(TEXT("USkillComponent::ExecuteSkill : SkillGroupTag is not set in SkillGroupMap"));
     }
+}
+
+void USkillComponent::EndSkill()
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (Character)
+    {
+        USkeletalMeshComponent* Mesh = Character->GetMesh();
+        if (Mesh)
+        {
+            UAnimInstance* AnimInstance = Mesh->GetAnimInstance();
+            if (AnimInstance)
+            {
+                // AnimInstance로 원하는 작업 수행
+
+                UAnimMontage* CurrentMontage = AnimInstance->GetCurrentActiveMontage();
+
+                if (CurrentMontage)
+                {
+                    // 현재 실행 중인 몽타주가 있음
+
+                    AnimInstance->Montage_SetPlayRate(CurrentMontage, CurrentMontage->RateScale * 2);
+                }
+            }
+        }
+    }
+
+    if (OnSkillEnd.IsBound())
+    {
+        OnSkillEnd.Execute(CurrentSkill->GetSkillTag());
+    }
+
+    TWeakObjectPtr<ThisClass> WeakThis(this);
+
+    GetWorld()->GetTimerManager().SetTimer(
+        ResetComboTimer,
+        [WeakThis]()
+        {
+            if (!WeakThis.IsValid())
+            {
+                return;
+            }
+
+            if (FSkillGroup* SkillGroup = WeakThis->SkillGroupMap.Find(WeakThis->CurrentSkillGroupTag))
+            {
+                SkillGroup->ComboIdx = 0;
+            }
+        },
+        ComboResetDelay,
+        false
+    );
 }
 
 // Debug::PrintLog(TEXT(" "));
