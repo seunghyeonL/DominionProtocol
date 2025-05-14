@@ -25,6 +25,8 @@ public:
 
 	virtual void Tick(float DeltaTime);
 
+	TObjectPtr<UAnimMontage> GetAnimMontage() const;
+
 	FORCEINLINE FGameplayTag GetSkillTag() const { return SkillTag; }
 	FORCEINLINE FGameplayTag GetControlEffectTag() const { return ControlEffectTag; }
 

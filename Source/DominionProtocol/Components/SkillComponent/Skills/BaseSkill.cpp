@@ -134,6 +134,8 @@ void UBaseSkill::AttackTrace() const
 	{
 		AActor* HitActor = Hit.GetActor();
 
+		USkillComponent* HitActorSkillComponent = HitActor->FindComponentByClass<USkillComponent>();
+
 		if (!IsValid(HitActor))
 		{
 			continue;
@@ -144,6 +146,10 @@ void UBaseSkill::AttackTrace() const
 			AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
 
 			AttackData.LaunchVector.Normalize();
+
+			// 피격자가 실행 중이던 스킬 중단
+			HitActorSkillComponent->StopSkill();
+			Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
 
 			IDamagable::Execute_OnAttacked(HitActor, AttackData);
 		}
@@ -161,6 +167,11 @@ void UBaseSkill::Tick(float DeltaTime)
 	{
 		return;
 	}
+}
+
+TObjectPtr<UAnimMontage> UBaseSkill::GetAnimMontage() const
+{
+	return AnimMontage;
 }
 
 float UBaseSkill::GetFinalAttackData(const float AttackPower) const
