@@ -19,6 +19,7 @@ class DOMINIONPROTOCOL_API UPlayerLockOnEffect : public UPlayerControlEffectBase
 	virtual void Activate() override;
 	virtual void Activate(float Duration) override;
 	virtual void Deactivate() override;
+	virtual void Tick(float DeltaTime) override;
 	
 	virtual void Move(const FInputActionValue& Value) override;
 	virtual void Look(const FInputActionValue& Value) override;

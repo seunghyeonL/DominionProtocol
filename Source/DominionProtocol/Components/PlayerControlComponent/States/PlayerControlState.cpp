@@ -215,6 +215,15 @@ void UPlayerControlState::Interact()
 void UPlayerControlState::LockOn()
 {
 	Super::LockOn();
+	UPlayerControlComponent* PlayerControlComponent= Cast<UPlayerControlComponent>(GetOuter());
+	if (PlayerControlComponent->GetActiveControlEffectTags().HasTag(EffectTags::LockOn))
+	{
+		PlayerControlComponent->DeactivateControlEffect(EffectTags::LockOn);
+	}
+	else
+	{
+		PlayerControlComponent->ActivateControlEffect(EffectTags::LockOn);
+	}
 
 	Debug::Print(TEXT("UPlayerControlState::LockOn : Call."));
 }

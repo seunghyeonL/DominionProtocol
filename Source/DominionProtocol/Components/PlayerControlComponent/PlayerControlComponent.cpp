@@ -93,6 +93,10 @@ void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	for (auto ActiveEffectTag : ActiveControlEffectTags.GetGameplayTagArray())
+	{
+		ControlEffectMap[ActiveEffectTag]->Tick(DeltaTime);
+	}
 }
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag)

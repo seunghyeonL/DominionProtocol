@@ -30,23 +30,24 @@ void UPlayerLockOnEffect::Deactivate()
 	Super::Deactivate();
 }
 
+void UPlayerLockOnEffect::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	// 타겟방향의 벡터 계산
+	const FVector Target = FVector::ZeroVector;
+	FRotator NewRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
+	if (!OwnerCharacter) return;
+	
+	// 타겟을 바라보도록 회전 변경
+	OwnerCharacter->SetActorRotation(NewRotator);
+	OwnerCharacter->GetController()->SetControlRotation(NewRotator);
+}
+
 void UPlayerLockOnEffect::Move(const FInputActionValue& Value)
 {
-	// const FVector2D MovementVector = Value.Get<FVector2D>();
-	// const FVector Target = FVector::ZeroVector;
-	// // 타겟과의 거리(반지름)
-	// float Radius = UE::Geometry::Distance(OwnerCharacter->GetActorLocation(), Target);
-	
-	// Super::Move 호출
 	Super::Move(Value);
 	
-	// // 타겟방향의 벡터 계산
-	// FRotator NewRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
-	// if (!OwnerCharacter) return;
-	//
-	// // 타겟을 바라보도록 회전 변경
-	// // OwnerCharacter->SetActorRotation(NewRotator);
-	// OwnerCharacter->GetController()->SetControlRotation(NewRotator);
+	
 }
 
 void UPlayerLockOnEffect::Look(const FInputActionValue& Value)
