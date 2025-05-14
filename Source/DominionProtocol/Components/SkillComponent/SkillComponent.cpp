@@ -74,6 +74,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
     auto StatusComponent = StatusComponentUser->GetStatusComponent();
     check(IsValid(StatusComponent));
     
+    check(SkillGroupTag.IsValid());
     
     if (FSkillGroup* SkillGroup = SkillGroupMap.Find(SkillGroupTag))
     {
@@ -104,6 +105,15 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                 if (OnSkillStart.IsBound())
                 {
                     OnSkillStart.Execute(Skill->GetControlEffectTag());
+                }
+
+                if (CurrentSkillGroupTag.IsValid() && CurrentSkillGroupTag != SkillGroupTag)
+                {
+                    // 공격이 바뀔 경우 바로 콤보 초기화
+                    if (FSkillGroup* CurrentSkillGroup = SkillGroupMap.Find(CurrentSkillGroupTag))
+                    {
+                        CurrentSkillGroup->ComboIdx = 0;
+                    }
                 }
 
                 CurrentSkillGroupTag = SkillGroupTag;
