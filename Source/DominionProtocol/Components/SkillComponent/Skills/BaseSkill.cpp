@@ -1,8 +1,6 @@
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "GameFramework/Character.h"
 #include "CollisionQueryParams.h"
-#include "Components/SkillComponent/SkillComponent.h"
-#include "Components/SkillComponent/SkillComponentUser.h"
 #include "Player/Damagable.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Util/GameTagList.h"
@@ -12,13 +10,16 @@
 UBaseSkill::UBaseSkill()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
-	OwnerCharacter = nullptr;
 }
 
 void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 {
+	if (IsValid(InOwnerCharacter))
+	{
+		OwnerCharacter = InOwnerCharacter;
+	}
+
 	UWorld* World = GetWorld();
-	OwnerCharacter = InOwnerCharacter;
 
 	if (IsValid(World))
 	{
@@ -51,21 +52,16 @@ void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 
 void UBaseSkill::Execute()
 {
-	check(AnimMontage);
+	check(IsValid(AnimMontage));
+	check(IsValid(OwnerCharacter));
 
-	if (IsValid(OwnerCharacter))
-	{
-		OwnerCharacter->PlayAnimMontage(AnimMontage);
-	}
+	OwnerCharacter->PlayAnimMontage(AnimMontage);
 }
 
 // 애님 노티파이에서 실행
 void UBaseSkill::AttackTrace() const
 {
-	if (!IsValid(OwnerCharacter))
-	{
-		return;
-	}
+	check(OwnerCharacter)
 
 	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
 
@@ -76,15 +72,15 @@ void UBaseSkill::AttackTrace() const
 
 	// 트레이스 수행
 	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(OwnerCharacter); // 자신은 무시하도록 설정
+	QueryParams.AddIgnoredActor(OwnerCharacter);
 
 	bool bHit = GetWorld()->SweepMultiByChannel(
 		HitResults,
-		Start,               // 시작 위치
-		End,                 // 끝 위치
-		FQuat::Identity,     // 회전값 (회전 없이)
-		ECollisionChannel::ECC_Pawn, // 충돌 채널
-		FCollisionShape::MakeSphere(AttackRadius), // 범위 설정 (구체 모양)
+		Start,										// 시작 위치
+		End,										// 끝 위치
+		FQuat::Identity,
+		ECollisionChannel::ECC_Pawn,				// 충돌 채널
+		FCollisionShape::MakeSphere(AttackRadius),	// 범위 설정 (구체 모양)
 		QueryParams
 	);
 
@@ -124,11 +120,11 @@ void UBaseSkill::AttackTrace() const
 
 				AttackData.Damage = GetFinalAttackData(AttackPower);
 			}
-
-			AttackData.Instigator = OwnerCharacter;
-			AttackData.Effects = Effects;
 		}
 	}
+
+	AttackData.Instigator = OwnerCharacter;
+	AttackData.Effects = Effects;
 
 	for (const FHitResult& Hit : HitResults)
 	{

@@ -1,7 +1,6 @@
 #include "SkillComponent.h"
 #include "SkillComponentUser.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
-#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Components/StatusComponent/StatusComponent.h"
@@ -107,9 +106,9 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     OnSkillStart.Execute(Skill->GetControlEffectTag());
                 }
 
+                // 공격이 바뀔 경우 바로 콤보 초기화
                 if (CurrentSkillGroupTag.IsValid() && CurrentSkillGroupTag != SkillGroupTag)
                 {
-                    // 공격이 바뀔 경우 바로 콤보 초기화
                     if (FSkillGroup* CurrentSkillGroup = SkillGroupMap.Find(CurrentSkillGroupTag))
                     {
                         CurrentSkillGroup->ComboIdx = 0;

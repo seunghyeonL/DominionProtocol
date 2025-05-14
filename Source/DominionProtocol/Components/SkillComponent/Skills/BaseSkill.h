@@ -1,11 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "Util/BattleDataTypes.h"
 #include "BaseSkill.generated.h"
-
-
 
 UCLASS(Blueprintable)
 class DOMINIONPROTOCOL_API UBaseSkill : public UObject
@@ -31,30 +28,28 @@ public:
 	FORCEINLINE FGameplayTag GetControlEffectTag() const { return ControlEffectTag; }
 
 protected:
-	bool bIsExecuting;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner", meta=(AllowPrivateAccess=true))
-	ACharacter* OwnerCharacter;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta=(AllowPrivateAccess=true))
-	FGameplayTag SkillTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta=(AllowPrivateAccess=true))
-	FGameplayTag ControlEffectTag;
-	
 	float GetFinalAttackData(const float AttackPower) const;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner")
+	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
 	TObjectPtr<UAnimMontage> AnimMontage = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
 	TObjectPtr<USoundBase> Sound = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset", meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
 	TObjectPtr<UParticleSystem> Particle = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects", meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
 	TArray<FEffectData> Effects;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag SkillTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
+	FGameplayTag ControlEffectTag;
 
 	float Stamina;
 
@@ -63,4 +58,6 @@ protected:
 	float AttackForwardOffset;
 
 	float DamageCoefficient;
+
+	bool bIsExecuting;
 };
