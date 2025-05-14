@@ -42,6 +42,7 @@ void ABaseGameState::InitializeSoundSubsystem()
 	SoundSubsystem = GetGameInstance()->GetSubsystem<USoundInstanceSubsystem>();
 	check(SoundSubsystem);
 	SoundSubsystem->SetWorldCache(GetWorld());
+	SoundSubsystem->LoadSoundClass();
 	SoundSubsystem->LoadVolumeSettings();
 }
 
