@@ -144,6 +144,7 @@ void UStatusComponent::StartStaminaRecovery()
 void UStatusComponent::StopStaminaRecovery()
 {
 	bIsRecoveringStamina = false;
+	GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryDelayTimer);
 }
 
 void UStatusComponent::BlockStaminaRecovery()

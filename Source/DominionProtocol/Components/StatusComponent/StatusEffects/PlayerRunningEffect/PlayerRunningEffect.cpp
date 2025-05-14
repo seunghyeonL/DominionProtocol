@@ -69,11 +69,12 @@ void UPlayerRunningEffect::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
-	if (!StatusComponent)
-	{
-		Debug::PrintError(TEXT("UPlayerRunningEffect::Deactivate : Invalid StatusComponent."));
-		return;
-	}
+	check(StatusComponent);
 
+	if (FMath::IsNearlyZero(StatusComponent->GetStat(StatTags::Stamina)))
+	{
+		Deactivate();
+	}
+	
 	StatusComponent->SetStamina(StatusComponent->GetStat(StatTags::Stamina) - StaminaPerSecond * DeltaTime);
 }

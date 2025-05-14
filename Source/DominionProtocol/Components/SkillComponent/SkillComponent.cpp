@@ -2,6 +2,8 @@
 #include "SkillComponentUser.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "SkillComponentInitializeData.h"
+#include "Components/PlayerControlComponent/ControlComponentUser.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Gameframework/Character.h"
@@ -91,6 +93,11 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
     {
         const TArray<UBaseSkill*>& Skills = SkillGroup->Skills;
         int32& ComboIdx = SkillGroup->ComboIdx;
+
+        if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
+        {
+            // Lockon상태가 아닐때 Rotation돌리는 로직
+        }
 
         if (Skills.IsValidIndex(ComboIdx))
         {
