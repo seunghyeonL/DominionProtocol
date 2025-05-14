@@ -70,11 +70,11 @@ FSoundSubsystemData USoundInstanceSubsystem::GetSaveData() const
 	return SaveData;
 }
 
-void USoundInstanceSubsystem::SetMasterVolume(float NewVolume)
+void USoundInstanceSubsystem::SetMasterVolume(const float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));
 
-	CategoryVolumes[ESoundCategory::Master] = NewVolume / 100.0f;
+	CategoryVolumes[ESoundCategory::Master] = NewVolume;
 
 	if (IsValid(VolumeControlMix) && IsValid(MasterClass))
 	{
@@ -89,11 +89,11 @@ void USoundInstanceSubsystem::SetMasterVolume(float NewVolume)
 	}
 }
 
-void USoundInstanceSubsystem::SetSFXVolume(float NewVolume)
+void USoundInstanceSubsystem::SetSFXVolume(const float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));
 
-	CategoryVolumes[ESoundCategory::SFX] = NewVolume / 100.0f;
+	CategoryVolumes[ESoundCategory::SFX] = NewVolume;
 
 	if (IsValid(VolumeControlMix) && IsValid(SFXClass))
 	{
@@ -108,11 +108,11 @@ void USoundInstanceSubsystem::SetSFXVolume(float NewVolume)
 	}
 }
 
-void USoundInstanceSubsystem::SetBGMVolume(float NewVolume)
+void USoundInstanceSubsystem::SetBGMVolume(const float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));
 
-	CategoryVolumes[ESoundCategory::BGM] = NewVolume / 100.0f;
+	CategoryVolumes[ESoundCategory::BGM] = NewVolume;
 
 	if (IsValid(VolumeControlMix) && IsValid(BGMClass))
 	{
@@ -127,11 +127,11 @@ void USoundInstanceSubsystem::SetBGMVolume(float NewVolume)
 	}
 }
 
-void USoundInstanceSubsystem::SetUIVolume(float NewVolume)
+void USoundInstanceSubsystem::SetUIVolume(const float NewVolume)
 {
 	checkf(World, TEXT("World is not Loaded"));
 
-	CategoryVolumes[ESoundCategory::UI] = NewVolume / 100.0f;
+	CategoryVolumes[ESoundCategory::UI] = NewVolume;
 
 	if (IsValid(VolumeControlMix) && IsValid(UIClass))
 	{

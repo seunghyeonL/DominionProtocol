@@ -14,15 +14,21 @@ class DOMINIONPROTOCOL_API USoundInstanceSubsystem : public UGameInstanceSubsyst
 	GENERATED_BODY()
 	
 public:
+	void LoadSoundClass();
+	void LoadVolumeSettings();
+
+	void OnLevelChanged(UWorld* NewWorld);
+
+	//Save & Load
+	void LoadSaveData(const FSoundSubsystemData& SaveData);
+	FSoundSubsystemData GetSaveData() const;
+	
 	//Setter
-	UFUNCTION(BlueprintCallable)
-	void SetMasterVolume(float NewVolume);
-	UFUNCTION(BlueprintCallable)
-	void SetSFXVolume(float NewVolume);
-	UFUNCTION(BlueprintCallable)
-	void SetBGMVolume(float NewVolume);
-	UFUNCTION(BlueprintCallable)
-	void SetUIVolume(float NewVolume);
+	FORCEINLINE void SetWorldCache(UWorld* NewWorld) { World = NewWorld; }
+	void SetMasterVolume(const float NewVolume);
+	void SetSFXVolume(const float NewVolume);
+	void SetBGMVolume(const float NewVolume);
+	void SetUIVolume(const float NewVolume);
 	
 	FORCEINLINE void SetWorldCache(UWorld* NewWorld) { World = NewWorld; }
 	

@@ -18,14 +18,18 @@ public:
 	void UpdateMonsterShield(const float NewShield);
 
 protected:
+	// Setup
+	virtual void SetOwningActor(AActor* NewOwner) override;
+	
+	void SetupMonster3dWidget();
+
+	// Widget Transform
+	void SetWidgetRotation() const;
+
+	// Life Cycle
 	virtual void NativeConstruct() override;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
-	virtual void SetOwningActor(AActor* NewOwner) override;
-	void SetupMonster3dWidget();
-	void SetWidgetRotation() const;
-	
 
 protected:
 	// HP Section
