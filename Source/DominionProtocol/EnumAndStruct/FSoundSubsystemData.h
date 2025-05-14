@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnumAndStruct/ESoundCategory.h"
+#include "EnumAndStruct/ECategory.h"
 #include "FSoundSubsystemData.generated.h"
 
 USTRUCT(BlueprintType)

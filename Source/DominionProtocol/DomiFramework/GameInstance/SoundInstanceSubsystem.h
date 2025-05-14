@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "EnumAndStruct/ESoundCategory.h"
+#include "EnumAndStruct/ECategory.h"
 #include "EnumAndStruct/FSoundSubsystemData.h"
 #include "SoundInstanceSubsystem.generated.h"
 
@@ -14,6 +14,21 @@ class DOMINIONPROTOCOL_API USoundInstanceSubsystem : public UGameInstanceSubsyst
 	GENERATED_BODY()
 	
 public:
+	//Setter
+	UFUNCTION(BlueprintCallable)
+	void SetMasterVolume(float NewVolume);
+	UFUNCTION(BlueprintCallable)
+	void SetSFXVolume(float NewVolume);
+	UFUNCTION(BlueprintCallable)
+	void SetBGMVolume(float NewVolume);
+	UFUNCTION(BlueprintCallable)
+	void SetUIVolume(float NewVolume);
+	
+	FORCEINLINE void SetWorldCache(UWorld* NewWorld) { World = NewWorld; }
+	
+	//Getter
+	FORCEINLINE float GetVolumeMultiplier(ESoundCategory Category) const { return CategoryVolumes[Category]; }
+	
 	void LoadSoundClass();
 	void LoadVolumeSettings();
 
@@ -22,17 +37,6 @@ public:
 	//Save & Load
 	void LoadSaveData(const FSoundSubsystemData& SaveData);
 	FSoundSubsystemData GetSaveData() const;
-	
-	//Setter
-	FORCEINLINE void SetWorldCache(UWorld* NewWorld) { World = NewWorld; }
-	void SetMasterVolume(float NewVolume);
-	void SetSFXVolume(float NewVolume);
-	void SetBGMVolume(float NewVolume);
-	void SetUIVolume(float NewVolume);
-	
-	//Getter
-	FORCEINLINE float GetVolumeMultiplier(ESoundCategory Category) const { return CategoryVolumes[Category]; }
-	
 
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
