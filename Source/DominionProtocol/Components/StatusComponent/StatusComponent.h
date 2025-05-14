@@ -14,7 +14,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
 
-DECLARE_DELEGATE(FOnDeath);
+DECLARE_MULTICAST_DELEGATE(FOnDeath);
+
+DECLARE_DELEGATE(FOnSpawned);
 DECLARE_DELEGATE(FOnGroggy);
 
 class UStatusEffectBase;

@@ -270,6 +270,7 @@ FGameplayTagContainer ADomiCharacter::GetActiveStatusEffectTags()
 void ADomiCharacter::InitializeStatusComponent()
 {
 	FStatusComponentInitializeData InitializeData;
+	
 
 	// Initializing Data for BaseStats
 	InitializeData.StatDatas.Add({StatTags::LIFE, 0.f});
@@ -298,7 +299,7 @@ void ADomiCharacter::InitializeStatusComponent()
 	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
 	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
 
-	StatusComponent->OnDeath.BindUObject(this, &ADomiCharacter::OnDeath);
+	StatusComponent->OnDeath.AddUObject(this, &ADomiCharacter::OnDeath);
 	
 	Debug::Print(TEXT("ADomiCharacter::InitializeStatusComponent : Call."));
 	StatusComponent->InitializeStatusComponent(InitializeData);

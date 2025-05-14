@@ -26,7 +26,7 @@ public:
 
 
 protected:
-	void SetupHUDWidget(const AActor* OwningActor);
+	void SetupStatusBarWidget(const AActor* OwningActor);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void NativeConstruct() override;

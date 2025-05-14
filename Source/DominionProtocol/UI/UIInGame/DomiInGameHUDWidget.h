@@ -14,11 +14,15 @@ class DOMINIONPROTOCOL_API UDomiInGameHUDWidget : public UUserWidget
 
 
 public:
+	UFUNCTION()
+	void OnPlayerDeath();
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ShowDeathScriptWidget();
 
 protected:
 	virtual void NativeConstruct() override;
-	
+	void SetupStatusBarWidget(const AActor* OwningActor);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))

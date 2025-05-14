@@ -90,7 +90,7 @@ void UStatusComponent::SetHealth(float NewHealth)
 	{
 		if (OnDeath.IsBound())
 		{
-			OnDeath.Execute();
+			OnDeath.Broadcast();
 		}
 		else
 		{

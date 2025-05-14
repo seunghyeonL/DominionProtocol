@@ -17,7 +17,7 @@ void UDomiStatusBarWidget::NativeConstruct()
 	AActor* OwningActor = GetOwningPlayerPawn();
 	if (OwningActor)
 	{
-		SetupHUDWidget(OwningActor);	
+		SetupStatusBarWidget(OwningActor);	
 	}
 }
 
@@ -36,7 +36,7 @@ void UDomiStatusBarWidget::UpdatePlayerStaminaBar(const float NewStamina)
 }
 
 
-void UDomiStatusBarWidget::SetupHUDWidget(const AActor* OwningActor)
+void UDomiStatusBarWidget::SetupStatusBarWidget(const AActor* OwningActor)
 {
 	ensure(IsValid(OwningActor));
 	

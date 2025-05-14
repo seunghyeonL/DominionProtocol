@@ -14,6 +14,7 @@
 class USkillComponent;
 class UStatusComponent;
 
+
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseEnemy :
 public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser, public ISkillComponentUser
@@ -64,4 +65,5 @@ protected:
 	// UI Section
 	UPROPERTY(BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UDomiWidgetComponent> HPWidgetComponent;
+
 };

@@ -147,5 +147,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "State")
 	bool bIsInvincible = false;
+
 };
 
