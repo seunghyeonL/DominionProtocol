@@ -8,6 +8,7 @@
 #include "Engine/TargetPoint.h"
 #include "AI/ProtoBoss/ProtoBossEnemy.h"
 
+
 void AProtoLevel1GameMode::StartPlay()
 {
 	Super::StartPlay();
@@ -105,6 +106,17 @@ void AProtoLevel1GameMode::EndBattle()
 	
 	GameInstance->SetIsBossDead(0);
 
+	if (ZoneBarrier)
+	{
+		ZoneBarrier->DeactivateBarrier();
+	}
+}
+
+void AProtoLevel1GameMode::OnPlayerDeath()
+{
+	Super::OnPlayerDeath();
+
+	// Boss Alive Yet
 	if (ZoneBarrier)
 	{
 		ZoneBarrier->DeactivateBarrier();

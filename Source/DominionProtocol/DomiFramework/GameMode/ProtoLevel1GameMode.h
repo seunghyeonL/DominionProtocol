@@ -10,13 +10,12 @@
 #include "Engine/TargetPoint.h"
 #include "ProtoLevel1GameMode.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API AProtoLevel1GameMode : public ABaseGameMode
 {
 	GENERATED_BODY()
+
 	
 protected:
 	virtual void StartPlay() override;
@@ -25,7 +24,10 @@ protected:
 	void StartBattle() override;
 	UFUNCTION()
 	void EndBattle() override;
-		 
+
+	virtual void OnPlayerDeath() override;
+
+	UPROPERTY()
 	AZoneBarrier* ZoneBarrier;
 
 private:

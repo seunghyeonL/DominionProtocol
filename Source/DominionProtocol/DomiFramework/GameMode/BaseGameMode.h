@@ -37,7 +37,8 @@ public:
 	virtual void StartBattle();
 	virtual void EndBattle();
 
-	void OnPlayerDeath();
+	virtual void OnPlayerDeath();
+	
 	void RespawnPlayerCharacter();
 
 	//균열 쪽에서 호출할 함수
