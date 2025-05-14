@@ -47,7 +47,7 @@ public:
 	virtual void InitializeStatusComponent() override;
 	virtual void OnDeath();
 	virtual void OnGroggy();
-	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
+	virtual FGameplayTagContainer& GetActiveStatusEffectTags() override;
 
 	// SkillComponentUser
 	FORCEINLINE virtual USkillComponent* GetSkillComponent() const override { return SkillComponent; }

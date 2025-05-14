@@ -242,13 +242,9 @@ void ADomiCharacter::BindInputFunctions()
 	}
 }
 
-FGameplayTagContainer ADomiCharacter::GetActiveControlEffectTags()
+FGameplayTagContainer& ADomiCharacter::GetActiveControlEffectTags()
 {
-	if (!IsValid(ControlComponent))
-	{
-		Debug::PrintError(TEXT("ADomiCharacter::GetActiveControlEffectTags : ControlComponent is not valid"));
-		return FGameplayTagContainer();
-	}
+	check(ControlComponent);
 
 	return ControlComponent->GetActiveControlEffectTags();
 }
@@ -264,14 +260,10 @@ void ADomiCharacter::SkillEnd(FGameplayTag ControlEffectTag)
 }
 
 
-FGameplayTagContainer ADomiCharacter::GetActiveStatusEffectTags()
+FGameplayTagContainer& ADomiCharacter::GetActiveStatusEffectTags()
 {
-	if (!IsValid(StatusComponent))
-	{
-		Debug::PrintError(TEXT("ADomiCharacter::GetActiveStatusEffectTags : StatusComponent is not valid"));
-		return FGameplayTagContainer();
-	}
-
+	check(StatusComponent);
+	
 	return StatusComponent->GetActiveStatusEffectTags();
 }
 

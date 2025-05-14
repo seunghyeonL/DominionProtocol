@@ -28,5 +28,5 @@ class DOMINIONPROTOCOL_API IStatusComponentUser
 public:
 	virtual UStatusComponent* GetStatusComponent() const = 0;
 	virtual void InitializeStatusComponent() = 0;
-	virtual FGameplayTagContainer GetActiveStatusEffectTags() = 0;
+	virtual FGameplayTagContainer& GetActiveStatusEffectTags() = 0;
 };

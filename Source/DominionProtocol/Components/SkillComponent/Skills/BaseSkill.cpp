@@ -3,6 +3,7 @@
 #include "CollisionQueryParams.h"
 #include "Player/Damagable.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/SkillComponent/SkillComponent.h"
 #include "Util/GameTagList.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"

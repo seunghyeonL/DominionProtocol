@@ -77,7 +77,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	// ControlComponentUser
-	virtual FGameplayTagContainer GetActiveControlEffectTags() override;
+	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
 	FORCEINLINE virtual void SetLastMovementVector(const FVector& InLastMovementVector) override { LastMovementVector = InLastMovementVector; }
 	FORCEINLINE virtual FVector GetLastMovementVector() const override { return LastMovementVector; }
@@ -88,7 +88,7 @@ public:
 	// StatusComponentUser
 	FORCEINLINE virtual UStatusComponent* GetStatusComponent() const override { return StatusComponent; }
 	virtual void InitializeStatusComponent() override;
-	virtual FGameplayTagContainer GetActiveStatusEffectTags() override;
+	virtual FGameplayTagContainer& GetActiveStatusEffectTags() override;
 
 	// SkillComponentUser
 	FORCEINLINE virtual USkillComponent* GetSkillComponent() const override { return SkillComponent; }

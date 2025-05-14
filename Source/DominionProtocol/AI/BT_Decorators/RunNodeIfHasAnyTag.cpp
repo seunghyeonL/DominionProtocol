@@ -10,6 +10,7 @@ URunNodeIfHasAnyTag::URunNodeIfHasAnyTag()
 {
 	NodeName = TEXT("Run Node If Has Any Tag");
 	bNotifyCeaseRelevant = true; // for use AbortMode Self
+	bNotifyTick = true; // for use tick
 }
 
 bool URunNodeIfHasAnyTag::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
@@ -30,11 +31,22 @@ bool URunNodeIfHasAnyTag::CalculateRawConditionValue(UBehaviorTreeComponent& Own
 
 	if (auto StatusComponentUser = Cast<IStatusComponentUser>(OwnerActor))
 	{
-		FGameplayTagContainer ActiveTags = StatusComponentUser->GetActiveStatusEffectTags();
+		FGameplayTagContainer& ActiveTags = StatusComponentUser->GetActiveStatusEffectTags();
 		
 		return ActiveTags.HasAny(RunningTags);
 	}
 
 	Debug::PrintError(TEXT("UBlockNodeIfHasAllTag::CalculateRawConditionValue : OwnerActor doesn't implement StatusComponentUser."));
 	return false;
+}
+
+void URunNodeIfHasAnyTag::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	const bool bShouldContinue = CalculateRawConditionValue(OwnerComp, NodeMemory);
+	if (!bShouldContinue)
+	{
+		// 조건이 더 이상 충족되지 않으면 스스로 Abort
+		OwnerComp.RequestExecution(this);
+	}
 }

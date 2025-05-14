@@ -64,14 +64,9 @@ void ABaseEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-FGameplayTagContainer ABaseEnemy::GetActiveStatusEffectTags()
+FGameplayTagContainer& ABaseEnemy::GetActiveStatusEffectTags()
 {
-	if (!IsValid(StatusComponent))
-	{
-		Debug::PrintError(TEXT("ADomiCharacter::GetActiveStatusEffectTags : StatusComponent is not valid"));
-		return FGameplayTagContainer();
-	}
-
+	check(StatusComponent);
 	return StatusComponent->GetActiveStatusEffectTags();
 }
 
