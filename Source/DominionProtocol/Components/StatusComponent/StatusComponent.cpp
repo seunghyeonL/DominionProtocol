@@ -53,7 +53,7 @@ float UStatusComponent::GetStat(const FGameplayTag& StatTag) const
 		return *FoundStat;
 	}
 	
-	Debug::PrintError(FString::Printf(TEXT("UStatusComponent::GetStat : StatTag '%s' is not set."), *StatTag.ToString()));
+	// Debug::PrintError(FString::Printf(TEXT("UStatusComponent::GetStat : StatTag '%s' is not set."), *StatTag.ToString()));
 
 	return -1.f;
 }
@@ -72,7 +72,7 @@ void UStatusComponent::SetStat(const FGameplayTag& StatTag, float Value)
 		return;
 	}
 
-	Debug::PrintError(TEXT("UStatusComponent::SetStat : Finding StatTag is not set."));
+	// Debug::PrintError(TEXT("UStatusComponent::SetStat : Finding StatTag is not set."));
 }
 
 void UStatusComponent::SetHealth(float NewHealth)

@@ -14,8 +14,10 @@ USkillComponent::USkillComponent()
     ComboResetDelay = 1.f;
 }
 
-USkillComponent::~USkillComponent()
+void USkillComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
+    Super::OnComponentDestroyed(bDestroyingHierarchy);
+
     if (GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(ResetComboTimer);
@@ -88,7 +90,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                 SetCurrentSkill(Skill);
 
                 // Check to use Stamina
-                if (float CurrentStamina = StatusComponent->GetStat(StatTags::Stamina))
+                if (float CurrentStamina = StatusComponent->GetStat(StatTags::Stamina); CurrentStamina > 0.f)
                 {
                     // Check to have enough Stamina 
                     if (CurrentStamina < Skill->GetStamina())
@@ -151,7 +153,7 @@ void USkillComponent::EndSkill()
 
     if (OnSkillEnd.IsBound())
     {
-        OnSkillEnd.Execute(CurrentSkill->GetSkillTag());
+        OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
     }
 
     TWeakObjectPtr<ThisClass> WeakThis(this);

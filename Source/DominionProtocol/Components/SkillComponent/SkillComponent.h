@@ -19,7 +19,8 @@ class DOMINIONPROTOCOL_API USkillComponent : public UActorComponent
 
 public:
 	USkillComponent();
-	~USkillComponent();
+	
+	virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 	virtual void InitializeComponent() override;
 

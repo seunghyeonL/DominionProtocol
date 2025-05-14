@@ -152,6 +152,24 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 
 void UPlayerControlComponent::DeactivateControlEffect(const FGameplayTag& ControlEffectTag)
 {
+	if (ControlEffectTag.MatchesTag(EffectTags::UsingSkill))
+	{
+		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
+		{
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
+			{
+				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
+				(*ControlEffect)->Deactivate();
+			}
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlComponent::DeactivateControlEffect : UsingSkill Tag Not Initialized in Mapper."));
+		}
+		
+		return;
+	}
+	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
 		(*ControlEffect)->Deactivate();
