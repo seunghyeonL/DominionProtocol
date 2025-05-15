@@ -16,6 +16,7 @@ namespace EffectTags
 	inline const FGameplayTag Silence = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Silence"));
 	inline const FGameplayTag Confused = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Confused"));
 	inline const FGameplayTag Groggy = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Groggy"));
+	inline const FGameplayTag parried = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.parried"));
 
 	// StatusEffectTags
 	inline const FGameplayTag Running = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Stat.Running"));

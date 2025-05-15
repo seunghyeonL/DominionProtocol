@@ -87,6 +87,8 @@ ADomiCharacter::ADomiCharacter()
 	InvincibilityTags.AddTag(EffectTags::UsingDash);
 	InvincibilityTags.AddTag(EffectTags::Death);
 
+	// ParriedTags Setting
+	ParriedTags.AddTag(EffectTags::UsingParry);
 	// Cashed MovementVector
 	LastMovementVector = {0.f, 0.f, 0.f};
 
@@ -375,6 +377,12 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 		return;
 	}
 
+	if (ActiveControlEffects.HasAny(ParriedTags))
+	{
+		Parrying(AttackData);
+		return;
+	}
+
 	if (!IsValid(ControlComponent))
 	{
 		Debug::PrintError(TEXT("ADomiCharacter::OnAttacked : ControlComponent is not valid"));
@@ -424,5 +432,27 @@ void ADomiCharacter::ShowStatusEffectTags_Implementation()
 	for (auto Tag : GetActiveStatusEffectTags().GetGameplayTagArray())
 	{
 		Debug::Print(Tag.ToString());
+	}
+}
+
+void ADomiCharacter::Parrying(const FAttackData& IncomingAttackData)
+{
+	FAttackData ParryingData;
+
+	ParryingData.Instigator = this;
+	ParryingData.Effects.Add({EffectTags::parried, 1.f, 1.f});
+	ParryingData.Damage = 0.f;
+	ParryingData.LaunchVector = FVector::ZeroVector;
+
+	AActor* Attacker = IncomingAttackData.Instigator;
+
+	if (Attacker->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
+	{
+		if (USkillComponent* AttackerSkillComponent = Attacker->FindComponentByClass<USkillComponent>())
+		{
+			AttackerSkillComponent->StopSkill();
+			Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled by parry."), *Attacker->GetName()));
+		}
+		IDamagable::Execute_OnAttacked(Attacker, ParryingData);
 	}
 }

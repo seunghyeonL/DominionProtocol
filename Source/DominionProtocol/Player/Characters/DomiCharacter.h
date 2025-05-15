@@ -53,6 +53,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
 	FGameplayTagContainer InvincibilityTags;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer ParriedTags;
 	
 public:
 	ADomiCharacter();
@@ -69,7 +72,7 @@ protected:
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void OnDeath();
-
+	void Parrying(const FAttackData& IncomingAttackData);
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
