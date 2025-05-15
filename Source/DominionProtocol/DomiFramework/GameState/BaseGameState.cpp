@@ -4,6 +4,8 @@
 #include "BaseGameState.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/SoundInstanceSubsystem.h"
+#include "Components/SkillComponent/SkillComponentInitializeData.h"
+#include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "Util/DebugHelper.h"
@@ -51,4 +53,18 @@ FSkillData* ABaseGameState::GetSkillData(const FGameplayTag SkillTag) const
 	check(SkillDataTable);
 	
 	return SkillDataTable->FindRow<FSkillData>(SkillTag.GetTagName(), TEXT(""));
+}
+
+FSkillComponentInitializeData* ABaseGameState::GetSkillComponentInitializeData(const FGameplayTag PawnTag) const
+{
+	check(SkillInitializeDataTable);
+	
+	return SkillInitializeDataTable->FindRow<FSkillComponentInitializeData>(PawnTag.GetTagName(), TEXT(""));
+}
+
+FStatusComponentInitializeData* ABaseGameState::GetStatusComponentInitializeData(const FGameplayTag PawnTag) const
+{
+	check(StatusInitializeDataTable);
+	
+	return StatusInitializeDataTable->FindRow<FStatusComponentInitializeData>(PawnTag.GetTagName(), TEXT(""));
 }

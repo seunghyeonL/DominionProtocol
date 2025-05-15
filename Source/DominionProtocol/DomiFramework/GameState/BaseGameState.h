@@ -7,6 +7,8 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+struct FStatusComponentInitializeData;
+struct FSkillComponentInitializeData;
 class UDomiGameInstance;
 class USoundInstanceSubsystem;
 
@@ -19,7 +21,9 @@ class DOMINIONPROTOCOL_API ABaseGameState : public AGameState
 public:
 	ABaseGameState();
 
-	FORCEINLINE FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
+	FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
+	FSkillComponentInitializeData* GetSkillComponentInitializeData(const FGameplayTag PawnTag) const;
+	FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -36,6 +40,12 @@ private:
 	UPROPERTY()
 	USoundInstanceSubsystem* SoundSubsystem;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill DataTable", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Skill", meta = (AllowPrivateAccess = "true"))
 	UDataTable* SkillDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Skill|Initialize", meta = (AllowPrivateAccess = "true"))
+	UDataTable* SkillInitializeDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
+	UDataTable* StatusInitializeDataTable;
 };

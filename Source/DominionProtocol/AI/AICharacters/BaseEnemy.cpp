@@ -145,11 +145,11 @@ void ABaseEnemy::InitializeStatusComponent()
 	InitializeData.StatDatas.Add({StatTags::AttackPower, 10.f});
 	InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
 	InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
-
+	
 	// Initializing Data for VariableStats
 	InitializeData.StatDatas.Add({StatTags::Health, 100.f});
 	InitializeData.StatDatas.Add({StatTags::Shield, 0.f});
-
+	
 	// Initializing Data for BattleStatMultipliers
 	InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
 	InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});

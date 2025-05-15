@@ -56,11 +56,6 @@ namespace SkillGroupTags
 	inline const FGameplayTag Dash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Dash"));
 }
 
-namespace WeaponSkillGroupTags
-{
-	// inline const FGameplayTag Sword = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.Sword"));
-}
-
 namespace SkillTags
 {
 	inline const FGameplayTag BaseAttackSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Sword"));
@@ -75,12 +70,13 @@ namespace SkillTags
 	
 }
 
-//namespace EnemeyTags
-//{
-//	// PatternTags
-//	inline const FGameplayTag Pattern1 = FGameplayTag::RequestGameplayTag(TEXT("AI.Base.Pattern1"));
-//	inline const FGameplayTag SpecialPattern1 = FGameplayTag::RequestGameplayTag(TEXT("AI.Special.Pattern1"));
-//}
+namespace PawnTags
+{
+	inline const FGameplayTag Player = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Player"));
+	inline const FGameplayTag ProtoNormal = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.Proto"));
+	inline const FGameplayTag ProtoElite = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Elite.Proto"));
+	inline const FGameplayTag ProtoBoss = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.Proto"));
+}
 
 namespace ItemTags
 {
