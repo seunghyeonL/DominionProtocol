@@ -45,7 +45,7 @@ void UPlayerStiffnessEffect::SprintStart()
 
 void UPlayerStiffnessEffect::SprintEnd()
 {
-	// Super::SprintEnd();
+	Super::SprintEnd();
 }
 
 void UPlayerStiffnessEffect::Parry()

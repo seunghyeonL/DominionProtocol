@@ -45,7 +45,7 @@ void UPlayerStunEffect::SprintStart()
 
 void UPlayerStunEffect::SprintEnd()
 {
-	// Super::SprintEnd();
+	Super::SprintEnd();
 }
 
 void UPlayerStunEffect::Parry()

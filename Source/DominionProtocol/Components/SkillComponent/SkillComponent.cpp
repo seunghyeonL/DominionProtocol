@@ -171,19 +171,19 @@ void USkillComponent::EndSkill()
 {
     ACharacter* Character = Cast<ACharacter>(GetOwner());
 
-    if (Character)
+    if (IsValid(Character))
     {
         USkeletalMeshComponent* Mesh = Character->GetMesh();
 
-        if (Mesh)
+        if (IsValid(Mesh))
         {
             UAnimInstance* AnimInstance = Mesh->GetAnimInstance();
 
-            if (AnimInstance)
+            if (IsValid(AnimInstance))
             {
                 UAnimMontage* CurrentMontage = AnimInstance->GetCurrentActiveMontage();
-
-                if (CurrentMontage)
+                
+                if (IsValid(CurrentMontage))
                 {
                     AnimInstance->Montage_SetPlayRate(CurrentMontage, CurrentMontage->RateScale * 5);
                 }
@@ -191,11 +191,10 @@ void USkillComponent::EndSkill()
         }
     }
 
-    if (OnSkillEnd.IsBound())
+    if (OnSkillEnd.IsBound() && IsValid(CurrentSkill))
     {
         OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
     }
-
     CurrentSkill = nullptr;
 
     TWeakObjectPtr<ThisClass> WeakThis(this);
@@ -220,7 +219,7 @@ void USkillComponent::EndSkill()
 
 void USkillComponent::StopSkill()
 {
-    if (CurrentSkill)
+    if (IsValid(CurrentSkill))
     {
         ACharacter* Character = Cast<ACharacter>(GetOwner());
         UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
@@ -235,9 +234,9 @@ void USkillComponent::StopSkill()
         {
             OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
         }
-    }
 
-    CurrentSkill = nullptr;
+        CurrentSkill = nullptr;
+    }
 }
 
 // Debug::PrintLog(TEXT(" "));

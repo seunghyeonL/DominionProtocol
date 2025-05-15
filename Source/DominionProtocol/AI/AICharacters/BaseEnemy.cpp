@@ -7,15 +7,9 @@
 #include "Components/WidgetComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
-#include "Components/SkillComponent/Skills/BaseAttack.h"
-
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
-#include "Components/StatusComponent/StatusEffects/AIDeathEffect/AIDeathEffect.h"
-#include "Components/StatusComponent/StatusEffects/AIStiffnessEffect/AIStiffnessEffect.h"
-#include "Components/StatusComponent/StatusEffects/AIStunEffect/AIStunEffect.h"
-#include "Components/StatusComponent/StatusEffects/AttackDownEffect/AttackDownEffect.h"
-#include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
 #include "Components/WidgetComponent/DomiWidgetComponent.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -71,19 +65,17 @@ FGameplayTagContainer& ABaseEnemy::GetActiveStatusEffectTags()
 
 void ABaseEnemy::InitializeSkillComponent()
 {
-	FSkillComponentInitializeData InitializeData;
-
-	// Initializing Data for SkillGroups
-	// 추후에 데이터 에셋화 혹은 테이터 테이블화
-	
-	FSkillGroupInitializeData BaseSkillGroupInitializeData;
-	BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
-	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());
-	InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
-	
-	if (IsValid(SkillComponent))
+	if (auto World = GetWorld())
 	{
-		SkillComponent->InitializeSkillComponent(InitializeData);
+		if (auto BaseGameState = World->GetGameState<ABaseGameState>())
+		{
+			if (FSkillComponentInitializeData* InitializeData = BaseGameState->GetSkillComponentInitializeData(PawnTag))
+			{
+				SkillComponent->InitializeSkillComponent(*InitializeData);
+				// SkillComponent->OnSkillStart.BindUObject(this, &ADomiCharacter::SkillStart);
+				// SkillComponent->OnSkillEnd.BindUObject(this, &ADomiCharacter::SkillEnd);
+			}
+		}
 	}
 }
 
@@ -137,37 +129,17 @@ void ABaseEnemy::ShowStatusEffectTags_Implementation()
 
 void ABaseEnemy::InitializeStatusComponent()
 {
-	FStatusComponentInitializeData InitializeData;
-
-	// Initializing Data for BattleStats
-	InitializeData.StatDatas.Add({StatTags::MaxHealth, 100.f});
-	InitializeData.StatDatas.Add({StatTags::MaxShield, 100.f});
-	InitializeData.StatDatas.Add({StatTags::AttackPower, 10.f});
-	InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
-	InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
-	
-	// Initializing Data for VariableStats
-	InitializeData.StatDatas.Add({StatTags::Health, 100.f});
-	InitializeData.StatDatas.Add({StatTags::Shield, 0.f});
-	
-	// Initializing Data for BattleStatMultipliers
-	InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::Defense, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
-
-	// Initializing Data for StatusEffectClasses
-	InitializeData.EffectClassDatas.Add({EffectTags::Stiffness, UAIStiffnessEffect::StaticClass()});
-	InitializeData.EffectClassDatas.Add({EffectTags::Death, UAIDeathEffect::StaticClass()});
-	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
-	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
-
-	StatusComponent->OnDeath.AddUObject(this, &ABaseEnemy::OnDeath);
-	
-	Debug::Print(TEXT("ABaseEnemy::InitializeStatusComponent : Call."));
-	StatusComponent->InitializeStatusComponent(InitializeData);
-
-	//현재 상태 바꾸는 로직 필요
+	if (auto World = GetWorld())
+	{
+		if (auto BaseGameState = World->GetGameState<ABaseGameState>())
+		{
+			if (FStatusComponentInitializeData* InitializeData = BaseGameState->GetStatusComponentInitializeData(PawnTag))
+			{
+				StatusComponent->InitializeStatusComponent(*InitializeData);
+				StatusComponent->OnDeath.AddUObject(this, &ABaseEnemy::OnDeath);
+			}
+		}
+	}
 }
 
 

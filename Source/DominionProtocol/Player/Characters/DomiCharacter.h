@@ -59,14 +59,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
 	FGameplayTagContainer ParriedTags;
-
-	
 	
 public:
 	ADomiCharacter();
 
 	//Getter
-	FORCEINLINE AActor* GetCurrentInteractableObject() const;
+	AActor* GetCurrentInteractableObject() const;
 	 
 	//Setter
 	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableObject = NewActor; }

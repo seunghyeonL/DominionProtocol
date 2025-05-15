@@ -12,7 +12,10 @@
 
 ABaseGameState::ABaseGameState()
 	:	GameInstance(nullptr),
-		SoundSubsystem(nullptr)
+		SoundSubsystem(nullptr),
+		SkillDataTable(nullptr),
+		SkillInitializeDataTable(nullptr),
+		StatusInitializeDataTable(nullptr)
 {
 }
 

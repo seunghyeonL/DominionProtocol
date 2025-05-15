@@ -59,7 +59,7 @@ void UPlayerDeathEffect::SprintStart()
 
 void UPlayerDeathEffect::SprintEnd()
 {
-	// Super::SprintEnd();
+	Super::SprintEnd();
 }
 
 void UPlayerDeathEffect::Parry()

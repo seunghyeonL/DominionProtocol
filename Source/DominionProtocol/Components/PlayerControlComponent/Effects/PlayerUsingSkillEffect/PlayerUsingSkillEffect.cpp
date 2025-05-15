@@ -47,7 +47,7 @@ void UPlayerUsingSkillEffect::SprintStart()
 
 void UPlayerUsingSkillEffect::SprintEnd()
 {
-	// Super::SprintEnd();
+	Super::SprintEnd();
 }
 
 void UPlayerUsingSkillEffect::Parry()

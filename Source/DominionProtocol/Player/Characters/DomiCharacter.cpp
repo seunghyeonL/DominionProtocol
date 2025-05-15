@@ -11,27 +11,17 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "../InGameController.h"
-#include "InputActionValue.h"
 #include "Util/BattleDataTypes.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
-#include "Components/PlayerControlComponent/States/PlayerControlState.h"
+
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/ItemComponent/ItemComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
 
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
-#include "Components/StatusComponent/StatusEffects/AttackDownEffect/AttackDownEffect.h"
-#include "Components/StatusComponent/StatusEffects/PoisonEffect/PoisonEffect.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
-#include "Components/SkillComponent/Skills/BaseAttack.h"
-#include "Components/SkillComponent/Skills/BaseFirstSword.h"
-#include "Components/SkillComponent/Skills/BaseSecondSword.h"
-#include "Components/SkillComponent/Skills/BaseThirdSword.h"
-#include "Components/SkillComponent/Skills/WeaponFirstSword.h"
-#include "Components/SkillComponent/Skills/PlayerSkill/PlayerDashSkill/PlayerDashSkill.h"
-#include "Components/StatusComponent/StatusEffects/PlayerRunningEffect/PlayerRunningEffect.h"
 
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "DomiFramework/GameState/BaseGameState.h"
@@ -280,34 +270,6 @@ FGameplayTagContainer& ADomiCharacter::GetActiveStatusEffectTags()
 
 void ADomiCharacter::InitializeStatusComponent()
 {
-	// // Initializing Data for BaseStats
-	// InitializeData.StatDatas.Add({StatTags::LIFE, 0.f});
-	// InitializeData.StatDatas.Add({StatTags::STR, 0.f});
-	// InitializeData.StatDatas.Add({StatTags::DEX, 0.f});
-	//
-	// // Initializing Data for BattleStats
-	// InitializeData.StatDatas.Add({StatTags::MaxHealth, 100.f});
-	// InitializeData.StatDatas.Add({ StatTags::MaxStamina, 100.f });
-	// InitializeData.StatDatas.Add({StatTags::AttackPower, 10.f});
-	// InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
-	// InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
-	//
-	// // Initializing Data for VariableStats
-	// InitializeData.StatDatas.Add({StatTags::Health, 100.f});
-	// InitializeData.StatDatas.Add({StatTags::Stamina, 100.f});
-	//
-	// // Initializing Data for BattleStatMultipliers
-	// InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
-	// InitializeData.StatMultiplierDatas.Add({StatTags::MaxStamina, 1.f});
-	// InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});
-	// InitializeData.StatMultiplierDatas.Add({StatTags::Defense, 1.f});
-	// InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
-	//
-	// // Initializing Data for StatusEffectClasses
-	// InitializeData.EffectClassDatas.Add({EffectTags::Running, UPlayerRunningEffect::StaticClass()});
-	// InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
-	// InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
-	
 	if (auto World = GetWorld())
 	{
 		if (auto BaseGameState = World->GetGameState<ABaseGameState>())
@@ -335,38 +297,17 @@ void ADomiCharacter::OnDeath()
 
 void ADomiCharacter::InitializeSkillComponent()
 {
-	FSkillComponentInitializeData InitializeData;
-
-	// Initializing Data for SkillGroups
-	// 추후에 데이터 에셋화 혹은 테이터 테이블화
-	
-	//BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
-	//BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());
-	//InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
-	
-	FSkillGroupInitializeData BaseSkillGroupInitializeData;
-	BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
-	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseFirstSword::StaticClass());
-	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseSecondSword::StaticClass());
-	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseThirdSword::StaticClass());
-
-	FSkillGroupInitializeData WeaponSkillGroupInitializeData;
-	WeaponSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::WeaponSkill;
-	WeaponSkillGroupInitializeData.SkillGroupData.Add(UWeaponFirstSword::StaticClass());
-
-	FSkillGroupInitializeData DashSkillGroupInitializeData;
-	DashSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::Dash;
-	DashSkillGroupInitializeData.SkillGroupData.Add(UPlayerDashSkill::StaticClass());
-	
-	InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
-	InitializeData.SkillGroupInitializeDatas.Add(WeaponSkillGroupInitializeData);
-	InitializeData.SkillGroupInitializeDatas.Add(DashSkillGroupInitializeData);
-
-	if (IsValid(SkillComponent))
+	if (auto World = GetWorld())
 	{
-		SkillComponent->InitializeSkillComponent(InitializeData);
-		SkillComponent->OnSkillStart.BindUObject(this, &ADomiCharacter::SkillStart);
-		SkillComponent->OnSkillEnd.BindUObject(this, &ADomiCharacter::SkillEnd);
+		if (auto BaseGameState = World->GetGameState<ABaseGameState>())
+		{
+			if (FSkillComponentInitializeData* InitializeData = BaseGameState->GetSkillComponentInitializeData(PawnTag))
+			{
+				SkillComponent->InitializeSkillComponent(*InitializeData);
+				SkillComponent->OnSkillStart.BindUObject(this, &ADomiCharacter::SkillStart);
+				SkillComponent->OnSkillEnd.BindUObject(this, &ADomiCharacter::SkillEnd);
+			}
+		}
 	}
 }
 
