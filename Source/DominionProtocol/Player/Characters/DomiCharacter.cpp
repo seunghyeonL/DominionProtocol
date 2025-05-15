@@ -184,10 +184,10 @@ void ADomiCharacter::BindInputFunctions()
 			{
 				EnhancedInputComponent->BindAction(PlayerController->SprintAction, ETriggerEvent::Started,
 				                                   ControlComponent.Get(),
-				                                   &UPlayerControlComponent::Sprint);
+				                                   &UPlayerControlComponent::SprintStart);
 				EnhancedInputComponent->BindAction(PlayerController->SprintAction, ETriggerEvent::Completed,
 												   ControlComponent.Get(),
-												   &UPlayerControlComponent::Sprint);
+												   &UPlayerControlComponent::SprintEnd);
 			}
 
 			// Parry
@@ -326,7 +326,6 @@ void ADomiCharacter::InitializeSkillComponent()
 
 	// Initializing Data for SkillGroups
 	// 추후에 데이터 에셋화 혹은 테이터 테이블화
-	
 	
 	//BaseSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::BaseAttack;
 	//BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseAttack::StaticClass());

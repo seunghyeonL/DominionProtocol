@@ -236,11 +236,23 @@ void UPlayerControlComponent::Dash()
 	}
 }
 
-void UPlayerControlComponent::Sprint()
+void UPlayerControlComponent::SprintStart()
 {
 	if (IsValid(PlayerControlState))
 	{
-		PlayerControlState->Sprint();
+		PlayerControlState->SprintStart();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::Sprint : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::SprintEnd()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->SprintEnd();
 	}
 	else
 	{

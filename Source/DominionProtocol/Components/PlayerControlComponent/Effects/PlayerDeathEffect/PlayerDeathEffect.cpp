@@ -52,9 +52,14 @@ void UPlayerDeathEffect::Dash()
 	// Super::Dash();
 }
 
-void UPlayerDeathEffect::Sprint()
+void UPlayerDeathEffect::SprintStart()
 {
-	Super::Sprint();
+	// Super::SprintStart();
+}
+
+void UPlayerDeathEffect::SprintEnd()
+{
+	// Super::SprintEnd();
 }
 
 void UPlayerDeathEffect::Parry()

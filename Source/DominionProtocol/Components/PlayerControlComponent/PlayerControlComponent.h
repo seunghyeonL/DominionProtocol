@@ -61,7 +61,8 @@ public:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Dash();
-	void Sprint();
+	void SprintStart();
+	void SprintEnd();
 	void Parry();
 	void BaseAttack();
 	void WeaponSkill();

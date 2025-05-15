@@ -45,7 +45,6 @@ ABaseEnemy::ABaseEnemy()
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ABaseEnemy::OnDeath()

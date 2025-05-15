@@ -111,24 +111,24 @@ void UPlayerControlState::Dash()
 	// }
 }
 
-void UPlayerControlState::Sprint()
+void UPlayerControlState::SprintStart()
 {
-	Super::Sprint();
+	Super::SprintStart();
 
-	if (auto StatusComponentUser = Cast<IStatusComponentUser>(OwnerCharacter))
-	{
-		auto StatusComponent = StatusComponentUser->GetStatusComponent();
-		auto ActiveStatusEffectTags = StatusComponentUser->GetActiveStatusEffectTags();
+	auto StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
+	check(StatusComponent);
 
-		if (!ActiveStatusEffectTags.HasTag(EffectTags::Running))
-		{
-			StatusComponent->ActivateStatusEffect(EffectTags::Running, 0.f);
-		}
-		else
-		{
-			StatusComponent->DeactivateStatusEffect(EffectTags::Running);
-		}
-	}
+	StatusComponent->ActivateStatusEffect(EffectTags::Running, 0.f);
+}
+
+void UPlayerControlState::SprintEnd()
+{
+	Super::SprintEnd();
+	
+	auto StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
+	check(StatusComponent);
+
+	StatusComponent->DeactivateStatusEffect(EffectTags::Running);
 }
 
 void UPlayerControlState::Parry()

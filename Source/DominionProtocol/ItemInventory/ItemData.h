@@ -39,3 +39,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	FGameplayTag ItemTag;
 };
+
+// Item.Consume.이름
+// Item.Equip.Weapon.이름
+// Item.Misc.이름
+
+// 무기?
+// SkillData

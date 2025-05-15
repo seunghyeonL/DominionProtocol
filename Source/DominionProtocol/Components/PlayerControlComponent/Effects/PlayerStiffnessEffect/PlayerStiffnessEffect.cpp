@@ -38,9 +38,14 @@ void UPlayerStiffnessEffect::Dash()
 	// Super::Dash();
 }
 
-void UPlayerStiffnessEffect::Sprint()
+void UPlayerStiffnessEffect::SprintStart()
 {
-	Super::Sprint();
+	// Super::SprintStart();
+}
+
+void UPlayerStiffnessEffect::SprintEnd()
+{
+	// Super::SprintEnd();
 }
 
 void UPlayerStiffnessEffect::Parry()

@@ -27,7 +27,8 @@ public:
 	virtual void Move(const FInputActionValue& Value) {}
 	virtual void Look(const FInputActionValue& Value) {}
 	virtual void Dash() {}
-	virtual void Sprint() {}
+	virtual void SprintStart() {}
+	virtual void SprintEnd() {}
 	virtual void Parry() {}
 	virtual void BaseAttack() {}
 	virtual void WeaponSkill() {}

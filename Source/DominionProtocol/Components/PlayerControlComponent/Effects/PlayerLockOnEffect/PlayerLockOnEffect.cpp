@@ -60,9 +60,14 @@ void UPlayerLockOnEffect::Dash()
 	Super::Dash();
 }
 
-void UPlayerLockOnEffect::Sprint()
+void UPlayerLockOnEffect::SprintStart()
 {
-	Super::Sprint();
+	Super::SprintStart();
+}
+
+void UPlayerLockOnEffect::SprintEnd()
+{
+	Super::SprintEnd();
 }
 
 void UPlayerLockOnEffect::Parry()

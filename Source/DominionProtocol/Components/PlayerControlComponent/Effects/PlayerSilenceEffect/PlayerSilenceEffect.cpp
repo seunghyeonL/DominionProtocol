@@ -38,9 +38,14 @@ void UPlayerSilenceEffect::Dash()
 	// Super::Dash();
 }
 
-void UPlayerSilenceEffect::Sprint()
+void UPlayerSilenceEffect::SprintStart()
 {
-	Super::Sprint();
+	Super::SprintStart();
+}
+
+void UPlayerSilenceEffect::SprintEnd()
+{
+	Super::SprintEnd();
 }
 
 void UPlayerSilenceEffect::Parry()

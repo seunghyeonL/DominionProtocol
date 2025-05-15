@@ -168,15 +168,27 @@ void UPlayerControlEffectBase::Dash()
 	}
 }
 
-void UPlayerControlEffectBase::Sprint()
+void UPlayerControlEffectBase::SprintStart()
 {
 	if (IsValid(InnerState))
 	{
-		InnerState->Sprint();
+		InnerState->SprintStart();
 	}
 	else
 	{
-		Debug::PrintError(TEXT("UPlayerControlEffectBase::Sprint : Invalid InnerState"));
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::SprintStart : Invalid InnerState"));
+	}
+}
+
+void UPlayerControlEffectBase::SprintEnd()
+{
+	if (IsValid(InnerState))
+	{
+		InnerState->SprintEnd();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::SprintEnd : Invalid InnerState"));
 	}
 }
 

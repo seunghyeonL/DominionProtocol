@@ -24,7 +24,8 @@ class DOMINIONPROTOCOL_API UPlayerLockOnEffect : public UPlayerControlEffectBase
 	virtual void Move(const FInputActionValue& Value) override;
 	virtual void Look(const FInputActionValue& Value) override;
 	virtual void Dash() override;
-	virtual void Sprint() override;
+	virtual void SprintStart() override;
+	virtual void SprintEnd() override;
 	virtual void Parry() override;
 	virtual void BaseAttack() override;
 	virtual void WeaponSkill() override;

@@ -172,8 +172,6 @@ void UStatusComponent::BlockStaminaRecovery()
 	UE_LOG(LogTemp, Warning, TEXT("ConsumeStamina called, Timer set"));
 }
 
-
-
 void UStatusComponent::InitializeComponent()
 {
 	Super::InitializeComponent();

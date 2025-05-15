@@ -42,9 +42,14 @@ void UPlayerConfusedEffect::Dash()
 	Super::Dash();
 }
 
-void UPlayerConfusedEffect::Sprint()
+void UPlayerConfusedEffect::SprintStart()
 {
-	Super::Sprint();
+	Super::SprintStart();
+}
+
+void UPlayerConfusedEffect::SprintEnd()
+{
+	Super::SprintEnd();
 }
 
 void UPlayerConfusedEffect::Parry()

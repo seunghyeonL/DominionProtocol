@@ -54,6 +54,11 @@ namespace SkillGroupTags
 	inline const FGameplayTag Dash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Dash"));
 }
 
+namespace WeaponSkillGroupTags
+{
+	// inline const FGameplayTag Sword = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.Sword"));
+}
+
 namespace SkillTags
 {
 	inline const FGameplayTag BaseAttackSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Sword"));

@@ -38,9 +38,14 @@ void UPlayerStunEffect::Dash()
 	// Super::Dash();
 }
 
-void UPlayerStunEffect::Sprint()
+void UPlayerStunEffect::SprintStart()
 {
-	Super::Sprint();
+	// Super::SprintStart();
+}
+
+void UPlayerStunEffect::SprintEnd()
+{
+	// Super::SprintEnd();
 }
 
 void UPlayerStunEffect::Parry()
