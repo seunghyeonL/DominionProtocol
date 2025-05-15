@@ -48,7 +48,8 @@ public:
 	virtual void MagicSkill() override;
 	virtual void Interact() override;
 	virtual void LockOn() override;
-	
+
+	FORCEINLINE bool IsActive() const { return bIsActive; }
 	FORCEINLINE UPlayerControlStateBase* GetInnerState() const { return InnerState; }
 	FORCEINLINE void SetInnerState(UPlayerControlStateBase* NewInnerState) { InnerState = NewInnerState; }
 	

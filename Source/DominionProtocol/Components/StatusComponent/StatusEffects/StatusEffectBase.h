@@ -37,6 +37,8 @@ protected:
 public:
 	FORCEINLINE void SetOwnerCharacter(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
 	FORCEINLINE void SetMagnitude(float InMagnitude) { Magnitude = InMagnitude; }
+
+	FORCEINLINE bool IsActive() const { return bIsActive; }
 	
 	virtual void Activate();
 	virtual void Activate(float Duration);

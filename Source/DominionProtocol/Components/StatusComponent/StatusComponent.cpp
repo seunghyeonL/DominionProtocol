@@ -231,8 +231,11 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		(*StatusEffect)->SetMagnitude(Magnitude);
-		(*StatusEffect)->Activate();
+		if (!(*StatusEffect)->IsActive())
+		{
+			(*StatusEffect)->SetMagnitude(Magnitude);
+			(*StatusEffect)->Activate();
+		}
 	}
 	else
 	{
@@ -244,8 +247,11 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		(*StatusEffect)->SetMagnitude(Magnitude);
-		(*StatusEffect)->Activate(Duration);
+		if (!(*StatusEffect)->IsActive())
+		{
+			(*StatusEffect)->SetMagnitude(Magnitude);
+			(*StatusEffect)->Activate(Duration);
+		}
 	}
 	else
 	{
@@ -254,11 +260,13 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 }
 
 void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTag)
-
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		(*StatusEffect)->Deactivate();
+		if ((*StatusEffect)->IsActive())
+		{
+			(*StatusEffect)->Deactivate();
+		}
 	}
 	else
 	{

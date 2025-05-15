@@ -68,7 +68,7 @@ void UStatusEffectBase::Deactivate()
 	{
 		return;
 	}
-
+	// Debug::Print(FString::Printf(TEXT("UStatusEffectBase::Deactivate : bIsActive : %d"), bIsActive ? 1 : 0));
 	GetOuter()->GetWorld()->GetTimerManager().ClearTimer(DurationTimer);
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
