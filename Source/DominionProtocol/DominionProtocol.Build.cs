@@ -18,8 +18,9 @@ public class DominionProtocol : ModuleRules
 			"GameplayTags",
 			"AIModule",
 			"NavigationSystem",
-			"GameplayTasks"
-		});
+			"GameplayTasks",
+			"MissNoHit"
+        });
 		
 		PrivateIncludePaths.Add("DominionProtocol");
 	}
