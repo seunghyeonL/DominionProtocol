@@ -29,6 +29,7 @@
 #include "Components/SkillComponent/Skills/BaseFirstSword.h"
 #include "Components/SkillComponent/Skills/BaseSecondSword.h"
 #include "Components/SkillComponent/Skills/BaseThirdSword.h"
+#include "Components/SkillComponent/Skills/WeaponFirstSword.h"
 #include "Components/SkillComponent/Skills/PlayerSkill/PlayerDashSkill/PlayerDashSkill.h"
 #include "Components/StatusComponent/StatusEffects/PlayerRunningEffect/PlayerRunningEffect.h"
 
@@ -339,11 +340,16 @@ void ADomiCharacter::InitializeSkillComponent()
 	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseSecondSword::StaticClass());
 	BaseSkillGroupInitializeData.SkillGroupData.Add(UBaseThirdSword::StaticClass());
 
+	FSkillGroupInitializeData WeaponSkillGroupInitializeData;
+	WeaponSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::WeaponSkill;
+	WeaponSkillGroupInitializeData.SkillGroupData.Add(UWeaponFirstSword::StaticClass());
+
 	FSkillGroupInitializeData DashSkillGroupInitializeData;
 	DashSkillGroupInitializeData.SkillGroupTag = SkillGroupTags::Dash;
 	DashSkillGroupInitializeData.SkillGroupData.Add(UPlayerDashSkill::StaticClass());
 	
 	InitializeData.SkillGroupInitializeDatas.Add(BaseSkillGroupInitializeData);
+	InitializeData.SkillGroupInitializeDatas.Add(WeaponSkillGroupInitializeData);
 	InitializeData.SkillGroupInitializeDatas.Add(DashSkillGroupInitializeData);
 
 	if (IsValid(SkillComponent))

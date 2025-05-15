@@ -160,7 +160,14 @@ void UPlayerControlState::WeaponSkill()
 {
 	Super::WeaponSkill();
 
-	Debug::Print(TEXT("UPlayerControlState::WeaponSkill : Call."));
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
+	{
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::WeaponSkill);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::WeaponSkill : Character doesn't implement ISkillComponentUser."));
+	}
 }
 
 void UPlayerControlState::MagicSkill()
