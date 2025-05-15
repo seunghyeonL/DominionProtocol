@@ -35,6 +35,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkillComponent> SkillComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
+	FGameplayTag PawnTag;
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI|State")
 	bool bIsAttacking = true;

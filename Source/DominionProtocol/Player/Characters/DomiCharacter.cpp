@@ -34,6 +34,7 @@
 #include "Components/StatusComponent/StatusEffects/PlayerRunningEffect/PlayerRunningEffect.h"
 
 #include "DomiFramework/GameMode/BaseGameMode.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 
 
 class UPoisonEffect;
@@ -70,8 +71,8 @@ ADomiCharacter::ADomiCharacter()
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 	CameraBoom->bEnableCameraLag = true; // Camera follow pawn smoothly
 	CameraBoom->CameraLagSpeed = 5.0f;
-	
 
+	
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
@@ -90,8 +91,12 @@ ADomiCharacter::ADomiCharacter()
 
 	// ParriedTags Setting
 	ParriedTags.AddTag(EffectTags::UsingParry);
+	
 	// Cashed MovementVector
 	LastMovementVector = {0.f, 0.f, 0.f};
+
+	// Set PawnTag
+	PawnTag = PawnTags::Player;
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -275,40 +280,45 @@ FGameplayTagContainer& ADomiCharacter::GetActiveStatusEffectTags()
 
 void ADomiCharacter::InitializeStatusComponent()
 {
-	FStatusComponentInitializeData InitializeData;
-
-	// Initializing Data for BaseStats
-	InitializeData.StatDatas.Add({StatTags::LIFE, 0.f});
-	InitializeData.StatDatas.Add({StatTags::STR, 0.f});
-	InitializeData.StatDatas.Add({StatTags::DEX, 0.f});
+	// // Initializing Data for BaseStats
+	// InitializeData.StatDatas.Add({StatTags::LIFE, 0.f});
+	// InitializeData.StatDatas.Add({StatTags::STR, 0.f});
+	// InitializeData.StatDatas.Add({StatTags::DEX, 0.f});
+	//
+	// // Initializing Data for BattleStats
+	// InitializeData.StatDatas.Add({StatTags::MaxHealth, 100.f});
+	// InitializeData.StatDatas.Add({ StatTags::MaxStamina, 100.f });
+	// InitializeData.StatDatas.Add({StatTags::AttackPower, 10.f});
+	// InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
+	// InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
+	//
+	// // Initializing Data for VariableStats
+	// InitializeData.StatDatas.Add({StatTags::Health, 100.f});
+	// InitializeData.StatDatas.Add({StatTags::Stamina, 100.f});
+	//
+	// // Initializing Data for BattleStatMultipliers
+	// InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
+	// InitializeData.StatMultiplierDatas.Add({StatTags::MaxStamina, 1.f});
+	// InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});
+	// InitializeData.StatMultiplierDatas.Add({StatTags::Defense, 1.f});
+	// InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
+	//
+	// // Initializing Data for StatusEffectClasses
+	// InitializeData.EffectClassDatas.Add({EffectTags::Running, UPlayerRunningEffect::StaticClass()});
+	// InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
+	// InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
 	
-	// Initializing Data for BattleStats
-	InitializeData.StatDatas.Add({StatTags::MaxHealth, 100.f});
-	InitializeData.StatDatas.Add({ StatTags::MaxStamina, 100.f });
-	InitializeData.StatDatas.Add({StatTags::AttackPower, 10.f});
-	InitializeData.StatDatas.Add({StatTags::Defense, 100.f});
-	InitializeData.StatDatas.Add({StatTags::MoveSpeed, 1.f});
-	
-	// Initializing Data for VariableStats
-	InitializeData.StatDatas.Add({StatTags::Health, 100.f});
-	InitializeData.StatDatas.Add({StatTags::Stamina, 100.f});
-	
-	// Initializing Data for BattleStatMultipliers
-	InitializeData.StatMultiplierDatas.Add({StatTags::MaxHealth, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::MaxStamina, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::AttackPower, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::Defense, 1.f});
-	InitializeData.StatMultiplierDatas.Add({StatTags::MoveSpeed, 1.f});
-
-	// Initializing Data for StatusEffectClasses
-	InitializeData.EffectClassDatas.Add({EffectTags::Running, UPlayerRunningEffect::StaticClass()});
-	InitializeData.EffectClassDatas.Add({EffectTags::Poison, UPoisonEffect::StaticClass()});
-	InitializeData.EffectClassDatas.Add({EffectTags::AttackDown, UAttackDownEffect::StaticClass()});
-
-	StatusComponent->OnDeath.AddUObject(this, &ADomiCharacter::OnDeath);
-	
-	Debug::Print(TEXT("ADomiCharacter::InitializeStatusComponent : Call."));
-	StatusComponent->InitializeStatusComponent(InitializeData);
+	if (auto World = GetWorld())
+	{
+		if (auto BaseGameState = World->GetGameState<ABaseGameState>())
+		{
+			if (FStatusComponentInitializeData* InitializeData = BaseGameState->GetStatusComponentInitializeData(PawnTag))
+			{
+				StatusComponent->InitializeStatusComponent(*InitializeData);
+				StatusComponent->OnDeath.AddUObject(this, &ADomiCharacter::OnDeath);
+			}
+		}
+	}
 }
 
 void ADomiCharacter::OnDeath()
