@@ -13,6 +13,18 @@ UStatusComponent::UStatusComponent()
 	AIState = nullptr;
 }
 
+void UStatusComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	TArray<FGameplayTag> StatusEffectTags;
+	StatusEffectMap.GetKeys(StatusEffectTags);
+	for (auto EffectTag : StatusEffectTags)
+	{
+		StatusEffectMap[EffectTag]->Deactivate();
+	}
+}
+
 void UStatusComponent::BeginPlay()
 {
 	Super::BeginPlay();

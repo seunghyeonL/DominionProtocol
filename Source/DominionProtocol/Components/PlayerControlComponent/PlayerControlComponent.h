@@ -22,6 +22,8 @@ public:
 	// Sets default values for this component's properties
 	UPlayerControlComponent();
 	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
 	// FOnComponentReady OnComponentReady;
 	// bool bIsComponentReady;
 	

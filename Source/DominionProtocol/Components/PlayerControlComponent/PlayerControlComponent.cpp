@@ -31,6 +31,18 @@ UPlayerControlComponent::UPlayerControlComponent()
 	// ...
 }
 
+void UPlayerControlComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	TArray<FGameplayTag> ControlEffectTags;
+	ControlEffectMap.GetKeys(ControlEffectTags);
+	for (auto EffectTag : ControlEffectTags)
+	{
+		ControlEffectMap[EffectTag]->Deactivate();
+	}
+}
+
 // Called when the game starts
 void UPlayerControlComponent::BeginPlay()
 {

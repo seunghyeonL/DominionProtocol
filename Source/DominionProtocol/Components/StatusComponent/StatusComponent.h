@@ -30,6 +30,8 @@ class DOMINIONPROTOCOL_API UStatusComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UStatusComponent();
+	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	FTimerHandle StaminaRecoveryDelayTimer;
 	

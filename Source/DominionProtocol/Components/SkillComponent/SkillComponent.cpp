@@ -27,9 +27,9 @@ void USkillComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
     }
 }
 
-void USkillComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
+void USkillComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    Super::OnComponentDestroyed(bDestroyingHierarchy);
+    Super::EndPlay(EndPlayReason);
 
     if (GetWorld())
     {
@@ -96,19 +96,21 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 
         if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
         {
+            // Cashed Movement Vector
+            FVector LastInputVector = ControlComponentUser->GetLastMovementVector();
             
             if (!ControlComponentUser->GetActiveControlEffectTags().HasTag(EffectTags::LockOn)) 
             {
                 // LockOn상태가 아닐때 Rotation돌리는 로직
-                if (FVector LastInputVector = ControlComponentUser->GetLastMovementVector(); !LastInputVector.IsNearlyZero())
+                if (!LastInputVector.IsNearlyZero())
                 {
-                    OwnerCharacter->SetActorRotation(ControlComponentUser->GetLastMovementVector().Rotation());
+                    OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
                 }
             }
             else if (SkillGroupTag.MatchesTag(SkillGroupTags::Dash))
             {
-                // LockOn이 아닌데 Dash
-                OwnerCharacter->SetActorRotation(ControlComponentUser->GetLastMovementVector().Rotation());
+                // LockOn이어도 Dash 쓸때는 로테이션 돌리기
+                OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
             }
         }
 
