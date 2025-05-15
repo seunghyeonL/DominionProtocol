@@ -67,6 +67,9 @@ ADomiCharacter::ADomiCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->bEnableCameraLag = true; // Camera follow pawn smoothly
+	CameraBoom->CameraLagSpeed = 5.0f;
+	
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));

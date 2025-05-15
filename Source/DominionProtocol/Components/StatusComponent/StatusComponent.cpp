@@ -39,9 +39,13 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 		}
 	}
 
-	for (auto ActiveEffectTag : ActiveStatusEffectTags.GetGameplayTagArray())
+	auto ActiveTagArray = ActiveStatusEffectTags.GetGameplayTagArray();
+	for (int32 i = 0 ; i < ActiveTagArray.Num(); i++)
 	{
-		StatusEffectMap[ActiveEffectTag]->Tick(DeltaTime);
+		if (ActiveTagArray.IsValidIndex(i))
+		{
+			StatusEffectMap[ActiveTagArray[i]]->Tick(DeltaTime);
+		}
 	}
 }
 
