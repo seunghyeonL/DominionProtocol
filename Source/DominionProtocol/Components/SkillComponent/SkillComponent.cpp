@@ -230,6 +230,14 @@ void USkillComponent::StopSkill()
             AnimInstance->Montage_Stop(0.1f, CurrentSkill->GetAnimMontage());
         }
 
+        // 콤보 초기화
+        // 이부분 그냥 ResetCombo같은 함수로 뺄까요?
+        if (FSkillGroup* SkillGroup = SkillGroupMap.Find(CurrentSkillGroupTag))
+        {
+            SkillGroup->ComboIdx = 0;
+        }
+
+        // 스킬종료 델리게이트 호출
         if (OnSkillEnd.IsBound())
         {
             OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
