@@ -183,7 +183,7 @@ void USkillComponent::EndSkill()
 
                 if (CurrentMontage)
                 {
-                    AnimInstance->Montage_SetPlayRate(CurrentMontage, CurrentMontage->RateScale * 2);
+                    AnimInstance->Montage_SetPlayRate(CurrentMontage, CurrentMontage->RateScale * 5);
                 }
             }
         }
