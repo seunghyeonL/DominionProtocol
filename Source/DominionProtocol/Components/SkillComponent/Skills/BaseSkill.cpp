@@ -153,6 +153,61 @@ void UBaseSkill::AttackTrace() const
 	}
 }
 
+void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult)
+{
+	AActor* HitActor = HitResult.GetActor();
+
+	if (!IsValid(HitActor))
+	{
+		return;
+	}
+
+	check(OwnerCharacter)
+
+	FAttackData AttackData;
+
+	UWorld* World = GetWorld();
+
+	if (IsValid(World))
+	{
+		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+
+		if (IsValid(BaseGameState))
+		{
+			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
+
+			if (IsValid(StatusComponent))
+			{
+				int32 AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+
+				AttackData.Damage = GetFinalAttackData(AttackPower);
+			}
+		}
+	}
+
+	AttackData.Instigator = OwnerCharacter;
+	AttackData.Effects = Effects;
+
+	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
+	{
+		AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
+
+		AttackData.LaunchVector.Normalize();
+		
+		USkillComponent* SkillComponent = HitActor->FindComponentByClass<USkillComponent>();
+
+		if (IsValid(SkillComponent))
+		{
+			// 피격자가 실행 중이던 스킬 중단
+			SkillComponent->StopSkill();
+		}
+
+		Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
+
+		IDamagable::Execute_OnAttacked(HitActor, AttackData);
+	}
+}
+
 float UBaseSkill::GetStamina() const
 {
 	return Stamina;
