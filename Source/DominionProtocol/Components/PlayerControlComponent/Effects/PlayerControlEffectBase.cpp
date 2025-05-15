@@ -124,7 +124,6 @@ void UPlayerControlEffectBase::Deactivate()
 	SetOuterState(nullptr);
 
 	bIsActive = false;
-
 	ControlComponent->GetActiveControlEffectTags().RemoveTag(ControlEffectTag);
 }
 

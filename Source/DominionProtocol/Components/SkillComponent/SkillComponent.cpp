@@ -169,6 +169,11 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 
 void USkillComponent::EndSkill()
 {
+    if (!IsValid(CurrentSkill))
+    {
+        return;
+    }
+    
     ACharacter* Character = Cast<ACharacter>(GetOwner());
 
     if (IsValid(Character))
@@ -190,13 +195,7 @@ void USkillComponent::EndSkill()
             }
         }
     }
-
-    if (OnSkillEnd.IsBound() && IsValid(CurrentSkill))
-    {
-        OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
-    }
-    CurrentSkill = nullptr;
-
+    
     TWeakObjectPtr<ThisClass> WeakThis(this);
     GetWorld()->GetTimerManager().SetTimer(
         ResetComboTimer,
@@ -215,35 +214,48 @@ void USkillComponent::EndSkill()
         ComboResetDelay,
         false
     );
+
+    // CurrentSkill을 null로 바꾸는 로직을 먼저하기
+    // 안그러면 스킬 실행 후 CurrentSkill이 nullptr로 바뀐다. 
+    auto CurrentSkillControlEffectTag = CurrentSkill->GetControlEffectTag();
+    CurrentSkill = nullptr;
+
+    if (OnSkillEnd.IsBound())
+    {
+        OnSkillEnd.Execute(CurrentSkillControlEffectTag);
+    }
 }
 
 void USkillComponent::StopSkill()
 {
-    if (IsValid(CurrentSkill))
+    if (!IsValid(CurrentSkill))
     {
-        ACharacter* Character = Cast<ACharacter>(GetOwner());
-        UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+        return;
+    }
+    
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 
-        // 캐릭터가 스킬 몽타주를 재생 중인지 확인
-        if (AnimInstance && AnimInstance->Montage_IsPlaying(CurrentSkill->GetAnimMontage()))
-        {
-            AnimInstance->Montage_Stop(0.1f, CurrentSkill->GetAnimMontage());
-        }
+    // 캐릭터가 스킬 몽타주를 재생 중인지 확인
+    if (AnimInstance && AnimInstance->Montage_IsPlaying(CurrentSkill->GetAnimMontage()))
+    {
+        AnimInstance->Montage_Stop(0.1f, CurrentSkill->GetAnimMontage());
+    }
 
-        // 콤보 초기화
-        // 이부분 그냥 ResetCombo같은 함수로 뺄까요?
-        if (FSkillGroup* SkillGroup = SkillGroupMap.Find(CurrentSkillGroupTag))
-        {
-            SkillGroup->ComboIdx = 0;
-        }
-
-        // 스킬종료 델리게이트 호출
-        if (OnSkillEnd.IsBound())
-        {
-            OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
-        }
-
-        CurrentSkill = nullptr;
+    // 콤보 초기화
+    // 이부분 그냥 ResetCombo같은 함수로 뺄까요?
+    if (FSkillGroup* SkillGroup = SkillGroupMap.Find(CurrentSkillGroupTag))
+    {
+        SkillGroup->ComboIdx = 0;
+    }
+    
+    auto CurrentSkillControlEffectTag = CurrentSkill->GetControlEffectTag();
+    CurrentSkill = nullptr;
+    
+    // 스킬종료 델리게이트 호출
+    if (OnSkillEnd.IsBound())
+    {
+        OnSkillEnd.Execute(CurrentSkillControlEffectTag);
     }
 }
 

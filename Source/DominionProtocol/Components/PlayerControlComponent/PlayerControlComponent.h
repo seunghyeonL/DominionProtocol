@@ -42,6 +42,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effect")
 	TMap<FGameplayTag, UPlayerControlEffectBase*> ControlEffectMap;
 
+	
+
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
