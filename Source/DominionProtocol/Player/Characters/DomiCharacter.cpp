@@ -61,8 +61,8 @@ ADomiCharacter::ADomiCharacter()
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 	CameraBoom->bEnableCameraLag = true; // Camera follow pawn smoothly
 	CameraBoom->CameraLagSpeed = 5.0f;
-
 	
+
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
@@ -74,6 +74,7 @@ ADomiCharacter::ADomiCharacter()
 	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 	ItemComponent = CreateDefaultSubobject<UItemComponent>(TEXT("ItemComponent"));
+	
 
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::UsingDash);
@@ -81,7 +82,6 @@ ADomiCharacter::ADomiCharacter()
 
 	// ParriedTags Setting
 	ParriedTags.AddTag(EffectTags::UsingParry);
-	
 	// Cashed MovementVector
 	LastMovementVector = {0.f, 0.f, 0.f};
 
@@ -92,16 +92,34 @@ ADomiCharacter::ADomiCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
-AActor* ADomiCharacter::GetCurrentInteractableObject() const
+AActor* ADomiCharacter::GetCurrentInteractableActor() const
 {
-	if (InteractableObject == nullptr)
+	if (InteractableActor == nullptr)
 	{
 		Debug::Print("ADomiCharacter::GetCurrentInteractableObject : InteractableObject == nullptr");
 		return nullptr;
 	}
 	else
 	{
-		return InteractableObject;
+		return InteractableActor;
+	}
+}
+
+void ADomiCharacter::AddInteractableActor(AActor* AddInteractableActor)
+{
+	if (!InteractableActorArray.Contains(AddInteractableActor))
+	{
+		InteractableActorArray.Add(AddInteractableActor);
+		OnAddInteractableActor.Broadcast(InteractableActorArray);	
+	}
+}
+
+void ADomiCharacter::RemoveInteractableActor(AActor* RemoveInteractableActor)
+{
+	if (InteractableActorArray.Contains(RemoveInteractableActor))
+	{
+		InteractableActorArray.Remove(RemoveInteractableActor);
+		OnRemoveInteractableActor.Broadcast(InteractableActorArray);	
 	}
 }
 

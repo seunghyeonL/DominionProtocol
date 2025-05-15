@@ -24,59 +24,30 @@ class UInputAction;
 struct FInputActionValue;
 struct FAttackData;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddInteractableActor, TArray<AActor*>)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnRemoveInteractableActor, TArray<AActor*>)
+
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
 public ACharacter, public IDamagable, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser, public ISkillComponentUser
 {
 	GENERATED_BODY()
-
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UPlayerControlComponent> ControlComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UStatusComponent> StatusComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USkillComponent> SkillComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UItemComponent* ItemComponent;
-	
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
-	FGameplayTag PawnTag;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
-	FGameplayTagContainer InvincibilityTags;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
-	FGameplayTagContainer ParriedTags;
 	
 public:
 	ADomiCharacter();
 
+	FOnAddInteractableActor OnAddInteractableActor;
+	FOnRemoveInteractableActor OnRemoveInteractableActor;
+
 	//Getter
-	AActor* GetCurrentInteractableObject() const;
+	FORCEINLINE AActor* GetCurrentInteractableActor() const;
 	 
 	//Setter
-	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableObject = NewActor; }
-	
-protected:
-	// Bind Matched Input Functions
-	void BindInputFunctions();
-	virtual void NotifyControllerChanged() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void OnDeath();
-	void Parrying(const FAttackData& IncomingAttackData);
-public:
+	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableActor = NewActor; }
+
+	void AddInteractableActor(AActor* AddInteractableActor);
+	void RemoveInteractableActor(AActor* RemoveInteractableActor);
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
@@ -108,9 +79,51 @@ public:
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;
 
+protected:
+	// Bind Matched Input Functions
+	void BindInputFunctions();
+	virtual void NotifyControllerChanged() override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void OnDeath();
+	void Parrying(const FAttackData& IncomingAttackData);
+
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UPlayerControlComponent> ControlComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStatusComponent> StatusComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkillComponent> SkillComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UItemComponent* ItemComponent;
+	
+	/** Camera boom positioning the camera behind the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraBoom;
+
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer InvincibilityTags;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer ParriedTags;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
+	FGameplayTag PawnTag;
+
 private:
 	UPROPERTY()
-	AActor* InteractableObject;
+	AActor* InteractableActor;
+
+	UPROPERTY()
+	TArray<AActor*> InteractableActorArray = {};
 
 	// 마지막 이동 입력 방향벡터
 	FVector LastMovementVector;

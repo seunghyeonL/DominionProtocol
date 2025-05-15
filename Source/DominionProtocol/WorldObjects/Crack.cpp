@@ -79,7 +79,7 @@ void ACrack::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
     ensure(PlayerCharacter);
     CachedCharacter = PlayerCharacter;
     
-    PlayerCharacter->SetCurrentInteractableObject(this);
+    PlayerCharacter->AddInteractableActor(this);
 }
 
 void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -91,7 +91,7 @@ void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
         ensure(PlayerCharacter);
 
         CachedCharacter = nullptr;
-        PlayerCharacter->SetCurrentInteractableObject(nullptr);
+        PlayerCharacter->RemoveInteractableActor(this);
     }
     else
     {

@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "DomiInteractionBoxWidget.generated.h"
+#include "DomiInteractionContentWidget.generated.h"
 
 
 UCLASS()
-class DOMINIONPROTOCOL_API UDomiInteractionBoxWidget : public UUserWidget
+class DOMINIONPROTOCOL_API UDomiInteractionContentWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	

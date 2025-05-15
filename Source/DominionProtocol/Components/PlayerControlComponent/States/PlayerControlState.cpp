@@ -184,7 +184,7 @@ void UPlayerControlState::Interact()
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
 	check(PlayerCharacter);
 
-	AActor* InteractableObject = PlayerCharacter->GetCurrentInteractableObject();
+	AActor* InteractableObject = PlayerCharacter->GetCurrentInteractableActor();
 	if (IsValid(InteractableObject))
 	{
 		IInteractableInterface::Execute_Interact(InteractableObject, PlayerCharacter);

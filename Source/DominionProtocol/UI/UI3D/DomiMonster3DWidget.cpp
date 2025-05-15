@@ -10,7 +10,6 @@ void UDomiMonster3DWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	WidgetComponent = OwningActor->FindComponentByClass<UDomiWidgetComponent>();
 }
 
 void UDomiMonster3DWidget::UpdateMonsterHPBar(const float NewHP)
@@ -45,6 +44,9 @@ void UDomiMonster3DWidget::SetOwningActor(AActor* NewOwner)
 void UDomiMonster3DWidget::SetupMonster3dWidget()
 {
 	check(IsValid(OwningActor));
+
+	
+	WidgetComponent = OwningActor->FindComponentByClass<UDomiWidgetComponent>();
 	
 	auto* StatusComp = OwningActor->FindComponentByClass<UStatusComponent>();
 	if (StatusComp)
