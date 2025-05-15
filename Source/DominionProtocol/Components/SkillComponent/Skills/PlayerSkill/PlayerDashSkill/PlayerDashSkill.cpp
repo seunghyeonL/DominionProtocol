@@ -48,7 +48,6 @@ void UPlayerDashSkill::SetDashDirection()
 
 void UPlayerDashSkill::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
 	check(OwnerCharacter);
 	
 	FVector Step = DashMoveDirection * DashSpeed * DeltaTime;

@@ -58,6 +58,4 @@ protected:
 	float AttackForwardOffset;
 
 	float DamageCoefficient;
-
-	bool bIsExecuting;
 };

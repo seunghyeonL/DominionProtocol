@@ -52,6 +52,7 @@ void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)
 	if (auto Controller = OwnerCharacter->GetController())
 	{
 		FVector2D InputVector = Value.Get<FVector2D>();
+		
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -62,9 +63,10 @@ void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-		// final movement vector
+		// final movement normal vector
 		const FVector FinalMovementNormalVector = (ForwardDirection * InputVector.X  + RightDirection * InputVector.Y).GetSafeNormal();
 
+		// caching final movement normal vector
 		if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
 		{
 			ControlComponentUser->SetLastMovementVector(FinalMovementNormalVector);
@@ -130,7 +132,6 @@ void UPlayerUsingSkillEffect::LockOn()
 
 void UPlayerUsingSkillEffect::Tick(float DeltaTime)
 {
-	// Super::Tick(DeltaTime);
 	// Debug::Print(TEXT("DashTick!"));
 }
 

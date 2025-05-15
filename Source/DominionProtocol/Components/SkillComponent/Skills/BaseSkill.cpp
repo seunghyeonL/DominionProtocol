@@ -160,10 +160,6 @@ float UBaseSkill::GetStamina() const
 
 void UBaseSkill::Tick(float DeltaTime)
 {
-	if(!bIsExecuting)
-	{
-		return;
-	}
 }
 
 TObjectPtr<UAnimMontage> UBaseSkill::GetAnimMontage() const
