@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
-#include "ItemInventory/BaseItem.h"
 #include "SkillComponentInitializeData.generated.h"
 
 USTRUCT(BlueprintType)

@@ -13,7 +13,7 @@ struct FSkillData : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	FName SkillName;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TObjectPtr<UAnimMontage> AnimMontage;
 
