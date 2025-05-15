@@ -144,12 +144,40 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 		//데이터 체크
 		if (ItemData)
 		{
-		
 			EItemType ItemType = ItemData->ItemType;
 			if (ItemType == EItemType::Weapon)
 			{
-				EquipmentSlots.Add(SlotName, ItemTag);
-				return true;
+				// 슬롯이 존재하는지 확인
+				if (EquipmentSlots.Contains(SlotName))
+				{
+					// 슬롯의 기존 태그 확인
+					FGameplayTag CurrentTag = EquipmentSlots[SlotName];
+
+					// 태그가 비어있거나 다르다면
+					if (!CurrentTag.IsValid() || CurrentTag != ItemTag)
+					{
+						// 원래의 태그가 유효하다면 장비 해제 (메시지 출력)
+						if (CurrentTag.IsValid())
+						{
+							Debug::Print(FString::Printf(TEXT("슬롯 '%s'의 '%s' 장비 해제"), *SlotName.ToString(), *CurrentTag.ToString()));
+						}
+
+						// 새로운 태그 장착
+						EquipmentSlots[SlotName] = ItemTag;
+						Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 장착"), *SlotName.ToString(), *ItemTag.ToString()));
+						return true;
+					}
+					else
+					{
+						Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 이미 동일한 아이템 '%s'이 장착되어 있습니다."), *SlotName.ToString(), *ItemTag.ToString()));
+						return false;
+					}
+				}
+				else
+				{
+					Debug::PrintError(FString::Printf(TEXT("유효하지 않은 장비 슬롯 이름: '%s'"), *SlotName.ToString()));
+					return false;
+				}
 			}
 			else
 			{
@@ -169,6 +197,7 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 		return false;
 	}
 }
+
 
 //장비 해제
 bool UItemComponent::UnequipItem(FName SlotName)
