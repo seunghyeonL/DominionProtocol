@@ -11,6 +11,8 @@ class ATargetPoint;
 class ADomiCharacter;
 class USphereComponent;
 
+DECLARE_LOG_CATEGORY_EXTERN(LogCrackSystem, Log, All);
+
 UCLASS()
 class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
 {
@@ -26,6 +28,8 @@ public:
 	//Getter
 	FORCEINLINE FVector GetRespawnTargetPointLocation() const;
 	FORCEINLINE FRotator GetRespawnTargetPointRotation() const;
+
+	FORCEINLINE int32 GetCrackIndex() const { return CrackIndex; }
 	//Setter
 	
 protected:
@@ -34,9 +38,7 @@ protected:
 	//Interact
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
-	
-	void MoveToLevel();
-	
+
 	UFUNCTION()
 	void OnOverlapBegin(
 		UPrimitiveComponent* OverlappedComp,
@@ -52,6 +54,12 @@ protected:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
+
+	// 기능
+	void MoveToCrack();
+
+private:
+	void ActivateLinkedCrack();
 
 #pragma endregion
 
@@ -73,7 +81,7 @@ protected:
 	UChildActorComponent* RespawnTargetPointComp;
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	FText CrackName;
+	FText CrackName; // UI전용
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	int32 CrackIndex;

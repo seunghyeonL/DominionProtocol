@@ -13,11 +13,13 @@
 
 #include "Util/DebugHelper.h"
 
+DEFINE_LOG_CATEGORY(LogCrackSystem);
+
 // Sets default values
 ACrack::ACrack()
 	:   CrackName(FText::GetEmpty()),
         CrackIndex(0),
-        bIsActivate(true)
+        bIsActivate(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -49,8 +51,8 @@ void ACrack::BeginPlay()
     UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
     check(GameInstance);
 
-    GameInstance->SetRecentCrackName(CrackName);
-    GameInstance->SetRecentCrackIndex(CrackIndex);
+    //GameInstance->SetRecentCrackName(CrackName);
+    //GameInstance->SetRecentCrackIndex(CrackIndex);
     
     //*===BaseGameMode의 ACrack* RecentCrack 업데이트===*
     ABaseGameMode* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
@@ -61,11 +63,6 @@ void ACrack::BeginPlay()
     
     SphereCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ACrack::OnOverlapBegin);
     SphereCollisionComp->OnComponentEndOverlap.AddDynamic(this, &ACrack::OnOverlapEnd);
-}
-
-void ACrack::MoveToLevel()
-{
-
 }
 
 void ACrack::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -99,8 +96,54 @@ void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
     }
 }
 
+void ACrack::MoveToCrack()
+{
+}
+
+void ACrack::ActivateLinkedCrack()
+{
+    // 다른 레벨의 같은 인덱스 균열 활성화
+    // Subsystem->ActivateCrack(CrackIndex); 
+}
+
 void ACrack::Interact_Implementation(AActor* Interactor)
 {
+    UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+    if (!GameInstance) return;
+
+    // 해당 균열 활성화
+    if (!bIsActivate)
+    {
+        bIsActivate = true;
+        GameInstance->SetIsActivateCrack(CrackIndex);
+        UE_LOG(LogCrackSystem, Warning, TEXT("%s 활성화"), *CrackName.ToString());
+        Debug::Print(CrackName.ToString()+TEXT(" 활성화"));
+    }
+    /*
+    // 활성화된 균열 목록 띄우기
+    FString Result = TEXT("현재 레벨에서 이동 가능한 균열 목록:\n");
+    const TArray<bool>& ActiveIndices = GameInstance->GetPastCrackActivateArray();
+
+    TArray<AActor*> AllCracks;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACrack::StaticClass(), AllCracks);
+
+    for (bool Acti : ActiveIndices)
+    {
+        for (AActor* CrackActor : AllCracks)
+        {
+            ACrack* Crack = Cast<ACrack>(CrackActor);
+            if (Crack && Acti)
+            {
+                Result += TEXT("- ") + Crack->CrackName.ToString() + TEXT("\n");
+                break;
+            }
+        }
+    }
+
+    Debug::Print(Result);
+
+    */
+
     FName TargetLevelName = NAME_None;
     
     ABaseGameMode* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
@@ -113,15 +156,23 @@ void ACrack::Interact_Implementation(AActor* Interactor)
         else if (GameMode->IsA(AProtoLevel2GameMode::StaticClass()))
         {
             TargetLevelName = FName("Proto_Level1"); 
-
         }
     }
 
     if (TargetLevelName != NAME_None)
     {
+        if (GameInstance)
+        {
+            GameInstance->SetRecentCrackIndex(CrackIndex);
+            Debug::Print(FString::Printf(TEXT("Set RecentCrack")));
+        }
+        UE_LOG(LogCrackSystem, Warning, TEXT("%s Open"), *CrackName.ToString());
+
         Debug::Print(FString::Printf(TEXT("Open %s"), *TargetLevelName.ToString()));
         UGameplayStatics::OpenLevel(this, TargetLevelName);
     }
+
+
 }
 
 FText ACrack::GetInteractMessage_Implementation() const

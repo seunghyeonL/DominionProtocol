@@ -61,6 +61,13 @@ void ABaseGameMode::StartPlay()
 	{
 		PlayerCharacter->Tags.Add("Player");
 	}
+
+	int32 TargetCrackIndex = GameInstance->GetRecentCrackIndex();
+	if (TargetCrackIndex == -1)
+	{
+		Debug::Print(TEXT("StartPlay: CrackIndex 없음 → 기본 위치 스폰"));
+		return;
+	}
 }
 
 void ABaseGameMode::StartBattle()
