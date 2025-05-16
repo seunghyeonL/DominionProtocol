@@ -278,6 +278,38 @@ void ADomiCharacter::BindInputFunctions()
 												   ControlComponent.Get(),
 												   &UPlayerControlComponent::LockOn);
 			}
+
+			// Consume Item (Slot 0)
+			if (IsValid(PlayerController->ConsumeItemAction_1))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->ConsumeItemAction_1, ETriggerEvent::Started,
+													ControlComponent.Get(),
+													&UPlayerControlComponent::ConsumeItemAction_1);
+			}
+
+			// Consume Item (Slot 1)
+			if (IsValid(PlayerController->ConsumeItemAction_2))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->ConsumeItemAction_2, ETriggerEvent::Started,
+					ControlComponent.Get(),
+					&UPlayerControlComponent::ConsumeItemAction_2);
+			}
+
+			// Consume Item (Slot 2)
+			if (IsValid(PlayerController->ConsumeItemAction_3))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->ConsumeItemAction_3, ETriggerEvent::Started,
+					ControlComponent.Get(),
+					&UPlayerControlComponent::ConsumeItemAction_3);
+			}
+
+			// Swap Weapon
+			if (IsValid(PlayerController->SwapWeapon))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->SwapWeapon, ETriggerEvent::Started,
+					ControlComponent.Get(),
+					&UPlayerControlComponent::SwapWeapon);
+			}
 		}
 		else
 		{

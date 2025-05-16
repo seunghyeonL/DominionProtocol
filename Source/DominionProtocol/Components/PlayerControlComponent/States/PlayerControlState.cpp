@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/InteractableInterface.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "Components/ItemComponent/ItemComponent.h"
 
 UPlayerControlState::UPlayerControlState()
 {
@@ -209,4 +210,91 @@ void UPlayerControlState::LockOn()
 	}
 
 	Debug::Print(TEXT("UPlayerControlState::LockOn : Call."));
+}
+
+void UPlayerControlState::ConsumeItemAction_1()
+{
+	Super::ConsumeItemAction_1();
+	if (ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
+		{
+			ItemComponent->UseConsumableItem(0); // 슬롯 인덱스 0
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_1 : ItemComponent가 없습니다."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_1 : OwnerCharacter가 DomiCharacter가 아닙니다."));
+	}
+
+	Debug::Print(TEXT("UPlayerControlState::ConsumeItemAction_1 : Call."));
+}
+
+void UPlayerControlState::ConsumeItemAction_2()
+{
+	Super::ConsumeItemAction_2();
+	if (ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
+		{
+			ItemComponent->UseConsumableItem(1); // 슬롯 인덱스 1 
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_2 : ItemComponent가 없습니다."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_2 : OwnerCharacter가 DomiCharacter가 아닙니다."));
+	}
+
+	Debug::Print(TEXT("UPlayerControlState::ConsumeItemAction_2 : Call."));
+}
+
+void UPlayerControlState::ConsumeItemAction_3()
+{
+	Super::ConsumeItemAction_3();
+	if (ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
+		{
+			ItemComponent->UseConsumableItem(2); // 슬롯 인덱스 2 사용
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_3 : ItemComponent가 없습니다."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_3 : OwnerCharacter가 DomiCharacter가 아닙니다."));
+	}
+
+	Debug::Print(TEXT("UPlayerControlState::ConsumeItemAction_3 : Call."));
+}
+
+void UPlayerControlState::SwapWeapon()
+{
+	Super::SwapWeapon();
+	if (ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
+		{
+			ItemComponent->SwapWeapons();
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlState::SwapWeaponsAction : ItemComponent가 없습니다."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::SwapWeaponsAction : OwnerCharacter가 DomiCharacter가 아닙니다."));
+	}
+	Debug::Print(TEXT("UPlayerControlState::SwapWeapon : Call."));
 }

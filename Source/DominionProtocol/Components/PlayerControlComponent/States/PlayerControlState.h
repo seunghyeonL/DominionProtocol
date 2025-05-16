@@ -28,7 +28,11 @@ public:
 	virtual void MagicSkill() override;
 	virtual void Interact() override;
 	virtual void LockOn() override;
-	
+	virtual void ConsumeItemAction_1()override;
+	virtual void ConsumeItemAction_2()override;
+	virtual void ConsumeItemAction_3()override;
+	virtual void SwapWeapon()override;
+
 	virtual void Tick(float DeltaTime) override;
 	// virtual bool IsTickable() const override{return bDashTickActive;}
 	// virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UPlayerControlState, STATGROUP_Tickables); }

@@ -71,4 +71,8 @@ public:
 	void MagicSkill();
 	void Interact();
 	void LockOn();
+	void ConsumeItemAction_1();
+	void ConsumeItemAction_2();
+	void ConsumeItemAction_3();
+	void SwapWeapon();
 };

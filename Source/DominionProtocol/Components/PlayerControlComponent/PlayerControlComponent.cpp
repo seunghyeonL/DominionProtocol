@@ -341,3 +341,51 @@ void UPlayerControlComponent::LockOn()
 	}
 }
 
+void UPlayerControlComponent::ConsumeItemAction_1()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->ConsumeItemAction_1();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::ConsumeItemAction_1 : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::ConsumeItemAction_2()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->ConsumeItemAction_2();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::ConsumeItemAction_2 : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::ConsumeItemAction_3()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->ConsumeItemAction_3();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::ConsumeItemAction_3 : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::SwapWeapon()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->SwapWeapon();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::SwapWeapon : Invalid ControlState."));
+	}
+}
+
