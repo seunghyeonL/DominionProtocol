@@ -14,14 +14,20 @@ class DOMINIONPROTOCOL_API UDomiInteractionContentWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetCurrentInteractableActor(AActor* Actor) {  CurrentInteractableActor = Actor; }
+	void SetReceivedInteractableActor(AActor* Actor);
 
+
+protected:
+	virtual void NativeConstruct() override;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentFocusIndex;
+	float CurrentWidgetFocusIndex;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<AActor> CurrentInteractableActor;
+	TObjectPtr<AActor> ReceivedInteractableActor;
+
+	UPROPERTY()
+	TObjectPtr<class ADomiCharacter> OwningCharacter;
 };

@@ -135,8 +135,8 @@ protected:
 	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;	// 추후에 무기 쪽으로 이동 필요
 
 private:
-	UPROPERTY()
-	AActor* InteractableActor;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<AActor> InteractableActor;
 
 	UPROPERTY()
 	TArray<AActor*> InteractableActorArray = {};

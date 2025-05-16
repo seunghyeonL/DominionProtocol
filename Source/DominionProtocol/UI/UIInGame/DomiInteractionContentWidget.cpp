@@ -3,3 +3,17 @@
 
 #include "DomiInteractionContentWidget.h"
 
+#include "Player/Characters/DomiCharacter.h"
+
+void UDomiInteractionContentWidget::SetReceivedInteractableActor(AActor* Actor = nullptr)
+{
+	ReceivedInteractableActor = Actor;
+	OwningCharacter->SetCurrentInteractableActor(ReceivedInteractableActor);
+}
+
+void UDomiInteractionContentWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	OwningCharacter = Cast<ADomiCharacter>(GetOwningPlayerPawn());
+}
