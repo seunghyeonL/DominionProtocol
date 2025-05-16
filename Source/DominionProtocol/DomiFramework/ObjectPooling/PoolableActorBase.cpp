@@ -25,7 +25,7 @@ void APoolableActorBase::OnObjectSpawn_Implementation()
 	SetActorEnableCollision(bIsActivate);
 }
 
-void APoolableActorBase::OnObjectReset_Implementation()
+void APoolableActorBase::OnObjectReturn_Implementation()
 {
 	bIsActivate = false;
 	SetActorHiddenInGame(!bIsActivate);

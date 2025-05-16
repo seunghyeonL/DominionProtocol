@@ -21,7 +21,7 @@ public:
 	
 	void OnObjectSpawn_Implementation() override;
 
-	void OnObjectReset_Implementation() override;
+	void OnObjectReturn_Implementation() override;
 
 protected:
 	bool bIsActivate = false;

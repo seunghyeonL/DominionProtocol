@@ -34,6 +34,23 @@ bool UObjectPoolSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 	return true;
 }
 
+void UObjectPoolSubsystem::ClearObjectPool()
+{
+	{
+		for (auto& Elem : PooledActorsMap)
+		{
+			for (TObjectPtr<AActor>& Actor : Elem.Value.PooledActors)
+			{
+				if (IsValid(Actor))
+				{
+					Actor->Destroy();
+				}
+			}
+		}
+		PooledActorsMap.Empty();
+	}
+}
+
 void UObjectPoolSubsystem::ReturnActorToPool(AActor* Actor)
 {
 	if (!IsValid(Actor))
@@ -43,6 +60,6 @@ void UObjectPoolSubsystem::ReturnActorToPool(AActor* Actor)
 	}
 	else if (Actor->Implements<UPoolableObjectInterface>())
 	{
-		IPoolableObjectInterface::Execute_OnObjectReset(Actor);
+		IPoolableObjectInterface::Execute_OnObjectReturn(Actor);
 	}
 }

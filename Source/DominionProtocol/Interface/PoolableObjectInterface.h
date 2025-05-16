@@ -21,5 +21,5 @@ public:
 	void OnObjectSpawn();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void OnObjectReset();
+	void OnObjectReturn();
 };

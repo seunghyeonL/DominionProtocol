@@ -23,6 +23,10 @@ class DOMINIONPROTOCOL_API UObjectPoolSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	void ClearObjectPool();
+	
+	void ReturnActorToPool(AActor* Actor);
+	
 	template <typename T>
 	T* SpawnActorFromPool(const FVector& SpawnLocation, const FRotator& SpawnRotation, APawn* Instigator = nullptr)
 	{
@@ -86,8 +90,6 @@ public:
 
 		return Cast<T>(NewActor);
 	}
-
-	void ReturnActorToPool(AActor* Actor);
 
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
