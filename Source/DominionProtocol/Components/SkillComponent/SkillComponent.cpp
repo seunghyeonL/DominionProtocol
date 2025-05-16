@@ -112,6 +112,17 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                 // LockOn이어도 Dash 쓸때는 로테이션 돌리기
                 OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
             }
+            else
+            {
+                // 타겟방향의 벡터 계산
+                const FVector Target = FVector::ZeroVector;
+                FRotator NewControllerRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
+                FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
+                FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
+
+                // 타겟을 바라보도록 회전 변경
+                OwnerCharacter->SetActorRotation(NewCharacterRotator);
+            }
         }
 
         if (Skills.IsValidIndex(ComboIdx))
