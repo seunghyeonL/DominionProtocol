@@ -17,8 +17,11 @@ public:
 	void SetCurrentInteractableActor(AActor* Actor) {  CurrentInteractableActor = Actor; }
 
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentFocusIndex;
+	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<AActor> CurrentInteractableActor;
-	
 };
