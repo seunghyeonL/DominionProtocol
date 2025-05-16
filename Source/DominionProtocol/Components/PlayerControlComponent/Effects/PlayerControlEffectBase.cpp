@@ -129,6 +129,9 @@ void UPlayerControlEffectBase::Deactivate()
 
 void UPlayerControlEffectBase::Tick(float DeltaTime)
 {
+	check(IsValid(InnerState));
+
+	InnerState->Tick(DeltaTime);
 }
 
 void UPlayerControlEffectBase::Move(const FInputActionValue& Value)
