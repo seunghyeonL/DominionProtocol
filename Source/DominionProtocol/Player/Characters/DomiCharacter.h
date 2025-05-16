@@ -60,7 +60,7 @@ public:
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
 	FORCEINLINE virtual void SetLastMovementVector(const FVector& InLastMovementVector) override { LastMovementVector = InLastMovementVector; }
-	FORCEINLINE virtual FVector GetLastMovementVector() const override { return LastMovementVector; }
+	FORCEINLINE virtual FVector& GetLastMovementVector() override { return LastMovementVector; }
 	FORCEINLINE virtual void ResetLastMovementVector() override { LastMovementVector = FVector::ZeroVector; }
 	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
 	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
@@ -89,9 +89,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void OnDeath();
 	void Parrying(const FAttackData& IncomingAttackData);
-
-
-protected:
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
 

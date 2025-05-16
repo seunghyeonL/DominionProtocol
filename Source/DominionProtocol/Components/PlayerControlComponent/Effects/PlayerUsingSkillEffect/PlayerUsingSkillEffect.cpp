@@ -28,22 +28,18 @@ void UPlayerUsingSkillEffect::Deactivate()
 {
 	Super::Deactivate();
 	SetControlEffectTag(EffectTags::UsingSkill);
+
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
 	
-	UBaseBufferedInput* ValidBufferedInput = nullptr;
 	for (int32 i = 0; i < BufferedInputArray.Num(); i++)
 	{
 		if (!BufferedInputArray[i]->IsExpired())
 		{
-			ValidBufferedInput = BufferedInputArray[i];
+			ControlComponent->SetValidBufferedInput(BufferedInputArray[i]);
 			break;
 		}
 	}
-	
-	if (IsValid(ValidBufferedInput))
-	{
-		ValidBufferedInput->Operate();
-	}
-	
+
 	BufferedInputArray.Reset();
 }
 

@@ -7,6 +7,7 @@
 #include "Util/GameTagList.h"
 #include "PlayerControlComponent.generated.h"
 
+class UBaseBufferedInput;
 class UPlayerControlStateBase;
 class UPlayerControlEffectBase;
 struct FInputActionValue;
@@ -23,6 +24,8 @@ public:
 	UPlayerControlComponent();
 	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	FORCEINLINE void SetValidBufferedInput(UBaseBufferedInput* InBufferedInput) { ValidBufferedInput = InBufferedInput; }
 	
 	// FOnComponentReady OnComponentReady;
 	// bool bIsComponentReady;
@@ -42,7 +45,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effect")
 	TMap<FGameplayTag, UPlayerControlEffectBase*> ControlEffectMap;
 
-	
+	UPROPERTY()
+	TObjectPtr<UBaseBufferedInput> ValidBufferedInput;
 
 public:
 	// Called every frame

@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "./States/PlayerControlState.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
+#include "Effects/PlayerUsingSkillEffect/BufferedInput/BaseBufferedInput.h"
 #include "Effects/PlayerConfusedEffect/PlayerConfusedEffect.h"
 #include "Effects/PlayerDeathEffect/PlayerDeathEffect.h"
 #include "Effects/PlayerLockOnEffect/PlayerLockOnEffect.h"
@@ -27,6 +28,7 @@ UPlayerControlComponent::UPlayerControlComponent()
 	bWantsInitializeComponent = true;
 	
 	PlayerControlState = nullptr;
+	ValidBufferedInput = nullptr;
 	// bIsComponentReady = false;
 	// ...
 }
@@ -106,6 +108,12 @@ void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 	// ...
 
+	if (IsValid(ValidBufferedInput))
+	{
+		ValidBufferedInput->Operate();
+		ValidBufferedInput = nullptr;
+	}
+	
 	PlayerControlState->Tick(DeltaTime);
 }
 

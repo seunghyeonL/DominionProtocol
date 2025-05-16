@@ -123,7 +123,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                 if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
                 {
                     // Cashed Movement Vector
-                    FVector LastInputVector = ControlComponentUser->GetLastMovementVector();
+                    const FVector& LastInputVector = ControlComponentUser->GetLastMovementVector();
             
                     if (!ControlComponentUser->GetActiveControlEffectTags().HasTag(EffectTags::LockOn)) 
                     {
