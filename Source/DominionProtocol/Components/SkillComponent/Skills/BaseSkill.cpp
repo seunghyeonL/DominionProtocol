@@ -3,7 +3,6 @@
 #include "CollisionQueryParams.h"
 #include "Player/Damagable.h"
 #include "Components/StatusComponent/StatusComponent.h"
-#include "Components/SkillComponent/SkillComponent.h"
 #include "Util/GameTagList.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
@@ -117,7 +116,7 @@ void UBaseSkill::AttackTrace() const
 
 			if (IsValid(StatusComponent))
 			{
-				int32 AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+				float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
 
 				AttackData.Damage = GetFinalAttackData(AttackPower);
 			}
@@ -153,7 +152,7 @@ void UBaseSkill::AttackTrace() const
 	}
 }
 
-void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult)
+void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
 {
 	AActor* HitActor = HitResult.GetActor();
 
@@ -178,7 +177,7 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult)
 
 			if (IsValid(StatusComponent))
 			{
-				int32 AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+				float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
 
 				AttackData.Damage = GetFinalAttackData(AttackPower);
 			}

@@ -18,8 +18,11 @@ public:
 
 	virtual void Initialize(ACharacter* OwnerCharacter) override;
 
+	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
+
 	virtual void BeginDestroy() override;
 
 protected:
+	UPROPERTY()
 	TObjectPtr<UMnhCapsuleComponent> CapsuleComponent;
 };
