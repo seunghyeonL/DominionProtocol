@@ -4,6 +4,7 @@
 #include "SkillComponentInitializeData.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
+#include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Gameframework/Character.h"
@@ -251,6 +252,17 @@ void USkillComponent::StopSkill()
     if (AnimInstance && AnimInstance->Montage_IsPlaying(CurrentSkill->GetAnimMontage()))
     {
         AnimInstance->Montage_Stop(0.1f, CurrentSkill->GetAnimMontage());
+    }
+
+    // 트레이스 멈추기
+    UMnhTracerComponent* MnhTracerComponent = Character->FindComponentByClass<UMnhTracerComponent>();
+
+    if (IsValid(MnhTracerComponent))
+    {
+        FGameplayTagContainer TagContainer;
+        TagContainer.AddTag(ItemTags::BasicWeapon);
+
+        MnhTracerComponent->StopTracers(TagContainer);
     }
 
     // 콤보 초기화

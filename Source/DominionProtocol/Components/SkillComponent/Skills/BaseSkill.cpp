@@ -67,7 +67,7 @@ void UBaseSkill::AttackTrace() const
 	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
 
 	FVector Start = OwnerCharacter->GetActorLocation() + ForwardVector * (AttackRadius + AttackForwardOffset);
-	FVector End = Start + ForwardVector * (AttackRadius + AttackForwardOffset);
+	FVector End = Start;
 
 	TArray<FHitResult> HitResults;
 
