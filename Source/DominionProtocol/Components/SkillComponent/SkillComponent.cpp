@@ -79,6 +79,12 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
 
 void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 {
+    if (IsValid(CurrentSkill))
+    {
+        Debug::Print(TEXT("Skill Executing"));
+        return;
+    }
+    
 	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
     check(IsValid(OwnerCharacter));
 
@@ -94,37 +100,6 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
     {
         const TArray<UBaseSkill*>& Skills = SkillGroup->Skills;
         int32& ComboIdx = SkillGroup->ComboIdx;
-
-        if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
-        {
-            // Cashed Movement Vector
-            FVector LastInputVector = ControlComponentUser->GetLastMovementVector();
-            
-            if (!ControlComponentUser->GetActiveControlEffectTags().HasTag(EffectTags::LockOn)) 
-            {
-                // LockOn상태가 아닐때 Rotation돌리는 로직
-                if (!LastInputVector.IsNearlyZero())
-                {
-                    OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
-                }
-            }
-            else if (SkillGroupTag.MatchesTag(SkillGroupTags::Dash))
-            {
-                // LockOn이어도 Dash 쓸때는 로테이션 돌리기
-                OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
-            }
-            else
-            {
-                // 타겟방향의 벡터 계산
-                const FVector Target = FVector::ZeroVector;
-                FRotator NewControllerRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
-                FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
-                FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
-
-                // 타겟을 바라보도록 회전 변경
-                OwnerCharacter->SetActorRotation(NewCharacterRotator);
-            }
-        }
 
         if (Skills.IsValidIndex(ComboIdx))
         {
@@ -143,9 +118,46 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     // Use Stamina
                     StatusComponent->ConsumeStamina(Skill->GetStamina());
                 }
+
+                // Check to set Skill Direction
+                if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
+                {
+                    // Cashed Movement Vector
+                    FVector LastInputVector = ControlComponentUser->GetLastMovementVector();
+            
+                    if (!ControlComponentUser->GetActiveControlEffectTags().HasTag(EffectTags::LockOn)) 
+                    {
+                        // LockOn상태가 아닐때 Rotation돌리는 로직
+                        if (!LastInputVector.IsNearlyZero())
+                        {
+                            OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
+                            Debug::Print(FString::Printf(TEXT("USkillComponent::ExecuteSkill : SetRotation : %f, %f, %f"), LastInputVector.Rotation().Pitch, LastInputVector.Rotation().Yaw, LastInputVector.Rotation().Roll));
+                        }
+                    }
+                    else if (SkillGroupTag.MatchesTag(SkillGroupTags::Dash))
+                    {
+                        // LockOn이어도 Dash 쓸때는 로테이션 돌리기
+                        if (!LastInputVector.IsNearlyZero())
+                        {
+                            OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
+                        }
+                    }
+                    else
+                    {
+                        // 선입력 때문에 추가됨
+                        // LockOn일때는 타겟방향 벡터 계산후 돌려주기
+                        const FVector Target = FVector::ZeroVector;
+                        FRotator NewControllerRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
+                        FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
                 
+                        // 타겟을 바라보도록 회전 변경
+                        OwnerCharacter->SetActorRotation(NewCharacterRotator);
+                    }
+                }
+
+                // 해당 스킬 실행
                 SetCurrentSkill(Skill);
-                Skill->Execute(); // 해당 스킬 실행
+                Skill->Execute(); 
                 if (OnSkillStart.IsBound())
                 {
                     OnSkillStart.Execute(Skill->GetControlEffectTag());
@@ -163,7 +175,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                 CurrentSkillGroupTag = SkillGroupTag;
 
                 GetWorld()->GetTimerManager().ClearTimer(ResetComboTimer);
-
+                
                 // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴
                 ComboIdx = (ComboIdx + 1) % SkillGroup->Skills.Num();
             }

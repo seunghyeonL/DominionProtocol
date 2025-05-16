@@ -27,7 +27,7 @@ void UPlayerUsingSkillEffect::Deactivate()
 {
 	Super::Deactivate();
 	SetControlEffectTag(EffectTags::UsingSkill);
-
+	
 	UBaseBufferedInput* ValidBufferedInput = nullptr;
 	for (int32 i = 0; i < BufferedInputArray.Num(); i++)
 	{
@@ -37,12 +37,13 @@ void UPlayerUsingSkillEffect::Deactivate()
 			break;
 		}
 	}
-	BufferedInputArray.Empty();
 	
 	if (IsValid(ValidBufferedInput))
 	{
 		ValidBufferedInput->Operate();
 	}
+	
+	BufferedInputArray.Empty();
 }
 
 void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)
