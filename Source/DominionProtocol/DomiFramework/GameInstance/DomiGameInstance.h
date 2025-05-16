@@ -20,13 +20,13 @@ public:
 	FInstanceData GetSaveData() const;
 	
 	//Setter
-	FORCEINLINE void SetIsBossDead(int32 BossIndex);
+	void SetIsBossDead(int32 BossIndex);
 	FORCEINLINE void SetCurrentLevelName(FString NewCurrentLevelName) { CurrentLevelName = NewCurrentLevelName; }
 	FORCEINLINE void SetCurrentLevelDisplayName(FText NewCurrentLevelDisplayName) { CurrentLevelDisplayName = NewCurrentLevelDisplayName; }
 	FORCEINLINE void SetRecentCrackName(FText NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
 	FORCEINLINE void SetRecentCrackIndex(int32 NewRecentCrackIndex) { RecentCrackIndex = NewRecentCrackIndex; }
 	//Getter
-	FORCEINLINE bool GetIsBossDead(int32 BossIndex) const;
+	bool GetIsBossDead(int32 BossIndex) const;
 	FORCEINLINE FString GetCurrentLevelName() const { return CurrentLevelName; }
 	FORCEINLINE FText GetCurrentLevelDisplayName() const { return CurrentLevelDisplayName; }
 	FORCEINLINE FText GetRecentCrackName() const { return RecentCrackName; }
