@@ -62,7 +62,7 @@ void ADoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 	ensure(PlayerCharacter);
 	CachedCharacter = PlayerCharacter;
 
-	PlayerCharacter->SetCurrentInteractableObject(this);
+	PlayerCharacter->AddInteractableActor(this);
 }
 
 void ADoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -74,7 +74,7 @@ void ADoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor
 		ensure(PlayerCharacter);
 
 		CachedCharacter = nullptr;
-		PlayerCharacter->SetCurrentInteractableObject(nullptr);
+		PlayerCharacter->RemoveInteractableActor(this);
 	}
 	else
 	{

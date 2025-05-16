@@ -9,7 +9,6 @@
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
-#include "Util/DebugHelper.h"
 #include "Components/SkillComponent/SkillComponentUser.h"
 #include "DomiCharacter.generated.h"
 
@@ -46,7 +45,8 @@ public:
 	FORCEINLINE AActor* GetCurrentInteractableActor() const;
 	 
 	//Setter
-	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableActor = NewActor; }
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetCurrentInteractableActor(AActor* NewActor) { InteractableActor = NewActor; }
 
 	void AddInteractableActor(AActor* AddInteractableActor);
 	void RemoveInteractableActor(AActor* RemoveInteractableActor);

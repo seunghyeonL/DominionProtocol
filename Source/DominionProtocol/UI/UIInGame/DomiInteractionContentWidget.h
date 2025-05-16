@@ -11,5 +11,14 @@ UCLASS()
 class DOMINIONPROTOCOL_API UDomiInteractionContentWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentInteractableActor(AActor* Actor) {  CurrentInteractableActor = Actor; }
+
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<AActor> CurrentInteractableActor;
 	
 };
