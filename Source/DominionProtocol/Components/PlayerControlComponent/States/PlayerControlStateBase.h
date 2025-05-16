@@ -39,6 +39,7 @@ public:
 	virtual void ConsumeItemAction_2() {}
 	virtual void ConsumeItemAction_3() {}
 	virtual void SwapWeapon() {}
+	virtual void InteractionScroll(const FInputActionValue& Value) {}
 
 	virtual void Tick(float DeltaTime) {}
 

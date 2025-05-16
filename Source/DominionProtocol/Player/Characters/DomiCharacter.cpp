@@ -315,6 +315,13 @@ void ADomiCharacter::BindInputFunctions()
 					ControlComponent.Get(),
 					&UPlayerControlComponent::SwapWeapon);
 			}
+
+			if (IsValid(PlayerController->InteractionScroll))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->InteractionScroll, ETriggerEvent::Triggered,
+					ControlComponent.Get(),
+					&UPlayerControlComponent::InteractionScroll);
+			}
 		}
 		else
 		{
@@ -477,6 +484,11 @@ void ADomiCharacter::ShowStatusEffectTags_Implementation()
 	{
 		Debug::Print(Tag.ToString());
 	}
+}
+
+void ADomiCharacter::EventInteractionWidgetScroll(const float Value)
+{
+	OnInteractionWidgetScroll.Broadcast(Value);
 }
 
 void ADomiCharacter::Parrying(const FAttackData& IncomingAttackData)

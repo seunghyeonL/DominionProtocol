@@ -397,3 +397,16 @@ void UPlayerControlComponent::SwapWeapon()
 	}
 }
 
+void UPlayerControlComponent::InteractionScroll(const FInputActionValue& Value)
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->InteractionScroll(Value);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::Interaction : Invalid ControlState."));
+	}
+}
+
+

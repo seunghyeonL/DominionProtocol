@@ -79,4 +79,5 @@ public:
 	void ConsumeItemAction_2();
 	void ConsumeItemAction_3();
 	void SwapWeapon();
+	void InteractionScroll(const FInputActionValue& Value);
 };

@@ -19,6 +19,11 @@ void UDomiInteractionWidget::UpdateInteractableActorSet(TSet<AActor*> NewInterac
 	UpdateInteractionWidget();
 }
 
+void UDomiInteractionWidget::UpdateInteractableWidgetFocusing(const float ScrollValue)
+{
+	ChangeWidgetFocus(ScrollValue);
+}
+
 void UDomiInteractionWidget::BindInteractionDelegates()
 {
 	auto* PlayerCharacter = Cast<ADomiCharacter>(GetOwningPlayerPawn());
@@ -26,6 +31,7 @@ void UDomiInteractionWidget::BindInteractionDelegates()
 	{
 		PlayerCharacter->OnAddInteractableActor.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableActorSet);
 		PlayerCharacter->OnRemoveInteractableActor.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableActorSet);
+		PlayerCharacter->OnInteractionWidgetScroll.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableWidgetFocusing);
 	}
 }
 

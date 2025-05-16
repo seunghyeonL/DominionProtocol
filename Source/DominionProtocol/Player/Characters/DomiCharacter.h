@@ -28,6 +28,7 @@ class UMnhBoxComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddInteractableActor, TSet<AActor*>)
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRemoveInteractableActor, TSet<AActor*>)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInteractionWidgetScroll, float)
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
@@ -40,6 +41,7 @@ public:
 
 	FOnAddInteractableActor OnAddInteractableActor;
 	FOnRemoveInteractableActor OnRemoveInteractableActor;
+	FOnInteractionWidgetScroll OnInteractionWidgetScroll;
 
 	//Getter
 	FORCEINLINE AActor* GetCurrentInteractableActor() const;
@@ -81,6 +83,8 @@ public:
 	// EffectReceivable
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;
+
+	void EventInteractionWidgetScroll(const float Value);
 
 protected:
 	// Bind Matched Input Functions

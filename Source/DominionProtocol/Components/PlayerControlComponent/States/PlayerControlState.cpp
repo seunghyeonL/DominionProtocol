@@ -314,3 +314,16 @@ void UPlayerControlState::SwapWeapon()
 	}
 	Debug::Print(TEXT("UPlayerControlState::SwapWeapon : Call."));
 }
+
+void UPlayerControlState::InteractionScroll(const FInputActionValue& Value)
+{
+	Super::InteractionScroll(Value);
+
+	auto* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	if (PlayerCharacter)
+	{
+		const float InputValue = Value.Get<float>();
+		PlayerCharacter->EventInteractionWidgetScroll(InputValue);
+	}
+
+}

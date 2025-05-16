@@ -22,7 +22,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentWidgetFocusIndex;
+	int CurrentWidgetFocusIndex;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -30,4 +30,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class ADomiCharacter> OwningCharacter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bHasFocus = false;
 };

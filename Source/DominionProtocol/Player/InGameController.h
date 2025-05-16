@@ -19,13 +19,15 @@ public:
 
 	void HandleSetupInGameHUD();
 
+	
+	TObjectPtr<class UDomiInGameHUDWidget> GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
+
 protected:
 	virtual void BeginPlay() override;
 
 	void CreateHUDWidget();
 	void AddHUDToViewport() const;
 	void SetupInputModeGameOnly();
-
 	
 public:
 	/** MappingContext */
@@ -87,6 +89,9 @@ public:
 	//Swap Weapon Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> SwapWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> InteractionScroll;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")

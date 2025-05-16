@@ -16,9 +16,15 @@ protected:
 
 	UFUNCTION()
 	void UpdateInteractableActorSet(TSet<AActor*> NewInteractableActorSet);
+
+	UFUNCTION()
+	void UpdateInteractableWidgetFocusing(const float ScrollValue);
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateInteractionWidget();
+
+	UFUNCTION(blueprintImplementableEvent, BlueprintCallable)
+	void ChangeWidgetFocus(const float InputValue);
 	
 	virtual void NativeConstruct() override;
 
