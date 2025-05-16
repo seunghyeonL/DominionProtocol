@@ -47,6 +47,12 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	{
 		RunBehaviorTree(BehaviorTreeAsset);
 	}
+
+	if (InPawn && GetBlackboardComponent())
+	{
+		const FVector SpawnLocation = InPawn->GetActorLocation();
+		GetBlackboardComponent()->SetValueAsVector(TEXT("HomeLocation"), SpawnLocation);
+	}
 }
 
 void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -93,4 +99,3 @@ void ABaseAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-

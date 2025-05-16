@@ -12,7 +12,8 @@
 				"UMG",
 				"Engine",
 				"CoreUObject",
-				"MissNoHit"
+				"MissNoHit",
+				"AIModule"
 			]
 		}
 	],
