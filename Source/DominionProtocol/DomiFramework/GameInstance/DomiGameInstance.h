@@ -25,14 +25,21 @@ public:
 	FORCEINLINE void SetCurrentLevelDisplayName(FText NewCurrentLevelDisplayName) { CurrentLevelDisplayName = NewCurrentLevelDisplayName; }
 	FORCEINLINE void SetRecentCrackName(FText NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
 	FORCEINLINE void SetRecentCrackIndex(int32 NewRecentCrackIndex) { RecentCrackIndex = NewRecentCrackIndex; }
+	void SetIsActivateCrack(int32 InCrackIndex);
+	
 	//Getter
 	bool GetIsBossDead(int32 BossIndex) const;
 	FORCEINLINE FString GetCurrentLevelName() const { return CurrentLevelName; }
 	FORCEINLINE FText GetCurrentLevelDisplayName() const { return CurrentLevelDisplayName; }
 	FORCEINLINE FText GetRecentCrackName() const { return RecentCrackName; }
 	FORCEINLINE int32 GetRecentCrackIndex() const { return RecentCrackIndex; }
-	
-	
+	//균열에서 초기에 자기 자신이 활성화/비활성화 상태인지 세팅을 위한 Getter(균열의 BeginPlay에서 호출해서 세팅)
+	FORCEINLINE bool GetIsActivatePastCrack(int32 InCrackIndex) const { return PastCrackActivateArray.IsValidIndex(InCrackIndex) ? PastCrackActivateArray[InCrackIndex] : false; }
+	FORCEINLINE bool GetIsActivatePresentCrack(int32 InCrackIndex) const { return PresentCrackActivateArray.IsValidIndex(InCrackIndex) ? PresentCrackActivateArray[InCrackIndex] : false; }
+	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
+	FORCEINLINE TArray<bool> GetPastCrackActivateArray() const { return PastCrackActivateArray; }
+	FORCEINLINE TArray<bool> GetPresentCrackActivateArray() const { return PresentCrackActivateArray; }
+
 protected:
 	
 private:
@@ -53,6 +60,14 @@ private:
 
 	UPROPERTY()
 	int32 RecentCrackIndex;
+
+	// Proto_Level1(임시)
+	UPROPERTY()
+	TArray<bool> PastCrackActivateArray;
+
+	// Proto_Level2(임시)
+	UPROPERTY()
+	TArray<bool> PresentCrackActivateArray;
 
 	static const int32 NumBosses;
 };
