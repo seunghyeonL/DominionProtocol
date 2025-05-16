@@ -2,6 +2,7 @@
 
 
 #include "DomiGameInstance.h"
+#include "EnumAndStruct/EGameStoryState.h"
 
 const int32 UDomiGameInstance::NumBosses = 1;
 
@@ -11,6 +12,7 @@ UDomiGameInstance::UDomiGameInstance()
 	IsBossDeadArray.Init(false, NumBosses);
 	PastCrackActivateArray.Init(false, 20);
 	PresentCrackActivateArray.Init(false, 20);
+	CurrentGameStoryState = EGameStoryState::Tutorial;
 }
 
 void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)

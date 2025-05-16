@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "EnumAndStruct/FInstanceData.h"
+#include "EnumAndStruct/EGameStoryState.h"
 #include "DomiGameInstance.generated.h"
 
 UCLASS()
@@ -26,6 +27,7 @@ public:
 	FORCEINLINE void SetRecentCrackName(FText NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
 	FORCEINLINE void SetRecentCrackIndex(int32 NewRecentCrackIndex) { RecentCrackIndex = NewRecentCrackIndex; }
 	void SetIsActivateCrack(int32 InCrackIndex);
+	FORCEINLINE void SetCurrentGameStoryState(EGameStoryState NewGameStoryState) { CurrentGameStoryState = NewGameStoryState; }
 	
 	//Getter
 	bool GetIsBossDead(int32 BossIndex) const;
@@ -39,6 +41,7 @@ public:
 	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
 	FORCEINLINE TArray<bool> GetPastCrackActivateArray() const { return PastCrackActivateArray; }
 	FORCEINLINE TArray<bool> GetPresentCrackActivateArray() const { return PresentCrackActivateArray; }
+	FORCEINLINE EGameStoryState GetCurrentGameStoryState() const { return CurrentGameStoryState; }
 
 protected:
 	
@@ -68,6 +71,9 @@ private:
 	// Proto_Level2(임시)
 	UPROPERTY()
 	TArray<bool> PresentCrackActivateArray;
+
+	UPROPERTY()
+	EGameStoryState CurrentGameStoryState;
 
 	static const int32 NumBosses;
 };
