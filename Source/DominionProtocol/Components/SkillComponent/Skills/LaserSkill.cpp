@@ -25,13 +25,13 @@ void ULaserSkill::Initialize(ACharacter* Owner)
 
 	// TraceBox
 	// 컴포넌트 생성
-	CapsuleComponent = NewObject<UMnhCapsuleComponent>(OwnerCharacter, TEXT("WeaponTraceBox"));
-
-	// 컴포넌트 등록 (필수!)
-	CapsuleComponent->RegisterComponent();
+	CapsuleComponent = NewObject<UMnhCapsuleComponent>(OwnerCharacter, TEXT("MagicTraceBox"));
 
 	// 액터의 메시에 부착
 	CapsuleComponent->AttachToComponent(OwnerCharacter->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform);
+	
+	// 컴포넌트 등록 (필수!)
+	CapsuleComponent->RegisterComponent();
 
 	FMnhTracerConfig TracerConfig;
 
