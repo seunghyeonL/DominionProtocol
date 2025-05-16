@@ -137,19 +137,19 @@ AActor* ADomiCharacter::GetCurrentInteractableActor() const
 
 void ADomiCharacter::AddInteractableActor(AActor* AddInteractableActor)
 {
-	if (!InteractableActorArray.Contains(AddInteractableActor))
+	if (!InteractableActorSet.Contains(AddInteractableActor))
 	{
-		InteractableActorArray.Add(AddInteractableActor);
-		OnAddInteractableActor.Broadcast(InteractableActorArray);	
+		InteractableActorSet.Add(AddInteractableActor);
+		OnAddInteractableActor.Broadcast(InteractableActorSet);	
 	}
 }
 
 void ADomiCharacter::RemoveInteractableActor(AActor* RemoveInteractableActor)
 {
-	if (InteractableActorArray.Contains(RemoveInteractableActor))
+	if (InteractableActorSet.Contains(RemoveInteractableActor))
 	{
-		InteractableActorArray.Remove(RemoveInteractableActor);
-		OnRemoveInteractableActor.Broadcast(InteractableActorArray);	
+		InteractableActorSet.Remove(RemoveInteractableActor);
+		OnRemoveInteractableActor.Broadcast(InteractableActorSet);	
 	}
 }
 

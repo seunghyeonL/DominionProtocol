@@ -13,9 +13,9 @@ void UDomiInteractionWidget::NativeConstruct()
 	BindInteractionDelegates();
 }
 
-void UDomiInteractionWidget::UpdateInteractableActorArray(TArray<AActor*> NewInteractableActorArray)
+void UDomiInteractionWidget::UpdateInteractableActorSet(TSet<AActor*> NewInteractableActorSet)
 {
-	InteractableActorArray = NewInteractableActorArray;
+	InteractableActorSet = NewInteractableActorSet;
 	UpdateInteractionWidget();
 }
 
@@ -24,8 +24,8 @@ void UDomiInteractionWidget::BindInteractionDelegates()
 	auto* PlayerCharacter = Cast<ADomiCharacter>(GetOwningPlayerPawn());
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->OnAddInteractableActor.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableActorArray);
-		PlayerCharacter->OnRemoveInteractableActor.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableActorArray);
+		PlayerCharacter->OnAddInteractableActor.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableActorSet);
+		PlayerCharacter->OnRemoveInteractableActor.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableActorSet);
 	}
 }
 

@@ -26,8 +26,8 @@ struct FAttackData;
 class UMnhTracerComponent;
 class UMnhBoxComponent;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddInteractableActor, TArray<AActor*>)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnRemoveInteractableActor, TArray<AActor*>)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddInteractableActor, TSet<AActor*>)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnRemoveInteractableActor, TSet<AActor*>)
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
@@ -137,7 +137,7 @@ private:
 	TObjectPtr<AActor> InteractableActor;
 
 	UPROPERTY()
-	TArray<AActor*> InteractableActorArray = {};
+	TSet<AActor*> InteractableActorSet = {};
 
 	// 마지막 이동 입력 방향벡터
 	FVector LastMovementVector;

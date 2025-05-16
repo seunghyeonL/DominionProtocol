@@ -15,8 +15,8 @@ protected:
 	void BindInteractionDelegates();
 
 	UFUNCTION()
-	void UpdateInteractableActorArray(TArray<AActor*> NewInteractableActorArray);
-
+	void UpdateInteractableActorSet(TSet<AActor*> NewInteractableActorSet);
+	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateInteractionWidget();
 	
@@ -26,10 +26,10 @@ protected:
 protected:
 
 	UPROPERTY()
-	TArray<UUserWidget*> InteractionList; 
+	TSet<UUserWidget*> InteractionList; 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<AActor*> InteractableActorArray;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TSet<AActor*> InteractableActorSet;
 	
 	UPROPERTY()
 	TObjectPtr<class UDomiWidgetComponent> WidgetComponent;

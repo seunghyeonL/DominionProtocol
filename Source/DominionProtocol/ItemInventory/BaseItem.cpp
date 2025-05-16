@@ -126,7 +126,7 @@ void ABaseItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 void ABaseItem::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
-	if (PlayerCharacter && PlayerCharacter->IsLocallyControlled() && PlayerCharacter->GetCurrentInteractableActor() == this)
+	if (PlayerCharacter && PlayerCharacter->IsLocallyControlled())
 	{
 		PlayerCharacter->RemoveInteractableActor(this);
 		Debug::Print(TEXT("아이템과 오버랩 종료: InteractableObject 해제"));
