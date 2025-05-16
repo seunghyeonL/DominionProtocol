@@ -107,6 +107,11 @@ ADomiCharacter::ADomiCharacter()
 
 	// ParriedTags Setting
 	ParriedTags.AddTag(EffectTags::UsingParry);
+
+	// HardCCTags Setting
+	HardCCTags.AddTag(EffectTags::Stun);
+	HardCCTags.AddTag(EffectTags::Stiffness);
+	
 	// Cashed MovementVector
 	LastMovementVector = {0.f, 0.f, 0.f};
 
@@ -327,11 +332,15 @@ FGameplayTagContainer& ADomiCharacter::GetActiveControlEffectTags()
 
 void ADomiCharacter::SkillStart(FGameplayTag ControlEffectTag)
 {
+	check(ControlComponent);
+	
 	ControlComponent->ActivateControlEffect(ControlEffectTag);
 }
 
 void ADomiCharacter::SkillEnd(FGameplayTag ControlEffectTag)
 {
+	check(ControlComponent);
+	
 	ControlComponent->DeactivateControlEffect(ControlEffectTag);
 }
 
@@ -401,18 +410,26 @@ void ADomiCharacter::ExecuteSkill(FGameplayTag SkillGroupTag)
 void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);
+
+	check(ControlComponent)
+	check(SkillComponent)
 	
 	auto ActiveControlEffects = GetActiveControlEffectTags();
+	if (ActiveControlEffects.HasAny(ParriedTags))
+	{
+		Parrying(AttackData);
+		return;
+	}
+	
 	if (ActiveControlEffects.HasAny(InvincibilityTags))
 	{
 		Debug::Print(TEXT("ADomiCharacter::OnAttacked : Invincible!"));
 		return;
 	}
 
-	if (ActiveControlEffects.HasAny(ParriedTags))
+	if (ActiveControlEffects.HasAny(HardCCTags))
 	{
-		Parrying(AttackData);
-		return;
+		SkillComponent->StopSkill();
 	}
 
 	if (!IsValid(ControlComponent))
@@ -472,7 +489,8 @@ void ADomiCharacter::Parrying(const FAttackData& IncomingAttackData)
 	FAttackData ParryingData;
 
 	ParryingData.Instigator = this;
-	ParryingData.Effects.Add({EffectTags::parried, 1.f, 1.f});
+	// ParryingData.Effects.Add({EffectTags::Parried, 1.f, 1.f});
+	ParryingData.Effects.Add({EffectTags::Stiffness, 1.f, 1.f});
 	ParryingData.Damage = 0.f;
 	ParryingData.LaunchVector = FVector::ZeroVector;
 
@@ -483,7 +501,7 @@ void ADomiCharacter::Parrying(const FAttackData& IncomingAttackData)
 		if (USkillComponent* AttackerSkillComponent = Attacker->FindComponentByClass<USkillComponent>())
 		{
 			AttackerSkillComponent->StopSkill();
-			Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled by parry."), *Attacker->GetName()));
+			// Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled by parry."), *Attacker->GetName()));
 		}
 		IDamagable::Execute_OnAttacked(Attacker, ParryingData);
 	}

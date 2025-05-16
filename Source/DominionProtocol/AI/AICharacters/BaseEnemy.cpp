@@ -33,6 +33,13 @@ ABaseEnemy::ABaseEnemy()
 		HPWidgetComponent->SetDrawSize(FVector2D(80.f, 10.f));
 		HPWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+
+	// InvincibilityTags Setting
+	InvincibilityTags.AddTag(EffectTags::Death);
+
+	// HardCCTags Setting
+	HardCCTags.AddTag(EffectTags::Stun);
+	HardCCTags.AddTag(EffectTags::Stiffness);
 }
 
 // Called when the game starts or when spawned
@@ -91,12 +98,21 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);
 
-	if (!IsValid(StatusComponent))
+	check(StatusComponent);
+	check(SkillComponent)
+	
+	auto ActiveStatusEffects = GetActiveStatusEffectTags();
+	if (ActiveStatusEffects.HasAny(InvincibilityTags))
 	{
-		Debug::PrintError(TEXT("ABaseEnemy::OnAttacked_Implementation : StatusComponent is not valid"));
+		Debug::Print(TEXT("ADomiCharacter::OnAttacked : Invincible!"));
 		return;
 	}
 
+	if (ActiveStatusEffects.HasAny(HardCCTags))
+	{
+		SkillComponent->StopSkill();
+	}
+	
 	float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
 

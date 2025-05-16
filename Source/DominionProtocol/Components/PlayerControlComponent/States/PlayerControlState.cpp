@@ -136,7 +136,14 @@ void UPlayerControlState::Parry()
 {
 	Super::Parry();
 
-	Debug::Print(TEXT("UPlayerControlState::Parry : Call."));
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
+	{
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::Parry);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::BaseAttack : Character doesn't implement ISkillComponentUser."));
+	}
 }
 
 void UPlayerControlState::BaseAttack()
