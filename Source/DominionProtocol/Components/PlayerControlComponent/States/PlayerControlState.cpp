@@ -182,7 +182,16 @@ void UPlayerControlState::MagicSkill()
 {
 	Super::MagicSkill();
 
-	Debug::Print(TEXT("UPlayerControlState::MagicSkill : Call."));
+	check(OwnerCharacter);
+
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
+	{
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::MagicSkill);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::MasicSkill : Character doesn't implement ISkillComponentUser."));
+	}
 }
 
 void UPlayerControlState::Interact()
