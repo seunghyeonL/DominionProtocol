@@ -11,6 +11,7 @@
 UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
+	BufferedInputArray.Reserve(10);
 }
 
 void UPlayerUsingSkillEffect::Activate()
@@ -43,7 +44,7 @@ void UPlayerUsingSkillEffect::Deactivate()
 		ValidBufferedInput->Operate();
 	}
 	
-	BufferedInputArray.Empty();
+	BufferedInputArray.Reset();
 }
 
 void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)

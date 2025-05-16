@@ -108,16 +108,22 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 		return;
 	}
 
-	if (ActiveStatusEffects.HasAny(HardCCTags))
-	{
-		SkillComponent->StopSkill();
-	}
-	
 	float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
 
 	LaunchCharacter(AttackData.LaunchVector, true, true);
 
+	// Skill Stop Check
+	for (FEffectData EffectData : AttackData.Effects)
+	{
+		if (EffectData.EffectTag.MatchesAny(HardCCTags))
+		{
+			Debug::Print(TEXT("ADomiCharacter::OnAttacked : StopSkill call"));
+			SkillComponent->StopSkill();
+		}
+	}
+
+	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)
 	{
 		auto [EffectTag, Magnitude, Duration] = EffectData;

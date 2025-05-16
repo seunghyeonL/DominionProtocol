@@ -411,10 +411,11 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 {
 	IDamagable::OnAttacked_Implementation(AttackData);
 
-	check(ControlComponent)
-	check(SkillComponent)
+	check(ControlComponent);
+	check(SkillComponent);
+	check(StatusComponent);
 	
-	auto ActiveControlEffects = GetActiveControlEffectTags();
+	auto& ActiveControlEffects = GetActiveControlEffectTags();
 	if (ActiveControlEffects.HasAny(ParriedTags))
 	{
 		Parrying(AttackData);
@@ -427,28 +428,22 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 		return;
 	}
 
-	if (ActiveControlEffects.HasAny(HardCCTags))
-	{
-		SkillComponent->StopSkill();
-	}
-
-	if (!IsValid(ControlComponent))
-	{
-		Debug::PrintError(TEXT("ADomiCharacter::OnAttacked : ControlComponent is not valid"));
-		return;
-	}
-
-	if (!IsValid(StatusComponent))
-	{
-		Debug::PrintError(TEXT("ADomiCharacter::OnAttacked : StatusComponent is not valid"));
-		return;
-	}
-
 	float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
 
 	LaunchCharacter(AttackData.LaunchVector, true, true);
 
+	// Skill Stop Check
+	for (FEffectData EffectData : AttackData.Effects)
+	{
+		if (EffectData.EffectTag.MatchesAny(HardCCTags))
+		{
+			Debug::Print(TEXT("ADomiCharacter::OnAttacked : StopSkill call"));
+			SkillComponent->StopSkill();
+		}
+	}
+
+	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)
 	{
 		auto [EffectTag, Magnitude, Duration] = EffectData;

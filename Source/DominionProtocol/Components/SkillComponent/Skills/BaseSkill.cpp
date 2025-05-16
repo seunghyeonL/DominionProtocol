@@ -146,7 +146,7 @@ void UBaseSkill::AttackTrace() const
 
 			// 피격자가 실행 중이던 스킬 중단
 			// HitActorSkillComponent->StopSkill();
-			Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
+			// Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
 
 			IDamagable::Execute_OnAttacked(HitActor, AttackData);
 		}
@@ -202,7 +202,7 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult)
 		// 	SkillComponent->StopSkill();
 		// }
 
-		Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
+		// Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
 
 		IDamagable::Execute_OnAttacked(HitActor, AttackData);
 	}
