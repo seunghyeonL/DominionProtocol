@@ -26,6 +26,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void HideDeathScriptWidget();
 
+	UFUNCTION()
+	void OnInGameMenuOpenAndClose();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void InGameMenuOpenAndClose();
+
 protected:
 	virtual void NativeConstruct() override;
 	void SetupStatusBarWidget(const AActor* OwningActor);

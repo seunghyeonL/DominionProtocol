@@ -18,6 +18,7 @@ public:
 	AInGameController();
 
 	void HandleSetupInGameHUD();
+	void OnInGameMenuOpenAndClose();
 
 	
 	TObjectPtr<class UDomiInGameHUDWidget> GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
@@ -27,13 +28,25 @@ protected:
 
 	void CreateHUDWidget();
 	void AddHUDToViewport() const;
+
+	UFUNCTION(BlueprintCallable)
 	void SetupInputModeGameOnly();
 	
+	UFUNCTION(BlueprintCallable)
+	void SetupInputModeUIOnly();
+
+	void BindControllerInputActions();
+	
 public:
+	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> UIOnlyMappingContext;
+
+#pragma region Character Input Actions Section
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
@@ -89,14 +102,26 @@ public:
 	//Swap Weapon Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> SwapWeapon;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> InteractionScroll;
-
+#pragma endregion
+	
+#pragma region Controller Input Actions Section
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> InGameMenuOpenAndClose;
+	
+#pragma endregion
+	
 protected:
+	UPROPERTY()
+	TObjectPtr<class UEnhancedInputLocalPlayerSubsystem> LocalPlayerInputSubsystem;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UDomiInGameHUDWidget> InGameHUDWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<class UDomiInGameHUDWidget> InGameHUDWidgetInstance;
+
+	bool bActiveInGameMenuOpen = false;
 };

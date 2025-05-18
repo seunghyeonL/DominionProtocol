@@ -16,6 +16,11 @@ void UDomiInGameHUDWidget::OnPlayerSpawn()
 	HideDeathScriptWidget();
 }
 
+void UDomiInGameHUDWidget::OnInGameMenuOpenAndClose()
+{
+	InGameMenuOpenAndClose();
+}
+
 void UDomiInGameHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
