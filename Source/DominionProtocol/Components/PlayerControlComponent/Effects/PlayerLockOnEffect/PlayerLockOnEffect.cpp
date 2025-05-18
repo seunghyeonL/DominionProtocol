@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "VectorTypes.h"
 #include "GameFramework/Character.h"
+#include "Player/Characters/DomiCharacter.h"
 #include "Util/DebugHelper.h"
 
 UPlayerLockOnEffect::UPlayerLockOnEffect()
@@ -33,10 +34,14 @@ void UPlayerLockOnEffect::Deactivate()
 void UPlayerLockOnEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	FVector LockOnTargetActorLocation = DomiCharacter->GetLockOnTargetActor()->GetActorLocation();
+	
 	// 타겟방향의 벡터 계산
-	const FVector Target = FVector(0,0,150);
+	const FVector LockOnTargetActorEyeLocation = FVector(LockOnTargetActorLocation.X,LockOnTargetActorLocation.Y,150);
 	float ControllerLockOnHeight = 200;
-	const FRotator NewControllerRotator = (Target - OwnerCharacter->GetActorLocation() - ControllerLockOnHeight * FVector::UpVector).Rotation();
+	const FRotator NewControllerRotator = (LockOnTargetActorEyeLocation - OwnerCharacter->GetActorLocation() - ControllerLockOnHeight * FVector::UpVector).Rotation();
 	const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
 	const FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
 	if (!OwnerCharacter) return;
