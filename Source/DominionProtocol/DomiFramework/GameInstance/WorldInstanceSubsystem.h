@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "EnumAndStruct/FItemSubsystemData.h"
-#include "ItemInstanceSubsystem.generated.h"
+#include "WorldInstanceSubsystem.generated.h"
 
 UCLASS()
-class DOMINIONPROTOCOL_API UItemInstanceSubsystem : public UGameInstanceSubsystem
+class DOMINIONPROTOCOL_API UWorldInstanceSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
@@ -16,15 +15,14 @@ class DOMINIONPROTOCOL_API UItemInstanceSubsystem : public UGameInstanceSubsyste
 	
 public:
 
-	//Save & Load
-	void LoadSaveData(const FItemSubsystemData& SaveData);
-	FItemSubsystemData GetSaveData() const;
-	
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
+
 private:
+	UPROPERTY()
+	TSet<FName> WorldNames;
 
 #pragma endregion
 
