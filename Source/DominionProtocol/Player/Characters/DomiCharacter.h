@@ -86,6 +86,8 @@ public:
 
 	void EventInteractionWidgetScroll(const float Value);
 
+	FORCEINLINE void SetLockOnTargetActor(AActor* NewActor) { LockOnTargetActor = NewActor; }
+	FORCEINLINE AActor* GetLockOnTargetActor() const { return LockOnTargetActor; }
 protected:
 	// Bind Matched Input Functions
 	void BindInputFunctions();
@@ -135,6 +137,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;	// 추후에 무기 쪽으로 이동 필요
+
+	UPROPERTY()
+	AActor* LockOnTargetActor;
 
 private:
 	UPROPERTY(VisibleAnywhere)
