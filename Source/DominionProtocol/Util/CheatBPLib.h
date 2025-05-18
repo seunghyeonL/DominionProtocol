@@ -7,6 +7,7 @@
 #include "CheatBPLib.generated.h"
 
 class UStatusComponent;
+class ABaseGameMode;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UCheatBPLib : public UBlueprintFunctionLibrary
@@ -17,4 +18,6 @@ public:
 	static void Save(const UWorld* World);
 
 	static void InfiniteStamina(const TObjectPtr<UStatusComponent> StatusComponent);
+	
+	static void MoveToCrack(ABaseGameMode* BaseGameMode, FString TargetLevelName, int32 TargetCrackIndex);
 };

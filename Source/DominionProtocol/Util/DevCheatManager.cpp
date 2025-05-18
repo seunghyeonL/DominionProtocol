@@ -5,6 +5,7 @@
 #include "Util/CheatBPLib.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 
 void UDevCheatManager::Save()
 {
@@ -23,4 +24,10 @@ void UDevCheatManager::InfiniteStamina()
 	{
 		UCheatBPLib::InfiniteStamina(StatusComponent);
 	}
+}
+
+void UDevCheatManager::MoveToCrack(FString TargetLevelName, int32 TargetCrackIndex)
+{
+	ABaseGameMode* BaseGameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
+	UCheatBPLib::MoveToCrack(BaseGameMode, TargetLevelName, TargetCrackIndex);
 }

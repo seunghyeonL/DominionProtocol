@@ -4,6 +4,7 @@
 #include "CheatBPLib.h"
 
 #include "Components/StatusComponent/StatusComponent.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
 
@@ -28,4 +29,9 @@ void UCheatBPLib::InfiniteStamina(const TObjectPtr<UStatusComponent> StatusCompo
 	{
 		StatusComponent->SwitchInfiniteStaminaMode();
 	}
+}
+
+void UCheatBPLib::MoveToCrack(ABaseGameMode* BaseGameMode, FString TargetLevelName, int32 TargetCrackIndex)
+{
+	BaseGameMode->MoveToTargetCrack(TargetLevelName, TargetCrackIndex);
 }

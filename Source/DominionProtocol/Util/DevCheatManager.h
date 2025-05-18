@@ -18,4 +18,7 @@ public:
 
 	UFUNCTION(Exec)
 	void InfiniteStamina();
+
+	UFUNCTION(Exec)
+	void MoveToCrack(FString TargetLevelName, int32 TargetCrackIndex);
 };
