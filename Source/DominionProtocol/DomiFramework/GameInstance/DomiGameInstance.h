@@ -26,51 +26,13 @@ public:
 	FInstanceData GetSaveData() const;
 	
 	//Setter
-	void SetCrackDataMap(TMap<FString, FCrackDataArray> InCrackDataMap) { CrackDataMap = InCrackDataMap; }
-	
 	void SetIsBossDead(int32 BossIndex);
 	
-	FORCEINLINE void SetCurrentLevelName(const FString& NewCurrentLevelName) { CurrentLevelName = NewCurrentLevelName; }
-	
-	FORCEINLINE void SetCurrentLevelDisplayName(const FText& NewCurrentLevelDisplayName) { CurrentLevelDisplayName = NewCurrentLevelDisplayName; }
-	
-	FORCEINLINE void SetRecentCrackName(const FText& NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
-	
-	FORCEINLINE void SetRecentCrackIndex(int32 NewRecentCrackIndex) { RecentCrackIndex = NewRecentCrackIndex; }
-	
-	FORCEINLINE void SetIsActivateCrackIndex(const FString& LevelName, int32 InCrackIndex) { CrackDataMap[LevelName].CrackDataArray[InCrackIndex].bIsActivate = true; }
-	
 	FORCEINLINE void SetCurrentGameStoryState(EGameStoryState NewGameStoryState) { CurrentGameStoryState = NewGameStoryState; }
-	
-	FORCEINLINE void SetMoveTargetLocation(const FVector& NewMoveTargetLocation) { MoveTargetLocation = NewMoveTargetLocation; }
-	
-	FORCEINLINE void SetMoveTargetRotator(const FRotator& NewMoveTargetRotation) { MoveTargetRotation = NewMoveTargetRotation; }
-
-	FORCEINLINE void SwitchIsLevelChanged() { bIsLevelChanged = !bIsLevelChanged; }
 
 	
 	//Getter
-	TMap<FString, FCrackDataArray>* GetCrackDataMap() { return &CrackDataMap; }
-	
 	bool GetIsBossDead(int32 BossIndex) const;
-	
-	FORCEINLINE const FString& GetCurrentLevelName() const { return CurrentLevelName; }
-	
-	FORCEINLINE const FText& GetCurrentLevelDisplayName() const { return CurrentLevelDisplayName; }
-	
-	FORCEINLINE const FText& GetRecentCrackName() const { return RecentCrackName; }
-	
-	FORCEINLINE int32 GetRecentCrackIndex() const { return RecentCrackIndex; }
-
-	bool GetIsActivateCrackIndex(const FString& LevelName, int32 InCrackIndex) const;
-
-	const FCrackData* GetCrackData(const FString& LevelName, int32 InCrackIndex) const;
-	
-	FORCEINLINE const FVector& GetMoveTargetLocation() const { return MoveTargetLocation; }
-	
-	FORCEINLINE const FRotator& GetMoveTargetRotation() const { return MoveTargetRotation; }
-
-	FORCEINLINE bool GetIsLevelChanged() const { return bIsLevelChanged; }
 	
 	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
 	FORCEINLINE EGameStoryState GetCurrentGameStoryState() const { return CurrentGameStoryState; }
@@ -85,29 +47,8 @@ private:
 	//========
 
 	UPROPERTY()
-	FString CurrentLevelName;
-
-	UPROPERTY()
-	FText CurrentLevelDisplayName;
-
-	UPROPERTY()
-	FText RecentCrackName;
-
-	UPROPERTY()
-	int32 RecentCrackIndex = 0;
-
-	UPROPERTY()
-	TMap<FString, FCrackDataArray> CrackDataMap;
-
-	UPROPERTY()
 	EGameStoryState CurrentGameStoryState;
-
-	FVector MoveTargetLocation = FVector::ZeroVector;
-
-	FRotator MoveTargetRotation = FRotator::ZeroRotator;
-
-	bool bIsLevelChanged = false;
-
+	
 	static const int32 NumBosses;
 
 #pragma endregion
