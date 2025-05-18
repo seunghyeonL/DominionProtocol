@@ -34,8 +34,9 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	// 타겟방향의 벡터 계산
-	const FVector Target = FVector::ZeroVector;
-	const FRotator NewControllerRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
+	const FVector Target = FVector(0,0,150);
+	float ControllerLockOnHeight = 200;
+	const FRotator NewControllerRotator = (Target - OwnerCharacter->GetActorLocation() - ControllerLockOnHeight * FVector::UpVector).Rotation();
 	const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
 	const FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
 	if (!OwnerCharacter) return;
