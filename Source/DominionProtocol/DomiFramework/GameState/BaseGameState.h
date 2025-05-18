@@ -18,6 +18,8 @@ class DOMINIONPROTOCOL_API ABaseGameState : public AGameState
 {
 	GENERATED_BODY()
 
+#pragma region Share
+	
 //Functions
 public:
 	ABaseGameState();
@@ -65,4 +67,16 @@ private:
 
 	UPROPERTY()
 	TArray<ACrack*> AllCracksCache;
+
+#pragma endregion
+
+
+#pragma region KyuHyeok
+
+#pragma endregion
+
+
+#pragma region SeoYoung
+
+#pragma endregion
 };
