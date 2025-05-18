@@ -5,11 +5,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "Engine/TargetPoint.h"
-#include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "DomiFramework/GameMode/ProtoLevel1GameMode.h"
 #include "DomiFramework/GameMode/ProtoLevel2GameMode.h"
 #include "DomiFramework/GameState/BaseGameState.h"
+#include "EnumAndStruct/FCrackData.h"
 #include "Player/Characters/DomiCharacter.h"
 
 #include "Util/DebugHelper.h"
@@ -48,14 +49,10 @@ void ACrack::BeginPlay()
 
     RespawnTargetPoint = Cast<ATargetPoint>(RespawnTargetPointComp->GetChildActor());
     
-    UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-    check(GameInstance);
+    WorldInstanceSubsystem = GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
+    check(WorldInstanceSubsystem);
     
     BaseGameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
-    
-    //***프로토타입용 코드*** 본 개발시 변경해야함
-    
-    //***================================***
     
     SphereCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ACrack::OnOverlapBegin);
     SphereCollisionComp->OnComponentEndOverlap.AddDynamic(this, &ACrack::OnOverlapEnd);
@@ -97,34 +94,27 @@ void ACrack::Interact_Implementation(AActor* Interactor)
     UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
     if (!GameInstance) return;
 
+    //최근 균열 업데이트
+    BaseGameMode->SetRecentCrackCache(this);
+    
+    WorldInstanceSubsystem->SetRecentCrackName(CrackName);
+    WorldInstanceSubsystem->SetRecentCrackIndex(CrackIndex);
+    
     // 흐름
     // 1. 비활성화시 활성화
-    // 2. 조력자 대화해야할 시 대화 이벤트 트리거
-    // 3. 원래 기능
+    // 2. 기능
     
     // 1. 해당 균열 활성화
     if (!bIsActivate)
     {
         bIsActivate = true;
-        GameInstance->SetIsActivateCrackIndex(GameInstance->GetCurrentLevelName(), CrackIndex);
+        WorldInstanceSubsystem->SetIsActivateCrackIndex(WorldInstanceSubsystem->GetCurrentLevelName(), CrackIndex);
         UE_LOG(LogCrackSystem, Warning, TEXT("%s 활성화"), *CrackName.ToString());
         Debug::Print(CrackName.ToString()+TEXT(" 활성화"));
         return;
     }
-
-    // 조력자 대화 이벤트 트리거 Start
-    // /*
-    //  *
-    //  */
-    // 조력자 대화 이벤트 트리거 End
-
-    // 3. 원래 기능
     
-    //최근 균열 업데이트
-    BaseGameMode->SetRecentCrackCache(this);
-    
-    GameInstance->SetRecentCrackName(CrackName);
-    GameInstance->SetRecentCrackIndex(CrackIndex);
+    // 2. 기능
 }
 
 FText ACrack::GetInteractMessage_Implementation() const

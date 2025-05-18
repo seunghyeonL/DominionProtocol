@@ -5,7 +5,7 @@
 
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
-#include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
 
 #include "Util/DebugHelper.h"
@@ -18,9 +18,9 @@ void UCheatBPLib::Save(const UWorld* World)
 		Debug::Print("Save Game Success");
 	}
 
-	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(World->GetGameInstance());
+	UWorldInstanceSubsystem* WorldInstanceSubsystem = World->GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
 	Debug::Print(TEXT("Save Game in SaveGame1"));
-	Debug::Print(FString::Printf(TEXT("SaveData[CurrentLevelName] : %s"), *GameInstance->GetCurrentLevelName()));
+	Debug::Print(FString::Printf(TEXT("SaveData[CurrentLevelName] : %s"), *WorldInstanceSubsystem->GetCurrentLevelName()));
 }
 
 void UCheatBPLib::InfiniteStamina(const TObjectPtr<UStatusComponent> StatusComponent)

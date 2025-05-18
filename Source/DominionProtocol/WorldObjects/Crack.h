@@ -7,6 +7,7 @@
 #include "Interface/InteractableInterface.h"
 #include "Crack.generated.h"
 
+class UWorldInstanceSubsystem;
 class ABaseGameMode;
 class ATargetPoint;
 class ADomiCharacter;
@@ -34,6 +35,7 @@ public:
 	
 	//Setter
 	FORCEINLINE void SetActive() { bIsActivate = true; }
+	FORCEINLINE void SetCrackName(const FText& NewName) {CrackName = NewName; }
 	
 protected:
 	virtual void BeginPlay() override;
@@ -91,6 +93,9 @@ private:
 
 	UPROPERTY()
 	ABaseGameMode* BaseGameMode;
+
+	UPROPERTY()
+	UWorldInstanceSubsystem* WorldInstanceSubsystem;
 	
 	UPROPERTY()
 	ATargetPoint* RespawnTargetPoint;

@@ -7,6 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
+#include "DomiFramework/GameInstance/ItemInstanceSubsystem.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "WorldObjects/Crack.h"
 #include "Components/StatusComponent/StatusComponent.h"
@@ -36,7 +38,13 @@ void ABaseGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-	checkf(GameInstance, TEXT("GI Fail"));
+	checkf(GameInstance, TEXT("Get GameInstance Fail"));
+
+	WorldInstanceSubsystem = GameInstance->GetSubsystem<UWorldInstanceSubsystem>();
+	check(WorldInstanceSubsystem);
+
+	ItemInstanceSubsystem = GameInstance->GetSubsystem<UItemInstanceSubsystem>();
+	check(ItemInstanceSubsystem);
 
 	World = GetWorld();
 	check(World);
@@ -55,21 +63,18 @@ void ABaseGameMode::StartPlay()
 	BaseGameState = Cast<ABaseGameState>(World->GetGameState());
 	check(GameState);
 	BaseGameState->CacheAllCracks();
+	BaseGameState->LoadCrackDataFromInstance();
 	BaseGameState->InitializeCrackDataMap();
 	RecentCrackCache = BaseGameState->FindNearestCrack();
 
-	if (GameInstance->GetIsLevelChanged())
+	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
-		PlayerCharacter->SetActorLocationAndRotation(GameInstance->GetMoveTargetLocation(), GameInstance->GetMoveTargetRotation());
-		GameInstance->SwitchIsLevelChanged();
+		Debug::Print(FString::Printf(TEXT("%s, %s"), *WorldInstanceSubsystem->GetMoveTargetLocation().ToString(), *WorldInstanceSubsystem->GetMoveTargetRotation().ToString()));
+		PlayerCharacter->SetActorLocationAndRotation(WorldInstanceSubsystem->GetMoveTargetLocation(), WorldInstanceSubsystem->GetMoveTargetRotation());
+		WorldInstanceSubsystem->SwitchIsLevelChanged();
+		WorldInstanceSubsystem->SetMoveTargetLocation(FVector::ZeroVector);
+		WorldInstanceSubsystem->SetMoveTargetRotator(FRotator::ZeroRotator);
 	}
-
-	// int32 TargetCrackIndex = GameInstance->GetRecentCrackIndex();
-	// if (TargetCrackIndex == -1)
-	// {
-	// 	Debug::Print(TEXT("StartPlay: CrackIndex 없음 → 기본 위치 스폰"));
-	// 	return;
-	// }
 	
 	//=====Enemy 위치정보 캐싱=====
 	TArray<AActor*> Enemies;
@@ -138,31 +143,40 @@ void ABaseGameMode::RespawnPlayerCharacter()
 
 void ABaseGameMode::MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCrackIndex)
 {
-	if (!GameInstance->GetIsActivateCrackIndex(InOwningCrackLevelName, InCrackIndex))
+	if (!WorldInstanceSubsystem->GetIsActivateCrackIndex(InOwningCrackLevelName, InCrackIndex))
 	{
 		Debug::Print(TEXT("Crack is not Activate"));
 		return;
 	}
 	
-	const FString& CurrentLevelName = GameInstance->GetCurrentLevelName();
-	const FCrackData* CurrentLevelCrackData = GameInstance->GetCrackData(CurrentLevelName, InCrackIndex);
-	//const FCrackData* DifferenceLevelCrackData = GameInstance->GetCrackData()
+	const FString& CurrentLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
+	const FCrackData* TargetCrackData = WorldInstanceSubsystem->GetCrackData(InOwningCrackLevelName, InCrackIndex);
 
-	GameInstance->SetRecentCrackIndex(InCrackIndex);
+	if (!TargetCrackData)
+	{
+		Debug::Print(TEXT("TargetCrackData is nullptr"));
+		return;
+	}
+
+	Debug::Print(FString::Printf(TEXT("Target Location: X=%.2f, Y=%.2f, Z=%.2f"), 
+								TargetCrackData->RespawnLocation.X,
+								TargetCrackData->RespawnLocation.Y,
+								TargetCrackData->RespawnLocation.Z));
 	
+	WorldInstanceSubsystem->SetRecentCrackIndex(InCrackIndex);
+	WorldInstanceSubsystem->SetRecentCrackName(TargetCrackData->CrackName);
+	WorldInstanceSubsystem->SetMoveTargetLocation(TargetCrackData->RespawnLocation);
+	WorldInstanceSubsystem->SetMoveTargetRotator(TargetCrackData->RespawnRotation);
 	
 	if (CurrentLevelName == InOwningCrackLevelName)
 	{
-		GameInstance->SetRecentCrackName(CurrentLevelCrackData->CrackName);
-		GameInstance->SetMoveTargetLocation(CurrentLevelCrackData->RespawnLocation);
-		GameInstance->SetMoveTargetRotator(CurrentLevelCrackData->RespawnRotation);
-		PlayerCharacter->SetActorLocationAndRotation(CurrentLevelCrackData->RespawnLocation, CurrentLevelCrackData->RespawnRotation);
+		PlayerCharacter->SetActorLocationAndRotation(TargetCrackData->RespawnLocation, TargetCrackData->RespawnRotation);
 		RecentCrackCache = BaseGameState->GetCrackByIndex(InCrackIndex);
 	}
 	else if (CurrentLevelName != InOwningCrackLevelName)
 	{
 		Debug::Print(TEXT("Move Another Level"));
-		GameInstance->SwitchIsLevelChanged();
+		WorldInstanceSubsystem->SwitchIsLevelChanged();
 		UGameplayStatics::OpenLevel(this, FName(InOwningCrackLevelName));
 	}
 }

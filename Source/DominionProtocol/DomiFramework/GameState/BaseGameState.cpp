@@ -4,6 +4,7 @@
 #include "BaseGameState.h"
 #include "GameFramework/Character.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/SoundInstanceSubsystem.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
@@ -29,6 +30,7 @@ void ABaseGameState::BeginPlay()
 	World = GetWorld();
 	check(World);
 	InitializeGameInstance();
+	InitializeWorldInstanceSubsystem();
 	InitializeSoundSubsystem();
 }
 
@@ -36,14 +38,21 @@ void ABaseGameState::InitializeGameInstance()
 {
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	check(GameInstance);
-	GameInstance->SetCurrentLevelName(UGameplayStatics::GetCurrentLevelName(GetWorld(), true));
-	if (GameInstance->GetCurrentLevelName().Contains("Level1"))
+}
+
+void ABaseGameState::InitializeWorldInstanceSubsystem()
+{
+	WorldInstanceSubsystem = GameInstance->GetSubsystem<UWorldInstanceSubsystem>();
+	check(WorldInstanceSubsystem);
+	
+	WorldInstanceSubsystem->SetCurrentLevelName(UGameplayStatics::GetCurrentLevelName(GetWorld(), true));
+	if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Level1"))
 	{
-		GameInstance->SetCurrentLevelDisplayName(FText::FromString("Level 1"));
+		WorldInstanceSubsystem->SetCurrentLevelDisplayName(FText::FromString("Level 1"));
 	}
-	else if (GameInstance->GetCurrentLevelName().Contains("Level 2"))
+	else if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Level 2"))
 	{
-		GameInstance->SetCurrentLevelDisplayName(FText::FromString("Level 2"));
+		WorldInstanceSubsystem->SetCurrentLevelDisplayName(FText::FromString("Level 2"));
 	}
 }
 
@@ -96,61 +105,49 @@ void ABaseGameState::CacheAllCracks()
 	});
 }
 
-void ABaseGameState::InitializeCrackDataMap()
+void ABaseGameState::LoadCrackDataFromInstance()
 {
-	TMap<FString, FCrackDataArray> NewCrackDataMap;
-	FCrackDataArray NewCrackDataArray;
-
-	for (ACrack* Crack : AllCracksCache)
+	for (int32 i = 0; i< AllCracksCache.Num(); i++)
 	{
-		FCrackData NewCrackData;
+		ACrack* Crack = Cast<ACrack>(AllCracksCache[i]);
 
-		if (Crack->GetCrackIndex() == 0)
+		const FCrackData* CrackData = WorldInstanceSubsystem->GetCrackData(WorldInstanceSubsystem->GetCurrentLevelName(), i);
+		if (CrackData && CrackData->bIsActivate)
 		{
 			Crack->SetActive();
+			Crack->SetCrackName(CrackData->CrackName);
 		}
+	}
+}
+
+void ABaseGameState::InitializeCrackDataMap()
+{
+	// 불러오지 않은 새 게임일 경우에만 실행
+	if (!bIsNewGame)
+	{
+		return;
+	}
+	
+	TMap<FString, FCrackDataArray>* CrackDataMap = WorldInstanceSubsystem->GetCrackDataMap();
+	const FString& CurrentLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
+	FCrackDataArray& CrackDataArray = (*CrackDataMap)[CurrentLevelName];
+	
+	for (ACrack* Crack : AllCracksCache)
+	{
+		if (Crack->GetCrackIndex() == 0)
+		{
+			continue;
+		}
+		
+		FCrackData NewCrackData;
 		
 		NewCrackData.CrackName = Crack->GetCrackName();
 		NewCrackData.bIsActivate = Crack->GetIsActivate();
 		NewCrackData.RespawnLocation = Crack->GetRespawnTargetPointLocation();
 		NewCrackData.RespawnRotation = Crack->GetRespawnTargetPointRotation();
 
-		NewCrackDataArray.CrackDataArray.Add(NewCrackData);
+		CrackDataArray.CrackDataArray.Add(NewCrackData);
 	}
-	NewCrackDataMap.Add(GameInstance->GetCurrentLevelName(), NewCrackDataArray);
-
-	GameInstance->SetCrackDataMap(NewCrackDataMap);
-	AddAnotherLevelFirstCrack();
-}
-
-void ABaseGameState::AddAnotherLevelFirstCrack()
-{
-	TMap<FString, FCrackDataArray>* NewCrackDataMap = GameInstance->GetCrackDataMap();
-	FCrackDataArray NewCrackDataArray;
-	FCrackData NewCrackData;
-
-	if (GameInstance->GetCurrentLevelName().Contains("Level1"))
-	{
-		NewCrackData.CrackName = FText::FromString("Level2 Crack0");
-		NewCrackData.bIsActivate = true;
-		NewCrackData.RespawnLocation = FVector(240, 0, 20);
-		NewCrackData.RespawnRotation = FRotator(0, 0, 0);
-		NewCrackDataArray.CrackDataArray.Add(NewCrackData);
-		NewCrackDataMap->Add(FString("Proto_Level2"), NewCrackDataArray);
-		NewCrackDataMap->Add(FString("TestCrackLevel2"), NewCrackDataArray);
-	}
-	else if (GameInstance->GetCurrentLevelName().Contains("Level2"))
-	{
-		NewCrackData.CrackName = FText::FromString("Level1 Crack0");
-		NewCrackData.bIsActivate = true;
-		NewCrackData.RespawnLocation = FVector(240, 0, 20);
-		NewCrackData.RespawnRotation = FRotator(0, 0, 0);
-		NewCrackDataArray.CrackDataArray.Add(NewCrackData);
-		NewCrackDataMap->Add(FString("Proto_Level1"), NewCrackDataArray);
-		NewCrackDataMap->Add(FString("TestCrackLevel1"), NewCrackDataArray);
-	}
-	
-	GameInstance->SetCrackDataMap(*NewCrackDataMap);
 }
 
 ACrack* ABaseGameState::FindNearestCrack()

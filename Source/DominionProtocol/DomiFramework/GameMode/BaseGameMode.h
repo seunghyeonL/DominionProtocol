@@ -7,6 +7,8 @@
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "BaseGameMode.generated.h"
 
+class UItemInstanceSubsystem;
+class UWorldInstanceSubsystem;
 class ABaseGameState;
 class ADomiCharacter;
 class ACrack;
@@ -61,13 +63,19 @@ public:
 
 protected:
 	UPROPERTY()
+	UDomiGameInstance* GameInstance;
+
+	UPROPERTY()
+	UWorldInstanceSubsystem* WorldInstanceSubsystem;
+
+	UPROPERTY()
+	UItemInstanceSubsystem* ItemInstanceSubsystem;
+	
+	UPROPERTY()
 	UWorld* World;
 
 	UPROPERTY()
 	ABaseGameState* BaseGameState;
-	
-	UPROPERTY()
-	UDomiGameInstance* GameInstance;
 
 	UPROPERTY()
 	ADomiCharacter* PlayerCharacter;

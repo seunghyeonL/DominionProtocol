@@ -7,6 +7,7 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+class UWorldInstanceSubsystem;
 struct FStatusComponentInitializeData;
 struct FSkillComponentInitializeData;
 class UDomiGameInstance;
@@ -31,10 +32,10 @@ public:
 	FORCEINLINE ACrack* GetCrackByIndex(int32 InCrackIndex) const {return AllCracksCache[InCrackIndex]; }
 	
 	void CacheAllCracks();
+	
+	void LoadCrackDataFromInstance();
 
 	void InitializeCrackDataMap();
-
-	void AddAnotherLevelFirstCrack();
 
 	ACrack* FindNearestCrack();
 	
@@ -43,6 +44,7 @@ protected:
 
 private:
 	void InitializeGameInstance();
+	void InitializeWorldInstanceSubsystem();
 	void InitializeSoundSubsystem();
 
 //Variables
@@ -52,6 +54,9 @@ private:
 	
 	UPROPERTY()
 	UDomiGameInstance* GameInstance;
+
+	UPROPERTY()
+	UWorldInstanceSubsystem* WorldInstanceSubsystem;
 	
 	UPROPERTY()
 	USoundInstanceSubsystem* SoundSubsystem;
@@ -67,6 +72,8 @@ private:
 
 	UPROPERTY()
 	TArray<ACrack*> AllCracksCache;
+
+	bool bIsNewGame = true;
 
 #pragma endregion
 
