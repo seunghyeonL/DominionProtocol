@@ -9,6 +9,7 @@
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "DomiFramework/GameMode/ProtoLevel1GameMode.h"
 #include "DomiFramework/GameMode/ProtoLevel2GameMode.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 #include "Player/Characters/DomiCharacter.h"
 
 #include "Util/DebugHelper.h"
@@ -47,17 +48,12 @@ void ACrack::BeginPlay()
 
     RespawnTargetPoint = Cast<ATargetPoint>(RespawnTargetPointComp->GetChildActor());
     
-    //***프로토타입용 코드*** 본 개발시 변경해야함
     UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
     check(GameInstance);
-
-    //GameInstance->SetRecentCrackName(CrackName);
-    //GameInstance->SetRecentCrackIndex(CrackIndex);
     
-    //*===BaseGameMode의 ACrack* RecentCrack 업데이트===*
-    ABaseGameMode* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
-    GameMode->SetRecentCrackCache(this);
-    //*===============================================*
+    BaseGameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
+    
+    //***프로토타입용 코드*** 본 개발시 변경해야함
     
     //***================================***
     
@@ -96,83 +92,39 @@ void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
     }
 }
 
-void ACrack::MoveToCrack()
-{
-}
-
-void ACrack::ActivateLinkedCrack()
-{
-    // 다른 레벨의 같은 인덱스 균열 활성화
-    // Subsystem->ActivateCrack(CrackIndex); 
-}
-
 void ACrack::Interact_Implementation(AActor* Interactor)
 {
     UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
     if (!GameInstance) return;
 
-    // 해당 균열 활성화
+    // 흐름
+    // 1. 비활성화시 활성화
+    // 2. 조력자 대화해야할 시 대화 이벤트 트리거
+    // 3. 원래 기능
+    
+    // 1. 해당 균열 활성화
     if (!bIsActivate)
     {
         bIsActivate = true;
-        GameInstance->SetIsActivateCrack(CrackIndex);
+        GameInstance->SetIsActivateCrackIndex(GameInstance->GetCurrentLevelName(), CrackIndex);
         UE_LOG(LogCrackSystem, Warning, TEXT("%s 활성화"), *CrackName.ToString());
         Debug::Print(CrackName.ToString()+TEXT(" 활성화"));
-    }
-    /*
-    // 활성화된 균열 목록 띄우기
-    FString Result = TEXT("현재 레벨에서 이동 가능한 균열 목록:\n");
-    const TArray<bool>& ActiveIndices = GameInstance->GetPastCrackActivateArray();
-
-    TArray<AActor*> AllCracks;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACrack::StaticClass(), AllCracks);
-
-    for (bool Acti : ActiveIndices)
-    {
-        for (AActor* CrackActor : AllCracks)
-        {
-            ACrack* Crack = Cast<ACrack>(CrackActor);
-            if (Crack && Acti)
-            {
-                Result += TEXT("- ") + Crack->CrackName.ToString() + TEXT("\n");
-                break;
-            }
-        }
+        return;
     }
 
-    Debug::Print(Result);
+    // 조력자 대화 이벤트 트리거 Start
+    // /*
+    //  *
+    //  */
+    // 조력자 대화 이벤트 트리거 End
 
-    */
-
-    FName TargetLevelName = NAME_None;
+    // 3. 원래 기능
     
-    ABaseGameMode* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
-    if (GameMode)
-    {
-        if (GameMode->IsA(AProtoLevel1GameMode::StaticClass()))
-        {
-            TargetLevelName = FName("Proto_Level2"); 
-        }
-        else if (GameMode->IsA(AProtoLevel2GameMode::StaticClass()))
-        {
-            TargetLevelName = FName("Proto_Level1"); 
-        }
-    }
-
-    if (TargetLevelName != NAME_None)
-    {
-        if (GameInstance)
-        {
-            GameInstance->SetRecentCrackIndex(CrackIndex);
-            Debug::Print(FString::Printf(TEXT("Set RecentCrack")));
-        }
-        UE_LOG(LogCrackSystem, Warning, TEXT("%s Open"), *CrackName.ToString());
-
-        Debug::Print(FString::Printf(TEXT("Open %s"), *TargetLevelName.ToString()));
-        UGameplayStatics::OpenLevel(this, TargetLevelName);
-    }
-
-
+    //최근 균열 업데이트
+    BaseGameMode->SetRecentCrackCache(this);
+    
+    GameInstance->SetRecentCrackName(CrackName);
+    GameInstance->SetRecentCrackIndex(CrackIndex);
 }
 
 FText ACrack::GetInteractMessage_Implementation() const

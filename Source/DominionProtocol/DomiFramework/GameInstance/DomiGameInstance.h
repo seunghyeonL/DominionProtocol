@@ -6,13 +6,18 @@
 #include "Engine/GameInstance.h"
 #include "EnumAndStruct/FInstanceData.h"
 #include "EnumAndStruct/EGameStoryState.h"
+#include "EnumAndStruct/FCrackData.h"
 #include "DomiGameInstance.generated.h"
+
+class ACrack;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
+#pragma region Share
+	
 public:
 	UDomiGameInstance();
 
@@ -21,26 +26,53 @@ public:
 	FInstanceData GetSaveData() const;
 	
 	//Setter
+	void SetCrackDataMap(TMap<FString, FCrackDataArray> InCrackDataMap) { CrackDataMap = InCrackDataMap; }
+	
 	void SetIsBossDead(int32 BossIndex);
-	FORCEINLINE void SetCurrentLevelName(FString NewCurrentLevelName) { CurrentLevelName = NewCurrentLevelName; }
-	FORCEINLINE void SetCurrentLevelDisplayName(FText NewCurrentLevelDisplayName) { CurrentLevelDisplayName = NewCurrentLevelDisplayName; }
-	FORCEINLINE void SetRecentCrackName(FText NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
+	
+	FORCEINLINE void SetCurrentLevelName(const FString& NewCurrentLevelName) { CurrentLevelName = NewCurrentLevelName; }
+	
+	FORCEINLINE void SetCurrentLevelDisplayName(const FText& NewCurrentLevelDisplayName) { CurrentLevelDisplayName = NewCurrentLevelDisplayName; }
+	
+	FORCEINLINE void SetRecentCrackName(const FText& NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
+	
 	FORCEINLINE void SetRecentCrackIndex(int32 NewRecentCrackIndex) { RecentCrackIndex = NewRecentCrackIndex; }
-	void SetIsActivateCrack(int32 InCrackIndex);
+	
+	FORCEINLINE void SetIsActivateCrackIndex(const FString& LevelName, int32 InCrackIndex) { CrackDataMap[LevelName].CrackDataArray[InCrackIndex].bIsActivate = true; }
+	
 	FORCEINLINE void SetCurrentGameStoryState(EGameStoryState NewGameStoryState) { CurrentGameStoryState = NewGameStoryState; }
 	
+	FORCEINLINE void SetMoveTargetLocation(const FVector& NewMoveTargetLocation) { MoveTargetLocation = NewMoveTargetLocation; }
+	
+	FORCEINLINE void SetMoveTargetRotator(const FRotator& NewMoveTargetRotation) { MoveTargetRotation = NewMoveTargetRotation; }
+
+	FORCEINLINE void SwitchIsLevelChanged() { bIsLevelChanged = !bIsLevelChanged; }
+
+	
 	//Getter
+	TMap<FString, FCrackDataArray>* GetCrackDataMap() { return &CrackDataMap; }
+	
 	bool GetIsBossDead(int32 BossIndex) const;
-	FORCEINLINE FString GetCurrentLevelName() const { return CurrentLevelName; }
-	FORCEINLINE FText GetCurrentLevelDisplayName() const { return CurrentLevelDisplayName; }
-	FORCEINLINE FText GetRecentCrackName() const { return RecentCrackName; }
+	
+	FORCEINLINE const FString& GetCurrentLevelName() const { return CurrentLevelName; }
+	
+	FORCEINLINE const FText& GetCurrentLevelDisplayName() const { return CurrentLevelDisplayName; }
+	
+	FORCEINLINE const FText& GetRecentCrackName() const { return RecentCrackName; }
+	
 	FORCEINLINE int32 GetRecentCrackIndex() const { return RecentCrackIndex; }
-	//균열에서 초기에 자기 자신이 활성화/비활성화 상태인지 세팅을 위한 Getter(균열의 BeginPlay에서 호출해서 세팅)
-	FORCEINLINE bool GetIsActivatePastCrack(int32 InCrackIndex) const { return PastCrackActivateArray.IsValidIndex(InCrackIndex) ? PastCrackActivateArray[InCrackIndex] : false; }
-	FORCEINLINE bool GetIsActivatePresentCrack(int32 InCrackIndex) const { return PresentCrackActivateArray.IsValidIndex(InCrackIndex) ? PresentCrackActivateArray[InCrackIndex] : false; }
+
+	bool GetIsActivateCrackIndex(const FString& LevelName, int32 InCrackIndex) const;
+
+	const FCrackData* GetCrackData(const FString& LevelName, int32 InCrackIndex) const;
+	
+	FORCEINLINE const FVector& GetMoveTargetLocation() const { return MoveTargetLocation; }
+	
+	FORCEINLINE const FRotator& GetMoveTargetRotation() const { return MoveTargetRotation; }
+
+	FORCEINLINE bool GetIsLevelChanged() const { return bIsLevelChanged; }
+	
 	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
-	FORCEINLINE TArray<bool> GetPastCrackActivateArray() const { return PastCrackActivateArray; }
-	FORCEINLINE TArray<bool> GetPresentCrackActivateArray() const { return PresentCrackActivateArray; }
 	FORCEINLINE EGameStoryState GetCurrentGameStoryState() const { return CurrentGameStoryState; }
 
 protected:
@@ -62,18 +94,31 @@ private:
 	FText RecentCrackName;
 
 	UPROPERTY()
-	int32 RecentCrackIndex;
+	int32 RecentCrackIndex = 0;
 
-	// Proto_Level1(임시)
 	UPROPERTY()
-	TArray<bool> PastCrackActivateArray;
-
-	// Proto_Level2(임시)
-	UPROPERTY()
-	TArray<bool> PresentCrackActivateArray;
+	TMap<FString, FCrackDataArray> CrackDataMap;
 
 	UPROPERTY()
 	EGameStoryState CurrentGameStoryState;
 
+	FVector MoveTargetLocation = FVector::ZeroVector;
+
+	FRotator MoveTargetRotation = FRotator::ZeroRotator;
+
+	bool bIsLevelChanged = false;
+
 	static const int32 NumBosses;
+
+#pragma endregion
+
+
+#pragma region KyuHyeok
+
+#pragma endregion
+
+
+#pragma region SeoYoung
+
+#pragma endregion
 };

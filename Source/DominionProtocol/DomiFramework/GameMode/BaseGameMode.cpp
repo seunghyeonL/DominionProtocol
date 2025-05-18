@@ -5,11 +5,13 @@
 
 #include "AI/AICharacters/BaseEnemy.h"
 #include "Kismet/GameplayStatics.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "WorldObjects/Crack.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
+#include "EnumAndStruct/FCrackData.h"
 
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
@@ -33,6 +35,42 @@ void ABaseGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+	checkf(GameInstance, TEXT("GI Fail"));
+
+	World = GetWorld();
+	check(World);
+}
+
+void ABaseGameMode::StartPlay()
+{
+	Super::StartPlay();
+
+	PlayerCharacter = Cast<ADomiCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (IsValid(PlayerCharacter) && !PlayerCharacter->ActorHasTag("Player"))
+	{
+		PlayerCharacter->Tags.Add("Player");
+	}
+	
+	BaseGameState = Cast<ABaseGameState>(World->GetGameState());
+	check(GameState);
+	BaseGameState->CacheAllCracks();
+	BaseGameState->InitializeCrackDataMap();
+	RecentCrackCache = BaseGameState->FindNearestCrack();
+
+	if (GameInstance->GetIsLevelChanged())
+	{
+		PlayerCharacter->SetActorLocationAndRotation(GameInstance->GetMoveTargetLocation(), GameInstance->GetMoveTargetRotation());
+		GameInstance->SwitchIsLevelChanged();
+	}
+
+	// int32 TargetCrackIndex = GameInstance->GetRecentCrackIndex();
+	// if (TargetCrackIndex == -1)
+	// {
+	// 	Debug::Print(TEXT("StartPlay: CrackIndex 없음 → 기본 위치 스폰"));
+	// 	return;
+	// }
+	
 	//=====Enemy 위치정보 캐싱=====
 	TArray<AActor*> Enemies;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseEnemy::StaticClass(), Enemies);
@@ -48,26 +86,6 @@ void ABaseGameMode::BeginPlay()
 		CachedEnemyInfo.Add(Info);
 	}
 	//==========================
-}
-
-void ABaseGameMode::StartPlay()
-{
-	Super::StartPlay();
-	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-	checkf(GameInstance, TEXT("GI Fail"));
-
-	PlayerCharacter = Cast<ADomiCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-	if (IsValid(PlayerCharacter) && !PlayerCharacter->ActorHasTag("Player"))
-	{
-		PlayerCharacter->Tags.Add("Player");
-	}
-
-	int32 TargetCrackIndex = GameInstance->GetRecentCrackIndex();
-	if (TargetCrackIndex == -1)
-	{
-		Debug::Print(TEXT("StartPlay: CrackIndex 없음 → 기본 위치 스폰"));
-		return;
-	}
 }
 
 void ABaseGameMode::StartBattle()
@@ -115,6 +133,37 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		OnPlayerSpawn.Broadcast();
 
 		RespawnEnemies();
+	}
+}
+
+void ABaseGameMode::MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCrackIndex)
+{
+	if (!GameInstance->GetIsActivateCrackIndex(InOwningCrackLevelName, InCrackIndex))
+	{
+		Debug::Print(TEXT("Crack is not Activate"));
+		return;
+	}
+	
+	const FString& CurrentLevelName = GameInstance->GetCurrentLevelName();
+	const FCrackData* CurrentLevelCrackData = GameInstance->GetCrackData(CurrentLevelName, InCrackIndex);
+	//const FCrackData* DifferenceLevelCrackData = GameInstance->GetCrackData()
+
+	GameInstance->SetRecentCrackIndex(InCrackIndex);
+	
+	
+	if (CurrentLevelName == InOwningCrackLevelName)
+	{
+		GameInstance->SetRecentCrackName(CurrentLevelCrackData->CrackName);
+		GameInstance->SetMoveTargetLocation(CurrentLevelCrackData->RespawnLocation);
+		GameInstance->SetMoveTargetRotator(CurrentLevelCrackData->RespawnRotation);
+		PlayerCharacter->SetActorLocationAndRotation(CurrentLevelCrackData->RespawnLocation, CurrentLevelCrackData->RespawnRotation);
+		RecentCrackCache = BaseGameState->GetCrackByIndex(InCrackIndex);
+	}
+	else if (CurrentLevelName != InOwningCrackLevelName)
+	{
+		Debug::Print(TEXT("Move Another Level"));
+		GameInstance->SwitchIsLevelChanged();
+		UGameplayStatics::OpenLevel(this, FName(InOwningCrackLevelName));
 	}
 }
 

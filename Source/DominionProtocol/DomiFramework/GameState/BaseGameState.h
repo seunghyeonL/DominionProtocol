@@ -11,6 +11,7 @@ struct FStatusComponentInitializeData;
 struct FSkillComponentInitializeData;
 class UDomiGameInstance;
 class USoundInstanceSubsystem;
+class ACrack;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseGameState : public AGameState
@@ -20,10 +21,20 @@ class DOMINIONPROTOCOL_API ABaseGameState : public AGameState
 //Functions
 public:
 	ABaseGameState();
+	
+	//Getter
+	FORCEINLINE FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
+	FORCEINLINE FSkillComponentInitializeData* GetSkillComponentInitializeData(const FGameplayTag PawnTag) const;
+	FORCEINLINE FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
+	FORCEINLINE ACrack* GetCrackByIndex(int32 InCrackIndex) const {return AllCracksCache[InCrackIndex]; }
+	
+	void CacheAllCracks();
 
-	FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
-	FSkillComponentInitializeData* GetSkillComponentInitializeData(const FGameplayTag PawnTag) const;
-	FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
+	void InitializeCrackDataMap();
+
+	void AddAnotherLevelFirstCrack();
+
+	ACrack* FindNearestCrack();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -34,6 +45,9 @@ private:
 
 //Variables
 private:
+	UPROPERTY()
+	UWorld* World;
+	
 	UPROPERTY()
 	UDomiGameInstance* GameInstance;
 	
@@ -48,4 +62,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
 	UDataTable* StatusInitializeDataTable;
+
+	UPROPERTY()
+	TArray<ACrack*> AllCracksCache;
 };

@@ -7,6 +7,7 @@
 #include "Interface/InteractableInterface.h"
 #include "Crack.generated.h"
 
+class ABaseGameMode;
 class ATargetPoint;
 class ADomiCharacter;
 class USphereComponent;
@@ -22,15 +23,17 @@ class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
 	
 public:
 	ACrack();
-	
-	FORCEINLINE void SwitchActivate() { bIsActivate = !bIsActivate; }
 
 	//Getter
-	FORCEINLINE FVector GetRespawnTargetPointLocation() const;
-	FORCEINLINE FRotator GetRespawnTargetPointRotation() const;
+	FORCEINLINE const FText& GetCrackName() const { return CrackName; }
+	FORCEINLINE bool GetIsActivate() const { return bIsActivate; }
+	FVector GetRespawnTargetPointLocation() const;
+	FRotator GetRespawnTargetPointRotation() const;
 
 	FORCEINLINE int32 GetCrackIndex() const { return CrackIndex; }
+	
 	//Setter
+	FORCEINLINE void SetActive() { bIsActivate = true; }
 	
 protected:
 	virtual void BeginPlay() override;
@@ -55,11 +58,7 @@ protected:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
-	// 기능
-	void MoveToCrack();
-
 private:
-	void ActivateLinkedCrack();
 
 #pragma endregion
 
@@ -87,10 +86,14 @@ protected:
 	int32 CrackIndex;
 
 private:
-	ATargetPoint* RespawnTargetPoint;
-	
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;
+
+	UPROPERTY()
+	ABaseGameMode* BaseGameMode;
+	
+	UPROPERTY()
+	ATargetPoint* RespawnTargetPoint;
 	
 	bool bIsActivate;
 	
