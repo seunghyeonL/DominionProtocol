@@ -37,4 +37,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// virtual bool IsTickable() const override{return bDashTickActive;}
 	// virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UPlayerControlState, STATGROUP_Tickables); }
+
+	bool SetLockOnTargetActorInPublicSpace();
+	bool SetLockOnTargetActorInVisibility();
+	bool IsActorInViewport(const FVector& ActorLocation) const;
 };

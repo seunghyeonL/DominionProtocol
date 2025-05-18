@@ -10,6 +10,7 @@
 #include "Interface/InteractableInterface.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/ItemComponent/ItemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UPlayerControlState::UPlayerControlState()
 {
@@ -222,10 +223,169 @@ void UPlayerControlState::LockOn()
 	}
 	else
 	{
-		PlayerControlComponent->ActivateControlEffect(EffectTags::LockOn);
+		if (SetLockOnTargetActorInPublicSpace() == false)
+		{
+			SetLockOnTargetActorInVisibility();
+		}
+
+		ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+		if (IsValid(DomiCharacter->GetLockOnTargetActor()))
+		{
+			PlayerControlComponent->ActivateControlEffect(EffectTags::LockOn);
+		}
+		else
+		{
+			Debug::PrintLog(TEXT("UPlayerControlState::LockOn : No LockOnTargetActor."));
+		}
 	}
 
 	Debug::Print(TEXT("UPlayerControlState::LockOn : Call."));
+}
+
+bool UPlayerControlState::SetLockOnTargetActorInPublicSpace()
+{
+	const FVector Start = OwnerCharacter->GetActorLocation();
+	const FVector End = Start;
+	TArray<FHitResult> SphereTraceHitResults;
+	FCollisionQueryParams SphereTraceQueryParams;
+	SphereTraceQueryParams.AddIgnoredActor(OwnerCharacter);
+	constexpr float PublicSpaceDistance = 760.f;
+	
+	bool bHit = GetWorld()->SweepMultiByChannel(
+		SphereTraceHitResults,
+		Start,
+		End,
+		FQuat::Identity,
+		ECC_Visibility,
+		FCollisionShape::MakeSphere(PublicSpaceDistance),
+		SphereTraceQueryParams
+	);
+
+	ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	DomiCharacter->SetLockOnTargetActor(nullptr);
+	
+	if (bHit)
+	{
+		float MinDistance = PublicSpaceDistance;
+		AActor* MinDistanceActor = nullptr;
+		for (const FHitResult& Hit : SphereTraceHitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+
+			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
+			{
+				if (IsActorInViewport(HitActor->GetActorLocation()))
+				{
+					const float ActorDistance = FVector::Distance(OwnerCharacter->GetActorLocation(), HitActor->GetActorLocation()); 
+					if (ActorDistance < MinDistance)
+					{
+						MinDistance = ActorDistance;
+						MinDistanceActor = HitActor;
+					}
+				}
+			}
+		}
+		if (MinDistanceActor)
+		{
+			// Target actor selected.
+			DomiCharacter->SetLockOnTargetActor(MinDistanceActor);
+			return true;
+		}
+	}
+	// There is no target actor.
+	return false;
+}
+
+bool UPlayerControlState::SetLockOnTargetActorInVisibility()
+{
+	TArray<FHitResult> SphereTraceHitResults;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(OwnerCharacter);
+	constexpr float VisibilityDistance = 3000.f;
+	FVector ViewPointLocation;
+	FRotator ViewPointRotation;
+	OwnerCharacter->GetController()->GetPlayerViewPoint(ViewPointLocation, ViewPointRotation);
+	const FRotator ControllerRotatorWithZeroPitch = FRotator(0,ViewPointRotation.Yaw, ViewPointRotation.Roll);
+	const FVector ControllerForwardVector = ControllerRotatorWithZeroPitch.Vector();
+	
+	const FVector Start = ViewPointLocation + FMath::Sqrt(2.f) * ControllerForwardVector * VisibilityDistance;
+	const FVector End = Start;
+
+	const FVector BoxSize = FVector(VisibilityDistance,VisibilityDistance,600.f);
+	
+	bool bBoxTraceHit = GetWorld()->SweepMultiByChannel(
+		SphereTraceHitResults,
+		Start,
+		End,
+		FQuat(FRotator(0,ViewPointRotation.Yaw + 45.f,0)),
+		ECC_Visibility,
+		FCollisionShape::MakeBox(BoxSize),
+		QueryParams
+	);
+
+	ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	DomiCharacter->SetLockOnTargetActor(nullptr);
+	
+	if (bBoxTraceHit)
+	{
+		float MinAngle = 90.f;
+		AActor* MinAngleActor = nullptr;
+		for (const FHitResult& Hit : SphereTraceHitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+
+			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
+			{
+				if (IsActorInViewport(HitActor->GetActorLocation()))
+				{
+					FHitResult LineTraceHit;
+					bool bLineTraceHit = GetWorld()->LineTraceSingleByChannel(
+						LineTraceHit,
+						OwnerCharacter->GetActorLocation(),
+						HitActor->GetActorLocation(),
+						ECC_Visibility,
+						QueryParams
+					);
+					if (bLineTraceHit && LineTraceHit.GetActor() == HitActor)
+					{
+						FVector ControllerToActorVector = (HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+						const float AngleDifference = FMath::RadiansToDegrees(FMath::Acos(ViewPointRotation.Vector().Dot(ControllerToActorVector))); 
+						if (AngleDifference < MinAngle)
+						{
+							MinAngle = AngleDifference;
+							MinAngleActor = HitActor;
+						}
+					}
+				}
+			}
+		}
+		if (MinAngleActor)
+		{
+			// Target actor selected.
+			DomiCharacter->SetLockOnTargetActor(MinAngleActor);
+			return true;
+		}
+	}
+	// There is no target actor.
+	return false;
+}
+
+bool UPlayerControlState::IsActorInViewport(const FVector& ActorLocation) const
+{
+	FVector2D ViewportSize;
+	GEngine->GameViewport->GetViewportSize(ViewportSize);
+	
+	FVector2D ScreenLocation;
+	const bool bIsOnScreen = UGameplayStatics::ProjectWorldToScreen(
+			Cast<APlayerController const>(OwnerCharacter->GetController()),
+			ActorLocation,
+			ScreenLocation
+		);
+
+	if (!bIsOnScreen) return false;
+	
+	return ScreenLocation.X >= 0 && ScreenLocation.X <= ViewportSize.X &&
+		   ScreenLocation.Y >= 0 && ScreenLocation.Y <= ViewportSize.Y;
 }
 
 void UPlayerControlState::ConsumeItemAction_1()
