@@ -17,6 +17,12 @@ struct FCrackData
 	{}
 
 	UPROPERTY()
+	FString OwnerLevelName;
+
+	UPROPERTY()
+	int32 CrackIndex;
+	
+	UPROPERTY()
 	FText CrackName;
 
 	UPROPERTY()

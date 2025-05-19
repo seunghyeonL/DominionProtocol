@@ -140,7 +140,9 @@ void ABaseGameState::InitializeCrackDataMap()
 		}
 		
 		FCrackData NewCrackData;
-		
+
+		NewCrackData.OwnerLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
+		NewCrackData.CrackIndex = Crack->GetCrackIndex();
 		NewCrackData.CrackName = Crack->GetCrackName();
 		NewCrackData.bIsActivate = Crack->GetIsActivate();
 		NewCrackData.RespawnLocation = Crack->GetRespawnTargetPointLocation();
