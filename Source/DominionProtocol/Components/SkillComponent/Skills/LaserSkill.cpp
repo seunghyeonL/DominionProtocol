@@ -50,7 +50,7 @@ void ULaserSkill::Initialize(ACharacter* Owner)
 
 	TracerComponent->InitializeTracers(TagContainer, CapsuleComponent);
 
-	TracerComponent->FilterType = EMnhFilterType::None;
+	//TracerComponent->FilterType = EMnhFilterType::None;
 }
 
 void ULaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
