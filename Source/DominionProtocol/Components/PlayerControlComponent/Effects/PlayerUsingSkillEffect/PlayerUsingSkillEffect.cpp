@@ -18,14 +18,15 @@ void UPlayerUsingSkillEffect::Activate()
 {
 	Super::Activate();
 
-	// Cashed Movement Vector
-	if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
-	{
-		const FVector& LastInputVector = ControlComponentUser->GetLastMovementVector();
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent)
 
-		OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
-		Debug::Print(FString::Printf(TEXT("USkillComponent::ExecuteSkill : SetRotation : %f, %f, %f"), LastInputVector.Rotation().Pitch, LastInputVector.Rotation().Yaw, LastInputVector.Rotation().Roll));
-	}
+	// Cashed Movement Vector
+	const FVector& LastInputVector = ControlComponent->GetLastMovementVector();
+
+	OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
+	Debug::Print(FString::Printf(TEXT("USkillComponent::ExecuteSkill : SetRotation : %f, %f, %f"), LastInputVector.Rotation().Pitch, LastInputVector.Rotation().Yaw, LastInputVector.Rotation().Roll));
+	
 }
 
 void UPlayerUsingSkillEffect::Activate(float Duration)
@@ -56,6 +57,10 @@ void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)
 {
 	// Super::Move(Value);
 	check(OwnerCharacter);
+
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
+	
 	if (auto Controller = OwnerCharacter->GetController())
 	{
 		FVector2D InputVector = Value.Get<FVector2D>();
@@ -74,10 +79,7 @@ void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)
 		const FVector FinalMovementNormalVector = (ForwardDirection * InputVector.X  + RightDirection * InputVector.Y).GetSafeNormal();
 
 		// caching final movement normal vector
-		if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
-		{
-			ControlComponentUser->SetLastMovementVector(FinalMovementNormalVector);
-		}
+		ControlComponent->SetLastMovementVector(FinalMovementNormalVector);
 	}
 }
 

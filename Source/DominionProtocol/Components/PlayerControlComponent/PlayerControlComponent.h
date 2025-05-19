@@ -30,7 +30,10 @@ public:
 	FORCEINLINE AActor* GetLockOnTargetActor() const { return LockOnTargetActor; }
 	// FOnComponentReady OnComponentReady;
 	// bool bIsComponentReady;
-
+	
+	FORCEINLINE virtual void SetLastMovementVector(const FVector& InLastMovementVector) { CurrentMovementVector = InLastMovementVector; }
+	FORCEINLINE virtual FVector& GetLastMovementVector() { return CurrentMovementVector; }
+	FORCEINLINE virtual void ResetLastMovementVector() { CurrentMovementVector = FVector::ZeroVector; }
 	
 	
 protected:
@@ -50,6 +53,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effect")
 	TMap<FGameplayTag, UPlayerControlEffectBase*> ControlEffectMap;
+
+	// 마지막 이동 입력 방향벡터
+	FVector CurrentMovementVector;
 
 	UPROPERTY()
 	TObjectPtr<UBaseBufferedInput> ValidBufferedInput;

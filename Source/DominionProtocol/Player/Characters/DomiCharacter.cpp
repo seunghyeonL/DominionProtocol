@@ -111,9 +111,6 @@ ADomiCharacter::ADomiCharacter()
 	// HardCCTags Setting
 	HardCCTags.AddTag(EffectTags::Stun);
 	HardCCTags.AddTag(EffectTags::Stiffness);
-	
-	// Cashed MovementVector
-	LastMovementVector = {0.f, 0.f, 0.f};
 
 	// Set PawnTag
 	PawnTag = PawnTags::Player;
@@ -205,8 +202,8 @@ void ADomiCharacter::BindInputFunctions()
 				                                   &UPlayerControlComponent::Move);
 
 				EnhancedInputComponent->BindAction(PlayerController->MoveAction, ETriggerEvent::Completed,
-												   this,
-												   &ADomiCharacter::ResetLastMovementVector);
+												   ControlComponent.Get(),
+												   &UPlayerControlComponent::ResetLastMovementVector);
 			}
 
 			// Looking

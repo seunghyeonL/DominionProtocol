@@ -4,6 +4,7 @@
 #include "PlayerDashSkill.h"
 
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
@@ -26,23 +27,20 @@ void UPlayerDashSkill::Execute()
 
 void UPlayerDashSkill::SetDashDirection()
 {
-	check(OwnerCharacter);
-	if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
-	{
-		auto LastMovementVector = ControlComponentUser->GetLastMovementVector();
+	check(IsValid(OwnerCharacter));
+	
+	auto ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
+	check(IsValid(ControlComponent));
+
+	auto LastMovementVector = ControlComponent->GetLastMovementVector();
 		
-		if (LastMovementVector.IsNearlyZero())
-		{
-			DashMoveDirection = -OwnerCharacter->GetActorForwardVector();
-		}
-		else
-		{
-			DashMoveDirection = LastMovementVector.GetSafeNormal();
-		}
+	if (LastMovementVector.IsNearlyZero())
+	{
+		DashMoveDirection = -OwnerCharacter->GetActorForwardVector();
 	}
 	else
 	{
-		Debug::PrintError("UPlayerDashSkill::SetDashDirection : OwnerCharacter doesn't implement ControlComponentUser.");
+		DashMoveDirection = LastMovementVector.GetSafeNormal();
 	}
 }
 

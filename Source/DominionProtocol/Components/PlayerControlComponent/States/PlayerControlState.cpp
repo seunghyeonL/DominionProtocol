@@ -34,6 +34,9 @@ void UPlayerControlState::Move(const FInputActionValue& Value)
 		return;
 	}
 
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
+
 	if (auto Controller = OwnerCharacter->GetController())
 	{
 		// find out which way is forward
@@ -48,12 +51,9 @@ void UPlayerControlState::Move(const FInputActionValue& Value)
 
 		// final movement vector
 		const FVector FinalMovementNormalVector = (ForwardDirection * InputVector.X  + RightDirection * InputVector.Y).GetSafeNormal();
-
-		if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
-		{
-			ControlComponentUser->SetLastMovementVector(FinalMovementNormalVector);
-		}
-
+		
+		ControlComponent->SetLastMovementVector(FinalMovementNormalVector);
+		
 		// add movement
 		OwnerCharacter->AddMovementInput(FinalMovementNormalVector);
 	}

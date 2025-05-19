@@ -62,9 +62,7 @@ public:
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
-	FORCEINLINE virtual void SetLastMovementVector(const FVector& InLastMovementVector) override { LastMovementVector = InLastMovementVector; }
-	FORCEINLINE virtual FVector& GetLastMovementVector() override { return LastMovementVector; }
-	FORCEINLINE virtual void ResetLastMovementVector() override { LastMovementVector = FVector::ZeroVector; }
+	
 	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
 	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
 
@@ -146,7 +144,6 @@ private:
 	UPROPERTY()
 	TSet<AActor*> InteractableActorSet = {};
 
-	// 마지막 이동 입력 방향벡터
-	FVector LastMovementVector;
+	
 };
 
