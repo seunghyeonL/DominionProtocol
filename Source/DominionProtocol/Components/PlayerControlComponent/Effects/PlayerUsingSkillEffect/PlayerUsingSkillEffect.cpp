@@ -22,11 +22,13 @@ void UPlayerUsingSkillEffect::Activate()
 	check(ControlComponent)
 
 	// Cashed Movement Vector
-	const FVector& LastInputVector = ControlComponent->GetLastMovementVector();
+	const FVector& CurrentMovementVector = ControlComponent->GetCurrentMovementVector();
 
-	OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
-	Debug::Print(FString::Printf(TEXT("USkillComponent::ExecuteSkill : SetRotation : %f, %f, %f"), LastInputVector.Rotation().Pitch, LastInputVector.Rotation().Yaw, LastInputVector.Rotation().Roll));
-	
+	if (!CurrentMovementVector.IsNearlyZero())
+	{
+		OwnerCharacter->SetActorRotation(CurrentMovementVector.Rotation());
+		Debug::Print(FString::Printf(TEXT("UPlayerUsingSkillEffect::Activate : SetRotation : %f, %f, %f"), CurrentMovementVector.Rotation().Pitch, CurrentMovementVector.Rotation().Yaw, CurrentMovementVector.Rotation().Roll));
+	}
 }
 
 void UPlayerUsingSkillEffect::Activate(float Duration)
@@ -79,7 +81,7 @@ void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)
 		const FVector FinalMovementNormalVector = (ForwardDirection * InputVector.X  + RightDirection * InputVector.Y).GetSafeNormal();
 
 		// caching final movement normal vector
-		ControlComponent->SetLastMovementVector(FinalMovementNormalVector);
+		ControlComponent->SetCurrentMovementVector(FinalMovementNormalVector);
 	}
 }
 

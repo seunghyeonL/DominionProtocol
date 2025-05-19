@@ -52,7 +52,7 @@ void UPlayerControlState::Move(const FInputActionValue& Value)
 		// final movement vector
 		const FVector FinalMovementNormalVector = (ForwardDirection * InputVector.X  + RightDirection * InputVector.Y).GetSafeNormal();
 		
-		ControlComponent->SetLastMovementVector(FinalMovementNormalVector);
+		ControlComponent->SetCurrentMovementVector(FinalMovementNormalVector);
 		
 		// add movement
 		OwnerCharacter->AddMovementInput(FinalMovementNormalVector);

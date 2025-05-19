@@ -12,8 +12,6 @@ class UPlayerControlStateBase;
 class UPlayerControlEffectBase;
 struct FInputActionValue;
 
-// DECLARE_DELEGATE(FOnComponentReady);
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API UPlayerControlComponent : public UActorComponent
 {
@@ -28,11 +26,9 @@ public:
 	FORCEINLINE void SetValidBufferedInput(UBaseBufferedInput* InBufferedInput) { ValidBufferedInput = InBufferedInput; }
 	FORCEINLINE void SetLockOnTargetActor(AActor* NewActor) { LockOnTargetActor = NewActor; }
 	FORCEINLINE AActor* GetLockOnTargetActor() const { return LockOnTargetActor; }
-	// FOnComponentReady OnComponentReady;
-	// bool bIsComponentReady;
 	
-	FORCEINLINE virtual void SetLastMovementVector(const FVector& InLastMovementVector) { CurrentMovementVector = InLastMovementVector; }
-	FORCEINLINE virtual FVector& GetLastMovementVector() { return CurrentMovementVector; }
+	FORCEINLINE virtual void SetCurrentMovementVector(const FVector& InLastMovementVector) { CurrentMovementVector = InLastMovementVector; }
+	FORCEINLINE virtual FVector& GetCurrentMovementVector() { return CurrentMovementVector; }
 	FORCEINLINE virtual void ResetLastMovementVector() { CurrentMovementVector = FVector::ZeroVector; }
 
 	bool SetLockOnTargetActorInPublicSpace();
@@ -58,7 +54,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effect")
 	TMap<FGameplayTag, UPlayerControlEffectBase*> ControlEffectMap;
 
-	// 마지막 이동 입력 방향벡터
+	// 현재 이동 입력 방향벡터
 	FVector CurrentMovementVector;
 
 	UPROPERTY()

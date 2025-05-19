@@ -32,7 +32,7 @@ void UPlayerDashSkill::SetDashDirection()
 	auto ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
 	check(IsValid(ControlComponent));
 
-	auto LastMovementVector = ControlComponent->GetLastMovementVector();
+	auto LastMovementVector = ControlComponent->GetCurrentMovementVector();
 		
 	if (LastMovementVector.IsNearlyZero())
 	{
