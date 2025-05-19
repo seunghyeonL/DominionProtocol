@@ -228,8 +228,8 @@ void UPlayerControlState::LockOn()
 			SetLockOnTargetActorInVisibility();
 		}
 
-		ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
-		if (IsValid(DomiCharacter->GetLockOnTargetActor()))
+		// ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+		if (IsValid(PlayerControlComponent->GetLockOnTargetActor()))
 		{
 			PlayerControlComponent->ActivateControlEffect(EffectTags::LockOn);
 		}
@@ -261,8 +261,8 @@ bool UPlayerControlState::SetLockOnTargetActorInPublicSpace()
 		SphereTraceQueryParams
 	);
 
-	ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
-	DomiCharacter->SetLockOnTargetActor(nullptr);
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	ControlComponent->SetLockOnTargetActor(nullptr);
 	
 	if (bHit)
 	{
@@ -288,7 +288,7 @@ bool UPlayerControlState::SetLockOnTargetActorInPublicSpace()
 		if (MinDistanceActor)
 		{
 			// Target actor selected.
-			DomiCharacter->SetLockOnTargetActor(MinDistanceActor);
+			ControlComponent->SetLockOnTargetActor(MinDistanceActor);
 			return true;
 		}
 	}
@@ -323,8 +323,8 @@ bool UPlayerControlState::SetLockOnTargetActorInVisibility()
 		QueryParams
 	);
 
-	ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
-	DomiCharacter->SetLockOnTargetActor(nullptr);
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	ControlComponent->SetLockOnTargetActor(nullptr);
 	
 	if (bBoxTraceHit)
 	{
@@ -362,7 +362,7 @@ bool UPlayerControlState::SetLockOnTargetActorInVisibility()
 		if (MinAngleActor)
 		{
 			// Target actor selected.
-			DomiCharacter->SetLockOnTargetActor(MinAngleActor);
+			ControlComponent->SetLockOnTargetActor(MinAngleActor);
 			return true;
 		}
 	}

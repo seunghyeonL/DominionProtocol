@@ -26,15 +26,21 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	FORCEINLINE void SetValidBufferedInput(UBaseBufferedInput* InBufferedInput) { ValidBufferedInput = InBufferedInput; }
-	
+	FORCEINLINE void SetLockOnTargetActor(AActor* NewActor) { LockOnTargetActor = NewActor; }
+	FORCEINLINE AActor* GetLockOnTargetActor() const { return LockOnTargetActor; }
 	// FOnComponentReady OnComponentReady;
 	// bool bIsComponentReady;
+
+	
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	virtual void InitializeComponent() override;
+
+	UPROPERTY(VisibleAnywhere)
+	AActor* LockOnTargetActor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlStateBase> PlayerControlState;
