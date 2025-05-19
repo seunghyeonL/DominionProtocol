@@ -44,6 +44,7 @@ public:
 	FOnInteractionWidgetScroll OnInteractionWidgetScroll;
 
 	//Getter
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AActor* GetCurrentInteractableActor() const;
 	 
 	//Setter

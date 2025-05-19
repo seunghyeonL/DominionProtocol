@@ -28,7 +28,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<AActor> ReceivedInteractableActor;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class ADomiCharacter> OwningCharacter;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)

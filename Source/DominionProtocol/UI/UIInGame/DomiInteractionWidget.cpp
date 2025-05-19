@@ -11,6 +11,8 @@ void UDomiInteractionWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	BindInteractionDelegates();
+
+	OwningCharacter = Cast<ADomiCharacter>(GetOwningPlayerPawn());
 }
 
 void UDomiInteractionWidget::UpdateInteractableActorSet(TSet<AActor*> NewInteractableActorSet)
@@ -33,6 +35,13 @@ void UDomiInteractionWidget::BindInteractionDelegates()
 		PlayerCharacter->OnRemoveInteractableActor.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableActorSet);
 		PlayerCharacter->OnInteractionWidgetScroll.AddUObject(this, &UDomiInteractionWidget::UpdateInteractableWidgetFocusing);
 	}
+}
+
+void UDomiInteractionWidget::SetInteractableActorEmpty()
+{
+	ensure(OwningCharacter);
+
+	OwningCharacter->SetCurrentInteractableActor(nullptr);
 }
 
 
