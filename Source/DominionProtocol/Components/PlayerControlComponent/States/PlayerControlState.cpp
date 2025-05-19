@@ -207,7 +207,6 @@ void UPlayerControlState::Interact()
 	{
 		IInteractableInterface::Execute_Interact(InteractableObject, PlayerCharacter);
 		FText UIText = IInteractableInterface::Execute_GetInteractMessage(InteractableObject);
-		
 	}
 	
 	Debug::Print(TEXT("UPlayerControlState::Interact : Call."));

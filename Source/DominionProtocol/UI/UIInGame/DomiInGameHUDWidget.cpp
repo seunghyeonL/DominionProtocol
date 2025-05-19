@@ -5,6 +5,7 @@
 
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
+#include "Player/InGameController.h"
 
 void UDomiInGameHUDWidget::OnPlayerDeath()
 {
@@ -21,6 +22,20 @@ void UDomiInGameHUDWidget::OnInGameMenuOpenAndClose()
 	InGameMenuOpenAndClose();
 }
 
+void UDomiInGameHUDWidget::OnSwitchShowAndHideCrackWarpWidget()
+{
+	if (bShowCrackWarpWidget)
+	{
+		OwningController->SetupInputModeGameOnly();
+		SwitchShowAndHideCrackWarpWidget();
+	}
+	else
+	{
+		OwningController->SetupInputModeUIOnly();
+		SwitchShowAndHideCrackWarpWidget();
+	}
+}
+
 void UDomiInGameHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -29,13 +44,20 @@ void UDomiInGameHUDWidget::NativeConstruct()
 	ensure(AbilitySlotsWidget);
 	ensure(ItemSlotsWidget);
 	ensure(InGameMenuWidget);
+	ensure(InteractionWidget);
+	ensure(CrackWrapWidget);
 
 	AActor* OwningActor = GetOwningPlayerPawn();
 	if (OwningActor)
 	{
-		SetupStatusBarWidget(OwningActor);	
+		SetupStatusBarWidget(OwningActor);
 	}
-	
+
+	auto* InGameController = Cast<AInGameController>(GetOwningPlayer());
+	if (InGameController)
+	{
+		OwningController = InGameController;
+	}
 }
 
 void UDomiInGameHUDWidget::SetupStatusBarWidget(const AActor* OwningActor)

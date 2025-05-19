@@ -11,7 +11,9 @@
 #include "DomiFramework/GameMode/ProtoLevel2GameMode.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "EnumAndStruct/FCrackData.h"
+#include "Player/InGameController.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "UI/UIInGame/DomiInGameHUDWidget.h"
 
 #include "Util/DebugHelper.h"
 
@@ -115,6 +117,20 @@ void ACrack::Interact_Implementation(AActor* Interactor)
     }
     
     // 2. 기능
+    auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
+    if (PlayerCharacter)
+    {
+        auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
+        if (PlayerController)
+        {
+            UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
+            if (InGameHUDWidget)
+            {
+                InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
+            }
+        }
+    }
+    
 }
 
 FText ACrack::GetInteractMessage_Implementation() const

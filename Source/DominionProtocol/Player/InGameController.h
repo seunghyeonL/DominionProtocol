@@ -16,24 +16,25 @@ class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 
 public:
 	AInGameController();
-
+	
+	// 필요시 위젯에서 호출하여 사용
+	UFUNCTION(BlueprintCallable)
+	void SetupInputModeGameOnly();
+	
+	UFUNCTION(BlueprintCallable)
+	void SetupInputModeUIOnly();
+	
 	void HandleSetupInGameHUD();
 	void OnInGameMenuOpenAndClose();
 
-	
-	TObjectPtr<class UDomiInGameHUDWidget> GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
+	UFUNCTION(BlueprintPure)
+	class UDomiInGameHUDWidget* GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
 
 protected:
 	virtual void BeginPlay() override;
 
 	void CreateHUDWidget();
 	void AddHUDToViewport() const;
-
-	UFUNCTION(BlueprintCallable)
-	void SetupInputModeGameOnly();
-	
-	UFUNCTION(BlueprintCallable)
-	void SetupInputModeUIOnly();
 
 	void BindControllerInputActions();
 	
