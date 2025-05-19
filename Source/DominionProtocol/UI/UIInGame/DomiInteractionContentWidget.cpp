@@ -9,7 +9,6 @@ void UDomiInteractionContentWidget::SetReceivedInteractableActor(AActor* Actor =
 {
 	ReceivedInteractableActor = Actor;
 	OwningCharacter->SetCurrentInteractableActor(ReceivedInteractableActor);
-	bHasFocus = true;
 }
 
 void UDomiInteractionContentWidget::NativeConstruct()

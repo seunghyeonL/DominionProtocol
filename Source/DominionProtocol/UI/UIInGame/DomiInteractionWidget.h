@@ -14,6 +14,9 @@ class DOMINIONPROTOCOL_API UDomiInteractionWidget : public UUserWidget
 protected:
 	void BindInteractionDelegates();
 
+	UFUNCTION(BlueprintCallable)
+	void SetInteractableActorEmpty();
+
 	UFUNCTION()
 	void UpdateInteractableActorSet(TSet<AActor*> NewInteractableActorSet);
 
@@ -39,4 +42,7 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<class UDomiWidgetComponent> WidgetComponent;
+
+	UPROPERTY()
+	TObjectPtr<class ADomiCharacter> OwningCharacter;
 };
