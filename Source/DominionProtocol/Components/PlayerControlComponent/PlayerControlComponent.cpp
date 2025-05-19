@@ -18,6 +18,7 @@
 #include "Effects/PlayerStunEffect/PlayerStunEffect.h"
 #include "Effects/PlayerUsingSkillEffect/PlayerUsingSkillEffect.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UPlayerControlComponent::UPlayerControlComponent()
@@ -99,7 +100,6 @@ void UPlayerControlComponent::InitializeComponent()
 	// bIsComponentReady = true;
 }
 
-
 // Called every frame
 void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction* ThisTickFunction)
@@ -116,6 +116,161 @@ void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	
 	PlayerControlState->Tick(DeltaTime);
 }
+
+bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOuter());
+	check(OwnerCharacter);
+	
+	const FVector Start = OwnerCharacter->GetActorLocation();
+	const FVector End = Start;
+	TArray<FHitResult> SphereTraceHitResults;
+	FCollisionQueryParams SphereTraceQueryParams;
+	SphereTraceQueryParams.AddIgnoredActor(OwnerCharacter);
+	constexpr float PublicSpaceDistance = 760.f;
+	
+	bool bHit = GetWorld()->SweepMultiByChannel(
+		SphereTraceHitResults,
+		Start,
+		End,
+		FQuat::Identity,
+		ECC_Visibility,
+		FCollisionShape::MakeSphere(PublicSpaceDistance),
+		SphereTraceQueryParams
+	);
+
+	SetLockOnTargetActor(nullptr);
+	
+	if (bHit)
+	{
+		float MinDistance = PublicSpaceDistance;
+		AActor* MinDistanceActor = nullptr;
+		for (const FHitResult& Hit : SphereTraceHitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+
+			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
+			{
+				if (IsActorInViewport(HitActor->GetActorLocation()))
+				{
+					const float ActorDistance = FVector::Distance(OwnerCharacter->GetActorLocation(), HitActor->GetActorLocation()); 
+					if (ActorDistance < MinDistance)
+					{
+						MinDistance = ActorDistance;
+						MinDistanceActor = HitActor;
+					}
+				}
+			}
+		}
+		if (MinDistanceActor)
+		{
+			// Target actor selected.
+			SetLockOnTargetActor(MinDistanceActor);
+			return true;
+		}
+	}
+	// There is no target actor.
+	return false;
+}
+
+bool UPlayerControlComponent::SetLockOnTargetActorInVisibility()
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOuter());
+	check(OwnerCharacter);
+	
+	TArray<FHitResult> SphereTraceHitResults;
+	FCollisionQueryParams QueryParams;
+	
+	QueryParams.AddIgnoredActor(OwnerCharacter);
+	constexpr float VisibilityDistance = 3000.f;
+	FVector ViewPointLocation;
+	FRotator ViewPointRotation;
+	OwnerCharacter->GetController()->GetPlayerViewPoint(ViewPointLocation, ViewPointRotation);
+	const FRotator ControllerRotatorWithZeroPitch = FRotator(0,ViewPointRotation.Yaw, ViewPointRotation.Roll);
+	const FVector ControllerForwardVector = ControllerRotatorWithZeroPitch.Vector();
+	
+	const FVector Start = ViewPointLocation + FMath::Sqrt(2.f) * ControllerForwardVector * VisibilityDistance;
+	const FVector End = Start;
+
+	const FVector BoxSize = FVector(VisibilityDistance,VisibilityDistance,600.f);
+	
+	bool bBoxTraceHit = GetWorld()->SweepMultiByChannel(
+		SphereTraceHitResults,
+		Start,
+		End,
+		FQuat(FRotator(0,ViewPointRotation.Yaw + 45.f,0)),
+		ECC_Visibility,
+		FCollisionShape::MakeBox(BoxSize),
+		QueryParams
+	);
+
+	SetLockOnTargetActor(nullptr);
+	
+	if (bBoxTraceHit)
+	{
+		float MinAngle = 90.f;
+		AActor* MinAngleActor = nullptr;
+		for (const FHitResult& Hit : SphereTraceHitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+
+			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
+			{
+				if (IsActorInViewport(HitActor->GetActorLocation()))
+				{
+					FHitResult LineTraceHit;
+					bool bLineTraceHit = GetWorld()->LineTraceSingleByChannel(
+						LineTraceHit,
+						OwnerCharacter->GetActorLocation(),
+						HitActor->GetActorLocation(),
+						ECC_Visibility,
+						QueryParams
+					);
+					if (bLineTraceHit && LineTraceHit.GetActor() == HitActor)
+					{
+						FVector ControllerToActorVector = (HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+						const float AngleDifference = FMath::RadiansToDegrees(FMath::Acos(ViewPointRotation.Vector().Dot(ControllerToActorVector))); 
+						if (AngleDifference < MinAngle)
+						{
+							MinAngle = AngleDifference;
+							MinAngleActor = HitActor;
+						}
+					}
+				}
+			}
+		}
+		if (MinAngleActor)
+		{
+			// Target actor selected.
+			SetLockOnTargetActor(MinAngleActor);
+			return true;
+		}
+	}
+	// There is no target actor.
+	return false;
+}
+
+bool UPlayerControlComponent::IsActorInViewport(const FVector& ActorLocation) const
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOuter());
+	check(OwnerCharacter);
+	
+	FVector2D ViewportSize;
+	GEngine->GameViewport->GetViewportSize(ViewportSize);
+	
+	FVector2D ScreenLocation;
+	const bool bIsOnScreen = UGameplayStatics::ProjectWorldToScreen(
+			Cast<APlayerController const>(OwnerCharacter->GetController()),
+			ActorLocation,
+			ScreenLocation
+		);
+
+	if (!bIsOnScreen) return false;
+	
+	return ScreenLocation.X >= 0 && ScreenLocation.X <= ViewportSize.X &&
+		   ScreenLocation.Y >= 0 && ScreenLocation.Y <= ViewportSize.Y;
+}
+
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag)
 {

@@ -34,6 +34,10 @@ public:
 	FORCEINLINE virtual void SetLastMovementVector(const FVector& InLastMovementVector) { CurrentMovementVector = InLastMovementVector; }
 	FORCEINLINE virtual FVector& GetLastMovementVector() { return CurrentMovementVector; }
 	FORCEINLINE virtual void ResetLastMovementVector() { CurrentMovementVector = FVector::ZeroVector; }
+
+	bool SetLockOnTargetActorInPublicSpace();
+	bool SetLockOnTargetActorInVisibility();
+	bool IsActorInViewport(const FVector& ActorLocation) const;
 	
 	
 protected:

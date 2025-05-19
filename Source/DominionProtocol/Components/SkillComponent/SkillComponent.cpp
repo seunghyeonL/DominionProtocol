@@ -119,42 +119,6 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     StatusComponent->ConsumeStamina(Skill->GetStamina());
                 }
 
-                // // Check to set Skill Direction
-                // if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
-                // {
-                //     // Cashed Movement Vector
-                //     const FVector& LastInputVector = ControlComponentUser->GetLastMovementVector();
-                //
-                //     if (!ControlComponentUser->GetActiveControlEffectTags().HasTag(EffectTags::LockOn)) 
-                //     {
-                //         // LockOn상태가 아닐때 Rotation돌리는 로직
-                //         if (!LastInputVector.IsNearlyZero())
-                //         {
-                //             OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
-                //             Debug::Print(FString::Printf(TEXT("USkillComponent::ExecuteSkill : SetRotation : %f, %f, %f"), LastInputVector.Rotation().Pitch, LastInputVector.Rotation().Yaw, LastInputVector.Rotation().Roll));
-                //         }
-                //     }
-                //     else if (SkillGroupTag.MatchesTag(SkillGroupTags::Dash))
-                //     {
-                //         // LockOn이어도 Dash 쓸때는 로테이션 돌리기
-                //         if (!LastInputVector.IsNearlyZero())
-                //         {
-                //             OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
-                //         }
-                //     }
-                //     else
-                //     {
-                //         // 선입력 때문에 추가됨
-                //         // LockOn일때는 타겟방향 벡터 계산후 돌려주기
-                //         const FVector Target = FVector::ZeroVector;
-                //         FRotator NewControllerRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
-                //         FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
-                //
-                //         // 타겟을 바라보도록 회전 변경
-                //         OwnerCharacter->SetActorRotation(NewCharacterRotator);
-                //     }
-                // }
-
                 // 스킬 실행전 스킬실행 상태로 바꾸기
                 if (OnSkillStart.IsBound())
                 {
