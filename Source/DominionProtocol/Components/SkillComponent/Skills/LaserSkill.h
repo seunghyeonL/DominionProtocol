@@ -7,6 +7,7 @@
 #include "LaserSkill.generated.h"
 
 class UMnhCapsuleComponent;
+class ALaserActor;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ULaserSkill : public UBaseSkill
@@ -18,11 +19,18 @@ public:
 
 	virtual void Initialize(ACharacter* OwnerCharacter) override;
 
+	virtual void Execute() override;
+
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
 
 	virtual void BeginDestroy() override;
 
+	UPROPERTY()
+	TObjectPtr<ALaserActor> LaserActor;
+
 protected:
 	UPROPERTY()
 	TObjectPtr<UMnhCapsuleComponent> CapsuleComponent;
+
+	FTimerHandle DestroyLaserActorTimer;
 };

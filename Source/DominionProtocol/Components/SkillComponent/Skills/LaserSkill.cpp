@@ -9,10 +9,48 @@
 #include "GameFramework/Character.h"
 #include "Player/Damagable.h"
 #include "Util/GameTagList.h"
+#include "SkillObject/LaserActor.h"
 
 ULaserSkill::ULaserSkill()
 {
 	SkillTag = SkillTags::LaserSkill;
+}
+
+void ULaserSkill::Execute()
+{
+	Super::Execute();
+
+	LaserActor = GetWorld()->SpawnActor<ALaserActor>(
+		ALaserActor::StaticClass(),
+		FVector::ZeroVector,
+		FRotator::ZeroRotator
+	);
+
+	// AttachToComponent으로 부착
+	LaserActor->AttachToComponent(
+		OwnerCharacter->GetMesh(),
+		FAttachmentTransformRules::SnapToTargetIncludingScale
+		, FName("headSocket")
+	);
+
+	LaserActor->SetOwnerCharacter(OwnerCharacter);
+
+	LaserActor->SetActorRelativeRotation(FRotator(0.f, 90.f, 0.f));
+
+	TWeakObjectPtr<ThisClass> WeakThis(this);
+
+	GetWorld()->GetTimerManager().SetTimer(
+		DestroyLaserActorTimer,
+		[WeakThis]()
+		{
+			if (IsValid(WeakThis->LaserActor))
+			{
+				WeakThis->LaserActor->Destroy();
+			}
+		},
+		120.f,
+		false
+	);
 }
 
 void ULaserSkill::Initialize(ACharacter* Owner)
@@ -62,9 +100,9 @@ void ULaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float
 		return;
 	}
 
-	check(OwnerCharacter)
+	check(OwnerCharacter);
 
-		FAttackData AttackData;
+	FAttackData AttackData;
 
 	UWorld* World = GetWorld();
 

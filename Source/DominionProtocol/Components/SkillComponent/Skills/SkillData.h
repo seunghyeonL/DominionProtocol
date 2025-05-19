@@ -5,6 +5,8 @@
 #include "Util/BattleDataTypes.h"
 #include "SkillData.generated.h"
 
+class UNiagaraSystem;
+
 USTRUCT(BlueprintType)
 struct FSkillData : public FTableRowBase
 {
@@ -22,6 +24,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TObjectPtr<UParticleSystem> Particle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
+	TArray<TObjectPtr<UNiagaraSystem>> NaiagaraParticle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	TArray<TObjectPtr<UMaterialInterface>> SkillMaterials;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
 	TArray<FEffectData> Effects;
