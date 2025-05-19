@@ -5,6 +5,11 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/StatusComponent/StatusEffects/AIState/AIStateBase.h"
+#include "Components/StatusComponent/StatusComponent.h"
+#include "Components/StatusComponent/StatusEffects/AIState/AIState_Idle.h"
+#include "Components/StatusComponent/StatusEffects/AIState/AIState_Combat.h"
+#include "Components/StatusComponent/StatusEffects/AIState/AIState_Return.h"
 
 
 // Sets default values
@@ -53,11 +58,32 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 		const FVector SpawnLocation = InPawn->GetActorLocation();
 		GetBlackboardComponent()->SetValueAsVector(TEXT("HomeLocation"), SpawnLocation);
 	}
+
+	if (UStatusComponent* StatusComp = InPawn->FindComponentByClass<UStatusComponent>())
+	{
+		IdleState = NewObject<UAIState_Idle>(StatusComp);
+		CombatState = NewObject<UAIState_Combat>(StatusComp);
+		ReturnState = NewObject<UAIState_Return>(StatusComp);
+
+		IdleState->Activate();
+	}
 }
 
 void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	EvaluateTargetPriority();
+
+	if (Stimulus.WasSuccessfullySensed())
+	{
+		if (CombatState && !CombatState->IsActive())
+		{
+			CombatState->Activate();
+		}
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);
+	}
 }
 
 void ABaseAIController::EvaluateTargetPriority()
@@ -98,4 +124,15 @@ void ABaseAIController::EvaluateTargetPriority()
 void ABaseAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABaseAIController::HandleTargetLost()
+{
+	if (!GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")))
+	{
+		if (ReturnState && !ReturnState->IsActive())
+		{
+			ReturnState->Activate();
+		}
+	}
 }

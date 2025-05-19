@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Runtime/AIModule/Classes/AIController.h"
+#include "Util/GameTagList.h"
 #include "BaseAIController.generated.h"
 
 class UAISenseConfig_Sight;
+class UAIStateBase;
 struct FAIStimulus;
 
 UCLASS()
@@ -22,6 +24,7 @@ public:
 	UFUNCTION()
 	void EvaluateTargetPriority();
 
+	void SetAIState(const FGameplayTag& NewState);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,6 +43,20 @@ protected:
 	//타겟 감지
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
+	void HandleTargetLost();
+
+	FTimerHandle LoseTargetTimerHandle;
+
+protected:
+	UPROPERTY()
+	UAIStateBase* IdleState;
+
+	UPROPERTY()
+	UAIStateBase* CombatState;
+
+	UPROPERTY()
+	UAIStateBase* ReturnState;
 
 public:
 	// Called every frame

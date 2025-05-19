@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -15,8 +15,14 @@ class DOMINIONPROTOCOL_API UAIStateBase : public UStatusEffectBase
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	FGameplayTag StateTag;
+
+	UFUNCTION(BlueprintCallable)
+	FGameplayTag GetStateTag() const { return StateTag; }
+
 	virtual void Activate() override;
 	virtual void Activate(float Duration) override;
 	virtual void Deactivate() override;
-	
 };
