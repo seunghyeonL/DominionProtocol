@@ -19,7 +19,6 @@ ARegionPassWall::ARegionPassWall()
 	BoxComponent->SetupAttachment(SceneComponent);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ARegionPassWall::OnEndOverlap);
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
 	ArrowComponent->SetupAttachment(SceneComponent);
@@ -29,6 +28,7 @@ void ARegionPassWall::BeginPlay()
 {
 	Super::BeginPlay();
 
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ARegionPassWall::OnEndOverlap);
 	PreviousRegionIndex = NextRegionIndex - 1;
 }
 
