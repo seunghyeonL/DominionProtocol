@@ -2,25 +2,56 @@
 
 
 #include "RegionPassWall.h"
+#include "Components/BoxComponent.h"
+#include "GameFramework/Character.h"
+#include "Components/ArrowComponent.h"
 
+#include "Util/DebugHelper.h"
 
-// Sets default values
 ARegionPassWall::ARegionPassWall()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
+	SceneComponent = CreateDefaultSubobject<USceneComponent>("SceneComponent");
+	SetRootComponent(SceneComponent);
+
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	BoxComponent->SetupAttachment(SceneComponent);
+	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ARegionPassWall::OnEndOverlap);
+
+	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
+	ArrowComponent->SetupAttachment(SceneComponent);
 }
 
-// Called when the game starts or when spawned
 void ARegionPassWall::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	PreviousRegionIndex = NextRegionIndex - 1;
 }
 
-// Called every frame
-void ARegionPassWall::Tick(float DeltaTime)
+void ARegionPassWall::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	Super::Tick(DeltaTime);
-}
+	if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
+	{
+		return;
+	}
 
+	ACharacter* PlayerCharacter = Cast<ACharacter>(OtherActor);
+	FVector PassWallDirection = GetActorForwardVector();
+	FVector PlayerDirection = (GetActorLocation() - PlayerCharacter->GetActorLocation()).GetSafeNormal();
+	
+	float DotProduct = FVector::DotProduct(PassWallDirection, PlayerDirection);
+
+	if (DotProduct > 0)
+	{
+		OnRegionChanged.Broadcast(NextRegionIndex);
+	}
+	if (DotProduct < 0)
+	{
+		OnRegionChanged.Broadcast(PreviousRegionIndex);
+	}
+}
