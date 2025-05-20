@@ -13,11 +13,6 @@ ALightWeightActor::ALightWeightActor()
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
 	SetRootComponent(ArrowComponent);
-
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	SphereComponent->SetupAttachment(ArrowComponent);
-	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	SphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
 void ALightWeightActor::BeginPlay()
@@ -28,19 +23,26 @@ void ALightWeightActor::BeginPlay()
 	check(WorldActorLoader);
 }
 
+#if WITH_EDITOR
 void ALightWeightActor::OnConstruction(const FTransform& Transform)
 {
-#if WITH_EDITOR
 	if (!UniqueID.IsValid())
 	{
 		UniqueID = FGuid::NewGuid();
 		Modify();
 	}
+}
 #endif
-}
 
-void ALightWeightActor::OnPlayerRegionEnter()
+#if WITH_EDITOR
+void ALightWeightActor::PostDuplicate(bool bDuplicateForPIE)
 {
-	WorldActorLoader->SpawnActorToTargetTransform(LinkedActorClass, ActorCategory, UniqueID, GetActorLocation(), GetActorRotation());
-	
+	Super::PostDuplicate(bDuplicateForPIE);
+
+	if (!bDuplicateForPIE)
+	{
+		UniqueID = FGuid::NewGuid();
+		Modify();
+	}
 }
+#endif

@@ -20,38 +20,39 @@ class DOMINIONPROTOCOL_API ALightWeightActor : public AActor
 public:
 	ALightWeightActor();
 
+	//Setter
+
+	//Getter
+	FORCEINLINE EWorldActorCategory GetActorCategory() const { return ActorCategory; }
+
+	FORCEINLINE FGuid GetUniqueGuid() const { return UniqueID; }
+
+	FORCEINLINE TSubclassOf<AActor> GetLinkedActorClass() const { return LinkedActorClass; }
+
+	FORCEINLINE int32 GetLocatedRegionIndex() const { return LocatedRegionIndex; }
+
+protected:
 	virtual void BeginPlay() override;
 #if WITH_EDITOR
 	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void PostDuplicate(bool bDuplicateForPIE) override;
 #endif
-	
-	void OnPlayerRegionEnter();
-	
-protected:
-	// Components begin
+
 	UPROPERTY(VisibleAnywhere)
 	UArrowComponent* ArrowComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USphereComponent* SphereComponent;
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	TSubclassOf<AActor> LinkedActorClass;
-	// Components end
-
-
-	// Variables
+	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	EWorldActorCategory ActorCategory;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	int32 LocatedRegion;
-	
-	UPROPERTY()
-	FGuid UniqueID;
+	int32 LocatedRegionIndex;
 
-	UPROPERTY()
-	ADomiCharacter* PlayerCharacter;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
+	FGuid UniqueID;
 
 	UPROPERTY()
 	UWorldActorLoaderSubsystem* WorldActorLoader;
