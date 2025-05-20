@@ -256,7 +256,21 @@ void ABaseGameState::InitializeCrackDataMap()
 		NewCrackData.RespawnLocation = Crack->GetRespawnTargetPointLocation();
 		NewCrackData.RespawnRotation = Crack->GetRespawnTargetPointRotation();
 
-		CrackDataArray.CrackDataArray.Add(NewCrackData);
+		bool bAlreadyExists = false;
+		for (const FCrackData& ExistData : CrackDataArray.CrackDataArray)
+		{
+			if (ExistData.CrackIndex == Crack->GetCrackIndex())
+			{
+				bAlreadyExists = true;
+				break;
+			}
+		}
+		if (!bAlreadyExists)
+		{
+			// 해당 인덱스 존재하지 않을 때만 데이터 추가
+			CrackDataArray.CrackDataArray.Add(NewCrackData);
+		}
+		//CrackDataArray.CrackDataArray.Add(NewCrackData);
 	}
 }
 
