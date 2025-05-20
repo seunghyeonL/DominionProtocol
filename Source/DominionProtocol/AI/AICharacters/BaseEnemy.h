@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Util/GameTagList.h"
 #include "Player/Damagable.h"
+#include "Interface/PawnTagInterface.h"
 #include "Player/EffectReceivable.h"
 #include "BaseEnemy.generated.h"
 
@@ -17,7 +18,7 @@ class UStatusComponent;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseEnemy :
-public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser, public ISkillComponentUser
+public ACharacter, public IDamagable, public IPawnTagInterface, public IEffectReceivable, public IStatusComponentUser, public ISkillComponentUser
 {
 	GENERATED_BODY()
 
@@ -46,6 +47,9 @@ public:
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 	
+	// PawnTag
+	virtual FGameplayTag GetPawnTag_Implementation() override;
+
 	// EffectReceivable
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;

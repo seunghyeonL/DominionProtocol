@@ -132,6 +132,11 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 	}
 }
 
+FGameplayTag ABaseEnemy::GetPawnTag_Implementation()
+{
+	return PawnTag;
+}
+
 void ABaseEnemy::ShowControlEffectTags_Implementation()
 {
 	IEffectReceivable::ShowControlEffectTags_Implementation();

@@ -463,6 +463,11 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	}
 }
 
+FGameplayTag ADomiCharacter::GetPawnTag_Implementation()
+{
+	return PawnTag;
+}
+
 void ADomiCharacter::ShowControlEffectTags_Implementation()
 {
 	IEffectReceivable::ShowControlEffectTags_Implementation();

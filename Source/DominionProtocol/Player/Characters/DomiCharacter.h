@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "../Damagable.h"
+#include "Interface/PawnTagInterface.h"
 #include "../EffectReceivable.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
@@ -32,7 +33,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnInteractionWidgetScroll, float)
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
-public ACharacter, public IDamagable, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser, public ISkillComponentUser
+public ACharacter, public IDamagable, public IPawnTagInterface, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser, public ISkillComponentUser
 {
 	GENERATED_BODY()
 	
@@ -59,6 +60,8 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	FORCEINLINE FGameplayTag GetPawnTag() const { return PawnTag; }
+
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
@@ -78,6 +81,9 @@ public:
 	
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
+
+	// PawnTag
+	virtual FGameplayTag GetPawnTag_Implementation() override;
 
 	// EffectReceivable
 	virtual void ShowControlEffectTags_Implementation() override;
