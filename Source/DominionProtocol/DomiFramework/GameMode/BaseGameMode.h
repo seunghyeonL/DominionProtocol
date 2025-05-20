@@ -71,12 +71,12 @@ protected:
 
 	UPROPERTY()
 	UItemInstanceSubsystem* ItemInstanceSubsystem;
-	
-	UPROPERTY()
-	UWorld* World;
 
 	UPROPERTY()
 	ABaseGameState* BaseGameState;
+	
+	UPROPERTY()
+	UWorld* World;
 
 	UPROPERTY()
 	ADomiCharacter* PlayerCharacter;

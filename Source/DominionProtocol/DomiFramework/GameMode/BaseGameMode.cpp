@@ -66,6 +66,7 @@ void ABaseGameMode::StartPlay()
 	BaseGameState->LoadCrackDataFromInstance();
 	BaseGameState->InitializeCrackDataMap();
 	RecentCrackCache = BaseGameState->FindNearestCrack();
+	BaseGameState->InitializeWorldActorLoader();
 
 	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
