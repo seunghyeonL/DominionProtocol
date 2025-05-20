@@ -6,20 +6,25 @@
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/SoundInstanceSubsystem.h"
+#include "DomiFramework/WorldActorLoader/WorldActorLoaderSubsystem.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "EnumAndStruct/FCrackData.h"
+#include "EnumAndStruct/ECategory.h"
+#include "EnumAndStruct/FWorldActorData.h"
 #include "WorldObjects/Crack.h"
 #include "Kismet/GameplayStatics.h"
+#include "WorldObjects/LightWeightActor.h"
 
 #include "Util/DebugHelper.h"
 
+
 ABaseGameState::ABaseGameState()
-	:	GameInstance(nullptr),
-		SoundSubsystem(nullptr),
-		SkillDataTable(nullptr),
-		SkillInitializeDataTable(nullptr),
-		StatusInitializeDataTable(nullptr)
+	: GameInstance(nullptr),
+	  SoundSubsystem(nullptr),
+	  SkillDataTable(nullptr),
+	  SkillInitializeDataTable(nullptr),
+	  StatusInitializeDataTable(nullptr)
 {
 }
 
@@ -44,7 +49,7 @@ void ABaseGameState::InitializeWorldInstanceSubsystem()
 {
 	WorldInstanceSubsystem = GameInstance->GetSubsystem<UWorldInstanceSubsystem>();
 	check(WorldInstanceSubsystem);
-	
+
 	WorldInstanceSubsystem->SetCurrentLevelName(UGameplayStatics::GetCurrentLevelName(GetWorld(), true));
 	if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Level1"))
 	{
@@ -60,29 +65,125 @@ void ABaseGameState::InitializeSoundSubsystem()
 {
 	SoundSubsystem = GetGameInstance()->GetSubsystem<USoundInstanceSubsystem>();
 	check(SoundSubsystem);
-	SoundSubsystem->SetWorldCache(GetWorld());
+	SoundSubsystem->SetWorldCache(World);
 	SoundSubsystem->LoadSoundClass();
 	SoundSubsystem->LoadVolumeSettings();
+}
+
+void ABaseGameState::InitializeWorldActorLoader()
+{
+	//새 게임 시작 시, 경량 액터 초기화
+	if (!bIsNewGame)
+	{
+		return;
+	}
+
+	WorldActorLoaderSubsystem = World->GetSubsystem<UWorldActorLoaderSubsystem>();
+	check(WorldActorLoaderSubsystem);
+
+	WorldActorLoaderSubsystem->BindDelegateToWorldActorLoader();
+	
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(World, ALightWeightActor::StaticClass(), FoundActors);
+
+	if (FoundActors.Num() == 0)
+	{
+		Debug::Print(TEXT("ABaseGameState::InitializeWorldActorLoader : No LightWeightActors found in the World"));
+
+		//크래시 방지(경량 액터가 존재하지 않을 시 바인딩 제거하지 않으면 크래시발생)
+		WorldInstanceSubsystem->OnRecentCrackChanged.Clear();
+		return;
+	}
+	
+	TMap<int32, FRegionActorData> NewRegionDataMap;
+	
+	int32 MaxRegion = WorldActorLoaderSubsystem->GetMaxRegion();
+	for (AActor* Actor : FoundActors)
+	{
+		ALightWeightActor* LightActor = Cast<ALightWeightActor>(Actor);
+		if (!IsValid(LightActor))
+		{
+			Debug::Print(FString::Printf(TEXT("LightWeightActor is invalid : %s"), *LightActor->GetName()));
+			continue;
+		}
+
+		AllLightWeightActorsCache.Add(LightActor);
+
+		int32 RegionIndex = LightActor->GetLocatedRegionIndex();
+		EWorldActorCategory Category = LightActor->GetActorCategory();
+		
+		if (MaxRegion < RegionIndex)
+		{
+			MaxRegion = RegionIndex;
+		}
+
+		if (!NewRegionDataMap.Contains(RegionIndex))
+		{
+			FRegionActorData NewRegionActorData;
+			NewRegionActorData.ActorCategory = Category;
+			NewRegionDataMap.Add(RegionIndex, NewRegionActorData);
+		}
+		else
+		{
+			NewRegionDataMap[RegionIndex].ActorCategory = Category;
+		}
+
+		FWorldActorData NewActorData;
+		NewActorData.InstanceGuid = LightActor->GetUniqueGuid();
+		NewActorData.LinkedActorClass = LightActor->GetLinkedActorClass();
+		NewActorData.bIsActivate = false;
+		NewActorData.Location = LightActor->GetActorLocation();
+		NewActorData.Rotation = LightActor->GetActorRotation();
+
+		switch (Category)
+		{
+		case EWorldActorCategory::None:
+			break;
+		case EWorldActorCategory::Item:
+			NewActorData.bIsCollected = false;
+			break;
+		case EWorldActorCategory::Interactable:
+			NewActorData.bIsInteracted = false;
+			break;
+		case EWorldActorCategory::Enemy:
+			NewActorData.CurrentHealth = 100.f;
+			break;
+		default:
+			break;
+		}
+		NewRegionDataMap[RegionIndex].WorldActorArray.Add(NewActorData);
+	}
+	WorldActorLoaderSubsystem->SetMaxRegion(MaxRegion);
+	
+	TArray<bool> NewActivateRegionArray;
+	NewActivateRegionArray.SetNumZeroed(MaxRegion + 1);
+	WorldActorLoaderSubsystem->SetActivateRegionArray(NewActivateRegionArray);
+	
+	WorldActorLoaderSubsystem->SetRegionDataMap(NewRegionDataMap);
+
+	//초기 스폰 Update 및 실행
+	WorldActorLoaderSubsystem->UpdateActivateRegions(0);
+	WorldActorLoaderSubsystem->ActiveRegion(0);
 }
 
 FSkillData* ABaseGameState::GetSkillData(const FGameplayTag SkillTag) const
 {
 	check(SkillDataTable);
-	
+
 	return SkillDataTable->FindRow<FSkillData>(SkillTag.GetTagName(), TEXT(""));
 }
 
 FSkillComponentInitializeData* ABaseGameState::GetSkillComponentInitializeData(const FGameplayTag PawnTag) const
 {
 	check(SkillInitializeDataTable);
-	
+
 	return SkillInitializeDataTable->FindRow<FSkillComponentInitializeData>(PawnTag.GetTagName(), TEXT(""));
 }
 
 FStatusComponentInitializeData* ABaseGameState::GetStatusComponentInitializeData(const FGameplayTag PawnTag) const
 {
 	check(StatusInitializeDataTable);
-	
+
 	return StatusInitializeDataTable->FindRow<FStatusComponentInitializeData>(PawnTag.GetTagName(), TEXT(""));
 }
 
@@ -107,11 +208,12 @@ void ABaseGameState::CacheAllCracks()
 
 void ABaseGameState::LoadCrackDataFromInstance()
 {
-	for (int32 i = 0; i< AllCracksCache.Num(); i++)
+	for (int32 i = 0; i < AllCracksCache.Num(); i++)
 	{
 		ACrack* Crack = Cast<ACrack>(AllCracksCache[i]);
 
-		const FCrackData* CrackData = WorldInstanceSubsystem->GetCrackData(WorldInstanceSubsystem->GetCurrentLevelName(), i);
+		const FCrackData* CrackData = WorldInstanceSubsystem->GetCrackData(
+			WorldInstanceSubsystem->GetCurrentLevelName(), i);
 		if (CrackData && CrackData->bIsActivate)
 		{
 			Crack->SetActive();
@@ -127,6 +229,12 @@ void ABaseGameState::InitializeCrackDataMap()
 	{
 		return;
 	}
+
+	if (AllCracksCache.IsEmpty())
+	{
+		Debug::Print(TEXT("No Cracks in World"));
+		return;
+	}
 	
 	TMap<FString, FCrackDataArrayStruct>* CrackDataMap = WorldInstanceSubsystem->GetCrackDataMap();
 	const FString& CurrentLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
@@ -138,7 +246,7 @@ void ABaseGameState::InitializeCrackDataMap()
 		{
 			continue;
 		}
-		
+
 		FCrackData NewCrackData;
 
 		NewCrackData.OwnerLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
@@ -159,7 +267,7 @@ ACrack* ABaseGameState::FindNearestCrack()
 
 	ACrack* NearestCrack = nullptr;
 	float NearestDistanceSquared = TNumericLimits<float>::Max();
-	
+
 	for (ACrack* Crack : AllCracksCache)
 	{
 		float DistanceSquared = FVector::DistSquared(PlayerLocation, Crack->GetActorLocation());
