@@ -8,13 +8,16 @@
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhComponents.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
-#include "Components/StatusComponent/StatusComponent.h"
+#include "Player/Damagable.h"
 
 // Sets default values
 ALaserActor::ALaserActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	TraceLength = 1500.f;
+	float HalfTraceLength = TraceLength / 2;
 
 	OwnerSkillTag = SkillTags::LaserSkill;
 
@@ -26,8 +29,8 @@ ALaserActor::ALaserActor()
 
 	CapsuleComponent = CreateDefaultSubobject<UMnhCapsuleComponent>(TEXT("CapsuleComponent"));
 	CapsuleComponent->SetupAttachment(SceneComponent);
-	CapsuleComponent->SetCapsuleHalfHeight(750.f);
-	CapsuleComponent->SetRelativeLocation(FVector(750.f, 0.f, 0.f));
+	CapsuleComponent->SetCapsuleHalfHeight(HalfTraceLength);
+	CapsuleComponent->SetRelativeLocation(FVector(HalfTraceLength, 0.f, 0.f));
 	CapsuleComponent->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
 
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -57,75 +60,6 @@ ALaserActor::ALaserActor()
 
 	LaserHitEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LaserHitEffect"));
 	LaserHitEffect->SetupAttachment(CapsuleComponent);
-}
-
-void ALaserActor::SetOwnerCharacter(AActor* NewOwnerCharacter)
-{
-	OwnerCharacter = NewOwnerCharacter;
-}
-
-void ALaserActor::HandleTracerHit(FGameplayTag TracerTag, FHitResult HitResult, float DeltaTime)
-{
-	AActor* HitActor = HitResult.GetActor();
-
-	if (!IsValid(HitActor))
-	{
-		return;
-	}
-
-	UStatusComponent* StatusComponent = HitActor->FindComponentByClass<UStatusComponent>();
-
-	if (!IsValid(StatusComponent))
-	{
-		return;
-	}
-
-	UWorld* World = GetWorld();
-
-	if (!IsValid(World))
-	{
-		return;
-	}
-
-	// 충돌 파라미터 설정
-	FCollisionQueryParams Params;
-
-	// 소유 캐릭터 무시
-	Params.AddIgnoredActor(OwnerCharacter);
-	Params.AddIgnoredActor(this);
-
-	const FVector Start = GetActorLocation();
-	const FVector End = HitResult.ImpactPoint;
-
-	FHitResult HitResult2;
-
-	bool bHit = World->LineTraceSingleByChannel(
-		HitResult2,
-		Start,
-		End,
-		ECC_Visibility,
-		Params
-	);
-
-	if (IsValid(HitResult2.GetActor()) && HitResult2.GetActor() != HitResult.GetActor())
-	{
-		return;
-	}
-
-	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
-
-	if (IsValid(SkillComponent))
-	{
-		UBaseSkill* BaseSkill = SkillComponent->GetCurrentSkill();
-
-		if (IsValid(BaseSkill))
-		{
-			if (BaseSkill->GetSkillTag() == SkillTags::LaserSkill)
-			{
-				BaseSkill->ApplyAttackToHitActor(HitResult, DeltaTime);
-			}
-		}
-	}
 }
 
 // Called when the game starts or when spawned
@@ -160,11 +94,14 @@ void ALaserActor::BeginPlay()
 
 void ALaserActor::Initialize()
 {
-	if (TraceComponent)
+	if (IsValid(TraceComponent))
 	{
 		// 델리게이트 바인딩
 		TraceComponent->OnHitDetected.AddDynamic(this, &ThisClass::HandleTracerHit);
 	}
+
+	check(IsValid(OwnerCharacter));
+	check(OwnerSkillTag.IsValid());
 
 	FGameplayTagContainer TagContainer;
 	TagContainer.AddTag(OwnerSkillTag);
@@ -182,7 +119,7 @@ void ALaserActor::Initialize()
 		{
 			if (FSkillData* SkillData = BaseGameState->GetSkillData(OwnerSkillTag))
 			{
-				if (SkillData->NaiagaraParticle.Num() >= 3)
+				if (SkillData->NaiagaraParticle.IsValidIndex(2))
 				{
 					LaserBeamEffect = NewObject<UNiagaraComponent>(this);
 					LaserBeamEffect->SetAsset(SkillData->NaiagaraParticle[0]);
@@ -201,7 +138,7 @@ void ALaserActor::Initialize()
 					);
 				}
 
-				if (SkillData->SkillMaterials.Num() >= 2)
+				if (SkillData->SkillMaterials.IsValidIndex(1))
 				{
 					DecalMaterial1 = SkillData->SkillMaterials[0];
 					DecalMaterial2 = SkillData->SkillMaterials[1];
@@ -211,7 +148,7 @@ void ALaserActor::Initialize()
 	}
 }
 
-// Called every frame
+// 레이저 이펙트 업데이트에 사용
 void ALaserActor::Tick(float DeltaTime)
 {
 	if (!IsValid(OwnerCharacter))
@@ -240,6 +177,8 @@ void ALaserActor::Tick(float DeltaTime)
 		return;
 	}
 
+	check(OwnerCharacter);
+
 	// 충돌 파라미터 설정
 	FCollisionQueryParams Params;
 
@@ -247,7 +186,7 @@ void ALaserActor::Tick(float DeltaTime)
 	Params.AddIgnoredActor(OwnerCharacter);
 
 	const FVector Start = GetActorLocation();
-	const FVector End = Start + GetActorForwardVector() * 1500.f;
+	const FVector End = Start + GetActorForwardVector() * TraceLength;
 
 	FHitResult HitResult;
 
@@ -259,32 +198,28 @@ void ALaserActor::Tick(float DeltaTime)
 		Params
 	);
 
-	//// 디버그 라인 그리기
-	//DrawDebugLine(
-	//	World,
-	//	Start,
-	//	End,
-	//	bHit ? FColor::Green : FColor::Red,
-	//	false,
-	//	2.f,
-	//	0,
-	//	2.0f
-	//);
+	const float Distance = bHit ? HitResult.Distance : TraceLength;
 
-	const float Distance = bHit ? HitResult.Distance : 1500.f;
-
-	check(LaserBeamEffect);
-	check(LaserHitEffect);
-
-	LaserBeamEffect->SetVariablePosition(FName("Start"), Start);
-	LaserBeamEffect->SetVariablePosition(FName("End"), Start + GetActorForwardVector() * Distance);
-
-	if (bHit)
+	if (IsValid(LaserBeamEffect))
 	{
+		LaserBeamEffect->SetVariablePosition(FName("Start"), Start);
+		LaserBeamEffect->SetVariablePosition(FName("End"), Start + GetActorForwardVector() * Distance);
+	}
+
+	if (IsValid(LaserHitEffect))
+	{
+		if (!bHit)
+		{
+			LaserHitEffect->SetVisibility(false);
+		}
+
 		LaserHitEffect->SetVisibility(true);
 		LaserHitEffect->SetWorldLocation(HitResult.Location);
 		LaserHitEffect->SetWorldRotation(UKismetMathLibrary::MakeRotFromX(HitResult.ImpactNormal));
+	}
 
+	if (IsValid(DecalMaterial1))
+	{
 		FVector DecalSize;
 
 		DecalSize.X = FMath::FRandRange(5.f, 20.f);
@@ -300,6 +235,11 @@ void ALaserActor::Tick(float DeltaTime)
 			FRotator(0.0f, 0.0f, -90.0f),
 			2.f
 		);
+	}
+
+	if (IsValid(DecalMaterial2))
+	{
+		FVector DecalSize;
 
 		DecalSize.X = FMath::FRandRange(10.f, 40.f);
 		DecalSize.Y = FMath::FRandRange(10.f, 40.f);
@@ -315,9 +255,75 @@ void ALaserActor::Tick(float DeltaTime)
 			4.f
 		);
 	}
-	else
-	{
-		LaserHitEffect->SetVisibility(false);
-	}
 }
 
+void ALaserActor::SetOwnerCharacter(AActor* NewOwnerCharacter)
+{
+	OwnerCharacter = NewOwnerCharacter;
+}
+
+void ALaserActor::HandleTracerHit(FGameplayTag TracerTag, FHitResult PrimaryHitResult, float DeltaTime)
+{
+	AActor* PrimaryHitActor = PrimaryHitResult.GetActor();
+
+	if (!IsValid(PrimaryHitActor))
+	{
+		return;
+	}
+
+	if (!(PrimaryHitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass())))
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+
+	if (!IsValid(World))
+	{
+		return;
+	}
+
+	check(OwnerCharacter);
+
+	// 충돌 파라미터 설정
+	FCollisionQueryParams Params;
+
+	// 소유 캐릭터 무시
+	Params.AddIgnoredActor(OwnerCharacter);
+	Params.AddIgnoredActor(this);
+
+	const FVector Start = GetActorLocation();
+	const FVector End = PrimaryHitResult.ImpactPoint;
+
+	FHitResult SecondaryHitResult;
+
+	bool bHit = World->LineTraceSingleByChannel(
+		SecondaryHitResult,
+		Start,
+		End,
+		ECC_Visibility,
+		Params
+	);
+
+	AActor* SecondaryActor = SecondaryHitResult.GetActor();
+
+	if (IsValid(SecondaryActor) && SecondaryActor != PrimaryHitActor)
+	{
+		return;
+	}
+
+	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+
+	if (IsValid(SkillComponent))
+	{
+		UBaseSkill* BaseSkill = SkillComponent->GetCurrentSkill();
+
+		if (IsValid(BaseSkill))
+		{
+			if (BaseSkill->GetSkillTag() == SkillTags::LaserSkill)
+			{
+				BaseSkill->ApplyAttackToHitActor(PrimaryHitResult, DeltaTime);
+			}
+		}
+	}
+}

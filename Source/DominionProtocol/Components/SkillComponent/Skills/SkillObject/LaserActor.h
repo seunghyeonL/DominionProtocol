@@ -64,4 +64,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")
 	TObjectPtr<UMnhTracerComponent> TraceComponent;
+
+	float TraceLength;
 };

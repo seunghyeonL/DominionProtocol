@@ -18,22 +18,26 @@ void ULaserSkill::Execute()
 {
 	Super::Execute();
 
+	check(OwnerCharacter);
+
 	LaserActor = GetWorld()->SpawnActor<ALaserActor>(
 		ALaserActor::StaticClass(),
 		FVector::ZeroVector,
 		FRotator::ZeroRotator
 	);
 
-	// AttachToComponent으로 부착
-	LaserActor->AttachToComponent(
-		OwnerCharacter->GetMesh(),
-		FAttachmentTransformRules::SnapToTargetIncludingScale
-		, FName("LaserSocket")
-	);
+	if (IsValid(LaserActor))
+	{
+		LaserActor->AttachToComponent(
+			OwnerCharacter->GetMesh(),
+			FAttachmentTransformRules::SnapToTargetIncludingScale
+			, FName("LaserSocket")
+		);
 
-	LaserActor->SetOwnerCharacter(OwnerCharacter);
+		LaserActor->SetOwnerCharacter(OwnerCharacter);
 
-	LaserActor->Initialize();
+		LaserActor->Initialize();
+	}
 }
 
 void ULaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
