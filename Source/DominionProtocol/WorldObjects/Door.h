@@ -44,7 +44,7 @@ protected:
 		int32 OtherBodyIndex);
 
 	UFUNCTION()
-	void OpenDoor(float Value);
+	virtual void OpenDoor(float Value);
 
 	UFUNCTION()
 	void OnTimelineFinished();
