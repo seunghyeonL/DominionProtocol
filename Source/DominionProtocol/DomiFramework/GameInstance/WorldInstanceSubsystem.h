@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -8,13 +8,16 @@
 
 #include "WorldInstanceSubsystem.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRecentCrackChanged, int32, NewValue);
+
 UCLASS()
 class DOMINIONPROTOCOL_API UWorldInstanceSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 #pragma region Share
-	
+
+//Functions
 public:
 	
 	//Setter
@@ -26,7 +29,9 @@ public:
 	
 	FORCEINLINE void SetRecentCrackName(const FText& NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
 	
-	FORCEINLINE void SetRecentCrackIndex(int32 NewRecentCrackIndex) { RecentCrackIndex = NewRecentCrackIndex; }
+	void SetRecentCrackIndex(int32 NewRecentCrackIndex);
+
+	FORCEINLINE void SetMaxCrackIndex(int32 CrackIndex) { MaxCrackIndex = CrackIndex; }
 	
 	FORCEINLINE void SetIsActivateCrackIndex(const FString& LevelName, int32 InCrackIndex) { CrackDataMap[LevelName].CrackDataArray[InCrackIndex].bIsActivate = true; }
 
@@ -52,6 +57,8 @@ public:
 	
 	FORCEINLINE int32 GetRecentCrackIndex() const { return RecentCrackIndex; }
 
+	FORCEINLINE int32 GetMaxCrackIndex() const { return MaxCrackIndex; }
+
 	bool GetIsActivateCrackIndex(const FString& LevelName, int32 InCrackIndex) const;
 
 	const FCrackData* GetCrackData(const FString& LevelName, int32 InCrackIndex) const;
@@ -66,6 +73,11 @@ protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
+// Variables
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnRecentCrackChanged OnRecentCrackChanged;
+	
 private:
 	UPROPERTY()
 	FString CurrentLevelName;
@@ -78,6 +90,9 @@ private:
 
 	UPROPERTY()
 	int32 RecentCrackIndex = 0;
+
+	UPROPERTY()
+	int32 MaxCrackIndex = 1;
 
 	UPROPERTY()
 	TMap<FString, FCrackDataArrayStruct> CrackDataMap;

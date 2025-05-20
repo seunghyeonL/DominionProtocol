@@ -27,6 +27,9 @@ void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		
 		Level1CrackArray.CrackDataArray[0].OwnerLevelName = FString("TestCrackLevel1");
 		CrackDataMap.Add(FString("TestCrackLevel1"), Level1CrackArray);
+
+		Level1CrackArray.CrackDataArray[0].OwnerLevelName = FString("TestLightWeightActorLevel");
+		CrackDataMap.Add(FString("TestLightWeightActorLevel"), Level1CrackArray);
 	}
 
 	// Level2 크랙 데이터(0번째 균열만)
@@ -52,6 +55,13 @@ void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 void UWorldInstanceSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
+}
+
+void UWorldInstanceSubsystem::SetRecentCrackIndex(int32 NewRecentCrackIndex)
+{
+	RecentCrackIndex = NewRecentCrackIndex;
+
+	OnRecentCrackChanged.Broadcast(NewRecentCrackIndex);
 }
 
 bool UWorldInstanceSubsystem::GetIsActivateCrackIndex(const FString& LevelName, int32 InCrackIndex) const
