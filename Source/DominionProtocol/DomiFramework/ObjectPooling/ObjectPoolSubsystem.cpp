@@ -19,7 +19,7 @@ bool UObjectPoolSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 	check(World);
 
 	// WorldType이 Editor Preview같은 다른 타입인 경우에는 생성하지 않음
-	if (World->WorldType != EWorldType::Game || World->WorldType != EWorldType::PIE)
+	if (World->WorldType != EWorldType::Game && World->WorldType != EWorldType::PIE)
 	{
 		return false;
 	}
