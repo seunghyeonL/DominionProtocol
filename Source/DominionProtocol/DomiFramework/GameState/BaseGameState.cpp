@@ -270,7 +270,6 @@ void ABaseGameState::InitializeCrackDataMap()
 			// 해당 인덱스 존재하지 않을 때만 데이터 추가
 			CrackDataArray.CrackDataArray.Add(NewCrackData);
 		}
-		//CrackDataArray.CrackDataArray.Add(NewCrackData);
 	}
 }
 

@@ -51,6 +51,7 @@ void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UWorldInstanceSubsystem::Deinitialize()
 {
+	OnRecentCrackChanged.Clear();
 	Super::Deinitialize();
 }
 
