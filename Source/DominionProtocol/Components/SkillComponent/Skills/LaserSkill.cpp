@@ -28,12 +28,10 @@ void ULaserSkill::Execute()
 	LaserActor->AttachToComponent(
 		OwnerCharacter->GetMesh(),
 		FAttachmentTransformRules::SnapToTargetIncludingScale
-		, FName("headSocket")
+		, FName("LaserSocket")
 	);
 
 	LaserActor->SetOwnerCharacter(OwnerCharacter);
-
-	LaserActor->SetActorRelativeRotation(FRotator(0.f, 90.f, 0.f));
 
 	LaserActor->Initialize();
 }
