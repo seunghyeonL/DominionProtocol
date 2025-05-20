@@ -36,6 +36,7 @@ struct FCrackData
 
 	UPROPERTY()
 	FRotator RespawnRotation;
+	
 };
 
 USTRUCT(BlueprintType)
