@@ -9,9 +9,6 @@
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
-#include "Components/DecalComponent.h"
-#include "Materials/MaterialInterface.h"
-#include "Util/DebugHelper.h"
 
 // Sets default values
 ALaserActor::ALaserActor()
@@ -112,7 +109,6 @@ void ALaserActor::HandleTracerHit(FGameplayTag TracerTag, FHitResult HitResult, 
 
 	if (IsValid(HitResult2.GetActor()) && HitResult2.GetActor() != HitResult.GetActor())
 	{
-		AActor* Temp = HitResult2.GetActor();
 		return;
 	}
 
@@ -136,14 +132,6 @@ void ALaserActor::HandleTracerHit(FGameplayTag TracerTag, FHitResult HitResult, 
 void ALaserActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	GetWorld()->GetTimerManager().SetTimer(
-		InitDelayTimer,
-		this,
-		&ThisClass::Init,
-		1.f,
-		false
-	);
 
 	UWorld* World = GetWorld();
 
@@ -170,18 +158,7 @@ void ALaserActor::BeginPlay()
 	}
 }
 
-void ALaserActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-
-	// 타이머 해제
-	if (InitDelayTimer.IsValid())
-	{
-		GetWorld()->GetTimerManager().ClearTimer(InitDelayTimer);
-	}
-}
-
-void ALaserActor::Init()
+void ALaserActor::Initialize()
 {
 	if (TraceComponent)
 	{
@@ -342,7 +319,5 @@ void ALaserActor::Tick(float DeltaTime)
 	{
 		LaserHitEffect->SetVisibility(false);
 	}
-
-	CapsuleComponent->SetCapsuleHalfHeight(Distance / 2);
 }
 

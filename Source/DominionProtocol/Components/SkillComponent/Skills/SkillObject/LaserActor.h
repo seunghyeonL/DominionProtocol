@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Util/GameTagList.h"
-#include "Delegates/DelegateCombinations.h"
 #include "LaserActor.generated.h"
 
 class UNiagaraComponent;
@@ -27,13 +26,14 @@ public:
 	UFUNCTION()
 	void HandleTracerHit(FGameplayTag TracerTag, FHitResult HitResult, float DeltaTime);
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void Initialize();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	virtual void Init();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")
 	TObjectPtr<AActor> OwnerCharacter;
@@ -64,11 +64,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")
 	TObjectPtr<UMnhTracerComponent> TraceComponent;
-
-	FTimerHandle InitDelayTimer;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

@@ -33,6 +33,8 @@ void ULaserSkill::Execute()
 
 	LaserActor->SetOwnerCharacter(OwnerCharacter);
 
+	LaserActor->Initialize();
+
 	LaserActor->SetActorRelativeRotation(FRotator(0.f, 90.f, 0.f));
 }
 
