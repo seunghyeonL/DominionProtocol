@@ -23,5 +23,8 @@ bool UCheckAIStateEquals::CalculateRawConditionValue(UBehaviorTreeComponent& Own
 	if (!StatusUser) return false;
 
 	const FGameplayTagContainer& ActiveTags = StatusUser->GetActiveStatusEffectTags();
+	UE_LOG(LogTemp, Warning, TEXT("[CheckAIStateEquals] Required: %s / Active: %s"),
+		*RequiredStateTag.ToString(),
+		*ActiveTags.ToString());
 	return ActiveTags.HasTagExact(RequiredStateTag);
 }

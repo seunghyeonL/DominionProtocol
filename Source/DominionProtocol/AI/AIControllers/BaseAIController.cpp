@@ -23,8 +23,8 @@ ABaseAIController::ABaseAIController()
 
 	// 시야 감각 구성
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
-	SightConfig->SightRadius = 10000.f;
-	SightConfig->LoseSightRadius = 12000.f;
+	SightConfig->SightRadius = 500.f;
+	SightConfig->LoseSightRadius = 500.f;
 	SightConfig->PeripheralVisionAngleDegrees = 360.f;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -85,6 +85,7 @@ void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 	}
 	else
 	{
+		IdleState->Activate();
 		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);
 	}
 }
@@ -117,7 +118,11 @@ void ABaseAIController::EvaluateTargetPriority()
 	}
 
 	UObject* CurrentTarget = GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor"));
-	if (BestTarget && CurrentTarget != BestTarget)
+	if (!BestTarget && CurrentTarget != BestTarget)
+	{
+		GetBlackboardComponent()->ClearValue(TEXT("TargetActor"));
+	}
+	else
 	{
 		GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), BestTarget);
 	}

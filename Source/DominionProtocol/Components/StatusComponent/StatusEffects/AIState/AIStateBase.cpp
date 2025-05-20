@@ -2,7 +2,6 @@
 
 
 #include "AIStateBase.h"
-
 #include "Components/StatusComponent/StatusComponent.h"
 
 void UAIStateBase::Activate()
@@ -22,9 +21,10 @@ void UAIStateBase::Activate()
 		CurrentAIState->Deactivate();
 	}
 
-	// 이 상태를 새로 등록
 	StatusComponent->SetAIState(this);
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StateTag);
+	bIsActive = true;
+
 
 	UE_LOG(LogTemp, Warning, TEXT("AI State Activated: %s"), *StateTag.ToString());
 }
@@ -37,5 +37,15 @@ void UAIStateBase::Activate(float Duration)
 
 void UAIStateBase::Deactivate()
 {
-	Super::Deactivate();
+	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
+	if (!StatusComponent)
+	{
+		Debug::PrintError(TEXT("UAIStateBase::Deactivate : Invalid StatusComponent"));
+		return;
+	}
+
+	StatusComponent->GetActiveStatusEffectTags().RemoveTag(StateTag);
+	bIsActive = false;
+
+	UE_LOG(LogTemp, Warning, TEXT("AI State Deactivated: %s"), *StateTag.ToString());
 }
