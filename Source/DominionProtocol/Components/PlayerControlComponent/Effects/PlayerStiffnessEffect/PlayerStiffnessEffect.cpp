@@ -40,7 +40,7 @@ void UPlayerStiffnessEffect::Dash()
 
 void UPlayerStiffnessEffect::SprintStart()
 {
-	// Super::SprintStart();
+	Super::SprintStart();
 }
 
 void UPlayerStiffnessEffect::SprintEnd()

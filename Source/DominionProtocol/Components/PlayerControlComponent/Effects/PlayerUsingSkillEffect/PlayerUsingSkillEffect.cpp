@@ -97,7 +97,7 @@ void UPlayerUsingSkillEffect::Dash()
 
 void UPlayerUsingSkillEffect::SprintStart()
 {
-	// Super::SprintStart();
+	Super::SprintStart();
 }
 
 void UPlayerUsingSkillEffect::SprintEnd()

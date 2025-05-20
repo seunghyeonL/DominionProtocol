@@ -36,7 +36,7 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (bIsRecoveringStamina)
+	if (bIsRecoveringStamina && !ActiveStatusEffectTags.HasTag(EffectTags::Running))
 	{
 		float Current = GetStat(StatTags::Stamina);
 		float Max = GetStat(StatTags::MaxStamina);
