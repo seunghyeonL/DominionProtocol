@@ -128,9 +128,9 @@ void ABaseGameState::InitializeCrackDataMap()
 		return;
 	}
 	
-	TMap<FString, FCrackDataArray>* CrackDataMap = WorldInstanceSubsystem->GetCrackDataMap();
+	TMap<FString, FCrackDataArrayStruct>* CrackDataMap = WorldInstanceSubsystem->GetCrackDataMap();
 	const FString& CurrentLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
-	FCrackDataArray& CrackDataArray = (*CrackDataMap)[CurrentLevelName];
+	FCrackDataArrayStruct& CrackDataArray = (*CrackDataMap)[CurrentLevelName];
 	
 	for (ACrack* Crack : AllCracksCache)
 	{

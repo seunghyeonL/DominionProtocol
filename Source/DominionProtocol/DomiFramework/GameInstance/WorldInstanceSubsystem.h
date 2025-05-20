@@ -18,7 +18,7 @@ class DOMINIONPROTOCOL_API UWorldInstanceSubsystem : public UGameInstanceSubsyst
 public:
 	
 	//Setter
-	void SetCrackDataMap(TMap<FString, FCrackDataArray> InCrackDataMap) { CrackDataMap = InCrackDataMap; }
+	void SetCrackDataMap(TMap<FString, FCrackDataArrayStruct> InCrackDataMap) { CrackDataMap = InCrackDataMap; }
 
 	FORCEINLINE void SetCurrentLevelName(const FString& NewCurrentLevelName) { CurrentLevelName = NewCurrentLevelName; }
 	
@@ -37,13 +37,18 @@ public:
 	FORCEINLINE void SwitchIsLevelChanged() { bIsLevelChanged = !bIsLevelChanged; }
 	
 	//Getter
-	TMap<FString, FCrackDataArray>* GetCrackDataMap() { return &CrackDataMap; }
+	UFUNCTION(BlueprintPure)
+	TMap<FString, FCrackDataArrayStruct> GetCrackDataMapForBlueprint() { return CrackDataMap; }
 	
-	FORCEINLINE const FString& GetCurrentLevelName() const { return CurrentLevelName; }
+	TMap<FString, FCrackDataArrayStruct>* GetCrackDataMap() { return &CrackDataMap; }
+
+	UFUNCTION(BlueprintPure)
+	const FString& GetCurrentLevelName() const { return CurrentLevelName; }
 	
 	FORCEINLINE const FText& GetCurrentLevelDisplayName() const { return CurrentLevelDisplayName; }
-	
-	FORCEINLINE const FText& GetRecentCrackName() const { return RecentCrackName; }
+
+	UFUNCTION(BlueprintPure)
+	const FText& GetRecentCrackName() const { return RecentCrackName; }
 	
 	FORCEINLINE int32 GetRecentCrackIndex() const { return RecentCrackIndex; }
 
@@ -75,7 +80,7 @@ private:
 	int32 RecentCrackIndex = 0;
 
 	UPROPERTY()
-	TMap<FString, FCrackDataArray> CrackDataMap;
+	TMap<FString, FCrackDataArrayStruct> CrackDataMap;
 
 	FVector MoveTargetLocation = FVector::ZeroVector;
 

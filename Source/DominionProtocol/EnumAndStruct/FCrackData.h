@@ -11,21 +11,24 @@ struct FCrackData
 	GENERATED_BODY()
 
 	FCrackData()
-		:	bIsActivate(false),
+		:	OwnerLevelName(TEXT("")),
+			CrackIndex(0),
+			CrackName(FText::GetEmpty()),
+			bIsActivate(false),
 			RespawnLocation(FVector::ZeroVector),
 			RespawnRotation(FRotator::ZeroRotator)
 	{}
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FString OwnerLevelName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 CrackIndex;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FText CrackName;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	bool bIsActivate;
 	
 	UPROPERTY()
@@ -36,10 +39,10 @@ struct FCrackData
 };
 
 USTRUCT(BlueprintType)
-struct FCrackDataArray
+struct FCrackDataArrayStruct
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TArray<FCrackData> CrackDataArray;
 };

@@ -12,7 +12,7 @@ void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	// Level1 크랙 데이터(0번째 균열만)
 	{
-		FCrackDataArray Level1CrackArray;
+		FCrackDataArrayStruct Level1CrackArray;
 		FCrackData Level1CrackData;
 
 		Level1CrackData.OwnerLevelName = FString("Proto_Level1");
@@ -31,7 +31,7 @@ void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	// Level2 크랙 데이터(0번째 균열만)
 	{
-		FCrackDataArray Level2CrackArray;
+		FCrackDataArrayStruct Level2CrackArray;
 		FCrackData Level2CrackData;
 
 		Level2CrackData.OwnerLevelName = FString("Proto_Level2");
@@ -56,7 +56,7 @@ void UWorldInstanceSubsystem::Deinitialize()
 
 bool UWorldInstanceSubsystem::GetIsActivateCrackIndex(const FString& LevelName, int32 InCrackIndex) const
 {
-	if (const FCrackDataArray* CrackDataArrayRef = CrackDataMap.Find(LevelName))
+	if (const FCrackDataArrayStruct* CrackDataArrayRef = CrackDataMap.Find(LevelName))
 	{
 		Debug::Print(TEXT("UDomiGameInstance::GetIsActivateCrackIndex : CrackDataMap Founded"));
 		if (CrackDataArrayRef->CrackDataArray.IsValidIndex(InCrackIndex))
@@ -72,7 +72,7 @@ bool UWorldInstanceSubsystem::GetIsActivateCrackIndex(const FString& LevelName, 
 
 const FCrackData* UWorldInstanceSubsystem::GetCrackData(const FString& LevelName, int32 InCrackIndex) const
 {
-	if (const FCrackDataArray* CrackDataArrayRef = CrackDataMap.Find(LevelName))
+	if (const FCrackDataArrayStruct* CrackDataArrayRef = CrackDataMap.Find(LevelName))
 	{
 		if (CrackDataArrayRef->CrackDataArray.IsValidIndex(InCrackIndex))
 		{

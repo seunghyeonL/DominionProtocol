@@ -46,6 +46,7 @@ public:
 	void RespawnPlayerCharacter();
 	
 	//UI 쪽에서 레벨과 균열인덱스를 정하면 해당 함수를 호출하도록 하면 됩니다
+	UFUNCTION(BlueprintCallable)
 	void MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCrackIndex);
 	
 	//균열 쪽에서 호출할 함수
