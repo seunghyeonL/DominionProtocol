@@ -19,5 +19,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FCrackData> Level2CrackArray;
-	
+
+	UPROPERTY(BlueprintReadWrite)
+	bool ActivateCrackButton = false;
 };
