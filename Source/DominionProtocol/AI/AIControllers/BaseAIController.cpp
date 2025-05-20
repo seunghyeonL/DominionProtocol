@@ -67,6 +67,7 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 
 		IdleState->Activate();
 	}
+	UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
 }
 
 void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -77,7 +78,9 @@ void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 	{
 		if (CombatState && !CombatState->IsActive())
 		{
+			CombatState->StateTag = EffectTags::Combat;
 			CombatState->Activate();
+			UE_LOG(LogTemp, Warning, TEXT("CombatState Activated"));
 		}
 	}
 	else
