@@ -3,72 +3,76 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ECategory.h"
 #include "FWorldActorData.generated.h"
 
 USTRUCT(BlueprintType)
-struct FWorldItemData
+struct FWorldActorData
 {
 	GENERATED_BODY()
 
-	// 고유식별자(각 객체별)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGuid UniqueID;
-
-	// 액터 클래스 저장
-	UPROPERTY()
-	TSubclassOf<AActor> ActorClass;
+	FWorldActorData()
+		:	Location(FVector::ZeroVector),
+			Rotation(FRotator::ZeroRotator),
+			bIsActivate(false),
+			bIsCollected(false),
+			bIsInteracted(false),
+			CurrentHealth(0.f)
+	{}
 	
-	// 아이템인 경우 습득 여부
+	UPROPERTY()
+	FGuid InstanceGuid;
+
+	UPROPERTY()
+	TSubclassOf<AActor> LinkedActorClass;
+
+	UPROPERTY()
+	FVector Location;
+
+	UPROPERTY()
+	FRotator Rotation;
+
+	UPROPERTY()
+	bool bIsActivate;
+
+	// 아이템
 	UPROPERTY()
 	bool bIsCollected;
 
-	UPROPERTY()
-	FVector Location;
-
-	UPROPERTY()
-	FRotator Rotation;
-};
-
-USTRUCT(BlueprintType)
-struct FWorldInteractableData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGuid UniqueID;
-
-	UPROPERTY()
-	TSubclassOf<AActor> ActorClass;
-	
-	// 상호작용 대상(문, 아이템 상자, 엘리베이터 등등...) 사용 여부
+	// 상호작용 오브젝트
 	UPROPERTY()
 	bool bIsInteracted;
 
+	// 적
 	UPROPERTY()
-	FVector Location;
-
-	UPROPERTY()
-	FRotator Rotation;
+	float CurrentHealth;
 };
 
 USTRUCT(BlueprintType)
-struct FWorldEnemyData
+struct FRegionActorData
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGuid UniqueID;
-
-	UPROPERTY()
-	TSubclassOf<AActor> ActorClass;
+	FRegionActorData()
+		:	WorldActorArray(TArray<FWorldActorData>()),
+			ActorCategory(EWorldActorCategory::None)
+	{}
 	
-	// 적의 경우 체력 정보
 	UPROPERTY()
-	float CurrentHealth;
+	TArray<FWorldActorData> WorldActorArray;
 
 	UPROPERTY()
-	FVector Location;
+	EWorldActorCategory ActorCategory;
+};
+
+USTRUCT(BlueprintType)
+struct FActivateActorData
+{
+	GENERATED_BODY()
 
 	UPROPERTY()
-	FRotator Rotation;
+	int LocatedRegionIndex;
+	
+	UPROPERTY()
+	AActor* Actor;
 };
