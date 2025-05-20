@@ -30,6 +30,6 @@ protected:
 	AActor* ControlledActor;
 
 	FVector TargetLocation;
-	float AcceptableRadius = 100.f;
+	float AcceptableRadius = 100;
 	bool bMoving = false;
 };

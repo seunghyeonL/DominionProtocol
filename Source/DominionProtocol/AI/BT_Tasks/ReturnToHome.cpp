@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/StatusComponent/StatusEffects/AIState/AIState_Idle.h"
+#include "Navigation/PathFollowingComponent.h"
 
 UReturnToHome::UReturnToHome()
 {
@@ -30,6 +31,13 @@ EBTNodeResult::Type UReturnToHome::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	AICon->MoveToLocation(TargetLocation, AcceptableRadius);
 	bMoving = true;
 
+	FAIMoveRequest MoveRequest(TargetLocation);
+	MoveRequest.SetAcceptanceRadius(AcceptableRadius);
+	FNavPathSharedPtr NavPath;
+	FPathFollowingRequestResult Result = AICon->MoveTo(MoveRequest, &NavPath);
+
+	UE_LOG(LogTemp, Warning, TEXT("MoveTo Result Code: %d"), static_cast<int32>(Result.Code));
+
 	return EBTNodeResult::InProgress;
 }
 
@@ -39,12 +47,12 @@ void UReturnToHome::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 	const float Distance = FVector::Dist(ControlledActor->GetActorLocation(), TargetLocation);
 	UE_LOG(LogTemp, Warning, TEXT("Distance to Home: %f"), Distance);
-	if (Distance <= AcceptableRadius)
+	if (Distance <= AcceptableRadius + 50)
 	{
-		// 도착 → Idle 상태로 전이
 		if (UStatusComponent* StatusComp = ControlledActor->FindComponentByClass<UStatusComponent>())
 		{
 			UAIState_Idle* IdleState = NewObject<UAIState_Idle>(StatusComp);
+			UE_LOG(LogTemp, Warning, TEXT("Good Home"));
 			IdleState->Activate();
 		}
 
