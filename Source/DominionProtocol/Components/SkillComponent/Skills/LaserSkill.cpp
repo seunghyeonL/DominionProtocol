@@ -33,9 +33,9 @@ void ULaserSkill::Execute()
 
 	LaserActor->SetOwnerCharacter(OwnerCharacter);
 
-	LaserActor->Initialize();
-
 	LaserActor->SetActorRelativeRotation(FRotator(0.f, 90.f, 0.f));
+
+	LaserActor->Initialize();
 }
 
 void ULaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
