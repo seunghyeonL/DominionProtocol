@@ -9,11 +9,13 @@
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/ItemInstanceSubsystem.h"
+#include "Interface/StoryDependentInterface.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "WorldObjects/Crack.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "EnumAndStruct/FCrackData.h"
+#include "EngineUtils.h"
 
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
@@ -23,14 +25,7 @@ ABaseGameMode::ABaseGameMode()
 		PlayerCharacter(nullptr),
 		RecentCrackCache(nullptr),
 		RespawnDelay(2.f)
-{/*
-	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
-	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}
-	*/
+{
 }
 
 void ABaseGameMode::BeginPlay()
@@ -92,6 +87,17 @@ void ABaseGameMode::StartPlay()
 		CachedEnemyInfo.Add(Info);
 	}
 	//==========================
+
+	// 스토리 상태 불러오기
+	Debug::Print(FString::Printf(TEXT("Current Story State: %s"), *UEnum::GetValueAsString(GameInstance->GetCurrentGameStoryState())));
+	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (Actor->GetClass()->ImplementsInterface(UStoryDependentInterface::StaticClass()))
+		{
+			IStoryDependentInterface::Execute_OnStoryStateUpdated(Actor, GameInstance->GetCurrentGameStoryState());
+		}
+	}
 }
 
 void ABaseGameMode::StartBattle()
