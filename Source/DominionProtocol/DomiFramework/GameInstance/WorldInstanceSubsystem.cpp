@@ -47,6 +47,12 @@ void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	
 	Level2CrackArray.CrackDataArray[0].OwnerLevelName = FString("TestCrackLevel2");
 	CrackDataMap.Add(FString("TestCrackLevel2"), Level2CrackArray);
+
+	Level2CrackArray.CrackDataArray[0].OwnerLevelName = FString("PastLevel");
+	CrackDataMap.Add(FString("PastLevel"), Level2CrackArray);
+
+	Level2CrackArray.CrackDataArray[0].OwnerLevelName = FString("PresentLevel");
+	CrackDataMap.Add(FString("PresentLevel"), Level2CrackArray);
 }
 
 void UWorldInstanceSubsystem::Deinitialize()
