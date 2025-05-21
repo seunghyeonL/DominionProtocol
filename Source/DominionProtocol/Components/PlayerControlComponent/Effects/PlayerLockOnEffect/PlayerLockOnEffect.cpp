@@ -6,8 +6,10 @@
 #include <string>
 
 #include "InputActionValue.h"
+#include "LandscapeGizmoActiveActor.h"
 #include "VectorTypes.h"
 #include "GameFramework/Character.h"
+#include "Player/Characters/DomiCharacter.h"
 #include "Util/DebugHelper.h"
 
 UPlayerLockOnEffect::UPlayerLockOnEffect()
@@ -33,15 +35,26 @@ void UPlayerLockOnEffect::Deactivate()
 void UPlayerLockOnEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
+
+	AActor* LockOnTargetActor = ControlComponent->GetLockOnTargetActor();
+	check(LockOnTargetActor);
+	
+	FVector LockOnTargetActorLocation = LockOnTargetActor->GetActorLocation();
+	
 	// 타겟방향의 벡터 계산
-	const FVector Target = FVector::ZeroVector;
-	FRotator NewControllerRotator = (Target - OwnerCharacter->GetActorLocation()).Rotation();
-	FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
-	FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
+	const FVector LockOnTargetActorEyeLocation = FVector(LockOnTargetActorLocation.X,LockOnTargetActorLocation.Y,150);
+	float ControllerLockOnHeight = 200;
+	const FRotator NewControllerRotator = (LockOnTargetActorEyeLocation - OwnerCharacter->GetActorLocation() - ControllerLockOnHeight * FVector::UpVector).Rotation();
+	const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
+	const FRotator CurrentCharacterRotator = OwnerCharacter->GetActorRotation();
+	const FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
 	if (!OwnerCharacter) return;
 	
 	// 타겟을 바라보도록 회전 변경
-	OwnerCharacter->SetActorRotation(NewCharacterRotator);
+	OwnerCharacter->SetActorRotation(FMath::RInterpTo(CurrentCharacterRotator, NewCharacterRotator, DeltaTime, 10.0f));
 	OwnerCharacter->GetController()->SetControlRotation(FMath::RInterpTo(CurrentControlRotation, NewControllerRotator, DeltaTime, 10.0f));
 }
 

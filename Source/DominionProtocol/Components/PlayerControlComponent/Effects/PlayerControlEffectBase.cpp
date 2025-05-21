@@ -124,12 +124,14 @@ void UPlayerControlEffectBase::Deactivate()
 	SetOuterState(nullptr);
 
 	bIsActive = false;
-
 	ControlComponent->GetActiveControlEffectTags().RemoveTag(ControlEffectTag);
 }
 
 void UPlayerControlEffectBase::Tick(float DeltaTime)
 {
+	check(IsValid(InnerState));
+
+	InnerState->Tick(DeltaTime);
 }
 
 void UPlayerControlEffectBase::Move(const FInputActionValue& Value)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Engine/Texture2D.h"
 #include "Util/GameTagList.h"
 #include "ItemData.generated.h"
@@ -38,6 +39,19 @@ public:
 	//아이템태그(Util/GameTagList, Config/DefaultGameplayTags.ini, DT_ItemDataTable 행이름 변환해 사용) 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	FGameplayTag ItemTag;
+
+	// Weapon Skill Data
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	FSkillComponentInitializeData WeaponSkillData;
+
+	// 아이템 클래스 (액터)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	TSubclassOf<class ABaseItem> ItemClass;
+
+	//무기 메시
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UStaticMesh* WeaponMesh;
+
 };
 
 // Item.Consume.이름

@@ -17,12 +17,18 @@ UPlayerRunningEffect::UPlayerRunningEffect()
 void UPlayerRunningEffect::Activate()
 {
 	Super::Activate();
-
+	
 	if (!IsValid(OwnerCharacter))
 	{
 		Debug::PrintError(TEXT("UPlayerRunningEffect::Activate : Invalid OwnerCharacter."));
 		return;
 	}
+
+	if (bIsActive)
+	{
+		return;
+	}
+	bIsActive = true;
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (!StatusComponent)
@@ -31,9 +37,9 @@ void UPlayerRunningEffect::Activate()
 		return;
 	}
 
-	StatusComponent->StopStaminaRecovery();
+	// StatusComponent->StopStaminaRecovery();
 	auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
-	Debug::Print(TEXT("UPlayerRunningEffect::Deactivate : WalkSpeed Up."));
+	// Debug::Print(TEXT("UPlayerRunningEffect::Activate : WalkSpeed Up."));
 	MovementComponent->MaxWalkSpeed *= SpeedCoefficient;
 }
 
@@ -46,12 +52,18 @@ void UPlayerRunningEffect::Activate(float Duration)
 void UPlayerRunningEffect::Deactivate()
 {
 	Super::Deactivate();
-
+	
 	if (!IsValid(OwnerCharacter))
 	{
 		Debug::PrintError(TEXT("UPlayerRunningEffect::Deactivate : Invalid OwnerCharacter."));
 		return;
 	}
+
+	if (!bIsActive)
+	{
+		return;
+	}
+	bIsActive = false;
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (!StatusComponent)
@@ -62,7 +74,7 @@ void UPlayerRunningEffect::Deactivate()
 
 	StatusComponent->BlockStaminaRecovery();
 	auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
-	Debug::Print(TEXT("UPlayerRunningEffect::Deactivate : WalkSpeed Down."));
+	// Debug::Print(FString::Printf(TEXT("UPlayerRunningEffect::Deactivate : bIsActive : %d"), bIsActive ? 1 : 0));
 	MovementComponent->MaxWalkSpeed /= SpeedCoefficient;
 }
 

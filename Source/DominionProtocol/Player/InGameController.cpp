@@ -2,6 +2,9 @@
 
 
 #include "InGameController.h"
+
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Util/DevCheatManager.h"
 #include "UI/UIInGame/DomiInGameHUDWidget.h"
 
@@ -21,11 +24,34 @@ void AInGameController::HandleSetupInGameHUD()
 	CreateHUDWidget();
 	AddHUDToViewport();
 	SetupInputModeGameOnly();
+
+	BindControllerInputActions();
+}
+
+void AInGameController::OnInGameMenuOpenAndClose()
+{
+	if (bActiveInGameMenuOpen)
+	{
+		SetupInputModeGameOnly();
+	}
+	else
+	{
+		SetupInputModeUIOnly();
+	}
+
+	bActiveInGameMenuOpen = !bActiveInGameMenuOpen;
+	InGameHUDWidgetInstance->OnInGameMenuOpenAndClose();
 }
 
 void AInGameController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	const ULocalPlayer* LocalPlayer = GetLocalPlayer();
+	if (LocalPlayer)
+	{
+		LocalPlayerInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+	}
 
 	HandleSetupInGameHUD();
 }
@@ -46,9 +72,43 @@ void AInGameController::AddHUDToViewport() const
 
 void AInGameController::SetupInputModeGameOnly()
 {
-	const FInputModeGameOnly CurrentInputMode;
-	SetInputMode(CurrentInputMode);
-	bShowMouseCursor = false;
+	if (LocalPlayerInputSubsystem)
+	{
+		LocalPlayerInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+		LocalPlayerInputSubsystem->RemoveMappingContext(UIOnlyMappingContext);
 
-	// Focus Setting -> HUD Widget, not Controller
+		
+		const FInputModeGameOnly CurrentInputMode;
+		SetInputMode(CurrentInputMode);
+		bShowMouseCursor = false;
+
+	}
+}
+
+void AInGameController::SetupInputModeUIOnly()
+{
+	if (LocalPlayerInputSubsystem)
+	{
+		LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1000);
+		LocalPlayerInputSubsystem->RemoveMappingContext(DefaultMappingContext);
+
+		const FInputModeGameAndUI CurrentInputMode;
+		SetInputMode(CurrentInputMode);
+		bShowMouseCursor = true;
+		
+	}
+}
+
+void AInGameController::BindControllerInputActions()
+{
+	auto* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent);
+	if (EnhancedInputComp)
+	{
+		if (IsValid(InGameMenuOpenAndClose))
+		{
+			EnhancedInputComp->BindAction(InGameMenuOpenAndClose, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnInGameMenuOpenAndClose);
+		}
+	}
 }

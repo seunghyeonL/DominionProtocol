@@ -7,6 +7,8 @@
 #include "DomiInGameHUDWidget.generated.h"
 
 
+
+
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiInGameHUDWidget : public UUserWidget
 {
@@ -26,11 +28,31 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void HideDeathScriptWidget();
 
+	UFUNCTION()
+	void OnInGameMenuOpenAndClose();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void InGameMenuOpenAndClose();
+
+	UFUNCTION(BlueprintCallable)
+	void OnSwitchShowAndHideCrackWarpWidget();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SwitchShowAndHideCrackWarpWidget();
+
 protected:
 	virtual void NativeConstruct() override;
 	void SetupStatusBarWidget(const AActor* OwningActor);
 
 protected:
+	UPROPERTY()
+	TObjectPtr<class AInGameController> OwningController;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bShowCrackWarpWidget = false;
+
+#pragma region UI Alway
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UDomiStatusBarWidget> StatusBarWidget;
 
@@ -40,6 +62,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UDomiItemSlotsWidget> ItemSlotsWidget;
 
+#pragma endregion
+
+#pragma region UI On/Off
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UDomiInGameMenuWidget> InGameMenuWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UUserWidget> InteractionWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UUserWidget> CrackWrapWidget;
+
+#pragma endregion
 };

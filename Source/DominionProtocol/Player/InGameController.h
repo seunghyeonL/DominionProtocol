@@ -16,22 +16,38 @@ class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 
 public:
 	AInGameController();
-
+	
+	// 필요시 위젯에서 호출하여 사용
+	UFUNCTION(BlueprintCallable)
+	void SetupInputModeGameOnly();
+	
+	UFUNCTION(BlueprintCallable)
+	void SetupInputModeUIOnly();
+	
 	void HandleSetupInGameHUD();
+	void OnInGameMenuOpenAndClose();
+
+	UFUNCTION(BlueprintPure)
+	class UDomiInGameHUDWidget* GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
 
 protected:
 	virtual void BeginPlay() override;
 
 	void CreateHUDWidget();
 	void AddHUDToViewport() const;
-	void SetupInputModeGameOnly();
 
+	void BindControllerInputActions();
 	
 public:
+	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> UIOnlyMappingContext;
+
+#pragma region Character Input Actions Section
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
@@ -72,10 +88,41 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> LockOnAction;
 
+	//Consume slot 1 Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ConsumeItemAction_1;
+
+	//Consume slot 2 Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ConsumeItemAction_2;
+
+	//Consume slot 3 Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ConsumeItemAction_3;
+
+	//Swap Weapon Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> SwapWeapon;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> InteractionScroll;
+#pragma endregion
+	
+#pragma region Controller Input Actions Section
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> InGameMenuOpenAndClose;
+	
+#pragma endregion
+	
 protected:
+	UPROPERTY()
+	TObjectPtr<class UEnhancedInputLocalPlayerSubsystem> LocalPlayerInputSubsystem;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UDomiInGameHUDWidget> InGameHUDWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<class UDomiInGameHUDWidget> InGameHUDWidgetInstance;
+
+	bool bActiveInGameMenuOpen = false;
 };

@@ -9,6 +9,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/InteractableInterface.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "Components/ItemComponent/ItemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UPlayerControlState::UPlayerControlState()
 {
@@ -32,6 +34,9 @@ void UPlayerControlState::Move(const FInputActionValue& Value)
 		return;
 	}
 
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
+
 	if (auto Controller = OwnerCharacter->GetController())
 	{
 		// find out which way is forward
@@ -46,12 +51,9 @@ void UPlayerControlState::Move(const FInputActionValue& Value)
 
 		// final movement vector
 		const FVector FinalMovementNormalVector = (ForwardDirection * InputVector.X  + RightDirection * InputVector.Y).GetSafeNormal();
-
-		if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
-		{
-			ControlComponentUser->SetLastMovementVector(FinalMovementNormalVector);
-		}
-
+		
+		ControlComponent->SetCurrentMovementVector(FinalMovementNormalVector);
+		
 		// add movement
 		OwnerCharacter->AddMovementInput(FinalMovementNormalVector);
 	}
@@ -135,7 +137,14 @@ void UPlayerControlState::Parry()
 {
 	Super::Parry();
 
-	Debug::Print(TEXT("UPlayerControlState::Parry : Call."));
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
+	{
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::Parry);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::BaseAttack : Character doesn't implement ISkillComponentUser."));
+	}
 }
 
 void UPlayerControlState::BaseAttack()
@@ -160,14 +169,30 @@ void UPlayerControlState::WeaponSkill()
 {
 	Super::WeaponSkill();
 
-	Debug::Print(TEXT("UPlayerControlState::WeaponSkill : Call."));
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
+	{
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::WeaponSkill);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::WeaponSkill : Character doesn't implement ISkillComponentUser."));
+	}
 }
 
 void UPlayerControlState::MagicSkill()
 {
 	Super::MagicSkill();
 
-	Debug::Print(TEXT("UPlayerControlState::MagicSkill : Call."));
+	check(OwnerCharacter);
+
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
+	{
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::MagicSkill);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::MasicSkill : Character doesn't implement ISkillComponentUser."));
+	}
 }
 
 void UPlayerControlState::Interact()
@@ -177,12 +202,11 @@ void UPlayerControlState::Interact()
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
 	check(PlayerCharacter);
 
-	AActor* InteractableObject = PlayerCharacter->GetCurrentInteractableObject();
+	AActor* InteractableObject = PlayerCharacter->GetCurrentInteractableActor();
 	if (IsValid(InteractableObject))
 	{
 		IInteractableInterface::Execute_Interact(InteractableObject, PlayerCharacter);
 		FText UIText = IInteractableInterface::Execute_GetInteractMessage(InteractableObject);
-		
 	}
 	
 	Debug::Print(TEXT("UPlayerControlState::Interact : Call."));
@@ -192,14 +216,131 @@ void UPlayerControlState::LockOn()
 {
 	Super::LockOn();
 	UPlayerControlComponent* PlayerControlComponent= Cast<UPlayerControlComponent>(GetOuter());
+	check(PlayerControlComponent);
+	
 	if (PlayerControlComponent->GetActiveControlEffectTags().HasTag(EffectTags::LockOn))
 	{
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::LockOn);
 	}
 	else
 	{
-		PlayerControlComponent->ActivateControlEffect(EffectTags::LockOn);
+		if (PlayerControlComponent->SetLockOnTargetActorInPublicSpace() == false)
+		{
+			PlayerControlComponent->SetLockOnTargetActorInVisibility();
+		}
+
+		// ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+		if (IsValid(PlayerControlComponent->GetLockOnTargetActor()))
+		{
+			PlayerControlComponent->ActivateControlEffect(EffectTags::LockOn);
+		}
+		else
+		{
+			Debug::PrintLog(TEXT("UPlayerControlState::LockOn : No LockOnTargetActor."));
+		}
 	}
 
 	Debug::Print(TEXT("UPlayerControlState::LockOn : Call."));
+}
+
+
+
+void UPlayerControlState::ConsumeItemAction_1()
+{
+	Super::ConsumeItemAction_1();
+	if (ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
+		{
+			ItemComponent->UseConsumableItem(0); // 슬롯 인덱스 0
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_1 : ItemComponent가 없습니다."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_1 : OwnerCharacter가 DomiCharacter가 아닙니다."));
+	}
+
+	Debug::Print(TEXT("UPlayerControlState::ConsumeItemAction_1 : Call."));
+}
+
+void UPlayerControlState::ConsumeItemAction_2()
+{
+	Super::ConsumeItemAction_2();
+	if (ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
+		{
+			ItemComponent->UseConsumableItem(1); // 슬롯 인덱스 1 
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_2 : ItemComponent가 없습니다."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_2 : OwnerCharacter가 DomiCharacter가 아닙니다."));
+	}
+
+	Debug::Print(TEXT("UPlayerControlState::ConsumeItemAction_2 : Call."));
+}
+
+void UPlayerControlState::ConsumeItemAction_3()
+{
+	Super::ConsumeItemAction_3();
+	if (ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
+		{
+			ItemComponent->UseConsumableItem(2); // 슬롯 인덱스 2 사용
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_3 : ItemComponent가 없습니다."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::ConsumeItemAction_3 : OwnerCharacter가 DomiCharacter가 아닙니다."));
+	}
+
+	Debug::Print(TEXT("UPlayerControlState::ConsumeItemAction_3 : Call."));
+}
+
+void UPlayerControlState::SwapWeapon()
+{
+	Super::SwapWeapon();
+	if (ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
+		{
+			ItemComponent->SwapWeapons();
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlState::SwapWeaponsAction : ItemComponent가 없습니다."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::SwapWeaponsAction : OwnerCharacter가 DomiCharacter가 아닙니다."));
+	}
+	Debug::Print(TEXT("UPlayerControlState::SwapWeapon : Call."));
+}
+
+void UPlayerControlState::InteractionScroll(const FInputActionValue& Value)
+{
+	Super::InteractionScroll(Value);
+
+	auto* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	if (PlayerCharacter)
+	{
+		const float InputValue = Value.Get<float>();
+		PlayerCharacter->EventInteractionWidgetScroll(InputValue);
+	}
+
 }

@@ -40,12 +40,12 @@ void UPlayerStunEffect::Dash()
 
 void UPlayerStunEffect::SprintStart()
 {
-	// Super::SprintStart();
+	Super::SprintStart();
 }
 
 void UPlayerStunEffect::SprintEnd()
 {
-	// Super::SprintEnd();
+	Super::SprintEnd();
 }
 
 void UPlayerStunEffect::Parry()

@@ -17,6 +17,9 @@ public:
 	virtual void Execute();
 
 	virtual void AttackTrace() const;
+	
+	UFUNCTION(BlueprintCallable)
+	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime);
 
 	virtual float GetStamina() const;
 
@@ -58,6 +61,4 @@ protected:
 	float AttackForwardOffset;
 
 	float DamageCoefficient;
-
-	bool bIsExecuting;
 };

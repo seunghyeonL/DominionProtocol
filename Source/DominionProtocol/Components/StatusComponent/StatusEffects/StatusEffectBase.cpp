@@ -24,8 +24,7 @@ void UStatusEffectBase::Activate()
 		Debug::PrintError(TEXT("UStatusEffectBase::Activate : Invalid StatusComponent"));
 		return;
 	}
-
-	bIsActive = true;
+	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
 }
 
@@ -50,8 +49,7 @@ void UStatusEffectBase::Activate(float Duration)
 		Debug::PrintError(TEXT("UStatusEffectBase::Activate : Invalid StatusComponent"));
 		return;
 	}
-
-	bIsActive = true;
+	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
 	GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 		DurationTimer,
@@ -68,7 +66,7 @@ void UStatusEffectBase::Deactivate()
 	{
 		return;
 	}
-
+	// Debug::Print(FString::Printf(TEXT("UStatusEffectBase::Deactivate : bIsActive : %d"), bIsActive ? 1 : 0));
 	GetOuter()->GetWorld()->GetTimerManager().ClearTimer(DurationTimer);
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
@@ -78,7 +76,6 @@ void UStatusEffectBase::Deactivate()
 		return;
 	}
 	
-	bIsActive = false;
 	StatusComponent->GetActiveStatusEffectTags().RemoveTag(StatusEffectTag);
 }
 

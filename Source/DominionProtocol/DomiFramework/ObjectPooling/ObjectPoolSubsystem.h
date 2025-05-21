@@ -5,8 +5,15 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Interface/PoolableObjectInterface.h"
+#include "GameplayTagContainer.h"
+
 #include "Util/DebugHelper.h"
+
 #include "ObjectPoolSubsystem.generated.h"
+
+
+
+class UPoolableBlueprintClassDataAsset;
 
 USTRUCT(BlueprintType)
 struct FPooledActorList
@@ -23,13 +30,20 @@ class DOMINIONPROTOCOL_API UObjectPoolSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	AActor* SpawnActorFromPool(const FGameplayTag& Tag, const FVector& SpawnLocation, const FRotator& SpawnRotation, APawn* Instigator = nullptr);
+	
+	void ClearObjectPool();
+	
+	void ReturnActorToPool(AActor* Actor);
+
+	//(재현님) 고치시면 지울겁니다.
 	template <typename T>
 	T* SpawnActorFromPool(const FVector& SpawnLocation, const FRotator& SpawnRotation, APawn* Instigator = nullptr)
 	{
 		static_assert(TIsDerivedFrom<T, AActor>::IsDerived, "T must be AActor");
-
+	
 		UClass* ClassType = T::StaticClass();
-
+	
 		// 해당 클래스(Key)가 TMap에 없으면 새로 생성
 		FPooledActorList* PoolList = PooledActorsMap.Find(ClassType);
 		if (!PoolList)
@@ -58,14 +72,14 @@ public:
 				}
 			}
 		}
-
+	
 		//없을 시, 생성
 		UWorld* World = GetWorld();
 		if (!IsValid(World))
 		{
 			return nullptr;
 		}
-
+	
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		
@@ -83,18 +97,25 @@ public:
 			NewActor->Destroy();
 			return nullptr;
 		}
-
+	
 		return Cast<T>(NewActor);
 	}
-
-	void ReturnActorToPool(AActor* Actor);
 
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
+
+private:
+	AActor* SpawnActorFromPoolByClass(UClass* ClassType, const FVector& SpawnLocation, const FRotator& SpawnRotation, APawn* Instigator = nullptr);
 	
 private:
 	UPROPERTY()
 	TMap<UClass*, FPooledActorList> PooledActorsMap;
+
+	UPROPERTY()
+	TObjectPtr<UPoolableBlueprintClassDataAsset> PoolConfig;
+	
+	UPROPERTY()
+	TMap<FGameplayTag, TSubclassOf<AActor>> TagToClassMap;
 };

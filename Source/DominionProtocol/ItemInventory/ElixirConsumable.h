@@ -3,13 +3,14 @@
 #include "CoreMinimal.h"
 #include "ItemInventory/BaseItem.h"
 #include "Util/GameTagList.h"
+#include "Interface/ConsumableItemInterface.h"
 #include "ElixirConsumable.generated.h"
 
-class ADominionProtocolCharacter;
+class ADomiCharacter;
 class UStatusComponent;
 
 UCLASS()
-class DOMINIONPROTOCOL_API AElixirConsumable : public ABaseItem
+class DOMINIONPROTOCOL_API AElixirConsumable : public ABaseItem, public IConsumableItemInterface
 {
 	GENERATED_BODY()
 	
@@ -20,8 +21,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Elixir")
 	TArray<FGameplayTag> RemoveableStatusEffects;
 
+	//Consume
+	virtual void Consume_Implementation(AActor* ConsumedItem)override;
+	virtual FText GetConsumeMessage_Implementation() const override;
+
 public:
 	UFUNCTION(BlueprintCallable)
-	void ApplyElixir(ADominionProtocolCharacter* TargetCharacter);
+	void ApplyElixir(ADomiCharacter* TargetCharacter);
 
 };

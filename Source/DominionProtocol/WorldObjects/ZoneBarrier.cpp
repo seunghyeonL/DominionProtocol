@@ -64,7 +64,6 @@ void AZoneBarrier::DeactivateBarrier()
 
 void AZoneBarrier::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    Debug::Print(TEXT("OnOverlapBegin Called"));
     if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
     {
         Debug::Print(TEXT("NotPlayer"));
@@ -75,7 +74,7 @@ void AZoneBarrier::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
     ensure(PlayerCharacter);
     CachedCharacter = PlayerCharacter;
 
-    PlayerCharacter->SetCurrentInteractableObject(this);
+    PlayerCharacter->AddInteractableActor(this);
 }
 
 void AZoneBarrier::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -86,7 +85,7 @@ void AZoneBarrier::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Oth
         ensure(PlayerCharacter);
 
         CachedCharacter = nullptr;
-        PlayerCharacter->SetCurrentInteractableObject(nullptr);
+        PlayerCharacter->RemoveInteractableActor(this);
     }
 }
 

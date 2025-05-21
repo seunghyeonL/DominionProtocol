@@ -5,6 +5,11 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/StatusComponent/StatusEffects/AIState/AIStateBase.h"
+#include "Components/StatusComponent/StatusComponent.h"
+#include "Components/StatusComponent/StatusEffects/AIState/AIState_Idle.h"
+#include "Components/StatusComponent/StatusEffects/AIState/AIState_Combat.h"
+#include "Components/StatusComponent/StatusEffects/AIState/AIState_Return.h"
 
 
 // Sets default values
@@ -18,8 +23,8 @@ ABaseAIController::ABaseAIController()
 
 	// 시야 감각 구성
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
-	SightConfig->SightRadius = 10000.f;
-	SightConfig->LoseSightRadius = 12000.f;
+	SightConfig->SightRadius = 500.f;
+	SightConfig->LoseSightRadius = 500.f;
 	SightConfig->PeripheralVisionAngleDegrees = 360.f;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -47,11 +52,42 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	{
 		RunBehaviorTree(BehaviorTreeAsset);
 	}
+
+	if (InPawn && GetBlackboardComponent())
+	{
+		const FVector SpawnLocation = InPawn->GetActorLocation();
+		GetBlackboardComponent()->SetValueAsVector(TEXT("HomeLocation"), SpawnLocation);
+	}
+
+	if (UStatusComponent* StatusComp = InPawn->FindComponentByClass<UStatusComponent>())
+	{
+		IdleState = NewObject<UAIState_Idle>(StatusComp);
+		CombatState = NewObject<UAIState_Combat>(StatusComp);
+		ReturnState = NewObject<UAIState_Return>(StatusComp);
+
+		IdleState->Activate();
+	}
+	UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
 }
 
 void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	EvaluateTargetPriority();
+
+	if (Stimulus.WasSuccessfullySensed())
+	{
+		if (CombatState && !CombatState->IsActive())
+		{
+			CombatState->StateTag = EffectTags::Combat;
+			CombatState->Activate();
+			UE_LOG(LogTemp, Warning, TEXT("CombatState Activated"));
+		}
+	}
+	else
+	{
+		IdleState->Activate();
+		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);
+	}
 }
 
 void ABaseAIController::EvaluateTargetPriority()
@@ -82,7 +118,11 @@ void ABaseAIController::EvaluateTargetPriority()
 	}
 
 	UObject* CurrentTarget = GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor"));
-	if (BestTarget && CurrentTarget != BestTarget)
+	if (!BestTarget && CurrentTarget != BestTarget)
+	{
+		GetBlackboardComponent()->ClearValue(TEXT("TargetActor"));
+	}
+	else
 	{
 		GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), BestTarget);
 	}
@@ -94,3 +134,13 @@ void ABaseAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ABaseAIController::HandleTargetLost()
+{
+	if (!GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")))
+	{
+		if (ReturnState && !ReturnState->IsActive())
+		{
+			ReturnState->Activate();
+		}
+	}
+}

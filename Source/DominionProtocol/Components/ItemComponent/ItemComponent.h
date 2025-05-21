@@ -28,6 +28,10 @@ protected:
 	//장비슬롯
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
 	TMap<FName, FGameplayTag> EquipmentSlots;
+
+	// 소비 아이템 슬롯
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Consumable")
+	TArray<FGameplayTag> ConsumableSlots;
 public:	
 	// 아이템 추가
 	UFUNCTION(BlueprintCallable)
@@ -57,6 +61,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool UnequipItem(FName SlotName);
 
+	// 무기 슬롯 스왑
+	UFUNCTION(BlueprintCallable)
+	void SwapWeapons();
+
 	// 특정 슬롯에 장착된 아이템 태그 반환
 	UFUNCTION(BlueprintPure)
 	FGameplayTag GetEquippedItem(FName SlotName) const;
@@ -64,5 +72,22 @@ public:
 	// 장비 슬롯 정보 반환 (위젯에 전달)
 	UFUNCTION(BlueprintPure)
 	const TMap<FName, FGameplayTag>& GetEquipmentSlots() const;
+
+	//소비아이템 등록
+	UFUNCTION(BlueprintCallable)
+	bool SetConsumableItem(int32 SlotIndex, FGameplayTag ItemTag);
+
+	// 소비 아이템 사용
+	UFUNCTION(BlueprintCallable)
+	void UseConsumableItem(int32 SlotIndex);
+
+	// 특정 소비 아이템 슬롯 정보 반환
+	UFUNCTION(BlueprintPure)
+	FGameplayTag GetConsumableItem(int32 SlotIndex) const;
+
+	// 모든 소비 아이템 슬롯 정보 반환
+	UFUNCTION(BlueprintPure)
+	const TArray<FGameplayTag>& GetConsumableSlots() const;
+
 
 };

@@ -7,6 +7,9 @@
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "BaseGameMode.generated.h"
 
+class UItemInstanceSubsystem;
+class UWorldInstanceSubsystem;
+class ABaseGameState;
 class ADomiCharacter;
 class ACrack;
 
@@ -34,13 +37,18 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void StartPlay() override;
+	
 	virtual void StartBattle();
 	virtual void EndBattle();
 
 	virtual void OnPlayerDeath();
 	
 	void RespawnPlayerCharacter();
-
+	
+	//UI 쪽에서 레벨과 균열인덱스를 정하면 해당 함수를 호출하도록 하면 됩니다
+	UFUNCTION(BlueprintCallable)
+	void MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCrackIndex);
+	
 	//균열 쪽에서 호출할 함수
 	void DestroyAllNormalEnemy();	// 기존 적들 제거
 	void RespawnEnemies();	// 적 기존 위치에 리스폰
@@ -59,6 +67,18 @@ protected:
 	UDomiGameInstance* GameInstance;
 
 	UPROPERTY()
+	UWorldInstanceSubsystem* WorldInstanceSubsystem;
+
+	UPROPERTY()
+	UItemInstanceSubsystem* ItemInstanceSubsystem;
+
+	UPROPERTY()
+	ABaseGameState* BaseGameState;
+	
+	UPROPERTY()
+	UWorld* World;
+
+	UPROPERTY()
 	ADomiCharacter* PlayerCharacter;
 	
 	UPROPERTY()
@@ -69,7 +89,4 @@ protected:
 
 	UPROPERTY()
 	TArray<FEnemySpawnInfo> CachedEnemyInfo;
-	
-	FString CurrentLevel;
-	
 };

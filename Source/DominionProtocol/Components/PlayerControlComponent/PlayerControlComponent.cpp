@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "./States/PlayerControlState.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
+#include "Effects/PlayerUsingSkillEffect/BufferedInput/BaseBufferedInput.h"
 #include "Effects/PlayerConfusedEffect/PlayerConfusedEffect.h"
 #include "Effects/PlayerDeathEffect/PlayerDeathEffect.h"
 #include "Effects/PlayerLockOnEffect/PlayerLockOnEffect.h"
@@ -17,6 +18,7 @@
 #include "Effects/PlayerStunEffect/PlayerStunEffect.h"
 #include "Effects/PlayerUsingSkillEffect/PlayerUsingSkillEffect.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UPlayerControlComponent::UPlayerControlComponent()
@@ -27,6 +29,7 @@ UPlayerControlComponent::UPlayerControlComponent()
 	bWantsInitializeComponent = true;
 	
 	PlayerControlState = nullptr;
+	ValidBufferedInput = nullptr;
 	// bIsComponentReady = false;
 	// ...
 }
@@ -97,7 +100,6 @@ void UPlayerControlComponent::InitializeComponent()
 	// bIsComponentReady = true;
 }
 
-
 // Called every frame
 void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction* ThisTickFunction)
@@ -106,8 +108,169 @@ void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 	// ...
 
+	if (IsValid(ValidBufferedInput))
+	{
+		ValidBufferedInput->Operate();
+		ValidBufferedInput = nullptr;
+	}
+	
 	PlayerControlState->Tick(DeltaTime);
 }
+
+bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOuter());
+	check(OwnerCharacter);
+	
+	const FVector Start = OwnerCharacter->GetActorLocation();
+	const FVector End = Start;
+	TArray<FHitResult> SphereTraceHitResults;
+	FCollisionQueryParams SphereTraceQueryParams;
+	SphereTraceQueryParams.AddIgnoredActor(OwnerCharacter);
+	constexpr float PublicSpaceDistance = 760.f;
+	
+	bool bHit = GetWorld()->SweepMultiByChannel(
+		SphereTraceHitResults,
+		Start,
+		End,
+		FQuat::Identity,
+		ECC_Visibility,
+		FCollisionShape::MakeSphere(PublicSpaceDistance),
+		SphereTraceQueryParams
+	);
+
+	SetLockOnTargetActor(nullptr);
+	
+	if (bHit)
+	{
+		float MinDistance = PublicSpaceDistance;
+		AActor* MinDistanceActor = nullptr;
+		for (const FHitResult& Hit : SphereTraceHitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+
+			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
+			{
+				if (IsActorInViewport(HitActor->GetActorLocation()))
+				{
+					const float ActorDistance = FVector::Distance(OwnerCharacter->GetActorLocation(), HitActor->GetActorLocation()); 
+					if (ActorDistance < MinDistance)
+					{
+						MinDistance = ActorDistance;
+						MinDistanceActor = HitActor;
+					}
+				}
+			}
+		}
+		if (MinDistanceActor)
+		{
+			// Target actor selected.
+			SetLockOnTargetActor(MinDistanceActor);
+			return true;
+		}
+	}
+	// There is no target actor.
+	return false;
+}
+
+bool UPlayerControlComponent::SetLockOnTargetActorInVisibility()
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOuter());
+	check(OwnerCharacter);
+	
+	TArray<FHitResult> SphereTraceHitResults;
+	FCollisionQueryParams QueryParams;
+	
+	QueryParams.AddIgnoredActor(OwnerCharacter);
+	constexpr float VisibilityDistance = 3000.f;
+	FVector ViewPointLocation;
+	FRotator ViewPointRotation;
+	OwnerCharacter->GetController()->GetPlayerViewPoint(ViewPointLocation, ViewPointRotation);
+	const FRotator ControllerRotatorWithZeroPitch = FRotator(0,ViewPointRotation.Yaw, ViewPointRotation.Roll);
+	const FVector ControllerForwardVector = ControllerRotatorWithZeroPitch.Vector();
+	
+	const FVector Start = ViewPointLocation + FMath::Sqrt(2.f) * ControllerForwardVector * VisibilityDistance;
+	const FVector End = Start;
+
+	const FVector BoxSize = FVector(VisibilityDistance,VisibilityDistance,600.f);
+	
+	bool bBoxTraceHit = GetWorld()->SweepMultiByChannel(
+		SphereTraceHitResults,
+		Start,
+		End,
+		FQuat(FRotator(0,ViewPointRotation.Yaw + 45.f,0)),
+		ECC_Visibility,
+		FCollisionShape::MakeBox(BoxSize),
+		QueryParams
+	);
+
+	SetLockOnTargetActor(nullptr);
+	
+	if (bBoxTraceHit)
+	{
+		float MinAngle = 90.f;
+		AActor* MinAngleActor = nullptr;
+		for (const FHitResult& Hit : SphereTraceHitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+
+			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
+			{
+				if (IsActorInViewport(HitActor->GetActorLocation()))
+				{
+					FHitResult LineTraceHit;
+					bool bLineTraceHit = GetWorld()->LineTraceSingleByChannel(
+						LineTraceHit,
+						OwnerCharacter->GetActorLocation(),
+						HitActor->GetActorLocation(),
+						ECC_Visibility,
+						QueryParams
+					);
+					if (bLineTraceHit && LineTraceHit.GetActor() == HitActor)
+					{
+						FVector ControllerToActorVector = (HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+						const float AngleDifference = FMath::RadiansToDegrees(FMath::Acos(ViewPointRotation.Vector().Dot(ControllerToActorVector))); 
+						if (AngleDifference < MinAngle)
+						{
+							MinAngle = AngleDifference;
+							MinAngleActor = HitActor;
+						}
+					}
+				}
+			}
+		}
+		if (MinAngleActor)
+		{
+			// Target actor selected.
+			SetLockOnTargetActor(MinAngleActor);
+			return true;
+		}
+	}
+	// There is no target actor.
+	return false;
+}
+
+bool UPlayerControlComponent::IsActorInViewport(const FVector& ActorLocation) const
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOuter());
+	check(OwnerCharacter);
+	
+	FVector2D ViewportSize;
+	GEngine->GameViewport->GetViewportSize(ViewportSize);
+	
+	FVector2D ScreenLocation;
+	const bool bIsOnScreen = UGameplayStatics::ProjectWorldToScreen(
+			Cast<APlayerController const>(OwnerCharacter->GetController()),
+			ActorLocation,
+			ScreenLocation
+		);
+
+	if (!bIsOnScreen) return false;
+	
+	return ScreenLocation.X >= 0 && ScreenLocation.X <= ViewportSize.X &&
+		   ScreenLocation.Y >= 0 && ScreenLocation.Y <= ViewportSize.Y;
+}
+
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag)
 {
@@ -115,10 +278,10 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	{
 		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
 		{
-			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect); !UsingSkillEffect->IsActive())
 			{
 				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
-				(*ControlEffect)->Activate();
+				UsingSkillEffect->Activate();
 			}
 		}
 		else
@@ -131,7 +294,10 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		(*ControlEffect)->Activate();
+		if (!(*ControlEffect)->IsActive())
+		{
+			(*ControlEffect)->Activate();
+		}
 	}
 	else
 	{
@@ -145,10 +311,10 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	{
 		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
 		{
-			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect); !UsingSkillEffect->IsActive())
 			{
 				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
-				(*ControlEffect)->Activate(Duration);
+				UsingSkillEffect->Activate(Duration);
 			}
 		}
 		else
@@ -161,7 +327,10 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		(*ControlEffect)->Activate(Duration);
+		if (!(*ControlEffect)->IsActive())
+		{
+			(*ControlEffect)->Activate(Duration);
+		}
 	}
 	else
 	{
@@ -175,10 +344,10 @@ void UPlayerControlComponent::DeactivateControlEffect(const FGameplayTag& Contro
 	{
 		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
 		{
-			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect); UsingSkillEffect->IsActive())
 			{
 				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
-				(*ControlEffect)->Deactivate();
+				UsingSkillEffect->Deactivate();
 			}
 		}
 		else
@@ -191,7 +360,10 @@ void UPlayerControlComponent::DeactivateControlEffect(const FGameplayTag& Contro
 	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		(*ControlEffect)->Deactivate();
+		if ((*ControlEffect)->IsActive())
+		{
+			(*ControlEffect)->Deactivate();
+		}
 	}
 	else
 	{
@@ -331,4 +503,65 @@ void UPlayerControlComponent::LockOn()
 		Debug::PrintError(TEXT("UPlayerControlComponent::LockOn : Invalid ControlState."));
 	}
 }
+
+void UPlayerControlComponent::ConsumeItemAction_1()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->ConsumeItemAction_1();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::ConsumeItemAction_1 : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::ConsumeItemAction_2()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->ConsumeItemAction_2();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::ConsumeItemAction_2 : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::ConsumeItemAction_3()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->ConsumeItemAction_3();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::ConsumeItemAction_3 : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::SwapWeapon()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->SwapWeapon();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::SwapWeapon : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::InteractionScroll(const FInputActionValue& Value)
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->InteractionScroll(Value);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::Interaction : Invalid ControlState."));
+	}
+}
+
 

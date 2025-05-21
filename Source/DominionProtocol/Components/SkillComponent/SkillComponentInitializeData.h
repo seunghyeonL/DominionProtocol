@@ -3,11 +3,10 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
-#include "ItemInventory/BaseItem.h"
 #include "SkillComponentInitializeData.generated.h"
 
 USTRUCT(BlueprintType)
-struct FSkillGroupInitializeData
+struct FSkillGroupInitializeData 
 {
 	GENERATED_BODY()
 
@@ -19,7 +18,7 @@ struct FSkillGroupInitializeData
 };
 
 USTRUCT(BlueprintType)
-struct FSkillComponentInitializeData
+struct FSkillComponentInitializeData : public FTableRowBase
 {
 	GENERATED_BODY()
 

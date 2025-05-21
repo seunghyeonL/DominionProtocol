@@ -7,11 +7,10 @@
 #include "Util/GameTagList.h"
 #include "PlayerControlComponent.generated.h"
 
+class UBaseBufferedInput;
 class UPlayerControlStateBase;
 class UPlayerControlEffectBase;
 struct FInputActionValue;
-
-// DECLARE_DELEGATE(FOnComponentReady);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API UPlayerControlComponent : public UActorComponent
@@ -23,15 +22,28 @@ public:
 	UPlayerControlComponent();
 	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	FORCEINLINE void SetValidBufferedInput(UBaseBufferedInput* InBufferedInput) { ValidBufferedInput = InBufferedInput; }
+	FORCEINLINE void SetLockOnTargetActor(AActor* NewActor) { LockOnTargetActor = NewActor; }
+	FORCEINLINE AActor* GetLockOnTargetActor() const { return LockOnTargetActor; }
 	
-	// FOnComponentReady OnComponentReady;
-	// bool bIsComponentReady;
+	FORCEINLINE virtual void SetCurrentMovementVector(const FVector& InLastMovementVector) { CurrentMovementVector = InLastMovementVector; }
+	FORCEINLINE virtual FVector& GetCurrentMovementVector() { return CurrentMovementVector; }
+	FORCEINLINE virtual void ResetLastMovementVector() { CurrentMovementVector = FVector::ZeroVector; }
+
+	bool SetLockOnTargetActorInPublicSpace();
+	bool SetLockOnTargetActorInVisibility();
+	bool IsActorInViewport(const FVector& ActorLocation) const;
+	
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	virtual void InitializeComponent() override;
+
+	UPROPERTY(VisibleAnywhere)
+	AActor* LockOnTargetActor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlStateBase> PlayerControlState;
@@ -41,6 +53,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effect")
 	TMap<FGameplayTag, UPlayerControlEffectBase*> ControlEffectMap;
+
+	// 현재 이동 입력 방향벡터
+	FVector CurrentMovementVector;
+
+	UPROPERTY()
+	TObjectPtr<UBaseBufferedInput> ValidBufferedInput;
 
 public:
 	// Called every frame
@@ -69,4 +87,9 @@ public:
 	void MagicSkill();
 	void Interact();
 	void LockOn();
+	void ConsumeItemAction_1();
+	void ConsumeItemAction_2();
+	void ConsumeItemAction_3();
+	void SwapWeapon();
+	void InteractionScroll(const FInputActionValue& Value);
 };

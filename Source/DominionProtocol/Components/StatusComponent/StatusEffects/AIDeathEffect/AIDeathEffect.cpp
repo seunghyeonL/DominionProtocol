@@ -2,6 +2,8 @@
 
 
 #include "AIDeathEffect.h"
+#include "GameFramework/Character.h"
+#include "Components/CapsuleComponent.h"
 
 UAIDeathEffect::UAIDeathEffect()
 {
@@ -11,6 +13,11 @@ UAIDeathEffect::UAIDeathEffect()
 void UAIDeathEffect::Activate()
 {
 	Super::Activate();
+	// Ignore Collision with Pawn
+	if (IsValid(OwnerCharacter))
+	{
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	}
 }
 
 void UAIDeathEffect::Activate(float Duration)
@@ -21,4 +28,9 @@ void UAIDeathEffect::Activate(float Duration)
 void UAIDeathEffect::Deactivate()
 {
 	Super::Deactivate();
+	// Set Collision with Pawn
+	if (IsValid(OwnerCharacter))
+	{
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	}
 }

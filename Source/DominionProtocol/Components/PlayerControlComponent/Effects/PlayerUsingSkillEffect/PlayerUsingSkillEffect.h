@@ -6,6 +6,7 @@
 #include "Components/PlayerControlComponent/Effects/PlayerControlEffectBase.h"
 #include "PlayerUsingSkillEffect.generated.h"
 
+class UBaseBufferedInput;
 /**
  * 
  */
@@ -13,6 +14,10 @@ UCLASS()
 class DOMINIONPROTOCOL_API UPlayerUsingSkillEffect : public UPlayerControlEffectBase
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(VisibleAnywhere)
+	TArray<UBaseBufferedInput*> BufferedInputArray;
 
 public:
 	UPlayerUsingSkillEffect();

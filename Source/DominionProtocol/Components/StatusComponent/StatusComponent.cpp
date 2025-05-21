@@ -36,7 +36,7 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (bIsRecoveringStamina)
+	if (bIsRecoveringStamina && !ActiveStatusEffectTags.HasTag(EffectTags::Running))
 	{
 		float Current = GetStat(StatTags::Stamina);
 		float Max = GetStat(StatTags::MaxStamina);
@@ -52,13 +52,15 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	}
 
 	auto ActiveTagArray = ActiveStatusEffectTags.GetGameplayTagArray();
-	for (int32 i = 0 ; i < ActiveTagArray.Num(); i++)
+	for (int32 i = 0; i < ActiveTagArray.Num(); ++i)
 	{
-		if (ActiveTagArray.IsValidIndex(i))
+		const FGameplayTag& Tag = ActiveTagArray[i];
+		if (StatusEffectMap.Contains(Tag))
 		{
-			StatusEffectMap[ActiveTagArray[i]]->Tick(DeltaTime);
+			StatusEffectMap[Tag]->Tick(DeltaTime);
 		}
 	}
+
 }
 
 
@@ -231,8 +233,11 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		(*StatusEffect)->SetMagnitude(Magnitude);
-		(*StatusEffect)->Activate();
+		if (!(*StatusEffect)->IsActive())
+		{
+			(*StatusEffect)->SetMagnitude(Magnitude);
+			(*StatusEffect)->Activate();
+		}
 	}
 	else
 	{
@@ -244,8 +249,11 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		(*StatusEffect)->SetMagnitude(Magnitude);
-		(*StatusEffect)->Activate(Duration);
+		if (!(*StatusEffect)->IsActive())
+		{
+			(*StatusEffect)->SetMagnitude(Magnitude);
+			(*StatusEffect)->Activate(Duration);
+		}
 	}
 	else
 	{
@@ -254,11 +262,13 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 }
 
 void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTag)
-
 {
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
-		(*StatusEffect)->Deactivate();
+		if ((*StatusEffect)->IsActive())
+		{
+			(*StatusEffect)->Deactivate();
+		}
 	}
 	else
 	{

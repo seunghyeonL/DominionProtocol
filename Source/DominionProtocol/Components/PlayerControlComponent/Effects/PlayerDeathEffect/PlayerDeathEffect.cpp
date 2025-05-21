@@ -30,7 +30,7 @@ void UPlayerDeathEffect::Deactivate()
 {
 	Super::Deactivate();
 
-	// Ignore Collision with Pawn
+	// Set Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
@@ -59,7 +59,7 @@ void UPlayerDeathEffect::SprintStart()
 
 void UPlayerDeathEffect::SprintEnd()
 {
-	// Super::SprintEnd();
+	Super::SprintEnd();
 }
 
 void UPlayerDeathEffect::Parry()

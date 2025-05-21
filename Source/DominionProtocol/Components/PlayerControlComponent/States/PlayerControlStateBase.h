@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -35,6 +35,11 @@ public:
 	virtual void MagicSkill() {}
 	virtual void Interact() {}
 	virtual void LockOn() {}
+	virtual void ConsumeItemAction_1() {}
+	virtual void ConsumeItemAction_2() {}
+	virtual void ConsumeItemAction_3() {}
+	virtual void SwapWeapon() {}
+	virtual void InteractionScroll(const FInputActionValue& Value) {}
 
 	virtual void Tick(float DeltaTime) {}
 

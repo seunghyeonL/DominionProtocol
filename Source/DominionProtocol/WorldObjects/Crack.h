@@ -7,9 +7,13 @@
 #include "Interface/InteractableInterface.h"
 #include "Crack.generated.h"
 
+class UWorldInstanceSubsystem;
+class ABaseGameMode;
 class ATargetPoint;
 class ADomiCharacter;
 class USphereComponent;
+
+DECLARE_LOG_CATEGORY_EXTERN(LogCrackSystem, Log, All);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
@@ -20,13 +24,18 @@ class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
 	
 public:
 	ACrack();
-	
-	FORCEINLINE void SwitchActivate() { bIsActivate = !bIsActivate; }
 
 	//Getter
-	FORCEINLINE FVector GetRespawnTargetPointLocation() const;
-	FORCEINLINE FRotator GetRespawnTargetPointRotation() const;
+	FORCEINLINE const FText& GetCrackName() const { return CrackName; }
+	FORCEINLINE bool GetIsActivate() const { return bIsActivate; }
+	FVector GetRespawnTargetPointLocation() const;
+	FRotator GetRespawnTargetPointRotation() const;
+
+	FORCEINLINE int32 GetCrackIndex() const { return CrackIndex; }
+	
 	//Setter
+	FORCEINLINE void SetActive() { bIsActivate = true; }
+	FORCEINLINE void SetCrackName(const FText& NewName) {CrackName = NewName; }
 	
 protected:
 	virtual void BeginPlay() override;
@@ -34,9 +43,7 @@ protected:
 	//Interact
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
-	
-	void MoveToLevel();
-	
+
 	UFUNCTION()
 	void OnOverlapBegin(
 		UPrimitiveComponent* OverlappedComp,
@@ -52,6 +59,8 @@ protected:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
+
+private:
 
 #pragma endregion
 
@@ -73,16 +82,23 @@ protected:
 	UChildActorComponent* RespawnTargetPointComp;
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	FText CrackName;
+	FText CrackName; // UI전용
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	int32 CrackIndex;
 
 private:
-	ATargetPoint* RespawnTargetPoint;
-	
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;
+
+	UPROPERTY()
+	ABaseGameMode* BaseGameMode;
+
+	UPROPERTY()
+	UWorldInstanceSubsystem* WorldInstanceSubsystem;
+	
+	UPROPERTY()
+	ATargetPoint* RespawnTargetPoint;
 	
 	bool bIsActivate;
 	

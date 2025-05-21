@@ -5,13 +5,19 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "EnumAndStruct/FInstanceData.h"
+#include "EnumAndStruct/EGameStoryState.h"
+#include "EnumAndStruct/FCrackData.h"
 #include "DomiGameInstance.generated.h"
+
+class ACrack;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
+#pragma region Share
+	
 public:
 	UDomiGameInstance();
 
@@ -20,19 +26,17 @@ public:
 	FInstanceData GetSaveData() const;
 	
 	//Setter
-	FORCEINLINE void SetIsBossDead(int32 BossIndex);
-	FORCEINLINE void SetCurrentLevelName(FString NewCurrentLevelName) { CurrentLevelName = NewCurrentLevelName; }
-	FORCEINLINE void SetCurrentLevelDisplayName(FText NewCurrentLevelDisplayName) { CurrentLevelDisplayName = NewCurrentLevelDisplayName; }
-	FORCEINLINE void SetRecentCrackName(FText NewRecentCrackName) { RecentCrackName = NewRecentCrackName; }
-	FORCEINLINE void SetRecentCrackIndex(int32 NewRecentCrackIndex) { RecentCrackIndex = NewRecentCrackIndex; }
+	void SetIsBossDead(int32 BossIndex);
+	
+	FORCEINLINE void SetCurrentGameStoryState(EGameStoryState NewGameStoryState) { CurrentGameStoryState = NewGameStoryState; }
+
+	
 	//Getter
-	FORCEINLINE bool GetIsBossDead(int32 BossIndex) const;
-	FORCEINLINE FString GetCurrentLevelName() const { return CurrentLevelName; }
-	FORCEINLINE FText GetCurrentLevelDisplayName() const { return CurrentLevelDisplayName; }
-	FORCEINLINE FText GetRecentCrackName() const { return RecentCrackName; }
-	FORCEINLINE int32 GetRecentCrackIndex() const { return RecentCrackIndex; }
+	bool GetIsBossDead(int32 BossIndex) const;
 	
-	
+	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
+	FORCEINLINE EGameStoryState GetCurrentGameStoryState() const { return CurrentGameStoryState; }
+
 protected:
 	
 private:
@@ -43,16 +47,19 @@ private:
 	//========
 
 	UPROPERTY()
-	FString CurrentLevelName;
-
-	UPROPERTY()
-	FText CurrentLevelDisplayName;
-
-	UPROPERTY()
-	FText RecentCrackName;
-
-	UPROPERTY()
-	int32 RecentCrackIndex;
-
+	EGameStoryState CurrentGameStoryState;
+	
 	static const int32 NumBosses;
+
+#pragma endregion
+
+
+#pragma region KyuHyeok
+
+#pragma endregion
+
+
+#pragma region SeoYoung
+
+#pragma endregion
 };

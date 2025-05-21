@@ -2,34 +2,38 @@
 
 
 #include "DomiGameInstance.h"
+#include "EnumAndStruct/EGameStoryState.h"
+#include "WorldObjects/Crack.h"
+#include "Util/DebugHelper.h"
 
-const int32 UDomiGameInstance::NumBosses = 1;
+const int32 UDomiGameInstance::NumBosses = 5;
 
 UDomiGameInstance::UDomiGameInstance()
-	:	RecentCrackIndex(0)
 {
 	IsBossDeadArray.Init(false, NumBosses);
+	
+	CurrentGameStoryState = EGameStoryState::Tutorial;
 }
 
 void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)
 {
 	IsBossDeadArray = SaveData.IsBossDeadArray;
-	CurrentLevelName = SaveData.CurrentLevelName;
-	CurrentLevelDisplayName = SaveData.CurrentLevelDisplayName;
-	RecentCrackName = SaveData.RecentCrackName;
-	RecentCrackIndex = SaveData.RecentCrackIndex;
+	// CurrentLevelName = SaveData.CurrentLevelName;
+	// CurrentLevelDisplayName = SaveData.CurrentLevelDisplayName;
+	// RecentCrackName = SaveData.RecentCrackName;
+	// RecentCrackIndex = SaveData.RecentCrackIndex;
 }
 
 FInstanceData UDomiGameInstance::GetSaveData() const
 {
 	FInstanceData SaveData;
 
-	SaveData.IsBossDeadArray = IsBossDeadArray;
-	SaveData.CurrentLevelName = CurrentLevelName;
-	SaveData.CurrentLevelDisplayName = CurrentLevelDisplayName;
-	SaveData.RecentCrackName = RecentCrackName;
-	SaveData.RecentCrackIndex = RecentCrackIndex;
-	
+	// SaveData.IsBossDeadArray = IsBossDeadArray;
+	// SaveData.CurrentLevelName = CurrentLevelName;
+	// SaveData.CurrentLevelDisplayName = CurrentLevelDisplayName;
+	// SaveData.RecentCrackName = RecentCrackName;
+	// SaveData.RecentCrackIndex = RecentCrackIndex;
+
 	return SaveData;
 }
 

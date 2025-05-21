@@ -5,19 +5,25 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "Engine/TargetPoint.h"
-#include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "DomiFramework/GameMode/ProtoLevel1GameMode.h"
 #include "DomiFramework/GameMode/ProtoLevel2GameMode.h"
+#include "DomiFramework/GameState/BaseGameState.h"
+#include "EnumAndStruct/FCrackData.h"
+#include "Player/InGameController.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "UI/UIInGame/DomiInGameHUDWidget.h"
 
 #include "Util/DebugHelper.h"
+
+DEFINE_LOG_CATEGORY(LogCrackSystem);
 
 // Sets default values
 ACrack::ACrack()
 	:   CrackName(FText::GetEmpty()),
         CrackIndex(0),
-        bIsActivate(true)
+        bIsActivate(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -45,27 +51,13 @@ void ACrack::BeginPlay()
 
     RespawnTargetPoint = Cast<ATargetPoint>(RespawnTargetPointComp->GetChildActor());
     
-    //***프로토타입용 코드*** 본 개발시 변경해야함
-    UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-    check(GameInstance);
-
-    GameInstance->SetRecentCrackName(CrackName);
-    GameInstance->SetRecentCrackIndex(CrackIndex);
+    WorldInstanceSubsystem = GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
+    check(WorldInstanceSubsystem);
     
-    //*===BaseGameMode의 ACrack* RecentCrack 업데이트===*
-    ABaseGameMode* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
-    GameMode->SetRecentCrackCache(this);
-    //*===============================================*
-    
-    //***================================***
+    BaseGameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
     
     SphereCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ACrack::OnOverlapBegin);
     SphereCollisionComp->OnComponentEndOverlap.AddDynamic(this, &ACrack::OnOverlapEnd);
-}
-
-void ACrack::MoveToLevel()
-{
-
 }
 
 void ACrack::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -79,7 +71,7 @@ void ACrack::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
     ensure(PlayerCharacter);
     CachedCharacter = PlayerCharacter;
     
-    PlayerCharacter->SetCurrentInteractableObject(this);
+    PlayerCharacter->AddInteractableActor(this);
 }
 
 void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -91,7 +83,7 @@ void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
         ensure(PlayerCharacter);
 
         CachedCharacter = nullptr;
-        PlayerCharacter->SetCurrentInteractableObject(nullptr);
+        PlayerCharacter->RemoveInteractableActor(this);
     }
     else
     {
@@ -101,27 +93,44 @@ void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
 
 void ACrack::Interact_Implementation(AActor* Interactor)
 {
-    FName TargetLevelName = NAME_None;
+    UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+    if (!GameInstance) return;
+
+    //최근 균열 업데이트
+    BaseGameMode->SetRecentCrackCache(this);
     
-    ABaseGameMode* GameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
-    if (GameMode)
+    WorldInstanceSubsystem->SetRecentCrackName(CrackName);
+    WorldInstanceSubsystem->SetRecentCrackIndex(CrackIndex);
+    
+    // 흐름
+    // 1. 비활성화시 활성화
+    // 2. 기능
+    
+    // 1. 해당 균열 활성화
+    if (!bIsActivate)
     {
-        if (GameMode->IsA(AProtoLevel1GameMode::StaticClass()))
+        bIsActivate = true;
+        WorldInstanceSubsystem->SetIsActivateCrackIndex(WorldInstanceSubsystem->GetCurrentLevelName(), CrackIndex);
+        UE_LOG(LogCrackSystem, Warning, TEXT("%s 활성화"), *CrackName.ToString());
+        Debug::Print(CrackName.ToString()+TEXT(" 활성화"));
+        return;
+    }
+    
+    // 2. 기능
+    auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
+    if (PlayerCharacter)
+    {
+        auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
+        if (PlayerController)
         {
-            TargetLevelName = FName("Proto_Level2"); 
-        }
-        else if (GameMode->IsA(AProtoLevel2GameMode::StaticClass()))
-        {
-            TargetLevelName = FName("Proto_Level1"); 
-
+            UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
+            if (InGameHUDWidget)
+            {
+                InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
+            }
         }
     }
-
-    if (TargetLevelName != NAME_None)
-    {
-        Debug::Print(FString::Printf(TEXT("Open %s"), *TargetLevelName.ToString()));
-        UGameplayStatics::OpenLevel(this, TargetLevelName);
-    }
+    
 }
 
 FText ACrack::GetInteractMessage_Implementation() const

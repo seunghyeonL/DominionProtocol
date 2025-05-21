@@ -4,6 +4,7 @@
 #include "SkillComponentInitializeData.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
+#include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Gameframework/Character.h"
@@ -78,6 +79,12 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
 
 void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 {
+    if (IsValid(CurrentSkill))
+    {
+        Debug::Print(TEXT("USkillComponent::ExecuteSkill : Skill Already Executing"));
+        return;
+    }
+    
 	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
     check(IsValid(OwnerCharacter));
 
@@ -93,26 +100,6 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
     {
         const TArray<UBaseSkill*>& Skills = SkillGroup->Skills;
         int32& ComboIdx = SkillGroup->ComboIdx;
-
-        if (auto ControlComponentUser = Cast<IControlComponentUser>(OwnerCharacter))
-        {
-            // Cashed Movement Vector
-            FVector LastInputVector = ControlComponentUser->GetLastMovementVector();
-            
-            if (!ControlComponentUser->GetActiveControlEffectTags().HasTag(EffectTags::LockOn)) 
-            {
-                // LockOn상태가 아닐때 Rotation돌리는 로직
-                if (!LastInputVector.IsNearlyZero())
-                {
-                    OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
-                }
-            }
-            else if (SkillGroupTag.MatchesTag(SkillGroupTags::Dash))
-            {
-                // LockOn이어도 Dash 쓸때는 로테이션 돌리기
-                OwnerCharacter->SetActorRotation(LastInputVector.Rotation());
-            }
-        }
 
         if (Skills.IsValidIndex(ComboIdx))
         {
@@ -131,14 +118,16 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     // Use Stamina
                     StatusComponent->ConsumeStamina(Skill->GetStamina());
                 }
-                
-                SetCurrentSkill(Skill);
-                Skill->Execute(); // 해당 스킬 실행
+
+                // 스킬 실행전 스킬실행 상태로 바꾸기
                 if (OnSkillStart.IsBound())
                 {
                     OnSkillStart.Execute(Skill->GetControlEffectTag());
                 }
-
+                // 해당 스킬 실행
+                SetCurrentSkill(Skill);
+                Skill->Execute(); 
+               
                 // 공격이 바뀔 경우 바로 콤보 초기화
                 if (CurrentSkillGroupTag.IsValid() && CurrentSkillGroupTag != SkillGroupTag)
                 {
@@ -151,7 +140,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                 CurrentSkillGroupTag = SkillGroupTag;
 
                 GetWorld()->GetTimerManager().ClearTimer(ResetComboTimer);
-
+                
                 // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴
                 ComboIdx = (ComboIdx + 1) % SkillGroup->Skills.Num();
             }
@@ -169,35 +158,33 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 
 void USkillComponent::EndSkill()
 {
+    if (!IsValid(CurrentSkill))
+    {
+        return;
+    }
+    
     ACharacter* Character = Cast<ACharacter>(GetOwner());
 
-    if (Character)
+    if (IsValid(Character))
     {
         USkeletalMeshComponent* Mesh = Character->GetMesh();
 
-        if (Mesh)
+        if (IsValid(Mesh))
         {
             UAnimInstance* AnimInstance = Mesh->GetAnimInstance();
 
-            if (AnimInstance)
+            if (IsValid(AnimInstance))
             {
                 UAnimMontage* CurrentMontage = AnimInstance->GetCurrentActiveMontage();
-
-                if (CurrentMontage)
+                
+                if (IsValid(CurrentMontage))
                 {
                     AnimInstance->Montage_SetPlayRate(CurrentMontage, CurrentMontage->RateScale * 5);
                 }
             }
         }
     }
-
-    if (OnSkillEnd.IsBound())
-    {
-        OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
-    }
-
-    CurrentSkill = nullptr;
-
+    
     TWeakObjectPtr<ThisClass> WeakThis(this);
     GetWorld()->GetTimerManager().SetTimer(
         ResetComboTimer,
@@ -216,28 +203,65 @@ void USkillComponent::EndSkill()
         ComboResetDelay,
         false
     );
+
+    // CurrentSkill을 null로 바꾸는 로직을 먼저하기
+    // 안그러면 스킬 실행 후 CurrentSkill이 nullptr로 바뀐다. 
+    auto CurrentSkillControlEffectTag = CurrentSkill->GetControlEffectTag();
+    CurrentSkill = nullptr;
+
+    if (OnSkillEnd.IsBound())
+    {
+        OnSkillEnd.Execute(CurrentSkillControlEffectTag);
+    }
 }
 
 void USkillComponent::StopSkill()
 {
-    if (CurrentSkill)
+    if (!IsValid(CurrentSkill))
     {
-        ACharacter* Character = Cast<ACharacter>(GetOwner());
-        UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+        return;
+    }
+    
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 
-        // 캐릭터가 스킬 몽타주를 재생 중인지 확인
-        if (AnimInstance && AnimInstance->Montage_IsPlaying(CurrentSkill->GetAnimMontage()))
-        {
-            AnimInstance->Montage_Stop(0.1f, CurrentSkill->GetAnimMontage());
-        }
-
-        if (OnSkillEnd.IsBound())
-        {
-            OnSkillEnd.Execute(CurrentSkill->GetControlEffectTag());
-        }
+    // 캐릭터가 스킬 몽타주를 재생 중인지 확인
+    if (AnimInstance && AnimInstance->Montage_IsPlaying(CurrentSkill->GetAnimMontage()))
+    {
+        Debug::Print(TEXT("USkillComponent::StopSkill : Montage stop."));
+        AnimInstance->Montage_Stop(0.1f, CurrentSkill->GetAnimMontage());
+    }
+    else
+    {
+        Debug::Print(TEXT("USkillComponent::StopSkill : Montage not stop."));
     }
 
+    // 트레이스 멈추기
+    UMnhTracerComponent* MnhTracerComponent = Character->FindComponentByClass<UMnhTracerComponent>();
+
+    if (IsValid(MnhTracerComponent))
+    {
+        FGameplayTagContainer TagContainer;
+        TagContainer.AddTag(ItemTags::BasicWeapon);
+
+        MnhTracerComponent->StopTracers(TagContainer);
+    }
+
+    // 콤보 초기화
+    // 이부분 그냥 ResetCombo같은 함수로 뺄까요?
+    if (FSkillGroup* SkillGroup = SkillGroupMap.Find(CurrentSkillGroupTag))
+    {
+        SkillGroup->ComboIdx = 0;
+    }
+    
+    auto CurrentSkillControlEffectTag = CurrentSkill->GetControlEffectTag();
     CurrentSkill = nullptr;
+    
+    // 스킬종료 델리게이트 호출
+    if (OnSkillEnd.IsBound())
+    {
+        OnSkillEnd.Execute(CurrentSkillControlEffectTag);
+    }
 }
 
 // Debug::PrintLog(TEXT(" "));

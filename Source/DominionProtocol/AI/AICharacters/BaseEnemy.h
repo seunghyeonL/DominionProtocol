@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Util/GameTagList.h"
 #include "Player/Damagable.h"
+#include "Interface/PawnTagInterface.h"
 #include "Player/EffectReceivable.h"
 #include "BaseEnemy.generated.h"
 
@@ -17,7 +18,7 @@ class UStatusComponent;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseEnemy :
-public ACharacter, public IDamagable, public IEffectReceivable, public IStatusComponentUser, public ISkillComponentUser
+public ACharacter, public IDamagable, public IPawnTagInterface, public IEffectReceivable, public IStatusComponentUser, public ISkillComponentUser
 {
 	GENERATED_BODY()
 
@@ -25,17 +26,6 @@ public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UStatusComponent> StatusComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USkillComponent> SkillComponent;
-
-public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI|State")
 	bool bIsAttacking = true;
 	
@@ -57,11 +47,32 @@ public:
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 	
+	// PawnTag
+	virtual FGameplayTag GetPawnTag_Implementation() override;
+
 	// EffectReceivable
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;
 
 protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStatusComponent> StatusComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkillComponent> SkillComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
+	FGameplayTag PawnTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer InvincibilityTags;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer HardCCTags;
+	
 	// UI Section
 	UPROPERTY(BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UDomiWidgetComponent> HPWidgetComponent;

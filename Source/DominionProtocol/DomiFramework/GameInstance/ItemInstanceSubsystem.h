@@ -12,6 +12,8 @@ class DOMINIONPROTOCOL_API UItemInstanceSubsystem : public UGameInstanceSubsyste
 {
 	GENERATED_BODY()
 
+#pragma region Share
+	
 public:
 
 	//Save & Load
@@ -23,5 +25,16 @@ protected:
 	virtual void Deinitialize() override;
 
 private:
-	
+
+#pragma endregion
+
+
+#pragma region KyuHyeok
+
+#pragma endregion
+
+
+#pragma region SeoYoung
+
+#pragma endregion
 };

@@ -5,7 +5,7 @@
 #include "StatusComponentInitializeData.generated.h"
 
 USTRUCT(BlueprintType)
-struct FTagFloatPair
+struct FTagFloatPair 
 {
 	GENERATED_BODY()
 
@@ -29,7 +29,7 @@ struct FTagEffectClassPair
 };
 
 USTRUCT(BlueprintType)
-struct FStatusComponentInitializeData
+struct FStatusComponentInitializeData : public FTableRowBase
 {
 	GENERATED_BODY()
 

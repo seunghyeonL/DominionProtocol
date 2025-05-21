@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "../Damagable.h"
+#include "Interface/PawnTagInterface.h"
 #include "../EffectReceivable.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
-#include "Util/DebugHelper.h"
 #include "Components/SkillComponent/SkillComponentUser.h"
 #include "DomiCharacter.generated.h"
 
@@ -24,64 +24,48 @@ class UInputAction;
 struct FInputActionValue;
 struct FAttackData;
 
+class UMnhTracerComponent;
+class UMnhBoxComponent;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddInteractableActor, TSet<AActor*>)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnRemoveInteractableActor, TSet<AActor*>)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInteractionWidgetScroll, float)
+
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
-public ACharacter, public IDamagable, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser, public ISkillComponentUser
+public ACharacter, public IDamagable, public IPawnTagInterface, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser, public ISkillComponentUser
 {
 	GENERATED_BODY()
-
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UPlayerControlComponent> ControlComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UStatusComponent> StatusComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USkillComponent> SkillComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UItemComponent* ItemComponent;
-	
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
-	FGameplayTagContainer InvincibilityTags;
 	
 public:
 	ADomiCharacter();
 
+	FOnAddInteractableActor OnAddInteractableActor;
+	FOnRemoveInteractableActor OnRemoveInteractableActor;
+	FOnInteractionWidgetScroll OnInteractionWidgetScroll;
+
 	//Getter
-	FORCEINLINE AActor* GetCurrentInteractableObject() const;
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE AActor* GetCurrentInteractableActor() const;
 	 
 	//Setter
-	FORCEINLINE void SetCurrentInteractableObject(AActor* NewActor) { InteractableObject = NewActor; }
-	
-protected:
-	// Bind Matched Input Functions
-	void BindInputFunctions();
-	virtual void NotifyControllerChanged() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void OnDeath();
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetCurrentInteractableActor(AActor* NewActor) { InteractableActor = NewActor; }
 
-public:
+	void AddInteractableActor(AActor* AddInteractableActor);
+	void RemoveInteractableActor(AActor* RemoveInteractableActor);
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	FORCEINLINE FGameplayTag GetPawnTag() const { return PawnTag; }
+
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
-	FORCEINLINE virtual void SetLastMovementVector(const FVector& InLastMovementVector) override { LastMovementVector = InLastMovementVector; }
-	FORCEINLINE virtual FVector GetLastMovementVector() const override { return LastMovementVector; }
-	FORCEINLINE virtual void ResetLastMovementVector() override { LastMovementVector = FVector::ZeroVector; }
+	
 	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
 	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
 
@@ -98,15 +82,74 @@ public:
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 
+	// PawnTag
+	virtual FGameplayTag GetPawnTag_Implementation() override;
+
 	// EffectReceivable
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;
 
-private:
-	UPROPERTY()
-	AActor* InteractableObject;
+	void EventInteractionWidgetScroll(const float Value);
 
-	// 마지막 이동 입력 방향벡터
-	FVector LastMovementVector;
+protected:
+	// Bind Matched Input Functions
+	void BindInputFunctions();
+	virtual void NotifyControllerChanged() override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void OnDeath();
+	void Parrying(const FAttackData& IncomingAttackData);
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UPlayerControlComponent> ControlComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStatusComponent> StatusComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkillComponent> SkillComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMnhTracerComponent> AttackTraceComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UItemComponent* ItemComponent;
+	
+	/** Camera boom positioning the camera behind the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraBoom;
+
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer InvincibilityTags;
+
+	// 추후에는 태그에서 정해놓고 선별해서 쓰는 방식도 고려중
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer HardCCTags;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	FGameplayTagContainer ParriedTags;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
+	FGameplayTag PawnTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TObjectPtr<UStaticMeshComponent> TempWeapon;			// 추후에 무기 생기면 수정 필요
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;	// 추후에 무기 쪽으로 이동 필요
+
+	
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<AActor> InteractableActor;
+
+	UPROPERTY()
+	TSet<AActor*> InteractableActorSet = {};
+
+	
 };
 

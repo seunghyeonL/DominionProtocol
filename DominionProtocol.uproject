@@ -11,7 +11,9 @@
 			"AdditionalDependencies": [
 				"UMG",
 				"Engine",
-				"CoreUObject"
+				"CoreUObject",
+				"MissNoHit",
+				"AIModule"
 			]
 		}
 	],
@@ -26,6 +28,11 @@
 		{
 			"Name": "ActorPalette",
 			"Enabled": true
+		},
+		{
+			"Name": "MissNoHit",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/2986eaeb54174df8b21a5168d28daa4b"
 		}
 	]
 }

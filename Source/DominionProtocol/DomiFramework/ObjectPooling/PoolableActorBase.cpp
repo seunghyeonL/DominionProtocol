@@ -1,11 +1,11 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PoolableActorBase.h"
 
 APoolableActorBase::APoolableActorBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void APoolableActorBase::BeginPlay()
@@ -25,7 +25,7 @@ void APoolableActorBase::OnObjectSpawn_Implementation()
 	SetActorEnableCollision(bIsActivate);
 }
 
-void APoolableActorBase::OnObjectReset_Implementation()
+void APoolableActorBase::OnObjectReturn_Implementation()
 {
 	bIsActivate = false;
 	SetActorHiddenInGame(!bIsActivate);
