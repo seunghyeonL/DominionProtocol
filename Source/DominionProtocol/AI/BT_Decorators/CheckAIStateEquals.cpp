@@ -4,7 +4,7 @@
 #include "AI/BT_Decorators/CheckAIStateEquals.h"
 #include "AIController.h"
 #include "GameFramework/Actor.h"
-#include "Components/StatusComponent/StatusComponentUser.h"
+#include "Components/StatusComponent/AIStatusComponent.h"
 
 UCheckAIStateEquals::UCheckAIStateEquals()
 {
@@ -19,12 +19,12 @@ bool UCheckAIStateEquals::CalculateRawConditionValue(UBehaviorTreeComponent& Own
 	APawn* ControlledPawn = AIController->GetPawn();
 	if (!ControlledPawn) return false;
 
-	IStatusComponentUser* StatusUser = Cast<IStatusComponentUser>(ControlledPawn);
-	if (!StatusUser) return false;
+	UAIStatusComponent* AIStatus = ControlledPawn->FindComponentByClass<UAIStatusComponent>();
+	if (!AIStatus) return false;
 
-	const FGameplayTagContainer& ActiveTags = StatusUser->GetActiveStatusEffectTags();
-	UE_LOG(LogTemp, Warning, TEXT("[CheckAIStateEquals] Required: %s / Active: %s"),
-		*RequiredStateTag.ToString(),
-		*ActiveTags.ToString());
-	return ActiveTags.HasTagExact(RequiredStateTag);
+	const FGameplayTag& CurrentTag = AIStatus->GetCurrentStateTag();
+
+	const bool bMatch = (CurrentTag == RequiredStateTag);
+
+	return bMatch;
 }

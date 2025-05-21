@@ -8,7 +8,7 @@
 #include "BaseAIController.generated.h"
 
 class UAISenseConfig_Sight;
-class UAIStateBase;
+class UAIStatusComponent;
 struct FAIStimulus;
 
 UCLASS()
@@ -49,15 +49,8 @@ protected:
 	FTimerHandle LoseTargetTimerHandle;
 
 protected:
-	UPROPERTY()
-	UAIStateBase* IdleState;
-
-	UPROPERTY()
-	UAIStateBase* CombatState;
-
-	UPROPERTY()
-	UAIStateBase* ReturnState;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	UAIStatusComponent* AIStatusComponent;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

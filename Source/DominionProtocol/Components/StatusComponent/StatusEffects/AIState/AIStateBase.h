@@ -10,11 +10,12 @@
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UAIStateBase : public UStatusEffectBase
+class DOMINIONPROTOCOL_API UAIStateBase : public UObject
 {
 	GENERATED_BODY()
 
 public:
+	FORCEINLINE bool IsActive() const { return bIsActive; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	FGameplayTag StateTag;
@@ -22,7 +23,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetStateTag() const { return StateTag; }
 
-	virtual void Activate() override;
-	virtual void Activate(float Duration) override;
-	virtual void Deactivate() override;
+	virtual void Activate();
+	virtual void Deactivate();
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
+	bool bIsActive;
 };

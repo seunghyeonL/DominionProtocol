@@ -7,6 +7,7 @@
 #include "Util/GameTagList.h"
 #include "AIStatusComponent.generated.h"
 
+class UAIStateBase;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DOMINIONPROTOCOL_API UAIStatusComponent : public UActorComponent
@@ -16,12 +17,22 @@ class DOMINIONPROTOCOL_API UAIStatusComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UAIStatusComponent();
-
-	const FGameplayTagContainer& GetActiveTags() const { return ActiveTags; }
-
-	void AddTag(const FGameplayTag& Tag);
-	void RemoveTag(const FGameplayTag& Tag);
-	void SetExclusiveState(const FGameplayTag& NewState);
 protected:
-	FGameplayTagContainer ActiveTags;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAIStateBase> CurrentState;
+
+	UPROPERTY(VisibleAnywhere, Category = "AI State")
+	FGameplayTag CurrentStateTag;
+
+public:
+	void SetAIState(UAIStateBase* NewState);
+	UAIStateBase* GetCurrentState() const { return CurrentState; }
+
+	UFUNCTION()
+	void SetAIStateByTag(const FGameplayTag& NewTag);
+
+	FGameplayTag GetCurrentStateTag() const;
+
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnAIStateChanged, FGameplayTag);
+	FOnAIStateChanged OnAIStateChanged;
 };
