@@ -133,8 +133,9 @@ void ADoorLocked::Interact_Implementation(AActor* Interactor)
 	{
 		Timeline.Reverse();
 		Debug::Print(TEXT("Door Closed"));
+		bIsDoorClosed = true;
 	}
-	bIsDoorClosed = !bIsDoorClosed;
+	
 }
 
 FText ADoorLocked::GetInteractMessage_Implementation() const
