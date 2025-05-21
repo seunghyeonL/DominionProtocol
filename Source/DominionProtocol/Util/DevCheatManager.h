@@ -1,9 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/CheatManager.h"
+#include "EnumAndStruct/EGameStoryState.h"
 #include "DevCheatManager.generated.h"
 
 
@@ -21,4 +22,7 @@ public:
 
 	UFUNCTION(Exec)
 	void MoveToCrack(FString TargetLevelName, int32 TargetCrackIndex);
+
+	UFUNCTION(Exec)
+	void StoryState(EGameStoryState NewStoryState);
 };
