@@ -154,6 +154,15 @@ void ABaseEnemy::ShowStatusEffectTags_Implementation()
 	}
 }
 
+void ABaseEnemy::ActivateStatusEffect_Implementation(const FGameplayTag& EffectTag)
+{
+	IEffectReceivable::ActivateStatusEffect_Implementation(EffectTag);
+
+	check(StatusComponent);
+
+	StatusComponent->ActivateStatusEffect(EffectTag, 0);
+}
+
 void ABaseEnemy::InitializeStatusComponent()
 {
 	if (auto World = GetWorld())
