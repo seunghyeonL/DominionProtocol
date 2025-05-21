@@ -5,9 +5,9 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Components/StatusComponent/StatusEffects/AIState/AIStateBase.h"
+#include "Components/AIComponent/AIState/AIStateBase.h"
 #include "Components/StatusComponent/StatusComponent.h"
-#include "Components/StatusComponent/AIStatusComponent.h"
+#include "Components/AIComponent/AIStateComponent.h"
 
 
 // Sets default values
@@ -34,7 +34,7 @@ ABaseAIController::ABaseAIController()
 	// 델리게이트 바인딩
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAIController::OnTargetPerceptionUpdated);
 
-	AIStatusComponent = CreateDefaultSubobject<UAIStatusComponent>(TEXT("AIStatusComponent"));
+	AIStateComponent = CreateDefaultSubobject<UAIStateComponent>(TEXT("AIStateComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -59,9 +59,9 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 		GetBlackboardComponent()->SetValueAsVector(TEXT("HomeLocation"), SpawnLocation);
 	}
 
-	if (AIStatusComponent)
+	if (AIStateComponent)
 	{
-		AIStatusComponent->SetAIStateByTag(EffectTags::Idle);
+		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
 		UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
 	}
 }
@@ -70,16 +70,16 @@ void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 {
 	EvaluateTargetPriority();
 
-	if (!AIStatusComponent) return;
+	if (!AIStateComponent) return;
 
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		AIStatusComponent->SetAIStateByTag(EffectTags::Combat);
+		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
 		UE_LOG(LogTemp, Warning, TEXT("CombatState Activated"));
 	}
 	else
 	{
-		AIStatusComponent->SetAIStateByTag(EffectTags::Idle);
+		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
 		UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
 		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);	
 	}
@@ -131,11 +131,11 @@ void ABaseAIController::Tick(float DeltaTime)
 
 void ABaseAIController::HandleTargetLost()
 {
-	if (!AIStatusComponent) return;
+	if (!AIStateComponent) return;
 
 	if (!GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")))
 	{
-		AIStatusComponent->SetAIStateByTag(EffectTags::Return);
+		AIStateComponent->SetAIStateByTag(EffectTags::Return);
 		UE_LOG(LogTemp, Warning, TEXT("ReturnState Activated"));
 	}
 }

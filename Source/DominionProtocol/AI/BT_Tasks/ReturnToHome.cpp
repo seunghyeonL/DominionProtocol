@@ -5,8 +5,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "Components/StatusComponent/StatusEffects/AIState/AIState_Idle.h"
+#include "Components/AIComponent/AIStateComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 
 UReturnToHome::UReturnToHome()
@@ -41,22 +40,21 @@ EBTNodeResult::Type UReturnToHome::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	return EBTNodeResult::InProgress;
 }
 
+
 void UReturnToHome::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	if (!ControlledActor) return;
 
 	const float Distance = FVector::Dist(ControlledActor->GetActorLocation(), TargetLocation);
-	UE_LOG(LogTemp, Warning, TEXT("Distance to Home: %f"), Distance);
+
 	if (Distance <= AcceptableRadius + 50)
 	{
-		if (UStatusComponent* StatusComp = ControlledActor->FindComponentByClass<UStatusComponent>())
+		if (UAIStateComponent* AIStateComp = ControlledActor->FindComponentByClass<UAIStateComponent>())
 		{
-			UAIState_Idle* IdleState = NewObject<UAIState_Idle>(StatusComp);
-			UE_LOG(LogTemp, Warning, TEXT("Good Home"));
-			IdleState->Activate();
+			AIStateComp->SetAIStateByTag(EffectTags::Idle);
+			UE_LOG(LogTemp, Warning, TEXT("Returned Home → Set to Idle"));
 		}
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }
-

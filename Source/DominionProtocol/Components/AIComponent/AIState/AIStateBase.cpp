@@ -2,7 +2,7 @@
 
 
 #include "AIStateBase.h"
-#include "Components/StatusComponent/AIStatusComponent.h"
+#include "Components/AIComponent/AIStateComponent.h"
 
 void UAIStateBase::Activate()
 {
