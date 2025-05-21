@@ -17,6 +17,9 @@ public:
 	virtual void Execute();
 
 	virtual void AttackTrace() const;
+
+	virtual void StartTrace();
+	virtual void StopTrace();
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime);

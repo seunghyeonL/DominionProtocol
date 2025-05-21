@@ -236,16 +236,7 @@ void USkillComponent::StopSkill()
         Debug::Print(TEXT("USkillComponent::StopSkill : Montage not stop."));
     }
 
-    // 트레이스 멈추기
-    UMnhTracerComponent* MnhTracerComponent = Character->FindComponentByClass<UMnhTracerComponent>();
-
-    if (IsValid(MnhTracerComponent))
-    {
-        FGameplayTagContainer TagContainer;
-        TagContainer.AddTag(ItemTags::BasicWeapon);
-
-        MnhTracerComponent->StopTracers(TagContainer);
-    }
+    CurrentSkill->StopTrace();
 
     // 콤보 초기화
     // 이부분 그냥 ResetCombo같은 함수로 뺄까요?

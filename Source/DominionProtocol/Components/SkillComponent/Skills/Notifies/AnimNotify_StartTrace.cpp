@@ -2,8 +2,7 @@
 
 
 #include "Components/SkillComponent/Skills/Notifies/AnimNotify_StartTrace.h"
-#include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
-#include "Util/GameTagList.h"
+#include "Components/SkillComponent/SkillComponent.h"
 
 void UAnimNotify_StartTrace::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
@@ -13,14 +12,16 @@ void UAnimNotify_StartTrace::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 		if (IsValid(Owner))
 		{
-			UMnhTracerComponent* MnhTracerComponent = Owner->FindComponentByClass<UMnhTracerComponent>();
+			USkillComponent* SkillComponent = Owner->FindComponentByClass<USkillComponent>();
 
-			if (IsValid(MnhTracerComponent))
+			if (IsValid(SkillComponent))
 			{
-				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(ItemTags::BasicWeapon);
+				UBaseSkill* BaseSkill = SkillComponent->GetCurrentSkill();
 
-				MnhTracerComponent->StartTracers(TagContainer);
+				if (IsValid(BaseSkill))
+				{
+					BaseSkill->StartTrace();
+				}
 			}
 		}
 	}

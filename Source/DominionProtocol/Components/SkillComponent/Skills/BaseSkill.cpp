@@ -6,6 +6,7 @@
 #include "Util/GameTagList.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
+#include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 
 UBaseSkill::UBaseSkill()
 {
@@ -149,6 +150,36 @@ void UBaseSkill::AttackTrace() const
 
 			IDamagable::Execute_OnAttacked(HitActor, AttackData);
 		}
+	}
+}
+
+void UBaseSkill::StartTrace()
+{
+	check(OwnerCharacter);
+
+	UMnhTracerComponent* MnhTracerComponent = OwnerCharacter->FindComponentByClass<UMnhTracerComponent>();
+
+	if (IsValid(MnhTracerComponent))
+	{
+		FGameplayTagContainer TagContainer;
+		TagContainer.AddTag(ItemTags::BasicWeapon);
+
+		MnhTracerComponent->StartTracers(TagContainer);
+	}
+}
+
+void UBaseSkill::StopTrace()
+{
+	check(OwnerCharacter);
+
+	UMnhTracerComponent* MnhTracerComponent = OwnerCharacter->FindComponentByClass<UMnhTracerComponent>();
+
+	if (IsValid(MnhTracerComponent))
+	{
+		FGameplayTagContainer TagContainer;
+		TagContainer.AddTag(ItemTags::BasicWeapon);
+
+		MnhTracerComponent->StopTracers(TagContainer);
 	}
 }
 
