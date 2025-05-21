@@ -11,6 +11,8 @@
 
 class ACrack;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStoryStateChanged, EGameStoryState, NewState);
+
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiGameInstance : public UGameInstance
 {
@@ -28,7 +30,7 @@ public:
 	//Setter
 	void SetIsBossDead(int32 BossIndex);
 	
-	FORCEINLINE void SetCurrentGameStoryState(EGameStoryState NewGameStoryState) { CurrentGameStoryState = NewGameStoryState; }
+	void SetCurrentGameStoryState(EGameStoryState NewGameStoryState);
 
 	
 	//Getter
@@ -60,6 +62,9 @@ private:
 
 
 #pragma region SeoYoung
+
+	UPROPERTY(BlueprintAssignable)
+	FOnStoryStateChanged OnStoryStateChanged;
 
 #pragma endregion
 };

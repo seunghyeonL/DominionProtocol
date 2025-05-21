@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "DomiGameInstance.h"
@@ -41,6 +41,15 @@ void UDomiGameInstance::SetIsBossDead(int32 BossIndex)
 {
 	check(IsBossDeadArray.IsValidIndex(BossIndex));
 	IsBossDeadArray[BossIndex] = true;
+}
+
+void UDomiGameInstance::SetCurrentGameStoryState(EGameStoryState NewGameStoryState)
+{
+	if (CurrentGameStoryState != NewGameStoryState)
+	{
+		CurrentGameStoryState = NewGameStoryState;
+		OnStoryStateChanged.Broadcast(NewGameStoryState);
+	}
 }
 
 bool UDomiGameInstance::GetIsBossDead(int32 BossIndex) const
