@@ -23,7 +23,22 @@ void UItemComponent::BeginPlay()
 	Super::BeginPlay();
 
 	//데이터 테이블 할당 체크
-	if (!ItemDataTable)
+	if (ItemDataTable)
+	{
+		// ItemDataTable의 모든 행을 CachedItemDataMap에 로드
+		TArray<FItemData*> ItemDataRows;
+		ItemDataTable->GetAllRows<FItemData>(TEXT("ItemComponent::BeginPlay"),ItemDataRows);
+
+		for (FItemData* Row : ItemDataRows)
+		{
+			if (Row && Row->ItemTag.IsValid())
+			{
+				CachedItemDataMap.Add(Row->ItemTag, *Row); // FItemData 전체를 값으로 복사하여 저장
+			}
+		}
+		Debug::Print(FString::Printf(TEXT("ItemDataTable loaded and cached %d items."), CachedItemDataMap.Num()));
+	}
+	else
 	{
 		Debug::Print(TEXT("Error: ItemDataTable is not assigned in the Editor!"));
 	}
@@ -37,56 +52,46 @@ bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
 	{
 		return false;
 	}
-	//데이터 테이블 체크
-	if (ItemDataTable)
+	//캐싱된 맵에서 데이터 불러옴
+	const FItemData* ItemData = GetItemDataFromTable(ItemTag);
+	if (!ItemData)
 	{
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(ItemTag.GetTagName(), TEXT(""));
-		//데이터 체크
-		if (ItemData)
+		Debug::Print(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 데이터가 없습니다."), *ItemTag.ToString()));
+		return false; // 아이템 데이터 없음
+	}
+
+	int32 MaxQuantity = ItemData->MaxItemQuantity;
+
+	// 기존 아이템이 있을 경우
+	if (InventoryMap.Contains(ItemTag))
+	{
+		if (InventoryMap[ItemTag] + Quantity <= MaxQuantity)
 		{
-			//최대수량 값 가져오기
-			int32 MaxQuantity = ItemData->MaxItemQuantity;
-			//동일 아이템 존재 여부 확인
-			if (InventoryMap.Contains(ItemTag))
-			{
-				if (InventoryMap[ItemTag] + Quantity <= MaxQuantity)
-				{
-					InventoryMap[ItemTag] += Quantity;
-					Debug::Print("Item Quantity Added (Within Limit)");
-					return true;
-				}
-				else
-				{
-					Debug::Print("Item Quantity Exceeds Max Limit");
-					return false;
-				}
-			}
-			else
-			{
-				if (Quantity <= MaxQuantity)
-				{
-					InventoryMap.Add(ItemTag, Quantity);
-					Debug::Print("New Item Added");
-					return true;
-				}
-				else
-				{
-					// InventoryMap.Add(ItemTag, MaxQuantity);
-					Debug::Print("New Item Quantity Exceeds Max Limit");
-					return false;
-				}
-			}
+			InventoryMap[ItemTag] += Quantity;
+			Debug::Print("Item Quantity Added (Within Limit)");
+			//OnInventoryUpdated.Broadcast(); // 인벤토리 변경 알림
+			return true;
 		}
 		else
 		{
-			Debug::Print(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 데이터가 테이블에 없습니다."), *ItemTag.ToString()));
+			Debug::Print("Item Quantity Exceeds Max Limit");
 			return false;
 		}
 	}
-	else
+	else // 새로운 아이템일 경우
 	{
-		Debug::Print(TEXT("아이템 데이터 테이블이 할당되지 않았습니다."));
-		return false;
+		if (Quantity <= MaxQuantity)
+		{
+			InventoryMap.Add(ItemTag, Quantity);
+			Debug::Print("New Item Added");
+			//OnInventoryUpdated.Broadcast(); // 인벤토리 변경 알림
+			return true;
+		}
+		else
+		{
+			Debug::Print("New Item Quantity Exceeds Max Limit");
+			return false;
+		}
 	}
 }
 
@@ -103,6 +108,7 @@ bool UItemComponent::RemoveItem(FGameplayTag ItemTag, int32 Quantity)
 	{
 		InventoryMap[ItemTag] -= Quantity;
 		Debug::Print("Item Quantity Decreased");
+		//OnInventoryUpdated.Broadcast();
 		return true;
 	}
 	//아이템수량=제거할수량이면 아이템태그 제거
@@ -110,6 +116,7 @@ bool UItemComponent::RemoveItem(FGameplayTag ItemTag, int32 Quantity)
 	{
 		InventoryMap.Remove(ItemTag);
 		Debug::Print("Item Tag Removed");
+		//OnInventoryUpdated.Broadcast();
 		return true;
 	}
 	//아이템수량<제거수량이면 시도불가
@@ -138,63 +145,58 @@ const TMap<FGameplayTag, int32>& UItemComponent::GetInventoryMap() const
 //장비 장착
 bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 {
-	//데이터 테이블 체크
-	if (ItemDataTable)
+	//데이터 테이블 캐싱 여부 확인
+	if (CachedItemDataMap.IsEmpty())
 	{
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(ItemTag.GetTagName(), TEXT(""));
-		//데이터 체크
-		if (ItemData)
+		Debug::Print(TEXT("ItemComponent: CachedItemDataMap is empty. ItemDataTable might not be loaded or assigned correctly."));
+		return false;
+	}
+	const FItemData* ItemData = GetItemDataFromTable(ItemTag);
+	//데이터 체크
+	if (!ItemData)
+	{
+		Debug::Print(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 데이터가 없습니다."), *ItemTag.ToString()));
+		return false;
+	}
+	EItemType ItemType = ItemData->ItemType;
+	if (ItemType == EItemType::Weapon)
+	{
+		// 슬롯이 존재하는지 확인
+		if (EquipmentSlots.Contains(SlotName))
 		{
-			EItemType ItemType = ItemData->ItemType;
-			if (ItemType == EItemType::Weapon)
+			// 슬롯의 기존 태그 확인
+			FGameplayTag CurrentTag = EquipmentSlots[SlotName];
+
+			// 태그가 비어있거나 다르다면
+			if (!CurrentTag.IsValid() || CurrentTag != ItemTag)
 			{
-				// 슬롯이 존재하는지 확인
-				if (EquipmentSlots.Contains(SlotName))
+				// 원래의 태그가 유효하다면 장비 해제 (메시지 출력)
+				if (CurrentTag.IsValid())
 				{
-					// 슬롯의 기존 태그 확인
-					FGameplayTag CurrentTag = EquipmentSlots[SlotName];
-
-					// 태그가 비어있거나 다르다면
-					if (!CurrentTag.IsValid() || CurrentTag != ItemTag)
-					{
-						// 원래의 태그가 유효하다면 장비 해제 (메시지 출력)
-						if (CurrentTag.IsValid())
-						{
-							Debug::Print(FString::Printf(TEXT("슬롯 '%s'의 '%s' 장비 해제"), *SlotName.ToString(), *CurrentTag.ToString()));
-						}
-
-						// 새로운 태그 장착
-						EquipmentSlots[SlotName] = ItemTag;
-						Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 장착"), *SlotName.ToString(), *ItemTag.ToString()));
-						return true;
-					}
-					else
-					{
-						Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 이미 동일한 아이템 '%s'이 장착되어 있습니다."), *SlotName.ToString(), *ItemTag.ToString()));
-						return false;
-					}
+					Debug::Print(FString::Printf(TEXT("슬롯 '%s'의 '%s' 장비 해제"), *SlotName.ToString(), *CurrentTag.ToString()));
 				}
-				else
-				{
-					Debug::PrintError(FString::Printf(TEXT("유효하지 않은 장비 슬롯 이름: '%s'"), *SlotName.ToString()));
-					return false;
-				}
+
+				// 새로운 태그 장착
+				EquipmentSlots[SlotName] = ItemTag;
+				Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 장착"), *SlotName.ToString(), *ItemTag.ToString()));
+				//OnEquipmentUpdated.Broadcast(); // 장비 변경 알림
+				return true;
 			}
 			else
 			{
-				Debug::Print(TEXT("아이템의 타입이 무기가 아닙니다"));
+				Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 이미 동일한 아이템 '%s'이 장착되어 있습니다."), *SlotName.ToString(), *ItemTag.ToString()));
 				return false;
 			}
 		}
 		else
 		{
-			Debug::Print(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 데이터가 테이블에 없습니다."), *ItemTag.ToString()));
+			Debug::PrintError(FString::Printf(TEXT("유효하지 않은 장비 슬롯 이름: '%s'"), *SlotName.ToString()));
 			return false;
 		}
 	}
 	else
 	{
-		Debug::Print(TEXT("아이템 데이터 테이블이 할당되지 않았습니다."));
+		Debug::Print(TEXT("아이템의 타입이 무기가 아닙니다"));
 		return false;
 	}
 }
@@ -206,6 +208,7 @@ bool UItemComponent::UnequipItem(FName SlotName)
 	if (EquipmentSlots.Contains(SlotName))
 	{
 		EquipmentSlots[SlotName] = FGameplayTag(); // 태그를 비움
+		//OnEquipmentUpdated.Broadcast(); // 장비 변경 알림
 		return true;
 	}
 	return false;
@@ -222,6 +225,7 @@ void UItemComponent::SwapWeapons()
 	OnSwapWeapons.Execute();
 
 	Debug::Print(TEXT("무기 슬롯을 스왑했습니다."));
+	//OnEquipmentUpdated.Broadcast(); // 장비 변경 알림
 }
 
 //슬롯에 장착된 아이템 태그 반환
@@ -245,12 +249,14 @@ bool UItemComponent::SetConsumableItem(int32 SlotIndex, FGameplayTag ItemTag)
 		{
 			ConsumableSlots[SlotIndex] = ItemTag;
 			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d에 '%s'을 설정했습니다."), SlotIndex, *ItemTag.ToString()));
+			//OnConsumableSlotsUpdated.Broadcast();
 			return true;
 		}
 		else
 		{
 			Debug::Print(FString::Printf(TEXT("인벤토리에 '%s'이 없어 소비 아이템 슬롯 %d에 설정할 수 없습니다."), *ItemTag.ToString(), SlotIndex));
 			ConsumableSlots[SlotIndex] = FGameplayTag(); // 슬롯 비움
+			//OnConsumableSlotsUpdated.Broadcast();
 			return false;
 		}
 	}
@@ -271,7 +277,8 @@ void UItemComponent::UseConsumableItem(int32 SlotIndex)
 		{
 			if (HasItem(ItemToUse, 1)) // 인벤토리에 아이템이 있는지 확인 (수량 1 이상)
 			{
-				const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(ItemToUse.GetTagName(), TEXT(""));
+				const FItemData* ItemData = GetItemDataFromTable(ItemToUse); // 헬퍼 함수 사용
+
 				if (ItemData && ItemData->ItemClass)
 				{
 					// 임시 아이템 액터 생성
@@ -302,6 +309,7 @@ void UItemComponent::UseConsumableItem(int32 SlotIndex)
 				Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d의 '%s'을 사용하려 했으나 인벤토리에 부족합니다."), SlotIndex, *ItemToUse.ToString()));
 				// 인벤토리에 없으므로 슬롯을 다시 비움
 				ConsumableSlots[SlotIndex] = FGameplayTag();
+				//OnConsumableSlotsUpdated.Broadcast();//소비슬롯 변경알림
 			}
 		}
 		else
@@ -331,4 +339,109 @@ FGameplayTag UItemComponent::GetConsumableItem(int32 SlotIndex) const
 const TArray<FGameplayTag>& UItemComponent::GetConsumableSlots() const
 {
 	return ConsumableSlots;
+}
+
+//UI용 함수
+// 인벤토리의 모든 아이템 정보를 FItemUISlotData 배열로 반환
+TArray<FItemUISlotData> UItemComponent::GetInventoryDisplayItems() const
+{
+	TArray<FItemUISlotData> DisplayItems;
+
+	// InventoryMap을 순회하면서 각 아이템에 대한 FItemUISlotData를 생성
+	for (const auto& Pair : InventoryMap)
+	{
+		const FGameplayTag& ItemTag = Pair.Key;
+		const int32 CurrentQuantity = Pair.Value;
+
+		const FItemData* ItemData = GetItemDataFromTable(ItemTag);
+		if (ItemData)
+		{
+			FItemUISlotData UISlotData;
+			UISlotData.ItemTag = ItemTag;
+			UISlotData.ItemIcon = ItemData->ItemIcon;
+			UISlotData.ItemName = ItemData->ItemName; 
+			UISlotData.ItemDescription = ItemData->ItemDescription;
+			UISlotData.CurrentQuantity = CurrentQuantity;//현재수량만 맵의 밸류에서 가져옴
+			UISlotData.MaxStackQuantity = ItemData->MaxItemQuantity;
+			UISlotData.ItemType = ItemData->ItemType;
+
+			DisplayItems.Add(UISlotData);
+		}
+	}
+	return DisplayItems;
+}
+
+// 장비 슬롯의 모든 아이템 정보를 FItemUISlotData 맵으로 반환
+TMap<FName, FItemUISlotData> UItemComponent::GetEquippedDisplayItems() const
+{
+	TMap<FName, FItemUISlotData> EquippedDisplayItems;
+
+	for (const auto& Pair : EquipmentSlots)
+	{
+		const FName& SlotName = Pair.Key;
+		const FGameplayTag& EquippedTag = Pair.Value;
+
+		if (EquippedTag.IsValid())
+		{
+			const FItemData* ItemData = GetItemDataFromTable(EquippedTag);
+			if (ItemData)
+			{
+				FItemUISlotData UISlotData;
+				UISlotData.ItemTag = EquippedTag;
+				UISlotData.ItemIcon = ItemData->ItemIcon;
+				UISlotData.ItemName = ItemData->ItemName;
+				UISlotData.ItemDescription = ItemData->ItemDescription;
+				UISlotData.CurrentQuantity = 1; // 장비는 보통 1개이므로
+				UISlotData.MaxStackQuantity = 1; // 장비는 보통 1개이므로
+				UISlotData.ItemType = ItemData->ItemType;
+
+				EquippedDisplayItems.Add(SlotName, UISlotData);
+			}
+		}
+	}
+	return EquippedDisplayItems;
+}
+
+// 소비 아이템 슬롯의 모든 아이템 정보를 FItemUISlotData 배열로 반환
+TArray<FItemUISlotData> UItemComponent::GetConsumableDisplayItems() const
+{
+	TArray<FItemUISlotData> ConsumableDisplayItems;
+
+	for (const FGameplayTag& ItemTag : ConsumableSlots)
+	{
+		if (ItemTag.IsValid())
+		{
+			const FItemData* ItemData = GetItemDataFromTable(ItemTag);
+			if (ItemData)
+			{
+				FItemUISlotData UISlotData;
+				UISlotData.ItemTag = ItemTag;
+				UISlotData.ItemIcon = ItemData->ItemIcon;
+				UISlotData.ItemName = ItemData->ItemName;
+				UISlotData.ItemDescription = ItemData->ItemDescription;
+				UISlotData.CurrentQuantity = GetItemQuantity(ItemTag); // 인벤토리에서 실제 수량 가져옴
+				UISlotData.MaxStackQuantity = ItemData->MaxItemQuantity;
+				UISlotData.ItemType = ItemData->ItemType;
+
+				ConsumableDisplayItems.Add(UISlotData);
+			}
+		}
+		else
+		{
+			// 빈 슬롯도 표시하려면 유효하지 않은 ItemTag를 가진 FItemUISlotData를 추가할 수 있습니다.
+			// 예: ConsumableDisplayItems.Add(FItemUISlotData());
+		}
+	}
+	return ConsumableDisplayItems;
+}
+
+// 캐싱된 맵에서 FItemData를 로드하는 헬퍼 함수
+const FItemData* UItemComponent::GetItemDataFromTable(FGameplayTag ItemTag) const
+{
+	const FItemData* ItemData = CachedItemDataMap.Find(ItemTag);
+	if (!ItemData)
+	{
+		Debug::PrintError(FString::Printf(TEXT("ItemComponent: No cached data found for ItemTag '%s'."), *ItemTag.ToString()));
+	}
+	return ItemData;
 }

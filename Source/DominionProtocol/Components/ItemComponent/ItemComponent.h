@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Util/GameTagList.h"
+#include "ItemInventory/ItemUISlotData.h"
+#include "Engine/DataTable.h"
 #include "ItemComponent.generated.h"
 
 DECLARE_DELEGATE(FOnSwapWeapons)
@@ -35,6 +37,10 @@ protected:
 	// 소비 아이템 슬롯
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Consumable")
 	TArray<FGameplayTag> ConsumableSlots;
+
+	// 게임 시작 시 ItemDataTable의 모든 FItemData를 로드해 사용
+	UPROPERTY(Transient) // 런타임에만 존재하고 저장되지 않음
+	TMap<FGameplayTag, FItemData> CachedItemDataMap;
 public:	
 	// 아이템 추가
 	UFUNCTION(BlueprintCallable)
@@ -91,6 +97,23 @@ public:
 	// 모든 소비 아이템 슬롯 정보 반환
 	UFUNCTION(BlueprintPure)
 	const TArray<FGameplayTag>& GetConsumableSlots() const;
+	
+	//UI 프로퍼티 추가
 
+	//UI용 함수 추가
+	 // 인벤토리의 모든 아이템 정보를 FItemUISlotData 배열로 반환
+	UFUNCTION(BlueprintPure, Category = "Inventory|UI")
+	TArray<FItemUISlotData> GetInventoryDisplayItems() const;
 
+	// 장비 슬롯의 모든 아이템 정보를 FItemUISlotData 배열로 반환
+	UFUNCTION(BlueprintPure, Category = "Equipment|UI")
+	TMap<FName, FItemUISlotData> GetEquippedDisplayItems() const;
+
+	// 소비 아이템 슬롯의 모든 아이템 정보를 FItemUISlotData 배열로 반환
+	UFUNCTION(BlueprintPure, Category = "Consumable|UI")
+	TArray<FItemUISlotData> GetConsumableDisplayItems() const;
+
+private:
+	//캐싱된 ItemDataTable에서 FItemData를 로드하는 헬퍼 함수
+	const FItemData* GetItemDataFromTable(FGameplayTag ItemTag) const;
 };

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
+#include "Engine/DataTable.h"
 #include "Engine/Texture2D.h"
 #include "Util/GameTagList.h"
 #include "ItemData.generated.h"
