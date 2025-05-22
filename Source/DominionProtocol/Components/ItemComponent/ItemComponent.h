@@ -5,6 +5,7 @@
 #include "Util/GameTagList.h"
 #include "ItemComponent.generated.h"
 
+DECLARE_DELEGATE(FOnSwapWeapons)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DOMINIONPROTOCOL_API UItemComponent : public UActorComponent
@@ -13,6 +14,8 @@ class DOMINIONPROTOCOL_API UItemComponent : public UActorComponent
 
 public:
 	UItemComponent();
+
+	FOnSwapWeapons OnSwapWeapons;
 
 protected:
 	virtual void BeginPlay() override;

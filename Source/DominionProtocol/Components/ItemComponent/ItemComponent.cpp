@@ -71,6 +71,7 @@ bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
 				}
 				else
 				{
+					// InventoryMap.Add(ItemTag, MaxQuantity);
 					Debug::Print("New Item Quantity Exceeds Max Limit");
 					return false;
 				}
@@ -217,6 +218,8 @@ void UItemComponent::SwapWeapons()
 
 	EquipmentSlots[FName("WeaponSlot_Main")] = SecondaryWeapon;
 	EquipmentSlots[FName("WeaponSlot_Secondary")] = MainWeapon;
+
+	OnSwapWeapons.Execute();
 
 	Debug::Print(TEXT("무기 슬롯을 스왑했습니다."));
 }
