@@ -1,6 +1,5 @@
 #include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
-#include "Components/SkillComponent/Skills/SkillObject/CurvedProjectileSpawner.h"
 #include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "GameFramework/Character.h"
