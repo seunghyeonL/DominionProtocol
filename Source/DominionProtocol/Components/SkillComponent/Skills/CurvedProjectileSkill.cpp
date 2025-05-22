@@ -1,12 +1,17 @@
 #include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
+#include "Components/SkillComponent/Skills/SkillObject/CurvedProjectileSpawner.h"
 #include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 #include "GameFramework/Character.h"
 #include "Interface/PawnTagInterface.h"
-#include "Camera/CameraComponent.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
+#include "Components/StatusComponent/StatusComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
+#include "Player/Damagable.h"
+
 
 UCurvedProjectileSkill::UCurvedProjectileSkill()
 {
@@ -23,6 +28,55 @@ void UCurvedProjectileSkill::Execute()
 {
 	Super::Execute();
 
+	UpdateTarget();
+
+	ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
+	if (!IsValid(ObjectPoolSubsystem)) return;
+
+	// 타이머로 투사체 순차 생성
+	GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &UCurvedProjectileSkill::ProjectileFromPool, LaunchInterval, true);
+}
+
+void UCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+{
+	AActor* HitActor = HitResult.GetActor();
+
+	if (!IsValid(HitActor))	return;
+
+	UWorld* World = GetWorld();
+
+	if (!IsValid(World)) return;
+
+	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+
+	if (!IsValid(BaseGameState)) return;
+
+	UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
+
+	if (!IsValid(StatusComponent)) return;
+	float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+
+	FAttackData AttackData;
+
+	check(OwnerCharacter);
+
+	AttackData.Damage = GetFinalAttackData(AttackPower);
+
+	AttackData.Instigator = OwnerCharacter;
+	AttackData.Effects = Effects;
+
+	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
+	{
+		AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
+
+		AttackData.LaunchVector.Normalize();
+
+		IDamagable::Execute_OnAttacked(HitActor, AttackData);
+	}
+}
+
+void UCurvedProjectileSkill::UpdateTarget()
+{
 	if (!IsValid(OwnerCharacter)) return;
 
 	if (OwnerCharacter->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
@@ -30,47 +84,26 @@ void UCurvedProjectileSkill::Execute()
 		FGameplayTag Tag = IPawnTagInterface::Execute_GetPawnTag(OwnerCharacter);
 		if (Tag == PawnTags::Player)
 		{
-			SetTargetActorInPublicSpace();
-			if (TargetActor)
+			// Lock On
+			UPlayerControlComponent* ControlComp = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
+			check(ControlComp);
+			TargetActor = ControlComp->GetLockOnTargetActor();
+
+			if (!TargetActor)
 			{
-				TargetLocation = TargetActor->GetActorLocation();
-			}
-			else
-			{
-				UCameraComponent* Camera = OwnerCharacter->FindComponentByClass<UCameraComponent>();
-				if (Camera)
-				{
-					const FVector CameraLocation = Camera->GetComponentLocation();
-					const FVector ForwardVector = Camera->GetForwardVector();
-					const float Distance = 1400.0f;
-					TargetLocation = CameraLocation + (ForwardVector * Distance);
-				}
-				else
-				{
-					TargetLocation = OwnerCharacter->GetActorLocation() + (OwnerCharacter->GetActorForwardVector() * 1400.f);
-				}
+				// Not Lock On
+				TargetActor = nullptr;
 			}
 		}
 		else
 		{
-			ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-			check(Player);
-			{
-				TargetLocation = Player->GetActorLocation();
-			}
+			// Enemy
+			SetPlayerAsTarget();
 		}
 	}
-
-	ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
-	if (!IsValid(ObjectPoolSubsystem)) return;
-
-	// 타이머로 순차 발사
-	GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &UCurvedProjectileSkill::LaunchNextProjectile, LaunchInterval, true);
-	Debug::PrintError(TEXT("CurvedProjectile Lauched"));
 }
 
-
-void UCurvedProjectileSkill::LaunchNextProjectile()
+void UCurvedProjectileSkill::ProjectileFromPool()
 {
 	if (ProjectileIndexToLaunch >= TotalProjectileCount)
 	{
@@ -78,92 +111,32 @@ void UCurvedProjectileSkill::LaunchNextProjectile()
 		return;
 	}
 
+	ProjectileIndexToLaunch++;
+
+	int32 Index = ProjectileIndexToLaunch;
+	Debug::PrintError(TEXT("current Index : '") + FString::FromInt(Index) + TEXT("'"));
+
+	FVector Offset = FVector(0.0f, 50.0f, 150.0f);
+	FVector SpawnLocation = OwnerCharacter->GetActorTransform().TransformPosition(Offset);
+	FRotator SpawnRotation = FRotator::ZeroRotator;
+
 	// 풀에서 투사체 가져오기
-	ACurvedProjectile* CurvedProjectile = ObjectPoolSubsystem->SpawnActorFromPool<ACurvedProjectile>(SpawnLocation, SpawnRotator, OwnerCharacter);
+	CurvedProjectile = Cast<ACurvedProjectile>(ObjectPoolSubsystem->SpawnActorFromPool(SkillTag, SpawnLocation, SpawnRotation, OwnerCharacter));
+	//CurvedProjectile = GetWorld()->SpawnActor<ACurvedProjectile>(
+	//	ACurvedProjectile::StaticClass(),
+	//	SpawnLocation,
+	//	SpawnRotation);
 
 	if (!IsValid(CurvedProjectile)) return;
 
-	SpawnLocation = OwnerCharacter->GetActorLocation();
-	SpawnRotator = OwnerCharacter->GetControlRotation();
+	CurvedProjectile->SetOwnerCharacter(OwnerCharacter);
 
-	// 필요 시 커브 설정 전달
-	// FProjectileCurveSettings CustomSettings = ...;
-	// CurvedProjectile->SetCurveSettings(CustomSettings);
-
-	CurvedProjectile->Launch(OwnerCharacter, TargetLocation);
-
-	ProjectileIndexToLaunch++;
+	CurvedProjectile->SetLaunchPath(OwnerCharacter, TargetActor);
 }
 
-void UCurvedProjectileSkill::SetTargetActorInPublicSpace()
+void UCurvedProjectileSkill::SetPlayerAsTarget()
 {
-	//ACharacter* OwnerCharacter = Cast<ACharacter>(GetOuter());
-	//check(OwnerCharacter);
-
-	const FVector Start = OwnerCharacter->GetActorLocation();
-	const FVector End = Start;
-	TArray<FHitResult> SphereTraceHitResults;
-	FCollisionQueryParams SphereTraceQueryParams;
-	SphereTraceQueryParams.AddIgnoredActor(OwnerCharacter);
-	constexpr float PublicSpaceDistance = 760.f;
-
-	bool bHit = GetWorld()->SweepMultiByChannel(
-		SphereTraceHitResults,
-		Start,
-		End,
-		FQuat::Identity,
-		ECC_Visibility,
-		FCollisionShape::MakeSphere(PublicSpaceDistance),
-		SphereTraceQueryParams
-	);
-
-	SetTargetActor(nullptr);
-
-	if (bHit)
-	{
-		float MinDistance = PublicSpaceDistance;
-		AActor* MinDistanceActor = nullptr;
-		for (const FHitResult& Hit : SphereTraceHitResults)
-		{
-			AActor* HitActor = Hit.GetActor();
-
-			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
-			{
-				if (IsActorInViewport(HitActor->GetActorLocation()))
-				{
-					const float ActorDistance = FVector::Distance(OwnerCharacter->GetActorLocation(), HitActor->GetActorLocation());
-					if (ActorDistance < MinDistance)
-					{
-						MinDistance = ActorDistance;
-						MinDistanceActor = HitActor;
-					}
-				}
-			}
-		}
-		if (MinDistanceActor)
-		{
-			// Target actor selected.
-			SetTargetActor(MinDistanceActor);
-		}
-	}
-	// There is no target actor.
-}
-
-bool UCurvedProjectileSkill::IsActorInViewport(const FVector& ActorLocation) const
-{
-
-	FVector2D ViewportSize;
-	GEngine->GameViewport->GetViewportSize(ViewportSize);
-
-	FVector2D ScreenLocation;
-	const bool bIsOnScreen = UGameplayStatics::ProjectWorldToScreen(
-		Cast<APlayerController const>(OwnerCharacter->GetController()),
-		ActorLocation,
-		ScreenLocation
-	);
-
-	if (!bIsOnScreen) return false;
-
-	return ScreenLocation.X >= 0 && ScreenLocation.X <= ViewportSize.X &&
-		ScreenLocation.Y >= 0 && ScreenLocation.Y <= ViewportSize.Y;
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	check(Player);
+	TargetActor = Player;
 }

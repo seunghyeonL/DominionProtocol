@@ -19,31 +19,33 @@ public:
 
 	virtual void Execute() override;
 
+	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere, Category = "Projectile")
+	ACurvedProjectile* CurvedProjectile;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	int32 TotalProjectileCount = 3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float LaunchInterval = 0.3f;
+	float LaunchInterval = 1;
 
 private:
-	void LaunchNextProjectile();
+	UFUNCTION()
+	void UpdateTarget();
 
-	FORCEINLINE void SetTargetActor(AActor* NewActor) { TargetActor = NewActor; }
+	void ProjectileFromPool();
 
-	void SetTargetActorInPublicSpace();
+	UFUNCTION()
+	void SetPlayerAsTarget();
 
-	bool IsActorInViewport(const FVector& ActorLocation) const;
-
+	UPROPERTY()
 	UObjectPoolSubsystem* ObjectPoolSubsystem;
 
+	UPROPERTY()
 	AActor* TargetActor;
 
 	FTimerHandle FireTimerHandle;
 
 	int32 ProjectileIndexToLaunch = 0;
-
-	FVector SpawnLocation;
-	FRotator SpawnRotator;
-
-	FVector TargetLocation;
 };
