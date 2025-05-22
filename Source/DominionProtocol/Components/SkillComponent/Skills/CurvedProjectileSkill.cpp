@@ -120,15 +120,13 @@ void UCurvedProjectileSkill::ProjectileFromPool()
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
 	// 풀에서 투사체 가져오기
-	CurvedProjectile = Cast<ACurvedProjectile>(ObjectPoolSubsystem->SpawnActorFromPool(SkillTag, SpawnLocation, SpawnRotation, OwnerCharacter));
-	//CurvedProjectile = GetWorld()->SpawnActor<ACurvedProjectile>(
-	//	ACurvedProjectile::StaticClass(),
-	//	SpawnLocation,
-	//	SpawnRotation);
+	//CurvedProjectile = Cast<ACurvedProjectile>(ObjectPoolSubsystem->SpawnActorFromPool(SkillTag, SpawnLocation, SpawnRotation, OwnerCharacter));
+	CurvedProjectile = GetWorld()->SpawnActor<ACurvedProjectile>(
+		ACurvedProjectile::StaticClass(),
+		SpawnLocation,
+		SpawnRotation);
 
 	if (!IsValid(CurvedProjectile)) return;
-
-	CurvedProjectile->SetOwnerCharacter(OwnerCharacter);
 
 	CurvedProjectile->SetLaunchPath(OwnerCharacter, TargetActor);
 }

@@ -28,49 +28,51 @@ public:
 	// 곡선이 휘는 거리 (-: 왼쪽, +: 오른쪽)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	//float MinCurveRadius;
-	float MinCurveRadius;
+	float MinCurveRadius = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	//float MaxCurveRadius;
-	float MaxCurveRadius;
+	float MaxCurveRadius = 100;
 
 	// 선분 방향(X축) 기준으로 회전시킬 각도 (-: 아래, +: 위)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	//float MinAngle;
-	float MinAngle;
+	float MinAngle = 45;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	//float MaxAngle;
-	float MaxAngle;
+	float MaxAngle = 135;
 
 	// 투사체 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	//float ProjectileSpeed;
-	float ProjectileSpeed;
+	float ProjectileSpeed = 1000;
 
 	// 투사체 생명주기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float LifeSpan;
+	float LifeSpan = 3;
 };
 
 UCLASS()
-class DOMINIONPROTOCOL_API ACurvedProjectile : public APoolableActorBase
+class DOMINIONPROTOCOL_API ACurvedProjectile : public AActor //APoolableActorBase
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ACurvedProjectile();;
+
+	USphereComponent* GetSphereCollision() const { return SphereCollision; }
 
 	const FProjectileCurveSettings& GetCurveSettings() const { return CurveSettings; }
 	void SetCurveSettings(const FProjectileCurveSettings& NewSettings) { CurveSettings = NewSettings; }
 
-	virtual void SetOwnerCharacter(AActor* NewOwnerCharacter);
+	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
 
-	void OnObjectSpawn_Implementation() override;
+	//void OnObjectSpawn_Implementation() override;
 
-	void OnObjectReturn_Implementation() override;
+	//void OnObjectReturn_Implementation() override;
 
 	void SetLaunchPath(AActor* NewInstigator, AActor* NewTargetActor);
 
@@ -79,10 +81,6 @@ protected:
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")
-	TObjectPtr<AActor> OwnerCharacter;
-
 private:
 	void MidPointCalculator();
 
@@ -96,10 +94,12 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
 	TObjectPtr<UStaticMeshComponent> Projectile;
 
-	UPROPERTY()
 	TObjectPtr<USkillComponent> SkillComponent;
 
-	AActor* Instigator;
+	UPROPERTY()
+	APawn* InstigatorPawn;
+
+	UPROPERTY()
 	AActor* TargetActor;
 
 	// 투사체 생성 지점
@@ -115,12 +115,12 @@ private:
 	FProjectileCurveSettings CurveSettings;
 
 	FTimerHandle DestroyTimerHandle;
-	
+
 	UPROPERTY()
 	UParticleSystem* ImpactParticle;
 
 	bool bIsTargetMove = false;
 	bool bIsInitialize = false;
-	UPROPERTY()
-	UObjectPoolSubsystem* ObjectPoolSubsystem;
+	//UPROPERTY()
+	//UObjectPoolSubsystem* ObjectPoolSubsystem;
 };

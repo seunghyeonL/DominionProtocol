@@ -25,10 +25,10 @@ public:
 	ACurvedProjectile* CurvedProjectile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	int32 TotalProjectileCount = 3;
+	int32 TotalProjectileCount = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float LaunchInterval = 1;
+	float LaunchInterval = 0.1;
 
 private:
 	UFUNCTION()
