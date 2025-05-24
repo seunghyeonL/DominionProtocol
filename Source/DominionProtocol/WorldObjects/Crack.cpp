@@ -124,10 +124,16 @@ void ACrack::Interact_Implementation(AActor* Interactor)
         if (PlayerController)
         {
             UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
+
+            // 균열 이동
             if (InGameHUDWidget)
             {
                 InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
             }
+
+            // 레벨업
+
+            // 회복포션 업그레이트
         }
     }
     

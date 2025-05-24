@@ -7,11 +7,13 @@
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "BaseGameMode.generated.h"
 
+class UStatusComponent;
 class UItemInstanceSubsystem;
 class UWorldInstanceSubsystem;
 class ABaseGameState;
 class ADomiCharacter;
 class ACrack;
+struct FGameplayTag;
 
 USTRUCT(BlueprintType)
 struct FEnemySpawnInfo
@@ -32,6 +34,8 @@ class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
+#pragma region Share
+	
 public:
 	ABaseGameMode();
 
@@ -80,6 +84,9 @@ protected:
 
 	UPROPERTY()
 	ADomiCharacter* PlayerCharacter;
+
+	UPROPERTY()
+	TObjectPtr<UStatusComponent> StatusComponent;
 	
 	UPROPERTY()
 	ACrack* RecentCrackCache;
@@ -89,4 +96,19 @@ protected:
 
 	UPROPERTY()
 	TArray<FEnemySpawnInfo> CachedEnemyInfo;
+
+#pragma endregion
+
+	
+#pragma region KyuHyeok
+
+public:
+	void PlayerLevelUp(FGameplayTag StatTag);
+	
+#pragma endregion
+
+
+#pragma region SeoYoung
+
+#pragma endregion
 };

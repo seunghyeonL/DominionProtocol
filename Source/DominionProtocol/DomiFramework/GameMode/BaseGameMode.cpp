@@ -136,7 +136,10 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		PlayerCharacter->SetActorRotation(RespawnRotation);
 
 		//일단은 체력회복하고 EffectTags::Death 상태 해제
-		TObjectPtr<UStatusComponent> StatusComponent = PlayerCharacter->GetStatusComponent();
+		if (!IsValid(StatusComponent))
+		{
+			StatusComponent = PlayerCharacter->GetStatusComponent();
+		}
 		StatusComponent->SetHealth(FLT_MAX);
 		TObjectPtr<UPlayerControlComponent> PlayerControlComponent = PlayerCharacter->GetPlayerControlComponent();
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::Death);
@@ -211,3 +214,26 @@ void ABaseGameMode::RespawnEnemies()
 			SpawnParams);
 	}
 }
+
+
+
+#pragma region KyuHyeok
+
+void ABaseGameMode::PlayerLevelUp(FGameplayTag StatTag)
+{
+	if (IsValid(PlayerCharacter))
+	{
+		if (!IsValid(StatusComponent))
+		{
+			StatusComponent =  PlayerCharacter->GetStatusComponent();
+		}
+		//레벨업 로직 추후 작성
+	}
+}
+
+#pragma endregion
+
+
+#pragma region SeoYoung
+
+#pragma endregion
