@@ -4,9 +4,10 @@
 #include "Player/Characters/DomiCharacter.h"
 
 AElevator::AElevator()
-	: bIsMoving(false),
-	bIsAtTop(false),
-	MoveDistance(100.f)
+	:
+	MoveDistance(100.f),
+	bIsMoving(false),
+	bIsAtTop(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 

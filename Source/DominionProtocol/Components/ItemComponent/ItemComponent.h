@@ -7,7 +7,9 @@
 #include "Engine/DataTable.h"
 #include "ItemComponent.generated.h"
 
-DECLARE_DELEGATE(FOnSwapWeapons)
+DECLARE_DELEGATE(FOnInventoryItemListChanged)
+DECLARE_DELEGATE(FOnInventoryEquippedSlotItemsChanged)
+DECLARE_DELEGATE(FOnInventoryConsumableSlotItemsChanged)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DOMINIONPROTOCOL_API UItemComponent : public UActorComponent
@@ -17,7 +19,10 @@ class DOMINIONPROTOCOL_API UItemComponent : public UActorComponent
 public:
 	UItemComponent();
 
-	FOnSwapWeapons OnSwapWeapons;
+	FOnInventoryItemListChanged OnInventoryItemListChanged;
+	FOnInventoryEquippedSlotItemsChanged OnInventoryEquippedSlotItemsChanged;
+	FOnInventoryConsumableSlotItemsChanged OnInventoryConsumableSlotItemsChanged;
+	
 
 protected:
 	virtual void BeginPlay() override;
