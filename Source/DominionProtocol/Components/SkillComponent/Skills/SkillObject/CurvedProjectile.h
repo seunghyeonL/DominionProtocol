@@ -48,7 +48,7 @@ public:
 	float LifeSpan;
 };
 
-UCLASS()
+UCLASS(Blueprintable)
 class DOMINIONPROTOCOL_API ACurvedProjectile : public AActor //APoolableActorBase
 {
 	GENERATED_BODY()

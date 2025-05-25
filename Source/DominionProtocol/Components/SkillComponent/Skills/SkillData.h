@@ -33,7 +33,7 @@ public:
 	TArray<TObjectPtr<UMaterialInterface>> SkillMaterials;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
-	TSubclassOf<ACurvedProjectile> CurvedProjectile;
+	TSubclassOf<ACurvedProjectile> CurvedProjectileClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
 	TArray<FEffectData> Effects;

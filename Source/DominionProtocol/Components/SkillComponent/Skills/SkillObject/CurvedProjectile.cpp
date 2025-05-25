@@ -31,11 +31,11 @@ ACurvedProjectile::ACurvedProjectile()
 	Projectile->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// 오브젝트 풀링하면 삭제
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("'/Engine/VREditor/TransformGizmo/TranslateArrowHandle.TranslateArrowHandle'"));
-	if (MeshAsset.Succeeded())
-	{
-		Projectile->SetStaticMesh(MeshAsset.Object);
-	}
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("'/Engine/VREditor/TransformGizmo/TranslateArrowHandle.TranslateArrowHandle'"));
+	//if (MeshAsset.Succeeded())
+	//{
+	//	Projectile->SetStaticMesh(MeshAsset.Object);
+	//}
 	//UE_LOG(LogTemp, Warning, TEXT("Spawned Actor Location: %s"), *GetActorLocation().ToString());
 }
 
@@ -71,10 +71,7 @@ void ACurvedProjectile::Tick(float DeltaTime)
 	{
 	//	ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
 	//	ObjectPoolSubsystem->ReturnActorToPool(this);
-		SetActorHiddenInGame(true);
-		SetActorEnableCollision(false);
-		SetActorTickEnabled(false);
-		Destroy();
+		DestroyProjectile();
 	}
 }
 
@@ -120,40 +117,31 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 
 void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor == this)
-	{
-		return;
-	}
+	if (OtherActor == this) return;
 
 	// 같은 클래스(자기들끼리)라면 무시
-	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlapped Actor: %s, Channel: %d"),
-			*OtherActor->GetName(),
-			OtherComp->GetCollisionObjectType());
-		return;
-	}
+	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
 
 	UWorld* World = GetWorld();
-	check(World)
+	check(World);
 
 	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-	check(BaseGameState)
+	check(BaseGameState);
 
-		if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	{
+		ImpactParticle = SkillData->Particle;
+		if (ImpactParticle)
 		{
-			ImpactParticle = SkillData->Particle;
-			if (ImpactParticle)
-			{
-				UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
-					GetWorld(),
-					ImpactParticle,
-					GetActorLocation(),
-					FRotator::ZeroRotator,
-					true
-				);
-			}
+			UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
+				GetWorld(),
+				ImpactParticle,
+				GetActorLocation(),
+				FRotator::ZeroRotator,
+				true
+			);
 		}
+	}
 
 	if (IsValid(SkillOwner))
 	{
@@ -167,10 +155,7 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
 	//ObjectPoolSubsystem->ReturnActorToPool(this);
 
-	SetActorHiddenInGame(true);
-	SetActorEnableCollision(false);
-	SetActorTickEnabled(false);
-	Destroy();
+	DestroyProjectile();
 }
 
 void ACurvedProjectile::MidPointCalculator()
@@ -226,11 +211,11 @@ void ACurvedProjectile::DestroyProjectile()
 {
 	// 소멸 이펙트
 
-	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
-	//ObjectPoolSubsystem->ReturnActorToPool(this);
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	SetActorTickEnabled(false);
 	Destroy();
-	Debug::PrintError(TEXT("CurvedProjectile was destroied"));
+
+	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
+	//ObjectPoolSubsystem->ReturnActorToPool(this);
 }

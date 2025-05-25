@@ -51,7 +51,7 @@ protected:
 	TObjectPtr<UParticleSystem> Particle = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
-	TSubclassOf<ACurvedProjectile> CurvedProjectile;
+	TSubclassOf<ACurvedProjectile> CurvedProjectileClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
 	TArray<FEffectData> Effects;

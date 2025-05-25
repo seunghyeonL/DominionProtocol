@@ -126,15 +126,35 @@ void UCurvedProjectileSkill::ProjectileFromPool()
 
 	// 풀에서 투사체 가져오기
 	//CurvedProjectile = Cast<ACurvedProjectile>(ObjectPoolSubsystem->SpawnActorFromPool(SkillTag, SpawnLocation, SpawnRotation, OwnerCharacter));
-	CurvedProjectileType = GetWorld()->SpawnActor<ACurvedProjectile>(
-		ACurvedProjectile::StaticClass(),
-		SpawnLocation,
-		SpawnRotation);
 
-	if (!IsValid(CurvedProjectile)) return;
-	CurvedProjectileType->SkillOwner = this;
-	CurvedProjectileType->SkillTag = SkillTag;
-	CurvedProjectileType->SetLaunchPath(OwnerCharacter, TargetActor);
+	//CurvedProjectileType = GetWorld()->SpawnActor<ACurvedProjectile>(
+	//	ACurvedProjectile::StaticClass(),
+	//	SpawnLocation,
+	//	SpawnRotation);
+
+	UWorld* World = GetWorld();
+	check(World);
+
+	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+	check(BaseGameState);
+
+	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	{
+		CurvedProjectileClass = SkillData->CurvedProjectileClass;
+		if (!IsValid(CurvedProjectileClass)) return;
+
+		CurvedProjectile = GetWorld()->SpawnActor<ACurvedProjectile>(
+			CurvedProjectileClass,
+			SpawnLocation,
+			SpawnRotation
+		);
+		if (CurvedProjectile)
+		{
+			CurvedProjectile->SkillOwner = this;
+			CurvedProjectile->SkillTag = SkillTag;
+			CurvedProjectile->SetLaunchPath(OwnerCharacter, TargetActor);
+		}
+	}	
 }
 
 void UCurvedProjectileSkill::SetPlayerAsTarget()

@@ -1,12 +1,12 @@
 #include "Components/SkillComponent/Skills/RailGunSkill.h"
-#include "RailGunSkill.h"
+#include "Util/GameTagList.h"
 
 URailGunSkill::URailGunSkill()
 {
+	SkillTag = SkillTags::RailGunSkill;
 	TotalProjectileCount = 1;
 	LaunchInterval = 0.1;
 }
-
 
 void URailGunSkill::Execute()
 {

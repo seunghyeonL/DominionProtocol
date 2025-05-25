@@ -21,17 +21,6 @@ public:
 
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
 
-	UFUNCTION()
-	void UpdateTarget();
-
-	void ProjectileFromPool();
-
-	UFUNCTION()
-	void SetPlayerAsTarget();
-
-	UPROPERTY(EditAnywhere, Category = "Projectile")
-	ACurvedProjectile* CurvedProjectileType;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	int32 TotalProjectileCount;
 
@@ -42,8 +31,17 @@ public:
 	UBaseSkill* CurrentSkill;
 
 private:
+	void UpdateTarget();
+
+	void ProjectileFromPool();
+
+	void SetPlayerAsTarget();
+
 	//UPROPERTY()
 	//UObjectPoolSubsystem* ObjectPoolSubsystem;
+
+	UPROPERTY()
+	ACurvedProjectile* CurvedProjectile;
 
 	UPROPERTY()
 	AActor* TargetActor;

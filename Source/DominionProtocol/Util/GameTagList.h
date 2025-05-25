@@ -81,8 +81,8 @@ namespace SkillTags
 	inline const FGameplayTag PlayerParry = FGameplayTag::RequestGameplayTag(TEXT("Skill.Parry.Player"));
 
 	inline const FGameplayTag LaserSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Laser"));
-	inline const FGameplayTag RailGun = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.RailGun"));
-	inline const FGameplayTag Fireball = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Fireball"));
+	inline const FGameplayTag RailGunSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.RailGun"));
+	inline const FGameplayTag FireBallSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.FireBall"));
 }
 
 namespace PawnTags
