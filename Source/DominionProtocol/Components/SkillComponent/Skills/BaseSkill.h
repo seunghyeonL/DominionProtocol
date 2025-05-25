@@ -4,6 +4,8 @@
 #include "Util/BattleDataTypes.h"
 #include "BaseSkill.generated.h"
 
+class ACurvedProjectile;
+
 UCLASS(Blueprintable)
 class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 {
@@ -47,6 +49,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
 	TObjectPtr<UParticleSystem> Particle = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	TSubclassOf<ACurvedProjectile> CurvedProjectile;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
 	TArray<FEffectData> Effects;

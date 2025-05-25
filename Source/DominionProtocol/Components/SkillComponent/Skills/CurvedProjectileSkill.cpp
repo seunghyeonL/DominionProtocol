@@ -1,39 +1,44 @@
 #include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
-#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
+//#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "Interface/PawnTagInterface.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Player/Damagable.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
-#include "Player/Damagable.h"
 
 
 UCurvedProjectileSkill::UCurvedProjectileSkill()
 {
-	SkillTag = SkillTags::CurvedProjectile;
 }
 
 void UCurvedProjectileSkill::Initialize(ACharacter* Instigator)
 {
 	Super::Initialize(Instigator);
-
 }
 
 void UCurvedProjectileSkill::Execute()
 {
 	Super::Execute();
 
+	ProjectileIndexToLaunch = 0;
+
 	UpdateTarget();
 
-	ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
-	if (!IsValid(ObjectPoolSubsystem)) return;
+	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
+	//if (!IsValid(ObjectPoolSubsystem)) return;
+
+	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+	CurrentSkill = SkillComponent->GetCurrentSkill();
 
 	// 타이머로 투사체 순차 생성
 	GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &UCurvedProjectileSkill::ProjectileFromPool, LaunchInterval, true);
+
 }
 
 void UCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
@@ -112,7 +117,7 @@ void UCurvedProjectileSkill::ProjectileFromPool()
 
 	ProjectileIndexToLaunch++;
 
-	int32 Index = ProjectileIndexToLaunch;
+	int32 Index = ProjectileIndexToLaunch - 1;
 	Debug::PrintError(TEXT("current Index : '") + FString::FromInt(Index) + TEXT("'"));
 
 	FVector Offset = FVector(0.0f, 50.0f, 150.0f);
@@ -121,14 +126,15 @@ void UCurvedProjectileSkill::ProjectileFromPool()
 
 	// 풀에서 투사체 가져오기
 	//CurvedProjectile = Cast<ACurvedProjectile>(ObjectPoolSubsystem->SpawnActorFromPool(SkillTag, SpawnLocation, SpawnRotation, OwnerCharacter));
-	CurvedProjectile = GetWorld()->SpawnActor<ACurvedProjectile>(
+	CurvedProjectileType = GetWorld()->SpawnActor<ACurvedProjectile>(
 		ACurvedProjectile::StaticClass(),
 		SpawnLocation,
 		SpawnRotation);
 
 	if (!IsValid(CurvedProjectile)) return;
-
-	CurvedProjectile->SetLaunchPath(OwnerCharacter, TargetActor);
+	CurvedProjectileType->SkillOwner = this;
+	CurvedProjectileType->SkillTag = SkillTag;
+	CurvedProjectileType->SetLaunchPath(OwnerCharacter, TargetActor);
 }
 
 void UCurvedProjectileSkill::SetPlayerAsTarget()

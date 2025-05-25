@@ -16,7 +16,8 @@ AZoneBarrier::AZoneBarrier()
 
     CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     CollisionBox->SetGenerateOverlapEvents(true);
-    CollisionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic")); 
+    CollisionBox->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+    CollisionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 
     CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AZoneBarrier::OnOverlapBegin);
     CollisionBox->OnComponentEndOverlap.AddDynamic(this, &AZoneBarrier::OnOverlapEnd);

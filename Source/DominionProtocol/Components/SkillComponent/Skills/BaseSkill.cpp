@@ -33,6 +33,7 @@ void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 				AnimMontage = SkillData->AnimMontage;
 				Sound = SkillData->Sound;
 				Particle = SkillData->Particle;
+				CurvedProjectile = SkillData->CurvedProjectile;
 				Stamina = SkillData->Stamina;
 				AttackRadius = SkillData->AttackRadius;
 				AttackForwardOffset = SkillData->AttackForwardOffset;

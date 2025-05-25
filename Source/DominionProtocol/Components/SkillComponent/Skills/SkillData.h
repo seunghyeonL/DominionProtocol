@@ -6,6 +6,7 @@
 #include "SkillData.generated.h"
 
 class UNiagaraSystem;
+class ACurvedProjectile;
 
 USTRUCT(BlueprintType)
 struct FSkillData : public FTableRowBase
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TArray<TObjectPtr<UMaterialInterface>> SkillMaterials;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	TSubclassOf<ACurvedProjectile> CurvedProjectile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
 	TArray<FEffectData> Effects;

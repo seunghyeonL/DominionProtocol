@@ -2,13 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "DomiFramework/ObjectPooling/PoolableActorBase.h"
+//#include "DomiFramework/ObjectPooling/PoolableActorBase.h"
+#include "GameplayTagContainer.h"
 #include "CurvedProjectile.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
 class USkillComponent;
-class UObjectPoolSubsystem;
+class UCurvedProjectileSkill;
+//class UObjectPoolSubsystem;
 
 USTRUCT(BlueprintType)
 struct FProjectileCurveSettings
@@ -18,39 +20,32 @@ struct FProjectileCurveSettings
 public:
 	// MidPoint가 시작점으로부터 떨어져 있어야 하는 비율 (0 ~ 1)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	//float MinCurvePointDistance;
-	float MinCurvePointDistance = 0.0f;
+	float MinCurvePointDistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	//float MaxCurvePointDistance;
-	float MaxCurvePointDistance = 0.0f;
+	float MaxCurvePointDistance;
 
 	// 곡선이 휘는 거리 (-: 왼쪽, +: 오른쪽)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	//float MinCurveRadius;
-	float MinCurveRadius = 100;
+	float MinCurveRadius;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	//float MaxCurveRadius;
-	float MaxCurveRadius = 100;
+	float MaxCurveRadius;
 
 	// 선분 방향(X축) 기준으로 회전시킬 각도 (-: 아래, +: 위)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	//float MinAngle;
-	float MinAngle = 45;
+	float MinAngle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	//float MaxAngle;
-	float MaxAngle = 135;
+	float MaxAngle;
 
 	// 투사체 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	//float ProjectileSpeed;
-	float ProjectileSpeed = 1000;
+	float ProjectileSpeed;
 
 	// 투사체 생명주기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float LifeSpan = 3;
+	float LifeSpan;
 };
 
 UCLASS()
@@ -59,7 +54,7 @@ class DOMINIONPROTOCOL_API ACurvedProjectile : public AActor //APoolableActorBas
 	GENERATED_BODY()
 
 public:
-	ACurvedProjectile();;
+	ACurvedProjectile();
 
 	USphereComponent* GetSphereCollision() const { return SphereCollision; }
 
@@ -76,6 +71,11 @@ public:
 
 	void SetLaunchPath(AActor* NewInstigator, AActor* NewTargetActor);
 
+	UPROPERTY()
+	UCurvedProjectileSkill* SkillOwner = nullptr;
+
+	UPROPERTY()
+	FGameplayTag SkillTag;
 protected:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -93,8 +93,6 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
 	TObjectPtr<UStaticMeshComponent> Projectile;
-
-	TObjectPtr<USkillComponent> SkillComponent;
 
 	UPROPERTY()
 	APawn* InstigatorPawn;
@@ -121,6 +119,7 @@ private:
 
 	bool bIsTargetMove = false;
 	bool bIsInitialize = false;
+
 	//UPROPERTY()
 	//UObjectPoolSubsystem* ObjectPoolSubsystem;
 };

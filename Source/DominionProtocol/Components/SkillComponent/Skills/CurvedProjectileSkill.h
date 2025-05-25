@@ -5,7 +5,7 @@
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
 #include "CurvedProjectileSkill.generated.h"
 
-class UObjectPoolSubsystem;
+//class UObjectPoolSubsystem;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UCurvedProjectileSkill : public UBaseSkill
@@ -21,16 +21,6 @@ public:
 
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "Projectile")
-	ACurvedProjectile* CurvedProjectile;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	int32 TotalProjectileCount = 100;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float LaunchInterval = 0.1;
-
-private:
 	UFUNCTION()
 	void UpdateTarget();
 
@@ -39,8 +29,21 @@ private:
 	UFUNCTION()
 	void SetPlayerAsTarget();
 
-	UPROPERTY()
-	UObjectPoolSubsystem* ObjectPoolSubsystem;
+	UPROPERTY(EditAnywhere, Category = "Projectile")
+	ACurvedProjectile* CurvedProjectileType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	int32 TotalProjectileCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	float LaunchInterval;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	UBaseSkill* CurrentSkill;
+
+private:
+	//UPROPERTY()
+	//UObjectPoolSubsystem* ObjectPoolSubsystem;
 
 	UPROPERTY()
 	AActor* TargetActor;

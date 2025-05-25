@@ -10,6 +10,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SkillComponent/SkillComponent.h"
+#include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
 
 
 ACurvedProjectile::ACurvedProjectile()
@@ -17,6 +18,7 @@ ACurvedProjectile::ACurvedProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
+	SphereCollision->InitSphereRadius(10.0f);
 	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
 	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
@@ -106,8 +108,6 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 
 	TargetActor = NewTargetActor;
 
-	SkillComponent = InstigatorPawn->FindComponentByClass<USkillComponent>();
-
 	// 중간 지점 및 곡선 지점 계산
 	MidPointCalculator();
 	CurveControl();
@@ -134,47 +134,38 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		return;
 	}
 
-
-
 	UWorld* World = GetWorld();
 	check(World)
 
 	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
 	check(BaseGameState)
 
-	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTags::CurvedProjectile))
-	{
-		ImpactParticle = SkillData->Particle;
-		if (ImpactParticle)
+		if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
 		{
-			UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
-				GetWorld(),
-				ImpactParticle,
-				GetActorLocation(),
-				FRotator::ZeroRotator,
-				true
-			);
+			ImpactParticle = SkillData->Particle;
+			if (ImpactParticle)
+			{
+				UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
+					GetWorld(),
+					ImpactParticle,
+					GetActorLocation(),
+					FRotator::ZeroRotator,
+					true
+				);
+			}
 		}
-	}
 
-	if (!IsValid(SkillComponent)) return;
-	UBaseSkill* BaseSkill = SkillComponent->GetCurrentSkill();
-
-	if (!IsValid(BaseSkill)) return;
-	if (BaseSkill->GetSkillTag() == SkillTags::CurvedProjectile)
+	if (IsValid(SkillOwner))
 	{
-		BaseSkill->ApplyAttackToHitActor(SweepResult, 0);
+		UBaseSkill* BaseSkill = SkillOwner->CurrentSkill;
+		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
+		{
+			BaseSkill->ApplyAttackToHitActor(SweepResult, 0);
+		}
 	}
 
 	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
 	//ObjectPoolSubsystem->ReturnActorToPool(this);
-
-	//// 충돌 파라미터 설정
-	//FCollisionQueryParams Params;
-
-	//// 소유 캐릭터 무시
-	//Params.AddIgnoredActor(OwnerCharacter);
-	//Params.AddIgnoredActor(this);
 
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
@@ -198,7 +189,7 @@ void ACurvedProjectile::MidPointCalculator()
 			{
 				const FVector CameraLocation = Camera->GetComponentLocation();
 				const FVector ForwardVector = Camera->GetForwardVector();
-				const float Distance = 1000.0f;
+				const float Distance = 2000.0f;
 				TargetPoint = CameraLocation + (ForwardVector * Distance);
 			}
 		}
