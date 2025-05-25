@@ -21,6 +21,9 @@ protected:
 	UFUNCTION()
 	void UpdateInventoryItemList();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnUpdateInventoryItemList();
+
 	UFUNCTION()
 	void UpdateEquippedSlotItems();
 

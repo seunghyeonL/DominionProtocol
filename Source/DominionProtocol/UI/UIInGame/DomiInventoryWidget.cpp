@@ -30,6 +30,7 @@ void UDomiInventoryWidget::BindInventoryDelegates()
 void UDomiInventoryWidget::UpdateInventoryItemList()
 {
 	InventoryAllItems = ItemComponent->GetInventoryDisplayItems();
+	OnUpdateInventoryItemList();
 
 	for (FItemUISlotData& SlotData : InventoryAllItems)
 	{
