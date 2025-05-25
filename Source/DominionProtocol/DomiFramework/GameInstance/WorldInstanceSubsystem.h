@@ -68,6 +68,9 @@ public:
 	FORCEINLINE const FRotator& GetMoveTargetRotation() const { return MoveTargetRotation; }
 
 	FORCEINLINE bool GetIsLevelChanged() const { return bIsLevelChanged; }
+
+
+	void InitializeCrackDataMap(FCrackData Level1, FCrackData Level2);
 	
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
