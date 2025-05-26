@@ -10,25 +10,10 @@
 UCheckAIStateEquals::UCheckAIStateEquals()
 {
 	NodeName = TEXT("Check AI State == Tag");
+	bNotifyBecomeRelevant = true;
+	bNotifyTick = true;
 }
 
-/*bool UCheckAIStateEquals::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
-{
-	AAIController* AIController = OwnerComp.GetAIOwner();
-	if (!AIController) return false;
-
-	APawn* ControlledPawn = AIController->GetPawn();
-	if (!ControlledPawn) return false;
-
-	UAIStateComponent* AIState = ControlledPawn->FindComponentByClass<UAIStateComponent>();
-	if (!AIState) return false;
-
-	const FGameplayTag& CurrentTag = AIState->GetCurrentStateTag();
-
-	const bool bMatch = (CurrentTag == RequiredStateTag);
-
-	return bMatch;
-}*/
 
 bool UCheckAIStateEquals::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
@@ -62,4 +47,13 @@ bool UCheckAIStateEquals::CalculateRawConditionValue(UBehaviorTreeComponent& Own
 		bMatch ? TEXT("TRUE") : TEXT("FALSE"));
 
 	return bMatch;
+}
+
+void UCheckAIStateEquals::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	// 상태가 일치하지 않으면 노드 중단 요청
+	if (!CalculateRawConditionValue(OwnerComp, NodeMemory))
+	{
+		OwnerComp.RequestExecution(this); // Observer Aborts: Self or Both 필요
+	}
 }
