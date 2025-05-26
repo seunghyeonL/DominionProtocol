@@ -11,6 +11,8 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/ItemComponent/ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/InGameController.h"
+#include "UI/UIInGame/DomiInGameHUDWidget.h"
 
 UPlayerControlState::UPlayerControlState()
 {
@@ -225,7 +227,7 @@ void UPlayerControlState::LockOn()
 	}
 	else
 	{
-		if (PlayerControlComponent->SetLockOnTargetActorInPublicSpace() == false)
+		if (!PlayerControlComponent->SetLockOnTargetActorInPublicSpace())
 		{
 			PlayerControlComponent->SetLockOnTargetActorInVisibility();
 		}
@@ -237,7 +239,7 @@ void UPlayerControlState::LockOn()
 		}
 		else
 		{
-			Debug::PrintLog(TEXT("UPlayerControlState::LockOn : No LockOnTargetActor."));
+			Debug::Print(TEXT("UPlayerControlState::LockOn : No LockOnTargetActor."));
 		}
 	}
 
@@ -344,4 +346,15 @@ void UPlayerControlState::InteractionScroll(const FInputActionValue& Value)
 		PlayerCharacter->EventInteractionWidgetScroll(InputValue);
 	}
 
+}
+
+void UPlayerControlState::SwitchShowAndHideInventory()
+{
+	Super::SwitchShowAndHideInventory();
+
+	auto* InGameController = Cast<AInGameController>(OwnerCharacter->GetController());
+	if (InGameController)
+	{
+		InGameController->GetInGameHUDWidget()->OnSwitchShowAndHideInventoryWidget();
+	}
 }

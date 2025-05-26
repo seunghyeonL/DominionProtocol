@@ -28,19 +28,9 @@ void AInGameController::HandleSetupInGameHUD()
 	BindControllerInputActions();
 }
 
-void AInGameController::OnInGameMenuOpenAndClose()
+void AInGameController::OnSwitchShowAndHideOnInGameMenuWidget()
 {
-	if (bActiveInGameMenuOpen)
-	{
-		SetupInputModeGameOnly();
-	}
-	else
-	{
-		SetupInputModeUIOnly();
-	}
-
-	bActiveInGameMenuOpen = !bActiveInGameMenuOpen;
-	InGameHUDWidgetInstance->OnInGameMenuOpenAndClose();
+	InGameHUDWidgetInstance->OnSwitchShowAndHideOnInGameMenuWidget();
 }
 
 void AInGameController::BeginPlay()
@@ -74,14 +64,16 @@ void AInGameController::SetupInputModeGameOnly()
 {
 	if (LocalPlayerInputSubsystem)
 	{
-		LocalPlayerInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+		if (!LocalPlayerInputSubsystem->HasMappingContext(DefaultMappingContext))
+		{
+			LocalPlayerInputSubsystem->AddMappingContext(DefaultMappingContext, 0);	
+		}
 		LocalPlayerInputSubsystem->RemoveMappingContext(UIOnlyMappingContext);
 
 		
 		const FInputModeGameOnly CurrentInputMode;
 		SetInputMode(CurrentInputMode);
 		bShowMouseCursor = false;
-
 	}
 }
 
@@ -89,13 +81,30 @@ void AInGameController::SetupInputModeUIOnly()
 {
 	if (LocalPlayerInputSubsystem)
 	{
-		LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1000);
+		if (!LocalPlayerInputSubsystem->HasMappingContext(UIOnlyMappingContext))
+		{
+			LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1000);	
+		}
 		LocalPlayerInputSubsystem->RemoveMappingContext(DefaultMappingContext);
 
 		const FInputModeGameAndUI CurrentInputMode;
 		SetInputMode(CurrentInputMode);
 		bShowMouseCursor = true;
-		
+	}
+}
+
+void AInGameController::SetupInputModeGameAndUI()
+{
+	if (LocalPlayerInputSubsystem)
+	{
+		if (!LocalPlayerInputSubsystem->HasMappingContext(UIOnlyMappingContext))
+		{
+			LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1000);	
+		}
+
+		const FInputModeGameAndUI CurrentInputMode;
+		SetInputMode(CurrentInputMode);
+		bShowMouseCursor = true;
 	}
 }
 
@@ -104,11 +113,11 @@ void AInGameController::BindControllerInputActions()
 	auto* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent);
 	if (EnhancedInputComp)
 	{
-		if (IsValid(InGameMenuOpenAndClose))
+		if (IsValid(SwitchShowAndHideInGameMenuWidget))
 		{
-			EnhancedInputComp->BindAction(InGameMenuOpenAndClose, ETriggerEvent::Started,
+			EnhancedInputComp->BindAction(SwitchShowAndHideInGameMenuWidget, ETriggerEvent::Started,
 				this,
-				&AInGameController::OnInGameMenuOpenAndClose);
+				&AInGameController::OnSwitchShowAndHideOnInGameMenuWidget);
 		}
 	}
 }

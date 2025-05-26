@@ -3,6 +3,7 @@
 
 #include "DomiInGameHUDWidget.h"
 
+#include "Components/CanvasPanelSlot.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Player/InGameController.h"
@@ -17,22 +18,33 @@ void UDomiInGameHUDWidget::OnPlayerSpawn()
 	HideDeathScriptWidget();
 }
 
-void UDomiInGameHUDWidget::OnInGameMenuOpenAndClose()
+void UDomiInGameHUDWidget::OnSwitchShowAndHideOnInGameMenuWidget()
 {
-	InGameMenuOpenAndClose();
+	SwitchShowAndHideOnInGameMenuWidget();
 }
 
 void UDomiInGameHUDWidget::OnSwitchShowAndHideCrackWarpWidget()
 {
-	if (bShowCrackWarpWidget)
+	SwitchShowAndHideCrackWarpWidget();
+}
+
+void UDomiInGameHUDWidget::OnSwitchShowAndHideInventoryWidget()
+{
+	SwitchShowAndHideInventoryWidget();
+}
+
+void UDomiInGameHUDWidget::ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder)
+{
+	if (!IsValid(TargetWidget))
 	{
-		OwningController->SetupInputModeGameOnly();
-		SwitchShowAndHideCrackWarpWidget();
+		return;
 	}
-	else
+
+	UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(TargetWidget->Slot);
+
+	if (IsValid(CanvasSlot))
 	{
-		OwningController->SetupInputModeUIOnly();
-		SwitchShowAndHideCrackWarpWidget();
+		CanvasSlot->SetZOrder(NewZOrder);
 	}
 }
 

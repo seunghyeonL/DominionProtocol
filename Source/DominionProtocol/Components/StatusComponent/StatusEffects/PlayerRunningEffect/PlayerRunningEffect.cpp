@@ -72,7 +72,7 @@ void UPlayerRunningEffect::Deactivate()
 		return;
 	}
 
-	StatusComponent->BlockStaminaRecovery();
+	// StatusComponent->BlockStaminaRecovery();
 	auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
 	// Debug::Print(FString::Printf(TEXT("UPlayerRunningEffect::Deactivate : bIsActive : %d"), bIsActive ? 1 : 0));
 	MovementComponent->MaxWalkSpeed /= SpeedCoefficient;

@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
 #include "ItemInventory/ItemUISlotData.h"
+#include "Blueprint/UserWidget.h"
 #include "DomiInventoryWidget.generated.h"
 
 
@@ -19,16 +19,16 @@ protected:
 	void BindInventoryDelegates();
 
 	UFUNCTION()
-	void UpdateInventoryItemList();
-
-	UFUNCTION(BlueprintImplementableEvent)
 	void OnUpdateInventoryItemList();
 
-	UFUNCTION()
-	void UpdateEquippedSlotItems();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void UpdateInventoryItemList();
 
 	UFUNCTION()
-	void UpdateConsumableSlotItems();
+	void OnUpdateEquippedSlotItems();
+
+	UFUNCTION()
+	void OnUpdateConsumableSlotItems();
 
 
 protected:

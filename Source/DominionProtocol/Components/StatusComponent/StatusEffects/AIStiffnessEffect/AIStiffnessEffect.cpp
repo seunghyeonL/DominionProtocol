@@ -12,14 +12,17 @@ UAIStiffnessEffect::UAIStiffnessEffect()
 void UAIStiffnessEffect::Activate()
 {
 	Super::Activate();
+	bIsActive = true;
 }
 
 void UAIStiffnessEffect::Activate(float Duration)
 {
 	Super::Activate(Duration);
+	bIsActive = true;
 }
 
 void UAIStiffnessEffect::Deactivate()
 {
 	Super::Deactivate();
+	bIsActive = false;
 }

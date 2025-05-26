@@ -30,6 +30,7 @@ UPlayerControlComponent::UPlayerControlComponent()
 	
 	PlayerControlState = nullptr;
 	ValidBufferedInput = nullptr;
+	LockOnTargetActor = nullptr;
 	// bIsComponentReady = false;
 	// ...
 }
@@ -134,7 +135,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()
 		Start,
 		End,
 		FQuat::Identity,
-		ECC_Visibility,
+		ECC_Pawn,
 		FCollisionShape::MakeSphere(PublicSpaceDistance),
 		SphereTraceQueryParams
 	);
@@ -199,7 +200,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInVisibility()
 		Start,
 		End,
 		FQuat(FRotator(0,ViewPointRotation.Yaw + 45.f,0)),
-		ECC_Visibility,
+		ECC_Pawn,
 		FCollisionShape::MakeBox(BoxSize),
 		QueryParams
 	);
@@ -223,7 +224,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInVisibility()
 						LineTraceHit,
 						OwnerCharacter->GetActorLocation(),
 						HitActor->GetActorLocation(),
-						ECC_Visibility,
+						ECC_Pawn,
 						QueryParams
 					);
 					if (bLineTraceHit && LineTraceHit.GetActor() == HitActor)
@@ -561,6 +562,18 @@ void UPlayerControlComponent::InteractionScroll(const FInputActionValue& Value)
 	else
 	{
 		Debug::PrintError(TEXT("UPlayerControlComponent::Interaction : Invalid ControlState."));
+	}
+}
+
+void UPlayerControlComponent::SwitchShowAndHideInventory()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->SwitchShowAndHideInventory();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::SwitchShowAndHideInventory : Invalid ControlState."));
 	}
 }
 

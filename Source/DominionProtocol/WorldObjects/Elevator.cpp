@@ -2,6 +2,7 @@
 #include "Util/DebugHelper.h"
 #include "Components/BoxComponent.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "WorldObjects/ElevatorCaller.h"
 
 AElevator::AElevator()
 	:
@@ -22,11 +23,6 @@ AElevator::AElevator()
 	BoxCollisionComp->SetupAttachment(SceneComp);
 	BoxCollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxCollisionComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
-	Wall = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall"));
-	Wall->SetupAttachment(RootComponent);
-
-	Wall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AElevator::BeginPlay()
@@ -97,31 +93,58 @@ void AElevator::ActivateElevator(float Value)
 
 void AElevator::OnTimelineFinished()
 {
-	Wall->SetCollisionProfileName(TEXT("NoCollision")); 
 	bIsAtTop = !bIsAtTop;
 	bIsMoving = false;
 }
 
-
-void AElevator::Interact_Implementation(AActor* Interactor)
+void AElevator::MoveElevatorTo(float TargetZ)
 {
-	Wall->SetCollisionProfileName(TEXT("BlockAll"));
+	FVector CurrentLocation = GetActorLocation();
+	if (FMath::IsNearlyEqual(CurrentLocation.Z, TargetZ, 1.0f))
+	{
+		Debug::Print(TEXT("Elevator is already at the target location – ignoring movement"));
+		return;
+	}
 	if (bIsMoving)
 	{
-		Debug::Print(TEXT("Elevator is moving – interaction blocked"));
+		Debug::Print(TEXT("Elevator is moving – movement blocked"));
 		return;
 	}
 
-	FVector CurrentLocation = GetActorLocation();
-	float TargetZ = bIsAtTop ? BottomTarget->GetActorLocation().Z : TopTarget->GetActorLocation().Z;
-
+	
 	StartLocation = CurrentLocation;
 	TargetLocation = FVector(CurrentLocation.X, CurrentLocation.Y, TargetZ);
 
 	Timeline.PlayFromStart();
 	bIsMoving = true;
 
-	Debug::Print(bIsAtTop ? TEXT("Elevator Moving Down") : TEXT("Elevator Moving Up"));
+	Debug::Print(FString::Printf(TEXT("Elevator Moving To Z: %.2f"), TargetZ));
+}
+
+
+void AElevator::Interact_Implementation(AActor* Interactor)
+{
+	if (bIsMoving)
+	{
+		Debug::Print(TEXT("Elevator is moving – cannot interact"));
+		return;
+	}
+	if (bIsAtTop && !IsValid(BottomCaller))
+	{
+		Debug::Print(TEXT("BottomCaller not assigned!"));
+		return;
+	}
+	else if (!bIsAtTop && !IsValid(TopCaller))
+	{
+		Debug::Print(TEXT("TopCaller not assigned!"));
+		return;
+	}
+
+	float TargetZ = bIsAtTop
+		? BottomCaller->GetActorLocation().Z
+		: TopCaller->GetActorLocation().Z;
+
+	MoveElevatorTo(TargetZ);
 }
 
 FText AElevator::GetInteractMessage_Implementation() const

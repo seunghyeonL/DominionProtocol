@@ -20,17 +20,17 @@ void UDomiInventoryWidget::BindInventoryDelegates()
 		ItemComponent = PlayerCharacter->GetComponentByClass<UItemComponent>();
 		if (ItemComponent)
 		{
-			ItemComponent->OnInventoryEquippedSlotItemsChanged.BindUObject(this, &UDomiInventoryWidget::UpdateEquippedSlotItems);
-			ItemComponent->OnInventoryConsumableSlotItemsChanged.BindUObject(this, &UDomiInventoryWidget::UpdateConsumableSlotItems);
-			ItemComponent->OnInventoryItemListChanged.BindUObject(this, &UDomiInventoryWidget::UpdateInventoryItemList);
+			ItemComponent->OnInventoryEquippedSlotItemsChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateEquippedSlotItems);
+			ItemComponent->OnInventoryConsumableSlotItemsChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateConsumableSlotItems);
+			ItemComponent->OnInventoryItemListChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateInventoryItemList);
 		}
 	}
 }
 
-void UDomiInventoryWidget::UpdateInventoryItemList()
+void UDomiInventoryWidget::OnUpdateInventoryItemList()
 {
 	InventoryAllItems = ItemComponent->GetInventoryDisplayItems();
-	OnUpdateInventoryItemList();
+	UpdateInventoryItemList();
 
 	for (FItemUISlotData& SlotData : InventoryAllItems)
 	{
@@ -42,13 +42,13 @@ void UDomiInventoryWidget::UpdateInventoryItemList()
 
 		if (SlotData.ItemTag.MatchesTag(ItemTags::ConsumableItem))
 		{
-			OtherItemsMap.Add(SlotData.ItemName, SlotData);
+			ConsumableItemsMap.Add(SlotData.ItemName, SlotData);
 			continue;
 		}
 		
 		if (SlotData.ItemTag.MatchesTag(ItemTags::OtherItem))
     	{
-			ConsumableItemsMap.Add(SlotData.ItemName, SlotData);
+			OtherItemsMap.Add(SlotData.ItemName, SlotData);
 			continue;
 		}
 
@@ -56,14 +56,14 @@ void UDomiInventoryWidget::UpdateInventoryItemList()
 	}
 }
 
-void UDomiInventoryWidget::UpdateEquippedSlotItems()
+void UDomiInventoryWidget::OnUpdateEquippedSlotItems()
 {
 	InventoryEquippedSlotItems = ItemComponent->GetEquippedDisplayItems();
 
 	
 }
 
-void UDomiInventoryWidget::UpdateConsumableSlotItems()
+void UDomiInventoryWidget::OnUpdateConsumableSlotItems()
 {
 	InventoryConsumableSlotItems = ItemComponent->GetConsumableDisplayItems();
 }

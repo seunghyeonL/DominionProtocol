@@ -6,11 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "Interface/InteractableInterface.h"
 #include "Components/TimelineComponent.h"
-#include "Engine/TargetPoint.h"
 #include "Elevator.generated.h"
 
 class UBoxComponent;
 class ADomiCharacter;
+class AElevatorCaller;
 
 UCLASS()
 class DOMINIONPROTOCOL_API AElevator : public AActor, public IInteractableInterface
@@ -20,6 +20,9 @@ class DOMINIONPROTOCOL_API AElevator : public AActor, public IInteractableInterf
 public:	
 	AElevator();
 
+	void MoveElevatorTo(float TargetZ);
+
+	bool IsMoving() const { return bIsMoving; }
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -60,9 +63,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UBoxComponent* BoxCollisionComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UBoxComponent* Wall; //삭제
-
 	FTimeline Timeline;
 
 	UPROPERTY(EditAnywhere)
@@ -75,10 +75,10 @@ protected:
 	bool bIsMoving;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
-	ATargetPoint* TopTarget;
+	AElevatorCaller* TopCaller;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
-	ATargetPoint* BottomTarget;
+	AElevatorCaller* BottomCaller;
 
 
 private:

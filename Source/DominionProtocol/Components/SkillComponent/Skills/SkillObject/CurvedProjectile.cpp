@@ -18,9 +18,9 @@ ACurvedProjectile::ACurvedProjectile()
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->InitSphereRadius(30.0f);
-	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
+	// SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
-	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	// SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetGenerateOverlapEvents(true);
 	RootComponent = SphereCollision;
@@ -111,16 +111,29 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 	bIsInitialize = true;
 
 	check(GetWorld());
+	GetWorld()->GetTimerManager().ClearTimer(DestroyTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ACurvedProjectile::DestroyProjectile, CurveSettings.LifeSpan, false);
 }
 
 void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor == this) return;
+	// if (OtherActor == this) return;
 
 	// 같은 클래스(자기들끼리)라면 무시
 	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
+	
+	// 사용자 본인은 무시
+	if (OtherActor == InstigatorPawn)
+	{
+		return;
+	}
 
+	// 스폰시 InstigatorPawn이 설정되기 이전에 오버랩 무시
+	if (!IsValid(InstigatorPawn))
+	{
+		return;
+	}
+	
 	UWorld* World = GetWorld();
 	check(World);
 
@@ -165,18 +178,26 @@ void ACurvedProjectile::MidPointCalculator()
 
 	if (!IsValid(TargetActor))
 	{
-		// TargetActor가 없는 경우 카메라 방향으로 설정
 		if (IsValid(InstigatorPawn))
 		{
-			UCameraComponent* Camera = InstigatorPawn->FindComponentByClass<UCameraComponent>();
-			if (Camera)
-			{
-				const FVector CameraLocation = Camera->GetComponentLocation();
-				const FVector ForwardVector = Camera->GetForwardVector();
-				const float Distance = 2000.0f;
-				TargetPoint = CameraLocation + (ForwardVector * Distance);
-			}
+			// TargetActor가 없는 경우 플레이어 전방 10미터 방향으로 설정
+			const FVector OriginLocation = InstigatorPawn->GetActorLocation();
+			const FVector ForwardVector = InstigatorPawn->GetActorForwardVector();
+			const float Distance = 1000.0f;
+			TargetPoint = OriginLocation + (ForwardVector * Distance);
 		}
+		//if (IsValid(InstigatorPawn))
+		//{
+		//  // TargetActor가 없는 경우 카메라 전방 10미터 방향으로 설정
+		//	UCameraComponent* Camera = InstigatorPawn->FindComponentByClass<UCameraComponent>();
+		//	if (Camera)
+		//	{
+		//		const FVector CameraLocation = Camera->GetComponentLocation();
+		//		const FVector ForwardVector = Camera->GetForwardVector();
+		//		const float Distance = 1000.0f;
+		//		TargetPoint = CameraLocation + (ForwardVector * Distance);
+		//	}
+		//}
 	}
 	else
 	{
