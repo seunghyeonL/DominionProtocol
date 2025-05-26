@@ -28,4 +28,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Effects")
 	void ShowStatusEffectTags();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Effects")
+	void ActivateStatusEffect(const FGameplayTag& EffectTag);
 };

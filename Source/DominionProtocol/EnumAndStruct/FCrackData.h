@@ -19,22 +19,25 @@ struct FCrackData
 			RespawnRotation(FRotator::ZeroRotator)
 	{}
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString OwnerLevelName;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString LinkedLevelName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 CrackIndex;
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText CrackName;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsActivate;
 	
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector RespawnLocation;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FRotator RespawnRotation;
 	
 };

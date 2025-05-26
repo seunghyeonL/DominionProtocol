@@ -7,7 +7,7 @@
 #include "EnumAndStruct/EGameStoryState.h"
 #include "StoryDependentInterface.generated.h"
 
-UINTERFACE(BlueprintType)
+UINTERFACE(BlueprintType, Blueprintable)
 class UStoryDependentInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -19,5 +19,5 @@ class DOMINIONPROTOCOL_API IStoryDependentInterface
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Story")
-	void OnStoryProgressUpdated(EGameStoryState NewState);
+	void OnStoryStateUpdated(EGameStoryState NewState);
 };

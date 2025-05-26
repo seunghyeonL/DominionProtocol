@@ -5,7 +5,7 @@
 #include "Util/GameTagList.h"
 #include "PawnTagInterface.generated.h"
 
-UINTERFACE()
+UINTERFACE(BlueprintType, Blueprintable)
 class UPawnTagInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -16,6 +16,6 @@ class DOMINIONPROTOCOL_API IPawnTagInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	FGameplayTag GetPawnTag();
 };

@@ -5,11 +5,9 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Components/StatusComponent/StatusEffects/AIState/AIStateBase.h"
+#include "Components/AIComponent/AIState/AIStateBase.h"
 #include "Components/StatusComponent/StatusComponent.h"
-#include "Components/StatusComponent/StatusEffects/AIState/AIState_Idle.h"
-#include "Components/StatusComponent/StatusEffects/AIState/AIState_Combat.h"
-#include "Components/StatusComponent/StatusEffects/AIState/AIState_Return.h"
+#include "Components/AIComponent/AIStateComponent.h"
 
 
 // Sets default values
@@ -35,6 +33,8 @@ ABaseAIController::ABaseAIController()
 
 	// 델리게이트 바인딩
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAIController::OnTargetPerceptionUpdated);
+
+	AIStateComponent = CreateDefaultSubobject<UAIStateComponent>(TEXT("AIStateComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -59,34 +59,29 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 		GetBlackboardComponent()->SetValueAsVector(TEXT("HomeLocation"), SpawnLocation);
 	}
 
-	if (UStatusComponent* StatusComp = InPawn->FindComponentByClass<UStatusComponent>())
+	if (AIStateComponent)
 	{
-		IdleState = NewObject<UAIState_Idle>(StatusComp);
-		CombatState = NewObject<UAIState_Combat>(StatusComp);
-		ReturnState = NewObject<UAIState_Return>(StatusComp);
-
-		IdleState->Activate();
+		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
+		UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
 	}
-	UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
 }
 
 void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	EvaluateTargetPriority();
 
+	if (!AIStateComponent) return;
+
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		if (CombatState && !CombatState->IsActive())
-		{
-			CombatState->StateTag = EffectTags::Combat;
-			CombatState->Activate();
-			UE_LOG(LogTemp, Warning, TEXT("CombatState Activated"));
-		}
+		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
+		UE_LOG(LogTemp, Warning, TEXT("CombatState Activated"));
 	}
 	else
 	{
-		IdleState->Activate();
-		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);
+		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
+		UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
+		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);	
 	}
 }
 
@@ -136,11 +131,11 @@ void ABaseAIController::Tick(float DeltaTime)
 
 void ABaseAIController::HandleTargetLost()
 {
+	if (!AIStateComponent) return;
+
 	if (!GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")))
 	{
-		if (ReturnState && !ReturnState->IsActive())
-		{
-			ReturnState->Activate();
-		}
+		AIStateComponent->SetAIStateByTag(EffectTags::Return);
+		UE_LOG(LogTemp, Warning, TEXT("ReturnState Activated"));
 	}
 }

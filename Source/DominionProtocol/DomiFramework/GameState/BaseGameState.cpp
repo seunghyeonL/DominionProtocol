@@ -36,6 +36,7 @@ void ABaseGameState::BeginPlay()
 	check(World);
 	InitializeGameInstance();
 	InitializeWorldInstanceSubsystem();
+	InitializeZeroIndexCrackData(WorldInstanceSubsystem->GetCurrentLevelName());
 	InitializeSoundSubsystem();
 }
 
@@ -270,6 +271,32 @@ void ABaseGameState::InitializeCrackDataMap()
 			// 해당 인덱스 존재하지 않을 때만 데이터 추가
 			CrackDataArray.CrackDataArray.Add(NewCrackData);
 		}
+	}
+}
+
+void ABaseGameState::InitializeZeroIndexCrackData(const FString CurrentLevelName)
+{
+	check(CrackInitializeDataTable);
+
+	if (IsValid(WorldInstanceSubsystem))
+	{
+		if (WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level1" &&
+			WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level2" &&
+			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel1" &&
+			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel2")
+		{
+			return;
+		}
+	}
+	
+	FCrackInitializeData* Level1Row = CrackInitializeDataTable->FindRow<FCrackInitializeData>(FName(CurrentLevelName), TEXT(""));
+	FCrackInitializeData* Level2Row = CrackInitializeDataTable->FindRow<FCrackInitializeData>(FName(Level1Row->ZeroIndexCrackData.LinkedLevelName), TEXT(""));
+	FCrackData Level1 = Level1Row->ZeroIndexCrackData;
+	FCrackData Level2 = Level2Row->ZeroIndexCrackData;
+
+	if (IsValid(WorldInstanceSubsystem))
+	{
+		WorldInstanceSubsystem->InitializeCrackDataMap(Level1, Level2);
 	}
 }
 

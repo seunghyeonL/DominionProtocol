@@ -4,6 +4,8 @@
 #include "Util/BattleDataTypes.h"
 #include "BaseSkill.generated.h"
 
+class ACurvedProjectile;
+
 UCLASS(Blueprintable)
 class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 {
@@ -17,6 +19,9 @@ public:
 	virtual void Execute();
 
 	virtual void AttackTrace() const;
+
+	virtual void StartTrace();
+	virtual void StopTrace();
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime);
@@ -40,10 +45,13 @@ protected:
 	TObjectPtr<UAnimMontage> AnimMontage = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
-	TObjectPtr<USoundBase> Sound = nullptr;
+	TArray<TObjectPtr<USoundBase>> Sound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
-	TObjectPtr<UParticleSystem> Particle = nullptr;
+	TArray<TObjectPtr<UParticleSystem>> Particle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	TSubclassOf<ACurvedProjectile> CurvedProjectileClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
 	TArray<FEffectData> Effects;

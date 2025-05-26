@@ -47,12 +47,48 @@ void UPlayerDashSkill::SetDashDirection()
 void UPlayerDashSkill::Tick(float DeltaTime)
 {
 	check(OwnerCharacter);
+	auto MovementComponent = OwnerCharacter->GetCharacterMovement();
 	
 	FVector Step = DashMoveDirection * DashSpeed * DeltaTime;
+	FVector AdjustedStep = Step;
+
+	// 1. 바닥에 닿아 있다면 바닥 Normal에 대해 투영
+	if (MovementComponent->CurrentFloor.IsWalkableFloor())
+	{
+		FVector FloorNormal = MovementComponent->CurrentFloor.HitResult.Normal;
+		FVector DashDirection = FVector::VectorPlaneProject(Step, FloorNormal).GetSafeNormal();
+		AdjustedStep = DashDirection * DashSpeed * DeltaTime;
+	}
+
+	// 2. 벽에 닿아 있다면 벽 Normal에 대해 다시 투영
+	// => 벽과 겹쳐있거나 옆에 비비고 있다면
+	FHitResult WallHit;
+	FVector Start = OwnerCharacter->GetActorLocation();
+	FVector End = Start + Step.GetSafeNormal() * 10.0f; // 가까운 벽 확인용
+	
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(OwnerCharacter);
+	bool bHitWall = GetWorld()->SweepSingleByChannel(
+		WallHit,
+		Start,
+		End,
+		FQuat::Identity,
+		ECC_Visibility, // 필요 시 CustomChannel_Wall로 교체
+		FCollisionShape::MakeCapsule(42.f, 96.f),
+		Params
+	);
+	
+	if (bHitWall)
+	{
+		const FVector WallNormal = WallHit.Normal;
+		FVector DashDirection = FVector::VectorPlaneProject(AdjustedStep, WallNormal).GetSafeNormal();
+		AdjustedStep = DashDirection * DashSpeed * DeltaTime;
+	}
+	// 여기까지 벽에서 미끄러지는 로직
 	
 	FHitResult Hit;
 	OwnerCharacter->GetCharacterMovement()->SafeMoveUpdatedComponent(
-		Step,
+		AdjustedStep,
 		OwnerCharacter->GetActorRotation(),
 		true,
 		Hit

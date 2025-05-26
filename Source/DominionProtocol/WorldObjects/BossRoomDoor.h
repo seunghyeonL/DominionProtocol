@@ -5,11 +5,9 @@
 #include "CoreMinimal.h"
 #include "WorldObjects/Door.h"
 #include "Interface/StoryDependentInterface.h"
+#include "DominionProtocol/Util/GameTagList.h"
 #include "BossRoomDoor.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class DOMINIONPROTOCOL_API ABossRoomDoor : public ADoor, public IStoryDependentInterface
 {
@@ -20,7 +18,11 @@ public:
 
 protected:
 	virtual void OpenDoor(float Value) override;
-	virtual void OnStoryProgressUpdated_Implementation(EGameStoryState NewState) override;
+	virtual void Interact_Implementation(AActor* Interactor) override;
+	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
+
+private:
+	void StartDissolve();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
@@ -31,4 +33,9 @@ protected:
 
 	UPROPERTY()
 	USceneComponent* RightDoorPivot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "key")
+	FGameplayTag RequiredKey;
+
+
 };

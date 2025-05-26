@@ -1,63 +1,114 @@
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
+#include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "DomiFramework/GameState/BaseGameState.h"
-#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 #include "Player/Damagable.h"
+#include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "DomiFramework/GameState/BaseGameState.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Components/StatusComponent/StatusComponent.h"
+#include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
+//#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 
 ACurvedProjectile::ACurvedProjectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
+	SphereCollision->InitSphereRadius(30.0f);
+	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
+	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
+	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereCollision->SetGenerateOverlapEvents(true);
 	RootComponent = SphereCollision;
 
 	Projectile = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile"));
 	Projectile->SetupAttachment(SphereCollision);
+	Projectile->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// 오브젝트 풀링하면 삭제
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("'/Engine/VREditor/TransformGizmo/TranslateArrowHandle.TranslateArrowHandle'"));
+	//if (MeshAsset.Succeeded())
+	//{
+	//	Projectile->SetStaticMesh(MeshAsset.Object);
+	//}
+}
+
+void ACurvedProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ACurvedProjectile::OnOverlapBegin);
 }
 
 void ACurvedProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(!bIsActivate) return;
+	//if(!bIsActivate) return;
+	if (!bIsInitialize) return;
+	if (!IsValid(InstigatorPawn)) return;
 
+	// 이동 로직
 	if (GetActorLocation() != TargetPoint)
 	{
-		CurvePoint = VInterpToConstant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
+		if (bIsTargetMove)
+		{
+			TargetPoint = TargetActor->GetActorLocation();
+		}
+		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
 
-		SetActorLocation(CurvePoint);
+		SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), CurvePoint, DeltaTime, CurveSettings.ProjectileSpeed));
 
-		FRotator LookAtRotation = (TargetPoint - CurvePoint).Rotation();
-		SetActorRotation(LookAtRotation);
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), CurvePoint, DeltaTime, CurveSettings.ProjectileSpeed)));
+	}
+
+	if (GetActorLocation() == TargetPoint)
+	{
+		DestroyProjectile();
+		//	ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
+		//	ObjectPoolSubsystem->ReturnActorToPool(this);
 	}
 }
 
-void ACurvedProjectile::OnObjectSpawn_Implementation()
-{
-	Super::OnObjectSpawn_Implementation();
+//void ACurvedProjectile::OnObjectSpawn_Implementation()
+//{
+//	Super::OnObjectSpawn_Implementation();
+//	
+//	Debug::PrintError(TEXT("CurvedProjectile is Spawned"));
+//
+//	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ACurvedProjectile::OnOverlapBegin);
+//
+//	Debug::PrintError(TEXT("ACurvedProjectile::OnOverlapBegin Bind"));
+//}
+//
+//void ACurvedProjectile::OnObjectReturn_Implementation()
+//{
+//	Super::OnObjectReturn_Implementation();
+//	
+//	Debug::PrintError(TEXT("CurvedProjectile is return"));
+//
+//	SphereCollision->OnComponentBeginOverlap.RemoveDynamic(this, &ACurvedProjectile::OnOverlapBegin);
+//	Debug::PrintError(TEXT("ACurvedProjectile::OnOverlapBegin UnBind"));
+//}
 
-	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ACurvedProjectile::OnOverlapBegin);
-}
-
-void ACurvedProjectile::OnObjectReturn_Implementation()
+void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetActor)
 {
-	Super::OnObjectReturn_Implementation();
-	
-	SphereCollision->OnComponentBeginOverlap.RemoveDynamic(this, &ACurvedProjectile::OnOverlapBegin);
-}
+	if (!IsValid(NewInstigator)) return;
 
-void ACurvedProjectile::Launch(AActor* NewInstigator, const FVector& NewTargetPoint)
-{
-	Instigator = NewInstigator;
-	TargetPoint = NewTargetPoint;
-	StartPoint = GetActorLocation();
+	InstigatorPawn = Cast<APawn>(NewInstigator);
+	SetInstigator(InstigatorPawn);
+
+	TargetActor = NewTargetActor;
 
 	// 중간 지점 및 곡선 지점 계산
 	MidPointCalculator();
 	CurveControl();
+
+	bIsInitialize = true;
 
 	check(GetWorld());
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ACurvedProjectile::DestroyProjectile, CurveSettings.LifeSpan, false);
@@ -65,92 +116,122 @@ void ACurvedProjectile::Launch(AActor* NewInstigator, const FVector& NewTargetPo
 
 void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AActor* HitActor = OtherActor;
+	if (OtherActor == this) return;
 
-	if (!IsValid(HitActor))	return;
+	// 같은 클래스(자기들끼리)라면 무시
+	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
 
 	UWorld* World = GetWorld();
-
-	if (!IsValid(World)) return;
+	check(World);
 
 	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+	check(BaseGameState);
 
-	if (!IsValid(BaseGameState)) return;
-
-	UStatusComponent* StatusComponent = Instigator->FindComponentByClass<UStatusComponent>();
-
-	if (!IsValid(StatusComponent)) return;
-	float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-	FAttackData AttackData;
-
-	check(Instigator);
-
-	//AttackData.Damage = GetFinalAttackData(AttackPower);
-
-	AttackData.Instigator = Instigator;
-	//AttackData.Effects = Effects;
-
-	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
+	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
 	{
-		AttackData.LaunchVector = HitActor->GetActorLocation() - Instigator->GetActorLocation();
-
-		AttackData.LaunchVector.Normalize();
-
-		IDamagable::Execute_OnAttacked(HitActor, AttackData);
+		Particle = SkillData->Particle[0];
+		if (Particle)
+		{
+			UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
+				GetWorld(),
+				Particle,
+				GetActorLocation(),
+				FRotator::ZeroRotator,
+				true
+			);
+		}
 	}
+
+	if (IsValid(SkillOwner))
+	{
+		UBaseSkill* BaseSkill = SkillOwner->CurrentSkill;
+		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
+		{
+			BaseSkill->ApplyAttackToHitActor(SweepResult, 0);
+		}
+	}
+
+	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
+	//ObjectPoolSubsystem->ReturnActorToPool(this);
+
+	DestroyProjectile();
 }
 
 void ACurvedProjectile::MidPointCalculator()
 {
-	float DistanceRatio = FMath::FRandRange(CurveSettings.MinCurvePointDistance, CurveSettings.MaxCurvePointDistance);
+	if (!IsValid(InstigatorPawn)) return;
 
-	MidPoint = GetActorLocation() + (TargetPoint - GetActorLocation()) * DistanceRatio;
+	StartPoint = GetActorLocation();
+
+	if (!IsValid(TargetActor))
+	{
+		// TargetActor가 없는 경우 카메라 방향으로 설정
+		if (IsValid(InstigatorPawn))
+		{
+			UCameraComponent* Camera = InstigatorPawn->FindComponentByClass<UCameraComponent>();
+			if (Camera)
+			{
+				const FVector CameraLocation = Camera->GetComponentLocation();
+				const FVector ForwardVector = Camera->GetForwardVector();
+				const float Distance = 2000.0f;
+				TargetPoint = CameraLocation + (ForwardVector * Distance);
+			}
+		}
+	}
+	else
+	{
+		// TargetActor가 있는 경우
+		TargetPoint = TargetActor->GetActorLocation();
+		bIsTargetMove = true;
+	}
+
+	// 중간 지점 계산
+	float DistanceRatio = FMath::FRandRange(CurveSettings.MinCurvePointDistance, CurveSettings.MaxCurvePointDistance);
+	MidPoint = StartPoint + (TargetPoint - StartPoint) * DistanceRatio;
 }
 
 void ACurvedProjectile::CurveControl()
 {
-	FVector Direction = (TargetPoint - MidPoint).GetSafeNormal();
-	FRotator LookAtRotation = Direction.Rotation();
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(MidPoint, TargetPoint);
+
+	FVector XAxis, YAxis, ZAxis;
+	UKismetMathLibrary::BreakRotIntoAxes(LookAtRotation, XAxis, YAxis, ZAxis);
 
 	float RadiusRatio = FMath::FRandRange(CurveSettings.MinCurveRadius, CurveSettings.MaxCurveRadius);
 	float AngleRatio = FMath::FRandRange(CurveSettings.MinAngle, CurveSettings.MaxAngle);
 
-	FVector XAxis, YAxis, ZAxis;
-	FRotationMatrix(LookAtRotation).GetScaledAxes(XAxis, YAxis, ZAxis);
+	XAxis *= RadiusRatio;
+	YAxis *= RadiusRatio;
 
-	// Y축 방향 벡터에 곡률 반지름을 곱한 벡터
-	FVector InVector = YAxis * RadiusRatio;
-
-	// X축(Pitch 방향)을 기준으로 InVector를 회전
-	FVector RotatedVector = InVector.RotateAngleAxis(AngleRatio, XAxis);
-
-	CurvePoint = MidPoint + RotatedVector;
-}
-
-FVector ACurvedProjectile::VInterpToConstant(const FVector& Current, const FVector& Target, float DeltaTime, float Speed)
-{
-	if (Speed <= 0.f || Current == Target)
-	{
-		return Target;
-	}
-
-	FVector Direction = (Target - Current).GetSafeNormal();
-	float Distance = FVector::Dist(Current, Target);
-	float MoveStep = Speed * DeltaTime;
-
-	if (MoveStep >= Distance)
-	{
-		return Target;
-	}
-
-	return Current + Direction * MoveStep;
+	CurvePoint = MidPoint + UKismetMathLibrary::RotateAngleAxis(YAxis, AngleRatio, XAxis);
 }
 
 void ACurvedProjectile::DestroyProjectile()
 {
-	// 소멸 이펙트
+	UWorld* World = GetWorld();
+	check(World);
 
-	UObjectPoolSubsystem* ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
-	ObjectPoolSubsystem->ReturnActorToPool(this);
+	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+	check(BaseGameState);
+
+	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	{
+		Sound = SkillData->Sound[1];
+		if (Sound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				this,
+				Sound,
+				GetActorLocation()
+			);
+		}
+	}
+
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	SetActorTickEnabled(false);
+	Destroy();
+
+	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
+	//ObjectPoolSubsystem->ReturnActorToPool(this);
 }

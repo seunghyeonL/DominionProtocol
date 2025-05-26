@@ -4,14 +4,12 @@
 #include "Player/Characters/DomiCharacter.h"
 
 AElevator::AElevator()
-	: bIsMoving(false),
-	bIsAtTop(false),
-	MoveDistance(100.f)
+	:
+	MoveDistance(100.f),
+	bIsMoving(false),
+	bIsAtTop(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	StartLocation = GetActorLocation();
-	TargetLocation = StartLocation + FVector(0.f, 0.f, MoveDistance);
 
 	SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
 	SetRootComponent(SceneComp);
@@ -115,23 +113,15 @@ void AElevator::Interact_Implementation(AActor* Interactor)
 	}
 
 	FVector CurrentLocation = GetActorLocation();
+	float TargetZ = bIsAtTop ? BottomTarget->GetActorLocation().Z : TopTarget->GetActorLocation().Z;
 
-	if (bIsAtTop)
-	{
-		StartLocation = CurrentLocation;
-		TargetLocation = CurrentLocation - FVector(0.f, 0.f, MoveDistance);
-		Timeline.PlayFromStart();
-		Debug::Print(TEXT("Elevator Moving Down"));
-	}
-	else
-	{
-		StartLocation = CurrentLocation;
-		TargetLocation = CurrentLocation + FVector(0.f, 0.f, MoveDistance);
-		Timeline.PlayFromStart();
-		Debug::Print(TEXT("Elevator Moving Up"));
-	}
+	StartLocation = CurrentLocation;
+	TargetLocation = FVector(CurrentLocation.X, CurrentLocation.Y, TargetZ);
 
+	Timeline.PlayFromStart();
 	bIsMoving = true;
+
+	Debug::Print(bIsAtTop ? TEXT("Elevator Moving Down") : TEXT("Elevator Moving Up"));
 }
 
 FText AElevator::GetInteractMessage_Implementation() const

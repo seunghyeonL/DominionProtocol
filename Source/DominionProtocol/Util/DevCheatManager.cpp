@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "DevCheatManager.h"
@@ -6,6 +6,7 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 void UDevCheatManager::Save()
 {
@@ -31,3 +32,16 @@ void UDevCheatManager::MoveToCrack(FString TargetLevelName, int32 TargetCrackInd
 	ABaseGameMode* BaseGameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
 	UCheatBPLib::MoveToCrack(BaseGameMode, TargetLevelName, TargetCrackIndex);
 }
+
+void UDevCheatManager::StoryState(EGameStoryState NewStoryState)
+{
+	UWorld* World = GetOuter()->GetWorld();
+	if (!IsValid(World)) return;
+
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(World->GetGameInstance());
+	if (IsValid(GI))
+	{
+		GI->SetCurrentGameStoryState(NewStoryState);
+	}
+}
+

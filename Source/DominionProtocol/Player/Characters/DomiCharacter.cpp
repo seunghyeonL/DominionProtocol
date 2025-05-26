@@ -488,6 +488,15 @@ void ADomiCharacter::ShowStatusEffectTags_Implementation()
 	}
 }
 
+void ADomiCharacter::ActivateStatusEffect_Implementation(const FGameplayTag& EffectTag)
+{
+	IEffectReceivable::ActivateStatusEffect_Implementation(EffectTag);
+
+	check(StatusComponent);
+
+	StatusComponent->ActivateStatusEffect(EffectTag, 0);
+}
+
 void ADomiCharacter::EventInteractionWidgetScroll(const float Value)
 {
 	OnInteractionWidgetScroll.Broadcast(Value);

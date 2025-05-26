@@ -2,11 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "DomiFramework/ObjectPooling/PoolableActorBase.h"
+#include "GameplayTagContainer.h"
+//#include "DomiFramework/ObjectPooling/PoolableActorBase.h"
 #include "CurvedProjectile.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
+class USkillComponent;
+class UCurvedProjectileSkill;
+class USoundBase;
+//class UObjectPoolSubsystem;
 
 USTRUCT(BlueprintType)
 struct FProjectileCurveSettings
@@ -41,30 +46,32 @@ public:
 
 	// 투사체 생명주기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float LifeSpan = 3.0f;
+	float LifeSpan;
 };
 
-UCLASS()
-class DOMINIONPROTOCOL_API ACurvedProjectile : public APoolableActorBase
+UCLASS(Blueprintable)
+class DOMINIONPROTOCOL_API ACurvedProjectile : public AActor //APoolableActorBase
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ACurvedProjectile();
 
-	const FProjectileCurveSettings& GetCurveSettings() const { return CurveSettings; }
-	void SetCurveSettings(const FProjectileCurveSettings& NewSettings) { CurveSettings = NewSettings; }
-
-	AActor* GetInstigator() const { return Instigator; }
-	void SetInstigator(AActor* NewInstigator) { Instigator = NewInstigator; }
+	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
 
-	void OnObjectSpawn_Implementation() override;
+	//void OnObjectSpawn_Implementation() override;
 
-	void OnObjectReturn_Implementation() override;
+	//void OnObjectReturn_Implementation() override;
 
-	void Launch(AActor* NewInstigator, const FVector& NewTargetPoint);
+	void SetLaunchPath(AActor* NewInstigator, AActor* NewTargetActor);
+
+	UPROPERTY()
+	UCurvedProjectileSkill* SkillOwner = nullptr;
+
+	UPROPERTY()
+	FGameplayTag SkillTag;
 
 protected:
 	UFUNCTION()
@@ -77,8 +84,6 @@ private:
 
 	void CurveControl();
 
-	FORCEINLINE FVector VInterpToConstant(const FVector& Current, const FVector& Target, float DeltaTime, float Speed);
-
 	void DestroyProjectile();
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Collision")
@@ -87,16 +92,32 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
 	TObjectPtr<UStaticMeshComponent> Projectile;
 
-	TObjectPtr<AActor> Instigator;
+	UPROPERTY()
+	TObjectPtr<UParticleSystem> Particle;
 
-	FVector StartPoint;
-	FVector TargetPoint;
-	FVector MidPoint;
-	FVector CurvePoint;
+	UPROPERTY()
+	TObjectPtr<USoundBase> Sound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings", meta = (AllowPrivateAccess = "true"))
 	FProjectileCurveSettings CurveSettings;
 
+	APawn* InstigatorPawn;
+	AActor* TargetActor;
+
+	// 투사체 생성 지점
+	FVector StartPoint;
+
+	// 타겟 지점
+	FVector TargetPoint;
+
+	FVector MidPoint;
+	FVector CurvePoint;
+
 	FTimerHandle DestroyTimerHandle;
 
+	bool bIsTargetMove = false;
+	bool bIsInitialize = false;
+
+	//UPROPERTY()
+	//UObjectPoolSubsystem* ObjectPoolSubsystem;
 };

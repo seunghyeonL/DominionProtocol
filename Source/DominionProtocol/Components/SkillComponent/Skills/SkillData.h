@@ -6,6 +6,7 @@
 #include "SkillData.generated.h"
 
 class UNiagaraSystem;
+class ACurvedProjectile;
 
 USTRUCT(BlueprintType)
 struct FSkillData : public FTableRowBase
@@ -20,16 +21,19 @@ public:
 	TObjectPtr<UAnimMontage> AnimMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
-	TObjectPtr<USoundBase> Sound;
+	TArray<TObjectPtr<USoundBase>> Sound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
-	TObjectPtr<UParticleSystem> Particle;
+	TArray<TObjectPtr<UParticleSystem>> Particle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
 	TArray<TObjectPtr<UNiagaraSystem>> NaiagaraParticle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TArray<TObjectPtr<UMaterialInterface>> SkillMaterials;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	TSubclassOf<ACurvedProjectile> CurvedProjectileClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
 	TArray<FEffectData> Effects;

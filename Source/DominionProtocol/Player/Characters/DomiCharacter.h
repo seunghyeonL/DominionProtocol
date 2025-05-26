@@ -88,6 +88,7 @@ public:
 	// EffectReceivable
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;
+	virtual void ActivateStatusEffect_Implementation(const FGameplayTag& EffectTag) override;
 
 	void EventInteractionWidgetScroll(const float Value);
 

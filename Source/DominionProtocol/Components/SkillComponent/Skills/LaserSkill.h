@@ -19,6 +19,9 @@ public:
 
 	virtual void Execute() override;
 
+	virtual void StartTrace() override;
+	virtual void StopTrace() override;
+
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
 
 	UPROPERTY()

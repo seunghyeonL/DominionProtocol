@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Interface/InteractableInterface.h"
 #include "Components/TimelineComponent.h"
+#include "Engine/TargetPoint.h"
 #include "Elevator.generated.h"
 
 class UBoxComponent;
@@ -60,7 +61,7 @@ protected:
 	UBoxComponent* BoxCollisionComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UBoxComponent* Wall;
+	UBoxComponent* Wall; //삭제
 
 	FTimeline Timeline;
 
@@ -70,6 +71,16 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float MoveDistance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator")
+	bool bIsMoving;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
+	ATargetPoint* TopTarget;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
+	ATargetPoint* BottomTarget;
+
+
 private:
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;
@@ -77,6 +88,5 @@ private:
 	FVector StartLocation;
 	FVector TargetLocation;
 
-	bool bIsMoving;
 	bool bIsAtTop;
 };

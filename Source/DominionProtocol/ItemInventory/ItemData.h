@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
+#include "Engine/DataTable.h"
 #include "Engine/Texture2D.h"
 #include "Util/GameTagList.h"
 #include "ItemData.generated.h"
@@ -9,8 +10,9 @@
 UENUM(BlueprintType)
 enum class EItemType : uint8
 {
-	Weapon UMETA(DisplayName = "Weapon"),
-	Consumable UMETA(DisplayName = "Consumable")
+	Equippable	UMETA(DisplayName = "Equippable"),
+	Consumable	UMETA(DisplayName = "Consumable"),
+	Other		UMETA(DisplayName = "Other")
 
 };
 

@@ -1,9 +1,9 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ObjectPoolSubsystem.h"
 #include "DomiFramework/ObjectPooling/PoolableBlueprintClassDataAsset.h"
-
+#include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
 
 void UObjectPoolSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -67,7 +67,7 @@ AActor* UObjectPoolSubsystem::SpawnActorFromPool(const FGameplayTag& Tag, const 
 	}
 
 	UClass* ClassType = TagToClassMap[Tag].Get();
-	if (IsValid(ClassType))
+	if (!IsValid(ClassType))
 	{
 		Debug::PrintError(TEXT("UObjectPoolSubsystem::SpawnActorFromPool : Class for Tag is null"));
 		return nullptr;

@@ -1,13 +1,13 @@
 #include "SkillComponent.h"
 #include "SkillComponentUser.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
+#include "Gameframework/Character.h"
 #include "SkillComponentInitializeData.h"
+#include "Components/StatusComponent/StatusComponent.h"
+#include "Components/StatusComponent/StatusComponentUser.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
-#include "Components/StatusComponent/StatusComponentUser.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "Gameframework/Character.h"
 #include "Util/DebugHelper.h"
 
 USkillComponent::USkillComponent()
@@ -236,16 +236,7 @@ void USkillComponent::StopSkill()
         Debug::Print(TEXT("USkillComponent::StopSkill : Montage not stop."));
     }
 
-    // 트레이스 멈추기
-    UMnhTracerComponent* MnhTracerComponent = Character->FindComponentByClass<UMnhTracerComponent>();
-
-    if (IsValid(MnhTracerComponent))
-    {
-        FGameplayTagContainer TagContainer;
-        TagContainer.AddTag(ItemTags::BasicWeapon);
-
-        MnhTracerComponent->StopTracers(TagContainer);
-    }
+    CurrentSkill->StopTrace();
 
     // 콤보 초기화
     // 이부분 그냥 ResetCombo같은 함수로 뺄까요?

@@ -11,4 +11,22 @@ class DOMINIONPROTOCOL_API UDomiAbilitySlotsWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+	UFUNCTION()
+	void OnUseWeaponSkill();
+
+	UFUNCTION()
+	void OnUseMagicSkill();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateWeaponSkillIcon();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateMagicSkillIcon();
+
+protected:
+	virtual void NativeConstruct()override;
+
+	void BindUseWeaponSkillEvent();
+	void BindUseMagicSkillEvent();
 };

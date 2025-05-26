@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
+#include "EnumAndStruct/FCrackInitializeData.h"
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+struct FCrackInitializeData;
 class UWorldActorLoaderSubsystem;
 class UWorldInstanceSubsystem;
 struct FStatusComponentInitializeData;
@@ -29,8 +31,8 @@ public:
 	
 	//Getter
 	FORCEINLINE FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
-	FORCEINLINE FSkillComponentInitializeData* GetSkillComponentInitializeData(const FGameplayTag PawnTag) const;
-	FORCEINLINE FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
+	FSkillComponentInitializeData* GetSkillComponentInitializeData(const FGameplayTag PawnTag) const;
+	FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
 	FORCEINLINE ACrack* GetCrackByIndex(int32 InCrackIndex) const {return AllCracksCache[InCrackIndex]; }
 	
 	void CacheAllCracks();
@@ -51,6 +53,7 @@ private:
 	void InitializeGameInstance();
 	void InitializeWorldInstanceSubsystem();
 	void InitializeSoundSubsystem();
+	void InitializeZeroIndexCrackData(const FString CurrentLevelName);
 	
 
 //Variables
@@ -69,6 +72,9 @@ private:
 
 	UPROPERTY()
 	UWorldActorLoaderSubsystem* WorldActorLoaderSubsystem;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Crack", meta = (AllowPrivateAccess = "true"))
+	UDataTable* CrackInitializeDataTable;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Skill", meta = (AllowPrivateAccess = "true"))
 	UDataTable* SkillDataTable;

@@ -81,7 +81,8 @@ namespace SkillTags
 	inline const FGameplayTag PlayerParry = FGameplayTag::RequestGameplayTag(TEXT("Skill.Parry.Player"));
 
 	inline const FGameplayTag LaserSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Laser"));
-	inline const FGameplayTag CurvedProjectile = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.CurvedProjectile"));
+	inline const FGameplayTag RailGunSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.RailGun"));
+	inline const FGameplayTag FireBallSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.FireBall"));
 }
 
 namespace PawnTags
@@ -96,12 +97,21 @@ namespace ItemTags
 {
 	inline const FGameplayTag ItemBase = FGameplayTag::RequestGameplayTag(TEXT("Item.Base"));
 
-	//Weapon Item Tags
-	inline const FGameplayTag BasicWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Weapon.Basic"));
-	inline const FGameplayTag SwordWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Weapon.Sword"));
-	inline const FGameplayTag AxeWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Weapon.Axe"));
+	//Equippable Item Tags
+	inline const FGameplayTag EquippableItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable"));
+	inline const FGameplayTag WeaponItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon"));
+	inline const FGameplayTag BasicWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Basic"));
+	inline const FGameplayTag SwordWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Sword"));
+	inline const FGameplayTag AxeWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Axe"));
+	inline const FGameplayTag SkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill"));
+	inline const FGameplayTag AccessaryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessary"));
 
 	//Consumable Item Tags
+	inline const FGameplayTag ConsumableItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable"));
 	inline const FGameplayTag Potion = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion"));
 	inline const FGameplayTag Elixir = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Elixir"));
+
+	//Other Item Tags
+	inline const FGameplayTag OtherItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Other"));
+	inline const FGameplayTag Key = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.Key"));
 }

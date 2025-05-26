@@ -19,7 +19,10 @@ void ULaserSkill::Execute()
 	Super::Execute();
 
 	check(OwnerCharacter);
+}
 
+void ULaserSkill::StartTrace()
+{
 	LaserActor = GetWorld()->SpawnActor<ALaserActor>(
 		ALaserActor::StaticClass(),
 		FVector::ZeroVector,
@@ -38,6 +41,14 @@ void ULaserSkill::Execute()
 
 		LaserActor->Initialize();
 	}
+}
+
+void ULaserSkill::StopTrace()
+{
+	check(LaserActor);
+
+	LaserActor->Destroy();
+	LaserActor = nullptr;
 }
 
 void ULaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)

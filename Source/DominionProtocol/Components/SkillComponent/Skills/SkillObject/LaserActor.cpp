@@ -158,16 +158,6 @@ void ALaserActor::Tick(float DeltaTime)
 
 	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
 
-	if (IsValid(SkillComponent))
-	{
-		UBaseSkill* BaseSkill = SkillComponent->GetCurrentSkill();
-
-		if (BaseSkill == nullptr || BaseSkill->GetSkillTag() != SkillTags::LaserSkill)
-		{
-			Destroy();
-		}
-	}
-
 	Super::Tick(DeltaTime);
 
 	UWorld* World = GetWorld();

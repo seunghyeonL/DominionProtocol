@@ -50,9 +50,10 @@ public:
 	// PawnTag
 	virtual FGameplayTag GetPawnTag_Implementation() override;
 
-	// EffectReceivable
+	// EffectReceivable (for debug)
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;
+	virtual void ActivateStatusEffect_Implementation(const FGameplayTag& EffectTag) override;
 
 protected:
 	// Called when the game starts or when spawned

@@ -5,7 +5,7 @@
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
 #include "CurvedProjectileSkill.generated.h"
 
-class UObjectPoolSubsystem;
+//class UObjectPoolSubsystem;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UCurvedProjectileSkill : public UBaseSkill
@@ -19,22 +19,29 @@ public:
 
 	virtual void Execute() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	int32 TotalProjectileCount = 3;
+	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	float LaunchInterval = 0.3f;
+	UBaseSkill* CurrentSkill;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	int32 TotalProjectileCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	float LaunchInterval;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	FVector Offset;
 
 private:
-	void LaunchNextProjectile();
+	void UpdateTarget();
 
-	FORCEINLINE void SetTargetActor(AActor* NewActor) { TargetActor = NewActor; }
+	void ProjectileFromPool();
 
-	void SetTargetActorInPublicSpace();
+	void SetPlayerAsTarget();
 
-	bool IsActorInViewport(const FVector& ActorLocation) const;
-
-	UObjectPoolSubsystem* ObjectPoolSubsystem;
+	ACurvedProjectile* CurvedProjectile;
 
 	AActor* TargetActor;
 
@@ -42,8 +49,6 @@ private:
 
 	int32 ProjectileIndexToLaunch = 0;
 
-	FVector SpawnLocation;
-	FRotator SpawnRotator;
-
-	FVector TargetLocation;
+	//UPROPERTY()
+	//UObjectPoolSubsystem* ObjectPoolSubsystem;
 };
