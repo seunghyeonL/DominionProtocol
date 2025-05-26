@@ -104,6 +104,7 @@ ADomiCharacter::ADomiCharacter()
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::UsingDash);
 	InvincibilityTags.AddTag(EffectTags::Death);
+	InvincibilityTags.AddTag(EffectTags::UsingZoneya);
 
 	// ParriedTags Setting
 	ParriedTags.AddTag(EffectTags::UsingParry);
