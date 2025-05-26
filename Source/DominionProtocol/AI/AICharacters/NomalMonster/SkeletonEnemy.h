@@ -6,9 +6,9 @@
 #include "AI/AICharacters/BaseEnemy.h"
 #include "SkeletonEnemy.generated.h"
 
-/**
- * 
- */
+class UMnhTracerComponent;
+class UMnhBoxComponent;
+
 UCLASS()
 class DOMINIONPROTOCOL_API ASkeletonEnemy : public ABaseEnemy
 {
@@ -21,6 +21,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	class UBehaviorTree* BehaviorTree;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMnhTracerComponent> AttackTraceComponent;
 
 public:
 	FORCEINLINE UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
