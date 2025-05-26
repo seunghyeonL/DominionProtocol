@@ -29,10 +29,10 @@ public:
 	void HideDeathScriptWidget();
 
 	UFUNCTION()
-	void OnInGameMenuOpenAndClose();
+	void OnSwitchShowAndHideOnInGameMenuWidget();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void InGameMenuOpenAndClose();
+	void SwitchShowAndHideOnInGameMenuWidget();
 
 	UFUNCTION(BlueprintCallable)
 	void OnSwitchShowAndHideCrackWarpWidget();
@@ -40,12 +40,21 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SwitchShowAndHideCrackWarpWidget();
 
+	UFUNCTION()
+	void OnSwitchShowAndHideInventoryWidget();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SwitchShowAndHideInventoryWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder);
+
 protected:
 	virtual void NativeConstruct() override;
 	void SetupStatusBarWidget(const AActor* OwningActor);
 
 protected:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AInGameController> OwningController;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -74,6 +83,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UUserWidget> CrackWrapWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UDomiInventoryWidget> InventoryWidget;
 
 #pragma endregion
 };

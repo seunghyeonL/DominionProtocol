@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ItemInventory/ItemUISlotData.h"
 #include "DomiInventoryWidget.generated.h"
 
 
@@ -21,7 +20,7 @@ protected:
 	UFUNCTION()
 	void UpdateInventoryItemList();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnUpdateInventoryItemList();
 
 	UFUNCTION()

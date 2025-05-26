@@ -92,6 +92,16 @@ bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
 			Debug::Print("New Item Quantity Exceeds Max Limit");
 			return false;
 		}
+		else
+		{
+			Debug::Print(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 데이터가 테이블에 없습니다."), *ItemTag.ToString()));
+			return false;
+		}
+	}
+	else
+	{
+		Debug::Print(TEXT("아이템 데이터 테이블이 할당되지 않았습니다."));
+		return false;
 	}
 }
 
