@@ -43,7 +43,7 @@ protected:
 	virtual void InitializeComponent() override;
 
 	UPROPERTY(VisibleAnywhere)
-	AActor* LockOnTargetActor;
+	TObjectPtr<AActor> LockOnTargetActor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlStateBase> PlayerControlState;

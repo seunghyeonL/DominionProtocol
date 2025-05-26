@@ -30,6 +30,7 @@ UPlayerControlComponent::UPlayerControlComponent()
 	
 	PlayerControlState = nullptr;
 	ValidBufferedInput = nullptr;
+	LockOnTargetActor = nullptr;
 	// bIsComponentReady = false;
 	// ...
 }
@@ -134,7 +135,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()
 		Start,
 		End,
 		FQuat::Identity,
-		ECC_Visibility,
+		ECC_Pawn,
 		FCollisionShape::MakeSphere(PublicSpaceDistance),
 		SphereTraceQueryParams
 	);
@@ -148,6 +149,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()
 		for (const FHitResult& Hit : SphereTraceHitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
+			Debug::Print(FString::Printf(TEXT("HitActor: %s"), *HitActor->GetName()));
 
 			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
 			{
@@ -199,7 +201,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInVisibility()
 		Start,
 		End,
 		FQuat(FRotator(0,ViewPointRotation.Yaw + 45.f,0)),
-		ECC_Visibility,
+		ECC_Pawn,
 		FCollisionShape::MakeBox(BoxSize),
 		QueryParams
 	);
@@ -223,7 +225,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInVisibility()
 						LineTraceHit,
 						OwnerCharacter->GetActorLocation(),
 						HitActor->GetActorLocation(),
-						ECC_Visibility,
+						ECC_Pawn,
 						QueryParams
 					);
 					if (bLineTraceHit && LineTraceHit.GetActor() == HitActor)

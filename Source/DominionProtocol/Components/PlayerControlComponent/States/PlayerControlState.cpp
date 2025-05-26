@@ -225,7 +225,7 @@ void UPlayerControlState::LockOn()
 	}
 	else
 	{
-		if (PlayerControlComponent->SetLockOnTargetActorInPublicSpace() == false)
+		if (!PlayerControlComponent->SetLockOnTargetActorInPublicSpace())
 		{
 			PlayerControlComponent->SetLockOnTargetActorInVisibility();
 		}
@@ -237,7 +237,7 @@ void UPlayerControlState::LockOn()
 		}
 		else
 		{
-			Debug::PrintLog(TEXT("UPlayerControlState::LockOn : No LockOnTargetActor."));
+			Debug::Print(TEXT("UPlayerControlState::LockOn : No LockOnTargetActor."));
 		}
 	}
 

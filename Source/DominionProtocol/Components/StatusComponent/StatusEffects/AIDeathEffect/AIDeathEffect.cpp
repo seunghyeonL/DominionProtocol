@@ -13,6 +13,7 @@ UAIDeathEffect::UAIDeathEffect()
 void UAIDeathEffect::Activate()
 {
 	Super::Activate();
+	bIsActive = true;
 	// Ignore Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{
@@ -23,11 +24,13 @@ void UAIDeathEffect::Activate()
 void UAIDeathEffect::Activate(float Duration)
 {
 	Super::Activate(Duration);
+	bIsActive = true;
 }
 
 void UAIDeathEffect::Deactivate()
 {
 	Super::Deactivate();
+	bIsActive = false;
 	// Set Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{
