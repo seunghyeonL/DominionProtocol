@@ -22,13 +22,17 @@ public:
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	UBaseSkill* CurrentSkill;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	int32 TotalProjectileCount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	float LaunchInterval;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	UBaseSkill* CurrentSkill;
+	FVector Offset;
 
 private:
 	void UpdateTarget();
@@ -37,16 +41,14 @@ private:
 
 	void SetPlayerAsTarget();
 
-	//UPROPERTY()
-	//UObjectPoolSubsystem* ObjectPoolSubsystem;
-
-	UPROPERTY()
 	ACurvedProjectile* CurvedProjectile;
 
-	UPROPERTY()
 	AActor* TargetActor;
 
 	FTimerHandle FireTimerHandle;
 
 	int32 ProjectileIndexToLaunch = 0;
+
+	//UPROPERTY()
+	//UObjectPoolSubsystem* ObjectPoolSubsystem;
 };

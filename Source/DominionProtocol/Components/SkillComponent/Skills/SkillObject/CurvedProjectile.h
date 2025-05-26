@@ -2,14 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-//#include "DomiFramework/ObjectPooling/PoolableActorBase.h"
 #include "GameplayTagContainer.h"
+//#include "DomiFramework/ObjectPooling/PoolableActorBase.h"
 #include "CurvedProjectile.generated.h"
 
 class USphereComponent;
 class UStaticMeshComponent;
 class USkillComponent;
 class UCurvedProjectileSkill;
+class USoundBase;
 //class UObjectPoolSubsystem;
 
 USTRUCT(BlueprintType)
@@ -56,11 +57,6 @@ class DOMINIONPROTOCOL_API ACurvedProjectile : public AActor //APoolableActorBas
 public:
 	ACurvedProjectile();
 
-	USphereComponent* GetSphereCollision() const { return SphereCollision; }
-
-	const FProjectileCurveSettings& GetCurveSettings() const { return CurveSettings; }
-	void SetCurveSettings(const FProjectileCurveSettings& NewSettings) { CurveSettings = NewSettings; }
-
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
@@ -76,11 +72,13 @@ public:
 
 	UPROPERTY()
 	FGameplayTag SkillTag;
+
 protected:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
+
 private:
 	void MidPointCalculator();
 
@@ -95,9 +93,15 @@ private:
 	TObjectPtr<UStaticMeshComponent> Projectile;
 
 	UPROPERTY()
-	APawn* InstigatorPawn;
+	TObjectPtr<UParticleSystem> Particle;
 
 	UPROPERTY()
+	TObjectPtr<USoundBase> Sound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings", meta = (AllowPrivateAccess = "true"))
+	FProjectileCurveSettings CurveSettings;
+
+	APawn* InstigatorPawn;
 	AActor* TargetActor;
 
 	// 투사체 생성 지점
@@ -109,13 +113,7 @@ private:
 	FVector MidPoint;
 	FVector CurvePoint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings", meta = (AllowPrivateAccess = "true"))
-	FProjectileCurveSettings CurveSettings;
-
 	FTimerHandle DestroyTimerHandle;
-
-	UPROPERTY()
-	UParticleSystem* ImpactParticle;
 
 	bool bIsTargetMove = false;
 	bool bIsInitialize = false;

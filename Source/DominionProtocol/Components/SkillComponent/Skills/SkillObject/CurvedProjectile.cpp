@@ -2,23 +2,22 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "DomiFramework/GameState/BaseGameState.h"
-#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 #include "Player/Damagable.h"
+#include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Kismet/GameplayStatics.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/SkillComponent.h"
+#include "Components/StatusComponent/StatusComponent.h"
 #include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
-
+//#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 
 ACurvedProjectile::ACurvedProjectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
-	SphereCollision->InitSphereRadius(10.0f);
+	SphereCollision->InitSphereRadius(30.0f);
 	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
 	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
@@ -36,7 +35,6 @@ ACurvedProjectile::ACurvedProjectile()
 	//{
 	//	Projectile->SetStaticMesh(MeshAsset.Object);
 	//}
-	//UE_LOG(LogTemp, Warning, TEXT("Spawned Actor Location: %s"), *GetActorLocation().ToString());
 }
 
 void ACurvedProjectile::BeginPlay()
@@ -67,11 +65,12 @@ void ACurvedProjectile::Tick(float DeltaTime)
 
 		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), CurvePoint, DeltaTime, CurveSettings.ProjectileSpeed)));
 	}
+
 	if (GetActorLocation() == TargetPoint)
 	{
-	//	ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
-	//	ObjectPoolSubsystem->ReturnActorToPool(this);
 		DestroyProjectile();
+		//	ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
+		//	ObjectPoolSubsystem->ReturnActorToPool(this);
 	}
 }
 
@@ -130,12 +129,12 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 
 	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
 	{
-		ImpactParticle = SkillData->Particle;
-		if (ImpactParticle)
+		Particle = SkillData->Particle[0];
+		if (Particle)
 		{
 			UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
 				GetWorld(),
-				ImpactParticle,
+				Particle,
 				GetActorLocation(),
 				FRotator::ZeroRotator,
 				true
@@ -209,7 +208,24 @@ void ACurvedProjectile::CurveControl()
 
 void ACurvedProjectile::DestroyProjectile()
 {
-	// 소멸 이펙트
+	UWorld* World = GetWorld();
+	check(World);
+
+	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+	check(BaseGameState);
+
+	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	{
+		Sound = SkillData->Sound[1];
+		if (Sound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				this,
+				Sound,
+				GetActorLocation()
+			);
+		}
+	}
 
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);

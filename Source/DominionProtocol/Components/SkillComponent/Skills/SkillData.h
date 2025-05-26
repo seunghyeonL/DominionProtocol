@@ -21,10 +21,10 @@ public:
 	TObjectPtr<UAnimMontage> AnimMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
-	TObjectPtr<USoundBase> Sound;
+	TArray<TObjectPtr<USoundBase>> Sound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
-	TObjectPtr<UParticleSystem> Particle;
+	TArray<TObjectPtr<UParticleSystem>> Particle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
 	TArray<TObjectPtr<UNiagaraSystem>> NaiagaraParticle;

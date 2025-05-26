@@ -1,20 +1,19 @@
 #include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
-#include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
-//#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
-#include "DomiFramework/GameState/BaseGameState.h"
-#include "GameFramework/Character.h"
-#include "Kismet/GameplayStatics.h"
-#include "Interface/PawnTagInterface.h"
-#include "Components/PlayerControlComponent/PlayerControlComponent.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "Components/SkillComponent/SkillComponent.h"
 #include "Player/Damagable.h"
 #include "Util/GameTagList.h"
-#include "Util/DebugHelper.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
+#include "Interface/PawnTagInterface.h"
+#include "DomiFramework/GameState/BaseGameState.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Components/StatusComponent/StatusComponent.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
+#include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
+//#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 
 UCurvedProjectileSkill::UCurvedProjectileSkill()
 {
+	Offset = FVector(0.0f, 50.0f, 150.0f);
 }
 
 void UCurvedProjectileSkill::Initialize(ACharacter* Instigator)
@@ -33,6 +32,8 @@ void UCurvedProjectileSkill::Execute()
 	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
 	//if (!IsValid(ObjectPoolSubsystem)) return;
 
+	// 애니메이션 몽타주 끝나고 SkillComponent의 CurrentSkill이 Null이 되므로
+	// 투사체에서 오버랩 발생할 때 불러오면 데미지 처리를 하지 못하므로 투사체 스킬에서 따로 저장하고 넘겨줌
 	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
 	CurrentSkill = SkillComponent->GetCurrentSkill();
 
@@ -120,7 +121,6 @@ void UCurvedProjectileSkill::ProjectileFromPool()
 	int32 Index = ProjectileIndexToLaunch - 1;
 	Debug::PrintError(TEXT("current Index : '") + FString::FromInt(Index) + TEXT("'"));
 
-	FVector Offset = FVector(0.0f, 50.0f, 150.0f);
 	FVector SpawnLocation = OwnerCharacter->GetActorTransform().TransformPosition(Offset);
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
@@ -148,6 +148,17 @@ void UCurvedProjectileSkill::ProjectileFromPool()
 			SpawnLocation,
 			SpawnRotation
 		);
+
+		Sound[0] = SkillData->Sound[0];
+		if (Sound[0])
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				this,
+				Sound[0],
+				SpawnLocation
+			);
+		}
+
 		if (CurvedProjectile)
 		{
 			CurvedProjectile->SkillOwner = this;

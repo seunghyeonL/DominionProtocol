@@ -45,10 +45,10 @@ protected:
 	TObjectPtr<UAnimMontage> AnimMontage = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
-	TObjectPtr<USoundBase> Sound = nullptr;
+	TArray<TObjectPtr<USoundBase>> Sound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
-	TObjectPtr<UParticleSystem> Particle = nullptr;
+	TArray<TObjectPtr<UParticleSystem>> Particle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TSubclassOf<ACurvedProjectile> CurvedProjectileClass;

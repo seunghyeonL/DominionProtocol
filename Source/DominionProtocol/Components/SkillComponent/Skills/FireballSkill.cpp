@@ -6,6 +6,7 @@ UFireBallSkill::UFireBallSkill()
 	SkillTag = SkillTags::FireBallSkill;
 	TotalProjectileCount = 3;
 	LaunchInterval = 0.1;
+	Offset = FVector(0.0f, 50.0f, 150.0f);
 }
 
 void UFireBallSkill::Execute()
