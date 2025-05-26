@@ -177,18 +177,26 @@ void ACurvedProjectile::MidPointCalculator()
 
 	if (!IsValid(TargetActor))
 	{
-		// TargetActor가 없는 경우 카메라 방향으로 설정
 		if (IsValid(InstigatorPawn))
 		{
-			UCameraComponent* Camera = InstigatorPawn->FindComponentByClass<UCameraComponent>();
-			if (Camera)
-			{
-				const FVector CameraLocation = Camera->GetComponentLocation();
-				const FVector ForwardVector = Camera->GetForwardVector();
-				const float Distance = 2000.0f;
-				TargetPoint = CameraLocation + (ForwardVector * Distance);
-			}
+			// TargetActor가 없는 경우 플레이어 전방 10미터 방향으로 설정
+			const FVector OriginLocation = InstigatorPawn->GetActorLocation();
+			const FVector ForwardVector = InstigatorPawn->GetActorForwardVector();
+			const float Distance = 1000.0f;
+			TargetPoint = OriginLocation + (ForwardVector * Distance);
 		}
+		//if (IsValid(InstigatorPawn))
+		//{
+		//  // TargetActor가 없는 경우 카메라 전방 10미터 방향으로 설정
+		//	UCameraComponent* Camera = InstigatorPawn->FindComponentByClass<UCameraComponent>();
+		//	if (Camera)
+		//	{
+		//		const FVector CameraLocation = Camera->GetComponentLocation();
+		//		const FVector ForwardVector = Camera->GetForwardVector();
+		//		const float Distance = 1000.0f;
+		//		TargetPoint = CameraLocation + (ForwardVector * Distance);
+		//	}
+		//}
 	}
 	else
 	{
