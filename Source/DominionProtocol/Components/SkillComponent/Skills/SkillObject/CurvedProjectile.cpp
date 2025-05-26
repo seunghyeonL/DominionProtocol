@@ -127,13 +127,11 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		return;
 	}
 
+	// 스폰시 InstigatorPawn이 설정되기 이전에 오버랩 무시
 	if (!IsValid(InstigatorPawn))
 	{
-		Debug::Print(TEXT("Invalid InstigatorPawn"));
 		return;
 	}
-	// Debug::Print(FString::Printf(TEXT("Instigator : %s"), *InstigatorPawn->GetName()));
-	// Debug::Print(FString::Printf(TEXT("OtherActor : %s"), *OtherActor->GetName()));
 	
 	UWorld* World = GetWorld();
 	check(World);
