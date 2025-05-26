@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AI/AICharacters/BaseEnemy.h"
+#include "Player/EffectReceivable.h"
 #include "ProtoArrowEnemy.generated.h"
 
 UCLASS()

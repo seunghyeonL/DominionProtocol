@@ -3,6 +3,8 @@
 
 #include "ProtoArrowEnemy.h"
 
+#include "Util/DebugHelper.h"
+
 
 // Sets default values
 AProtoArrowEnemy::AProtoArrowEnemy()
@@ -29,4 +31,3 @@ void AProtoArrowEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-
