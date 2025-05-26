@@ -113,9 +113,9 @@ void AInGameController::BindControllerInputActions()
 	auto* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent);
 	if (EnhancedInputComp)
 	{
-		if (IsValid(SwitchShowAndHideOnInGameMenuWidget))
+		if (IsValid(SwitchShowAndHideInGameMenuWidget))
 		{
-			EnhancedInputComp->BindAction(SwitchShowAndHideOnInGameMenuWidget, ETriggerEvent::Started,
+			EnhancedInputComp->BindAction(SwitchShowAndHideInGameMenuWidget, ETriggerEvent::Started,
 				this,
 				&AInGameController::OnSwitchShowAndHideOnInGameMenuWidget);
 		}

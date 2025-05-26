@@ -11,6 +11,8 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/ItemComponent/ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/InGameController.h"
+#include "UI/UIInGame/DomiInGameHUDWidget.h"
 
 UPlayerControlState::UPlayerControlState()
 {
@@ -344,4 +346,15 @@ void UPlayerControlState::InteractionScroll(const FInputActionValue& Value)
 		PlayerCharacter->EventInteractionWidgetScroll(InputValue);
 	}
 
+}
+
+void UPlayerControlState::SwitchShowAndHideInventory()
+{
+	Super::SwitchShowAndHideInventory();
+
+	auto* InGameController = Cast<AInGameController>(OwnerCharacter->GetController());
+	if (InGameController)
+	{
+		InGameController->GetInGameHUDWidget()->OnSwitchShowAndHideInventoryWidget();
+	}
 }

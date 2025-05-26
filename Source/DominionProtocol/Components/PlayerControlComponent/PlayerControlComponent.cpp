@@ -565,4 +565,16 @@ void UPlayerControlComponent::InteractionScroll(const FInputActionValue& Value)
 	}
 }
 
+void UPlayerControlComponent::SwitchShowAndHideInventory()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->SwitchShowAndHideInventory();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::SwitchShowAndHideInventory : Invalid ControlState."));
+	}
+}
+
 

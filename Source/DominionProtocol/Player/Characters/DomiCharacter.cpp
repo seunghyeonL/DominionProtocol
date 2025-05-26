@@ -319,6 +319,13 @@ void ADomiCharacter::BindInputFunctions()
 					ControlComponent.Get(),
 					&UPlayerControlComponent::InteractionScroll);
 			}
+
+			if (IsValid(PlayerController->SwitchShowAndHideInventoryWidget))
+			{
+				EnhancedInputComponent->BindAction(PlayerController->SwitchShowAndHideInventoryWidget, ETriggerEvent::Started,
+					ControlComponent.Get(),
+					&UPlayerControlComponent::SwitchShowAndHideInventory);
+			}
 		}
 		else
 		{

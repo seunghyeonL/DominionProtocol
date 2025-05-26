@@ -40,6 +40,7 @@ public:
 	virtual void ConsumeItemAction_3() {}
 	virtual void SwapWeapon() {}
 	virtual void InteractionScroll(const FInputActionValue& Value) {}
+	virtual void SwitchShowAndHideInventory(){}
 
 	virtual void Tick(float DeltaTime) {}
 
