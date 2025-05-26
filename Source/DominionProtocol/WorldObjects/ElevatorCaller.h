@@ -5,27 +5,22 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface/InteractableInterface.h"
-#include "Components/TimelineComponent.h"
-#include "Elevator.generated.h"
+#include "ElevatorCaller.generated.h"
 
 class UBoxComponent;
 class ADomiCharacter;
-class AElevatorCaller;
+class AElevator;
 
 UCLASS()
-class DOMINIONPROTOCOL_API AElevator : public AActor, public IInteractableInterface
+class DOMINIONPROTOCOL_API AElevatorCaller : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 	
 public:	
-	AElevator();
+	AElevatorCaller();
 
-	void MoveElevatorTo(float TargetZ);
-
-	bool IsMoving() const { return bIsMoving; }
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
@@ -46,47 +41,20 @@ protected:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
-	// void CallElevator();
-	UFUNCTION()
-	void ActivateElevator(float Value);
-
-	UFUNCTION()
-	void OnTimelineFinished();
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USceneComponent* SceneComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Elevator")
-	UStaticMeshComponent* FloorMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBoxComponent* BoxCollisionComp;
 
-	FTimeline Timeline;
-
-	UPROPERTY(EditAnywhere)
-	UCurveFloat* CurveFloat;
-
-	UPROPERTY(EditAnywhere)
-	float MoveDistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator")
-	bool bIsMoving;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Elevator")
+	UStaticMeshComponent* TriggerMesh; 
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
-	AElevatorCaller* TopCaller;
-
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
-	AElevatorCaller* BottomCaller;
-
+	AElevator* Elevator;
 
 private:
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;
-
-	FVector StartLocation;
-	FVector TargetLocation;
-
-	bool bIsAtTop;
 };
