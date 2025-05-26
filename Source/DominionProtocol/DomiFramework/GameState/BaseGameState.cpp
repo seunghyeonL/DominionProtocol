@@ -283,7 +283,8 @@ void ABaseGameState::InitializeZeroIndexCrackData(const FString CurrentLevelName
 		if (WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level1" ||
 			WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level2" ||
 			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel1" ||
-			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel2")
+			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel2" ||
+			WorldInstanceSubsystem->GetCurrentLevelName() != "Title_Level")
 		{
 			return;
 		}
