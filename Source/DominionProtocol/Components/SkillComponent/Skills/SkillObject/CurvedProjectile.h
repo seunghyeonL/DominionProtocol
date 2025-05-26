@@ -101,8 +101,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings", meta = (AllowPrivateAccess = "true"))
 	FProjectileCurveSettings CurveSettings;
 
-	APawn* InstigatorPawn;
-	AActor* TargetActor;
+	UPROPERTY()
+	TObjectPtr<APawn> InstigatorPawn;
+
+	UPROPERTY()
+	TObjectPtr<AActor> TargetActor;
 
 	// 투사체 생성 지점
 	FVector StartPoint;

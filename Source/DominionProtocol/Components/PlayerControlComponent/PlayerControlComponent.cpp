@@ -149,7 +149,6 @@ bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()
 		for (const FHitResult& Hit : SphereTraceHitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
-			Debug::Print(FString::Printf(TEXT("HitActor: %s"), *HitActor->GetName()));
 
 			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
 			{

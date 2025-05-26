@@ -18,9 +18,9 @@ ACurvedProjectile::ACurvedProjectile()
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->InitSphereRadius(30.0f);
-	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
+	// SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
-	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	// SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetGenerateOverlapEvents(true);
 	RootComponent = SphereCollision;
@@ -116,11 +116,25 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 
 void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor == this) return;
+	// if (OtherActor == this) return;
 
 	// 같은 클래스(자기들끼리)라면 무시
 	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
+	
+	// 사용자 본인은 무시
+	if (OtherActor == InstigatorPawn)
+	{
+		return;
+	}
 
+	if (!IsValid(InstigatorPawn))
+	{
+		Debug::Print(TEXT("Invalid InstigatorPawn"));
+		return;
+	}
+	// Debug::Print(FString::Printf(TEXT("Instigator : %s"), *InstigatorPawn->GetName()));
+	// Debug::Print(FString::Printf(TEXT("OtherActor : %s"), *OtherActor->GetName()));
+	
 	UWorld* World = GetWorld();
 	check(World);
 

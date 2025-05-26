@@ -22,7 +22,7 @@ public:
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	UBaseSkill* CurrentSkill;
+	TObjectPtr<UBaseSkill> CurrentSkill;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
@@ -41,9 +41,11 @@ private:
 
 	void SetPlayerAsTarget();
 
-	ACurvedProjectile* CurvedProjectile;
+	UPROPERTY()
+	TObjectPtr<ACurvedProjectile> CurvedProjectile;
 
-	AActor* TargetActor;
+	UPROPERTY()
+	TObjectPtr<AActor> TargetActor;
 
 	FTimerHandle FireTimerHandle;
 
