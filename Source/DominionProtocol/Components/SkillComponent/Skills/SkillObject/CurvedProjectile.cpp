@@ -111,6 +111,7 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 	bIsInitialize = true;
 
 	check(GetWorld());
+	GetWorld()->GetTimerManager().ClearTimer(DestroyTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ACurvedProjectile::DestroyProjectile, CurveSettings.LifeSpan, false);
 }
 
