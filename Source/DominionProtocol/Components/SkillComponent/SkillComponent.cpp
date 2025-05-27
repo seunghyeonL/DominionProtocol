@@ -5,12 +5,8 @@
 #include "SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
-#include "Components/PlayerControlComponent/ControlComponentUser.h"
-#include "Components/PlayerControlComponent/PlayerControlComponent.h"
-#include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "Util/DebugHelper.h"
-#include "AI/ProtoBoss/ProtoBossEnemy.h"
-#include "AI/AIControllers/Boss1AIController.h"
+#include "AI/AIControllers/BaseAIController.h"
 
 USkillComponent::USkillComponent()
 {
@@ -185,17 +181,12 @@ void USkillComponent::EndSkill()
                 }
             }
         }
-    }
 
-    AProtoBossEnemy* ProtoBossEnemy = Cast<AProtoBossEnemy>(Character);
+        ABaseAIController* BaseAIController = Cast<ABaseAIController>(Character->GetController());
 
-    if (IsValid(ProtoBossEnemy))
-    {
-        ABoss1AIController* BossAIController = Cast<ABoss1AIController>(ProtoBossEnemy->GetController());
-
-        if (IsValid(BossAIController))
+        if (IsValid(BaseAIController))
         {
-            BossAIController->ClearCachedTask();
+            BaseAIController->ClearCachedTask();
         }
     }
     

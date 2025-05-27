@@ -7,7 +7,7 @@
 #include "Components/SkillComponent/SkillComponentUser.h"
 #include "Util/DebugHelper.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "AI/AIControllers/Boss1AIController.h"
+#include "AI/AIControllers/BaseAIController.h"
 
 UExecutePattern::UExecutePattern()
 {
@@ -39,11 +39,11 @@ EBTNodeResult::Type UExecutePattern::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 
 	CachedTemp = &OwnerComp;
 
-	ABoss1AIController* Boss1AIController = Cast<ABoss1AIController>(AIController);
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
 
-	if (IsValid(Boss1AIController))
+	if (IsValid(BaseAIController))
 	{
-		Boss1AIController->SetCachedTask(this);
+		BaseAIController->SetCachedTask(this);
 	}
 	
 	SkillComponentUser->ExecuteSkill(SkillGroupTag);
