@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -8,6 +8,7 @@
 
 class UStatusComponent;
 class ABaseGameMode;
+class UItemComponent;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UCheatBPLib : public UBlueprintFunctionLibrary
@@ -20,4 +21,6 @@ public:
 	static void InfiniteStamina(const TObjectPtr<UStatusComponent> StatusComponent);
 	
 	static void MoveToCrack(ABaseGameMode* BaseGameMode, FString TargetLevelName, int32 TargetCrackIndex);
+
+	static void AddAllItemsToPlayerInventoryMaxQuantity(UObject* WorldContextObject);
 };

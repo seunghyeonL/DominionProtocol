@@ -495,3 +495,42 @@ const FItemData* UItemComponent::GetItemDataFromTable(FGameplayTag ItemTag) cons
 	}
 	return ItemData;
 }
+
+//치트매니저 전용
+void UItemComponent::AddAllItemsToInventoryMaxQuantity()
+{
+	if (CachedItemDataMap.IsEmpty())
+	{
+		Debug::PrintError(TEXT("AddAllItemsToInventoryMaxQuantity: CachedItemDataMap is empty. ItemDataTable might not be loaded or assigned correctly."));
+		return;
+	}
+
+	int32 AddedCount = 0;
+	// 캐싱된 ItemDataMap을 순회하며 모든 아이템을 인벤토리에 추가
+	for (const auto& Pair : CachedItemDataMap)
+	{
+		const FGameplayTag& ItemTag = Pair.Key;
+		const FItemData& ItemData = Pair.Value;
+
+		// 아이템의 최대 수량만큼 추가 (AddItem 함수가 내부적으로 수량을 관리)
+		if (AddItem(ItemTag, ItemData.MaxItemQuantity))
+		{
+			AddedCount++;
+		}
+		else
+		{
+			Debug::Print(FString::Printf(TEXT("Failed to add %s to inventory with max quantity."), *ItemTag.ToString()));
+		}
+	}
+
+	if (AddedCount > 0)
+	{
+		Debug::Print(FString::Printf(TEXT("Added %d unique items to inventory with max quantity."), AddedCount));
+		// 인벤토리 목록이 변경되었음을 UI에 알림
+		OnInventoryItemListChanged.ExecuteIfBound();
+	}
+	else
+	{
+		Debug::Print(TEXT("No items were added or all items already at max quantity."));
+	}
+}

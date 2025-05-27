@@ -126,6 +126,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Consumable|Potion")
 	void ApplyPotionBoost();
 
+	//치트 매니저에서 사용할 함수
+	UFUNCTION(BlueprintCallable, Category = "Inventory|Cheat")
+	void AddAllItemsToInventoryMaxQuantity();
+
 private:
 	//캐싱된 ItemDataTable에서 FItemData를 로드하는 헬퍼 함수
 	const FItemData* GetItemDataFromTable(FGameplayTag ItemTag) const;

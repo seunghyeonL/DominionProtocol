@@ -28,4 +28,7 @@ public:
 
 	UFUNCTION(Exec)
 	void Suicide();
+
+	UFUNCTION(Exec)
+	void AddAllItems();
 };
