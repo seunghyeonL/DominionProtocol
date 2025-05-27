@@ -42,7 +42,7 @@ void UCurvedProjectileSkill::Execute()
 
 }
 
-void UCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+void UCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
 	AActor* HitActor = HitResult.GetActor();
 

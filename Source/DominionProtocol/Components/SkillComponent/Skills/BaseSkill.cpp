@@ -104,49 +104,9 @@ void UBaseSkill::AttackTrace() const
 		return;
 	}
 
-	FAttackData AttackData;
-
-	UWorld* World = GetWorld();
-
-	if (IsValid(World))
-	{
-		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-
-		if (IsValid(BaseGameState))
-		{
-			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
-
-			if (IsValid(StatusComponent))
-			{
-				float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-				AttackData.Damage = GetFinalAttackData(AttackPower);
-			}
-		}
-	}
-
-	AttackData.Instigator = OwnerCharacter;
-	AttackData.Effects = Effects;
-
 	for (const FHitResult& HitResult : HitResults)
 	{
-		AActor* HitActor = HitResult.GetActor();
-
-		// USkillComponent* HitActorSkillComponent = HitActor->FindComponentByClass<USkillComponent>();
-
-		if (!IsValid(HitActor))
-		{
-			continue;
-		}
-
-		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
-		{
-			AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
-
-			AttackData.LaunchVector.Normalize();
-
-			IDamagable::Execute_OnAttacked(HitActor, AttackData);
-		}
+		ApplyAttackToHitActor(HitResult, 0.f);
 	}
 }
 
@@ -180,7 +140,7 @@ void UBaseSkill::StopTrace()
 	}
 }
 
-void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
 	AActor* HitActor = HitResult.GetActor();
 

@@ -19,7 +19,7 @@ public:
 
 	virtual void Execute() override;
 
-	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
+	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TObjectPtr<UBaseSkill> CurrentSkill;

@@ -22,7 +22,7 @@ public:
 	virtual void StartTrace() override;
 	virtual void StopTrace() override;
 
-	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) override;
+	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const override;
 
 	UPROPERTY()
 	TObjectPtr<ALaserActor> LaserActor;

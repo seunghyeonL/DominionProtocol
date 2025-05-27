@@ -24,7 +24,7 @@ public:
 	virtual void StopTrace();
 	
 	UFUNCTION(BlueprintCallable)
-	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime);
+	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const;
 
 	virtual float GetStamina() const;
 
