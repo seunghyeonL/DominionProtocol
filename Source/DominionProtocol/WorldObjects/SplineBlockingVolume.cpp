@@ -37,6 +37,8 @@ void ASplineBlockingVolume::ClearBox()
 	{
 		if (IsValid(Box))
 		{
+			Box->SetFlags(RF_Transactional);
+			Box->Modify();
 			Box->DestroyComponent();
 		}
 	}
@@ -59,8 +61,10 @@ void ASplineBlockingVolume::CreateBox()
 
 		// Box 컴포넌트 생성
 		UBoxComponent* NewBox = NewObject<UBoxComponent>(this);
+		NewBox->SetFlags(RF_Transactional);
 		NewBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 		NewBox->RegisterComponent();
+		NewBox->Modify();
 
 		NewBox->SetBoxExtent(CollisionBoxExtent);
 		NewBox->SetWorldLocation(Location);
