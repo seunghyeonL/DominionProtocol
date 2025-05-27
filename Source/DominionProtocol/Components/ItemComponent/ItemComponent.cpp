@@ -241,8 +241,13 @@ const TMap<FName, FGameplayTag>& UItemComponent::GetEquipmentSlots() const
 }
 
 //소비아이템 등록
-bool UItemComponent::SetConsumableItem(int32 SlotIndex, FGameplayTag ItemTag)
+bool UItemComponent::SetConsumableItem(int32 SlotIndex, FGameplayTag ItemTag = FGameplayTag())
 {
+	if (ConsumableSlots[SlotIndex] == ItemTag)
+	{
+		return false;
+	}
+	
 	if (SlotIndex >= 0 && SlotIndex < ConsumableSlots.Num())
 	{
 		if (HasItem(ItemTag, 1))
