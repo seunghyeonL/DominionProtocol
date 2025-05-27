@@ -46,6 +46,10 @@ protected:
 	// 게임 시작 시 ItemDataTable의 모든 FItemData를 로드해 사용
 	UPROPERTY(Transient) // 런타임에만 존재하고 저장되지 않음
 	TMap<FGameplayTag, FItemData> CachedItemDataMap;
+
+	// 포션 부스트가 적용되었는지 추적하는 변수
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Consumable|Potion")
+	bool bIsPotionBoostApplied;
 public:	
 	// 아이템 추가
 	UFUNCTION(BlueprintCallable)
@@ -117,6 +121,10 @@ public:
 	// 소비 아이템 슬롯의 모든 아이템 정보를 FItemUISlotData 배열로 반환
 	UFUNCTION(BlueprintPure, Category = "Consumable|UI")
 	TArray<FItemUISlotData> GetConsumableDisplayItems() const;
+
+	// 포션 태그를 부스트된 태그로 변경
+	UFUNCTION(BlueprintCallable, Category = "Consumable|Potion")
+	void ApplyPotionBoost();
 
 private:
 	//캐싱된 ItemDataTable에서 FItemData를 로드하는 헬퍼 함수

@@ -341,6 +341,56 @@ const TArray<FGameplayTag>& UItemComponent::GetConsumableSlots() const
 	return ConsumableSlots;
 }
 
+//포션 부스트 적용
+void UItemComponent::ApplyPotionBoost()
+{
+	if (bIsPotionBoostApplied)
+	{
+		Debug::Print(TEXT("이미 강화됨"));
+		return;
+	}
+	
+	TMap<FGameplayTag, int32> NewInventoryMap;
+	//인벤토리 업데이트
+	for (const auto& Pair : InventoryMap)
+	{
+		const FGameplayTag& CurrentTag = Pair.Key;
+		const int32 Quantity = Pair.Value;
+
+		// 만약 현재 태그가 'Item.Consumable.Potion
+		if (CurrentTag == ItemTags::Potion)
+		{
+			// 새로운 태그 'Item.Consumable.Potion.Boosted'로 수량을 옮김
+			NewInventoryMap.Add(ItemTags::PotionBoosted, Quantity);
+			OnInventoryItemListChanged.Execute();
+			Debug::Print(TEXT("Inventory Changed"));
+		}
+		else
+		{
+			// 다른 아이템은 그대로 유지
+			NewInventoryMap.Add(CurrentTag, Quantity);
+		}
+	}
+	InventoryMap = NewInventoryMap;
+
+	//소비슬롯 업데이트
+	for (int32 i = 0; i < ConsumableSlots.Num(); ++i)
+	{
+		FGameplayTag& SlotTag = ConsumableSlots[i]; // 참조로 가져와서 직접 수정
+
+		// 만약 현재 슬롯 태그가 'Item.Consumable.Potion.Health'라면
+		if (SlotTag == ItemTags::Potion)
+		{
+			// 새로운 태그 'Item.Consumable.Potion.Health.Boosted'로 변경
+			SlotTag = ItemTags::PotionBoosted;
+			OnInventoryConsumableSlotItemsChanged.Execute();
+			Debug::Print(FString::Printf(TEXT("Consumable Slot %d: Changed to %s"), i, *SlotTag.ToString()));
+		}
+	}
+	Debug::Print(TEXT("Potion boost applied! All applicable potions have been upgraded."));
+
+}
+
 //UI용 함수
 // 인벤토리의 모든 아이템 정보를 FItemUISlotData 배열로 반환
 TArray<FItemUISlotData> UItemComponent::GetInventoryDisplayItems() const
