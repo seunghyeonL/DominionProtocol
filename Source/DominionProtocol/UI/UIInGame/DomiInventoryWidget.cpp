@@ -30,7 +30,6 @@ void UDomiInventoryWidget::BindInventoryDelegates()
 void UDomiInventoryWidget::OnUpdateInventoryItemList()
 {
 	InventoryAllItems = ItemComponent->GetInventoryDisplayItems();
-	UpdateInventoryItemList();
 
 	for (FItemUISlotData& SlotData : InventoryAllItems)
 	{
@@ -54,6 +53,9 @@ void UDomiInventoryWidget::OnUpdateInventoryItemList()
 
 		ensureMsgf(false, TEXT("%s:: Error Item Tag"), *SlotData.ItemName);
 	}
+
+	UpdateInventoryItemList();
+
 }
 
 void UDomiInventoryWidget::OnUpdateEquippedSlotItems()

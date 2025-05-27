@@ -7,6 +7,15 @@
 #include "Blueprint/UserWidget.h"
 #include "DomiInventoryWidget.generated.h"
 
+UENUM(BlueprintType)
+enum class ELastDisplayArray : uint8
+{
+	AllItemsArray				UMETA(DisplayName="AllItemsArray"),
+	EquippableItemsArray		UMETA(DisplayName="EquippableItemsArray"),
+	ConsumableItemsArray		UMETA(DisplayName="ConsumableItemsArray"),
+	OtherItemsArray				UMETA(DisplayName="OtherItemsArray"),
+};
+
 
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiInventoryWidget : public UUserWidget
@@ -52,4 +61,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	TMap<FString, FItemUISlotData> OtherItemsMap;
+
+	UPROPERTY(BlueprintReadWrite)
+	ELastDisplayArray LastDisplayArray = ELastDisplayArray::AllItemsArray;
 };

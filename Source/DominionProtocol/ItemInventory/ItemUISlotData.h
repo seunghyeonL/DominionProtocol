@@ -38,7 +38,7 @@ struct FItemUISlotData
 		, ItemDescription(FText::GetEmpty())
 		, CurrentQuantity(0)
 		, MaxStackQuantity(1)
-		, ItemType(EItemType::Consumable)
+		, ItemType(EItemType::Other)
 	{
 	}
 };
