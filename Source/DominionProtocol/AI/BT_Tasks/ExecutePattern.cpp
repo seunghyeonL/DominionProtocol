@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ExecutePattern.h"
@@ -6,6 +6,8 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentUser.h"
 #include "Util/DebugHelper.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "AI/AIControllers/Boss1AIController.h"
 
 UExecutePattern::UExecutePattern()
 {
@@ -34,7 +36,29 @@ EBTNodeResult::Type UExecutePattern::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		Debug::PrintError(TEXT("UExecutePattern::ExecuteTask : OwnerActor doesn't implement ISkillComponentUser.."));
 		return EBTNodeResult::Failed;
 	}
+
+	/*UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
+
+	FName SkillTagName = Blackboard->GetValueAsName("SkillTag");*/
+
+	CachedTemp = &OwnerComp;
+
+	FTimerHandle MontageEndTimer;
+	//GetWorld()->GetTimerManager().SetTimer(MontageEndTimer, this, &ThisClass::OnAnimationCompleted, 0.5f, false);
+
+	ABoss1AIController* Boss1AIController = Cast<ABoss1AIController>(AIController);
+
+	if (IsValid(Boss1AIController))
+	{
+		Boss1AIController->SetCachedTask(this);
+	}
 	
-	SkillComponentUser->ExecuteSkill(SkillGroupTags::BaseAttack);
-	return EBTNodeResult::Succeeded;
+	SkillComponentUser->ExecuteSkill(SkillGroupTag);
+
+	return EBTNodeResult::InProgress;
+}
+
+void UExecutePattern::OnAnimationCompleted()
+{
+	FinishLatentTask(*CachedTemp, EBTNodeResult::Succeeded);
 }

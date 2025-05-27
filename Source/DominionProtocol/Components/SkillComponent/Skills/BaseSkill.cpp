@@ -11,6 +11,8 @@
 UBaseSkill::UBaseSkill()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
+
+	AnimPlayRate = 1.0f;
 }
 
 void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
@@ -57,13 +59,13 @@ void UBaseSkill::Execute()
 	check(IsValid(AnimMontage));
 	check(IsValid(OwnerCharacter));
 
-	OwnerCharacter->PlayAnimMontage(AnimMontage);
+	OwnerCharacter->PlayAnimMontage(AnimMontage, AnimPlayRate);
 }
 
 // 애님 노티파이에서 실행
 void UBaseSkill::AttackTrace() const
 {
-	check(OwnerCharacter)
+	check(OwnerCharacter);
 
 	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
 

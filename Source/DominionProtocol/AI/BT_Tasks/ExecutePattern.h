@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -17,9 +17,13 @@ class DOMINIONPROTOCOL_API UExecutePattern : public UBTTaskNode
 public:
 	UExecutePattern();
 
+	virtual void OnAnimationCompleted();
+
 protected:
 	UPROPERTY(EditAnywhere)
 	FGameplayTag SkillGroupTag;
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
+	UBehaviorTreeComponent* CachedTemp;
 };

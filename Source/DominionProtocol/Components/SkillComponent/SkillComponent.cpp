@@ -9,6 +9,8 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "Util/DebugHelper.h"
+#include "AI/ProtoBoss/ProtoBossEnemy.h"
+#include "AI/AIControllers/Boss1AIController.h"
 
 USkillComponent::USkillComponent()
 {
@@ -182,6 +184,18 @@ void USkillComponent::EndSkill()
                     AnimInstance->Montage_SetPlayRate(CurrentMontage, CurrentMontage->RateScale * 5);
                 }
             }
+        }
+    }
+
+    AProtoBossEnemy* ProtoBossEnemy = Cast<AProtoBossEnemy>(Character);
+
+    if (IsValid(ProtoBossEnemy))
+    {
+        ABoss1AIController* BossAIController = Cast<ABoss1AIController>(ProtoBossEnemy->GetController());
+
+        if (IsValid(BossAIController))
+        {
+            BossAIController->ClearCachedTask();
         }
     }
     

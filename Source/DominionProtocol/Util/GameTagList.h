@@ -67,6 +67,14 @@ namespace SkillGroupTags
 	inline const FGameplayTag MagicSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill"));
 	inline const FGameplayTag Dash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Dash"));
 	inline const FGameplayTag Parry = FGameplayTag::RequestGameplayTag(TEXT("Skill.Parry"));
+
+	inline const FGameplayTag SuperAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SuperAttack"));
+	inline const FGameplayTag SpecialAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SpecialAttack"));
+	inline const FGameplayTag EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.EvadeAttack"));
+	inline const FGameplayTag JumpAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.JumpAttack"));
+	inline const FGameplayTag RangedAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.RangedAttack"));
+
+	inline const FGameplayTag LevelStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.LevelStart"));
 }
 
 namespace SkillTags
@@ -82,6 +90,26 @@ namespace SkillTags
 	inline const FGameplayTag PlayerParry = FGameplayTag::RequestGameplayTag(TEXT("Skill.Parry.Player"));
 
 	inline const FGameplayTag LaserSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Laser"));
+	inline const FGameplayTag CurvedProjectile = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.CurvedProjectile"));
+
+	// Boss1
+	inline const FGameplayTag Boss1BaseAttack1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.BaseAttack.first"));
+	inline const FGameplayTag Boss1BaseAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.BaseAttack.second"));
+	inline const FGameplayTag Boss1BaseAttack3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.BaseAttack.third"));
+
+	inline const FGameplayTag Boss1SuperAttack1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SuperAttack.first"));
+	inline const FGameplayTag Boss1SuperAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SuperAttack.second"));
+
+	inline const FGameplayTag Boss1SpecialAttack1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SpecialAttack.first"));
+	inline const FGameplayTag Boss1SpecialAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SpecialAttack.second"));
+
+	inline const FGameplayTag Boss1EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.EvadeAttack"));
+
+	inline const FGameplayTag Boss1JumpAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.JumpAttack"));
+
+	inline const FGameplayTag Boss1RangedAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.RangedAttack"));
+
+	inline const FGameplayTag Boss1LevelStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.LevelStart"));
 	inline const FGameplayTag RailGunSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.RailGun"));
 	inline const FGameplayTag FireBallSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.FireBall"));
 	inline const FGameplayTag ZoneyaSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Zoneya"));

@@ -69,4 +69,6 @@ protected:
 	float AttackForwardOffset;
 
 	float DamageCoefficient;
+
+	float AnimPlayRate;
 };
