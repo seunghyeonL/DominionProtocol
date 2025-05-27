@@ -44,6 +44,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	float ProjectileSpeed;
 
+	// 투사체가 커브를 계속할 시간
+ 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	float CurveDuration;
+
 	// 투사체 생명주기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	float LifeSpan;
@@ -86,6 +90,12 @@ private:
 
 	void DestroyProjectile();
 
+	void UpdateCurveMovement(float DeltaTime);
+	void FixTargetPoint();
+	bool HasReachedTarget();
+	void OnReachTarget();
+	void MoveInStraightLine(float DeltaTime);
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Collision")
 	TObjectPtr<USphereComponent> SphereCollision;
 
@@ -120,6 +130,11 @@ private:
 
 	bool bIsTargetMove = false;
 	bool bIsInitialize = false;
+	bool bCurveFixed = false;  // 커브가 고정되었는지 확인하는 플래그
+	bool bReachedTarget = false;  // 타겟에 도달했는지 확인하는 플래그
+	FVector DirectionVector;  // 타겟 도달 후 직진할 방향 벡터
+
+	float ElapsedTime = 0.0f;  // 경과 시간 추적
 
 	//UPROPERTY()
 	//UObjectPoolSubsystem* ObjectPoolSubsystem;
