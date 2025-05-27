@@ -4,21 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "AI/AICharacters/BaseEnemy.h"
-#include "SkeletonEnemy.generated.h"
+#include "WoodEnemy.generated.h"
 
 class UMnhTracerComponent;
 class UMnhBoxComponent;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ASkeletonEnemy : public ABaseEnemy
+class DOMINIONPROTOCOL_API AWoodEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
 public:
-	ASkeletonEnemy();
+	AWoodEnemy();
 
 protected:
-	virtual void BeginPlay() override;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
 
@@ -27,5 +25,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UMnhTracerComponent> AttackTraceComponent;
-
 };

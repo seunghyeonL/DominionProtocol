@@ -4,28 +4,31 @@
 
 #include "CoreMinimal.h"
 #include "AI/AICharacters/BaseEnemy.h"
-#include "SkeletonEnemy.generated.h"
+#include "MinionEnemy.generated.h"
 
 class UMnhTracerComponent;
 class UMnhBoxComponent;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ASkeletonEnemy : public ABaseEnemy
+class DOMINIONPROTOCOL_API AMinionEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
+
 public:
-	ASkeletonEnemy();
+	AMinionEnemy();
 
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
+	TObjectPtr<UMnhBoxComponent> LeftWeaponTraceBox;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;
+	TObjectPtr<UMnhBoxComponent> RightWeaponTraceBox;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhTracerComponent> AttackTraceComponent;
+	TObjectPtr<UMnhTracerComponent> LeftAttackTraceComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMnhTracerComponent> RightAttackTraceComponent;
 };

@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/AICharacters/NomalMonster/SkeletonEnemy.h"
+#include "AI/AICharacters/NomalMonster/WoodEnemy.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhComponents.h"
 
-ASkeletonEnemy::ASkeletonEnemy()
+AWoodEnemy::AWoodEnemy()
 {
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
-	WeaponMesh->SetupAttachment(GetMesh(), TEXT("hand_r"));
+	//WeaponMesh->SetupAttachment(GetMesh(), TEXT("hand_r"));
 
 	WeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("WeaponTraceBox"));
 	WeaponTraceBox->SetupAttachment(WeaponMesh);
@@ -27,12 +27,4 @@ ASkeletonEnemy::ASkeletonEnemy()
 	TagContainer.AddTag(ItemTags::AxeWeapon);
 
 	AttackTraceComponent->InitializeTracers(TagContainer, WeaponTraceBox);
-}
-
-void ASkeletonEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-	InitializeStatusComponent();
-	InitializeSkillComponent();
 }
