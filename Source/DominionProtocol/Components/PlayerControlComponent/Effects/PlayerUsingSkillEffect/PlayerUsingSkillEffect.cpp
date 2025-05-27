@@ -7,6 +7,7 @@
 #include "BufferedInput/BufferedBaseAttack/BufferedBaseAttack.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Util/DebugHelper.h"
+#include "Components/CapsuleComponent.h"
 
 UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 {
@@ -19,7 +20,13 @@ void UPlayerUsingSkillEffect::Activate()
 	Super::Activate();
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
-	check(ControlComponent)
+	check(ControlComponent);
+	check(OwnerCharacter);
+
+	if (ControlEffectTag == EffectTags::UsingDash)
+	{
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel1);
+	}
 
 	// Cashed Movement Vector
 	const FVector& CurrentMovementVector = ControlComponent->GetCurrentMovementVector();
@@ -39,9 +46,15 @@ void UPlayerUsingSkillEffect::Activate(float Duration)
 void UPlayerUsingSkillEffect::Deactivate()
 {
 	Super::Deactivate();
+	if (ControlEffectTag == EffectTags::UsingDash)
+	{
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+	}
+	
 	SetControlEffectTag(EffectTags::UsingSkill);
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
 	
 	for (int32 i = 0; i < BufferedInputArray.Num(); i++)
 	{

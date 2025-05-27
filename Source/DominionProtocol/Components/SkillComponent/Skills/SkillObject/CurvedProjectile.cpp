@@ -18,9 +18,9 @@ ACurvedProjectile::ACurvedProjectile()
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->InitSphereRadius(30.0f);
-	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
+	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel2); // Set ObjectType Projectile
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
-	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore); // Ignore DashingPawn
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetGenerateOverlapEvents(true);
 	RootComponent = SphereCollision;

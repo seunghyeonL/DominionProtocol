@@ -72,9 +72,11 @@ void UCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, 
 
 	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 	{
-		AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
+		// AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
+		//
+		// AttackData.LaunchVector.Normalize();
 
-		AttackData.LaunchVector.Normalize();
+		AttackData.LaunchVector = FVector::ZeroVector;
 
 		IDamagable::Execute_OnAttacked(HitActor, AttackData);
 	}

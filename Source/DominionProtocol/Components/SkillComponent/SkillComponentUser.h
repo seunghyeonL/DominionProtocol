@@ -7,7 +7,7 @@
 class USkillComponent;
 struct FGameplayTag;
 
-UINTERFACE(MinimalAPI)
+UINTERFACE()
 class USkillComponentUser : public UInterface
 {
 	GENERATED_BODY()
