@@ -14,4 +14,8 @@ class DOMINIONPROTOCOL_API UBoss1SuperAttackFirst : public UBaseSkill
 {
 	GENERATED_BODY()
 	
+public:
+	UBoss1SuperAttackFirst();
+
+	virtual void Execute() override;
 };

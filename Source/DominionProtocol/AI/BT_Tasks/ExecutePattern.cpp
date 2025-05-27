@@ -37,14 +37,7 @@ EBTNodeResult::Type UExecutePattern::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		return EBTNodeResult::Failed;
 	}
 
-	/*UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
-
-	FName SkillTagName = Blackboard->GetValueAsName("SkillTag");*/
-
 	CachedTemp = &OwnerComp;
-
-	FTimerHandle MontageEndTimer;
-	//GetWorld()->GetTimerManager().SetTimer(MontageEndTimer, this, &ThisClass::OnAnimationCompleted, 0.5f, false);
 
 	ABoss1AIController* Boss1AIController = Cast<ABoss1AIController>(AIController);
 

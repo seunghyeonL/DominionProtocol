@@ -14,4 +14,6 @@ class DOMINIONPROTOCOL_API UBoss1SuperAttackSecond : public UBaseSkill
 {
 	GENERATED_BODY()
 	
+public:
+	UBoss1SuperAttackSecond();
 };
