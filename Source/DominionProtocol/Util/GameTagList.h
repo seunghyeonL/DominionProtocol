@@ -142,7 +142,7 @@ namespace ItemTags
 	inline const FGameplayTag SwordWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Sword"));
 	inline const FGameplayTag AxeWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Axe"));
 	inline const FGameplayTag SkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill"));
-	inline const FGameplayTag AccessaryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessary"));
+	inline const FGameplayTag AccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory"));
 
 	//Consumable Item Tags
 	inline const FGameplayTag ConsumableItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable"));

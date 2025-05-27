@@ -87,6 +87,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	FGameplayTag GetEquippedItem(FName SlotName) const;
 
+	UFUNCTION(BlueprintCallable)
+	FName GetEquippedItemSlotName(FGameplayTag ItemTag);
+
 	// 장비 슬롯 정보 반환 (위젯에 전달)
 	UFUNCTION(BlueprintPure)
 	const TMap<FName, FGameplayTag>& GetEquipmentSlots() const;

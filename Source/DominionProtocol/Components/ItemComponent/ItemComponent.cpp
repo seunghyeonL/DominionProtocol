@@ -4,15 +4,17 @@
 #include "ItemInventory/ItemData.h"
 #include "ItemInventory/BaseItem.h"
 #include "Interface/ConsumableItemInterface.h"
-#include "Kismet/GameplayStatics.h"
 
 UItemComponent::UItemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// 기본 슬롯 초기화
-	EquipmentSlots.Add(FName("WeaponSlot_Main"), FGameplayTag());
+	EquipmentSlots.Add(FName("WeaponSlot_Priority"), FGameplayTag());
 	EquipmentSlots.Add(FName("WeaponSlot_Secondary"), FGameplayTag());
+	EquipmentSlots.Add(FName("AccessorySlot_Priority"), FGameplayTag());
+	EquipmentSlots.Add(FName("AccessorySlot_Secondary"), FGameplayTag());
+	EquipmentSlots.Add(FName("SkillSlot"), FGameplayTag());
 
 	// 소비 아이템 슬롯 초기화
 	ConsumableSlots.Init(FGameplayTag(), 3);
@@ -216,11 +218,11 @@ bool UItemComponent::UnequipItem(FName SlotName)
 
 void UItemComponent::SwapWeapons()
 {
-	FGameplayTag MainWeapon = EquipmentSlots.FindRef(FName("WeaponSlot_Main"));
+	FGameplayTag PriorityWeapon = EquipmentSlots.FindRef(FName("WeaponSlot_Priority"));
 	FGameplayTag SecondaryWeapon = EquipmentSlots.FindRef(FName("WeaponSlot_Secondary"));
 
-	EquipmentSlots[FName("WeaponSlot_Main")] = SecondaryWeapon;
-	EquipmentSlots[FName("WeaponSlot_Secondary")] = MainWeapon;
+	EquipmentSlots[FName("WeaponSlot_Priority")] = SecondaryWeapon;
+	EquipmentSlots[FName("WeaponSlot_Secondary")] = PriorityWeapon;
 
 
 	Debug::Print(TEXT("무기 슬롯을 스왑했습니다."));
@@ -232,6 +234,19 @@ void UItemComponent::SwapWeapons()
 FGameplayTag UItemComponent::GetEquippedItem(FName SlotName) const
 {
 	return EquipmentSlots.Contains(SlotName) ? EquipmentSlots[SlotName] : FGameplayTag();
+}
+
+FName UItemComponent::GetEquippedItemSlotName(FGameplayTag ItemTag)
+{
+	for (const auto& SlotData : EquipmentSlots)
+	{
+		if (SlotData.Value == ItemTag)
+		{
+			return SlotData.Key;
+		}
+	}
+	
+	return NAME_None;
 }
 
 //장비 슬롯 맵 GETTER
@@ -250,18 +265,20 @@ bool UItemComponent::SetConsumableItem(int32 SlotIndex, FGameplayTag ItemTag = F
 	
 	if (SlotIndex >= 0 && SlotIndex < ConsumableSlots.Num())
 	{
+		// 아이템 이벤트 스크립트용
+		FGameplayTag PreItemTag = ConsumableSlots[SlotIndex];
+
+		ConsumableSlots[SlotIndex] = ItemTag;
+		OnInventoryConsumableSlotItemsChanged.Execute();
+		
 		if (HasItem(ItemTag, 1))
 		{
-			ConsumableSlots[SlotIndex] = ItemTag;
-			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d에 '%s'을 설정했습니다."), SlotIndex, *ItemTag.ToString()));
-			OnInventoryConsumableSlotItemsChanged.Execute();
+			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d에 '%s'을 등록 합니다."), SlotIndex, *ItemTag.ToString()));
 			return true;
 		}
 		else
 		{
-			Debug::Print(FString::Printf(TEXT("인벤토리에 '%s'이 없어 소비 아이템 슬롯 %d에 설정할 수 없습니다."), *ItemTag.ToString(), SlotIndex));
-			ConsumableSlots[SlotIndex] = FGameplayTag(); // 슬롯 비움
-			OnInventoryConsumableSlotItemsChanged.Execute();
+			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d에서 '%s'을 등록 해제합니다."), SlotIndex, *PreItemTag.ToString()));
 			return false;
 		}
 	}
