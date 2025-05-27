@@ -11,7 +11,7 @@ struct FGameplayTagContainer;
 struct FGameplayTag;
 
 // This class does not need to be modified.
-UINTERFACE(BlueprintType, Blueprintable)
+UINTERFACE()
 class UControlComponentUser : public UInterface
 {
 	GENERATED_BODY()
