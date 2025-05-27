@@ -8,6 +8,8 @@
 #include "Components/AIComponent/AIState/AIStateBase.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/AIComponent/AIStateComponent.h"
+#include "BehaviorTree/BTTaskNode.h"
+#include "AI/BT_Tasks/ExecutePattern.h"
 
 
 // Sets default values
@@ -120,6 +122,21 @@ void ABaseAIController::EvaluateTargetPriority()
 	else
 	{
 		GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), BestTarget);
+	}
+}
+
+void ABaseAIController::SetCachedTask(UBTTaskNode* NewCachedTask)
+{
+	CachedTask = NewCachedTask;
+}
+
+void ABaseAIController::ClearCachedTask()
+{
+	UExecutePattern* ExecutePattern = Cast<UExecutePattern>(CachedTask);
+
+	if (IsValid(ExecutePattern))
+	{
+		ExecutePattern->OnAnimationCompleted();
 	}
 }
 

@@ -10,8 +10,6 @@
  * 
  */
 
-class UBTTaskNode;
-
 UCLASS()
 class DOMINIONPROTOCOL_API ABoss1AIController : public ABaseAIController
 {
@@ -32,9 +30,6 @@ public:
 
 	void DeactivateEvadeAttack();
 	void ActivateEvadeAttack();
-
-	void SetCachedTask(UBTTaskNode* NewCachedTask);
-	void ClearCachedTask();
 	
 private:
 	int32 BaseAttackWeight;
@@ -55,6 +50,4 @@ private:
 	FTimerHandle SpecialAttackCoolDownTimer;
 	FTimerHandle RangedAttackCoolDownTimer;
 	FTimerHandle EvadeAttackCoolDownTimer;
-
-	UBTTaskNode* CachedTask;
 };

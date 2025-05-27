@@ -2,8 +2,6 @@
 
 
 #include "AI/AIControllers/Boss1AIController.h"
-#include "BehaviorTree/BTTaskNode.h"
-#include "AI/BT_Tasks/ExecutePattern.h"
 
 ABoss1AIController::ABoss1AIController()
 {
@@ -156,21 +154,6 @@ void ABoss1AIController::DeactivateEvadeAttack()
 void ABoss1AIController::ActivateEvadeAttack()
 {
 	bIsActiveEvadeAttack = true;
-}
-
-void ABoss1AIController::SetCachedTask(UBTTaskNode* NewCachedTask)
-{
-	CachedTask = NewCachedTask;
-}
-
-void ABoss1AIController::ClearCachedTask()
-{
-	UExecutePattern* ExecutePattern = Cast<UExecutePattern>(CachedTask);
-
-	if (IsValid(ExecutePattern))
-	{
-		ExecutePattern->OnAnimationCompleted();
-	}
 }
 
 void ABoss1AIController::UpdateWeights()

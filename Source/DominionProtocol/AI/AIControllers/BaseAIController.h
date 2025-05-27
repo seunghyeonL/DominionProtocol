@@ -10,6 +10,7 @@
 class UAISenseConfig_Sight;
 class UAIStateComponent;
 struct FAIStimulus;
+class UBTTaskNode;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseAIController : public AAIController
@@ -25,6 +26,11 @@ public:
 	void EvaluateTargetPriority();
 
 	void SetAIState(const FGameplayTag& NewState);
+
+	void SetCachedTask(UBTTaskNode* NewCachedTask);
+
+	void ClearCachedTask();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -51,6 +57,9 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	UAIStateComponent* AIStateComponent;
+
+	UBTTaskNode* CachedTask;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
