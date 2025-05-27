@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerControlEffectBase.h"
@@ -267,5 +267,57 @@ void UPlayerControlEffectBase::LockOn()
 	else
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::LockOn : Invalid InnerState"));
+	}
+}
+
+void UPlayerControlEffectBase::ConsumeItemAction_1()
+{
+	Super::ConsumeItemAction_1();
+	if (IsValid(InnerState))
+	{
+		InnerState->ConsumeItemAction_1();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::Consume Slot 1 : Invalid InnerState"));
+	}
+}
+
+void UPlayerControlEffectBase::ConsumeItemAction_2()
+{
+	Super::ConsumeItemAction_1();
+	if (IsValid(InnerState))
+	{
+		InnerState->ConsumeItemAction_2();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::Consume Slot 2: Invalid InnerState"));
+	}
+}
+
+void UPlayerControlEffectBase::ConsumeItemAction_3()
+{
+	Super::ConsumeItemAction_1();
+	if (IsValid(InnerState))
+	{
+		InnerState->ConsumeItemAction_3();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::Consume Slot 3: Invalid InnerState"));
+	}
+}
+
+void UPlayerControlEffectBase::SwapWeapon()
+{
+	Super::ConsumeItemAction_1();
+	if (IsValid(InnerState))
+	{
+		InnerState->SwapWeapon();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::Swap weapon : Invalid InnerState"));
 	}
 }
