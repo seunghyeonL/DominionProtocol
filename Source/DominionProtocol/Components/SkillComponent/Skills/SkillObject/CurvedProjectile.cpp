@@ -18,9 +18,9 @@ ACurvedProjectile::ACurvedProjectile()
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->InitSphereRadius(30.0f);
-	// SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
+	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
-	// SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetGenerateOverlapEvents(true);
 	RootComponent = SphereCollision;
@@ -49,29 +49,74 @@ void ACurvedProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//if(!bIsActivate) return;
-	if (!bIsInitialize) return;
-	if (!IsValid(InstigatorPawn)) return;
+	if (!bIsInitialize || !IsValid(InstigatorPawn)) return;
 
-	// 이동 로직
-	if (GetActorLocation() != TargetPoint)
-	{
-		if (bIsTargetMove)
-		{
-			TargetPoint = TargetActor->GetActorLocation();
-		}
-		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
+	ElapsedTime += DeltaTime;
 
-		SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), CurvePoint, DeltaTime, CurveSettings.ProjectileSpeed));
-
-		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), CurvePoint, DeltaTime, CurveSettings.ProjectileSpeed)));
-	}
-
-	if (GetActorLocation() == TargetPoint)
+	// LifeSpan 체크
+	if (ElapsedTime >= CurveSettings.LifeSpan)
 	{
 		DestroyProjectile();
+		return;
 		//	ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
 		//	ObjectPoolSubsystem->ReturnActorToPool(this);
 	}
+
+	if (bReachedTarget)
+	{
+		MoveInStraightLine(DeltaTime);
+		return;
+	}
+
+	// 타겟 도달 체크
+	if (HasReachedTarget())
+	{
+		OnReachTarget();
+		return;
+	}
+
+	// 커브 이동
+	UpdateCurveMovement(DeltaTime);
+
+	//// 이동 로직
+	//if (GetActorLocation() != TargetPoint)
+	//{
+	//	if (ElapsedTime < CurveSettings.CurveDuration && bIsTargetMove)
+	//	{
+	//		TargetPoint = TargetActor->GetActorLocation();
+	//		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
+	//	}
+	//	else if (ElapsedTime >= CurveSettings.CurveDuration && !bCurveFixed)
+	//	{
+	//		// 시간이 지났을 때 한 번만 타겟 포인트 고정	
+	//		if (bIsTargetMove)
+	//		{
+	//			TargetPoint = TargetActor->GetActorLocation();
+	//		}
+	//		bCurveFixed = true;
+	//	}
+	//	if (!bCurveFixed)
+	//	{
+	//		SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), CurvePoint, DeltaTime, CurveSettings.ProjectileSpeed));
+	//	}
+	//	else
+	//	{
+	//		SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed));
+	//	}
+
+	//	// 회전 설정
+	//	FVector NextLocation = bCurveFixed ? TargetPoint : CurvePoint;
+	//	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextLocation));
+	//}
+	//if (GetActorLocation() == TargetPoint)
+	//{
+	//	if (!bReachedTarget)
+	//	{
+	//		// 타겟에 도달했을 때 방향 벡터 저장
+	//		DirectionVector = GetActorForwardVector();
+	//		bReachedTarget = true;
+	//	}
+	//}
 }
 
 //void ACurvedProjectile::OnObjectSpawn_Implementation()
@@ -117,10 +162,8 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 
 void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// if (OtherActor == this) return;
-
 	// 같은 클래스(자기들끼리)라면 무시
-	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
+	//if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
 	
 	// 사용자 본인은 무시
 	if (OtherActor == InstigatorPawn)
@@ -132,27 +175,6 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	if (!IsValid(InstigatorPawn))
 	{
 		return;
-	}
-	
-	UWorld* World = GetWorld();
-	check(World);
-
-	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-	check(BaseGameState);
-
-	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
-	{
-		Particle = SkillData->Particle[0];
-		if (Particle)
-		{
-			UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
-				GetWorld(),
-				Particle,
-				GetActorLocation(),
-				FRotator::ZeroRotator,
-				true
-			);
-		}
 	}
 
 	if (IsValid(SkillOwner))
@@ -237,6 +259,18 @@ void ACurvedProjectile::DestroyProjectile()
 
 	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
 	{
+		Particle = SkillData->Particle[0];
+		if (Particle)
+		{
+			UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
+				GetWorld(),
+				Particle,
+				GetActorLocation(),
+				FRotator::ZeroRotator,
+				true
+			);
+		}
+
 		Sound = SkillData->Sound[1];
 		if (Sound)
 		{
@@ -255,4 +289,57 @@ void ACurvedProjectile::DestroyProjectile()
 
 	//ObjectPoolSubsystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
 	//ObjectPoolSubsystem->ReturnActorToPool(this);
+}
+
+void ACurvedProjectile::UpdateCurveMovement(float DeltaTime)
+{
+	// 커브 시간 체크 및 타겟 업데이트
+	if (ElapsedTime < CurveSettings.CurveDuration && bIsTargetMove)
+	{
+		TargetPoint = TargetActor->GetActorLocation();
+	}
+	else if (ElapsedTime >= CurveSettings.CurveDuration && !bCurveFixed)
+	{
+		FixTargetPoint();
+	}
+
+	// 커브 포인트 업데이트 (커브가 고정되기 전까지만)
+	if (!bCurveFixed)
+	{
+		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
+	}
+
+	// 이동
+	FVector MoveTarget = bCurveFixed ? TargetPoint : CurvePoint;
+	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), MoveTarget, DeltaTime, CurveSettings.ProjectileSpeed));
+
+	// 회전
+	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), MoveTarget));
+}
+
+void ACurvedProjectile::FixTargetPoint()
+{
+	if (bIsTargetMove && IsValid(TargetActor))
+	{
+		TargetPoint = TargetActor->GetActorLocation();
+	}
+	bCurveFixed = true;
+}
+
+bool ACurvedProjectile::HasReachedTarget()
+{
+	return GetActorLocation().Equals(TargetPoint, 10.0f); // 10cm 오차 허용
+}
+
+void ACurvedProjectile::OnReachTarget()
+{
+	DirectionVector = GetActorForwardVector().GetSafeNormal();
+	bReachedTarget = true;
+}
+
+void ACurvedProjectile::MoveInStraightLine(float DeltaTime)
+{
+	// 방향 벡터로 계속 직진
+	FVector NewLocation = GetActorLocation() + (DirectionVector * CurveSettings.ProjectileSpeed * DeltaTime);
+	SetActorLocation(NewLocation);
 }

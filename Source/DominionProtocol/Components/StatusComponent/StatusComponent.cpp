@@ -136,6 +136,12 @@ void UStatusComponent::SetStamina(float NewStamina)
 		return;
 	}
 
+	if (bIsInfiniteStaminaMode)
+	{
+		Debug::PrintError(TEXT("SetStamina: Infinite stamina on"));
+		return;
+	}
+
 	float MaxStamina = GetStat(StatTags::MaxStamina);
 	float ClampedStamina = FMath::Clamp(NewStamina, 0.f, MaxStamina);
 	SetStat(StatTags::Stamina, ClampedStamina);

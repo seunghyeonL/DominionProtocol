@@ -104,53 +104,9 @@ void UBaseSkill::AttackTrace() const
 		return;
 	}
 
-	FAttackData AttackData;
-
-	UWorld* World = GetWorld();
-
-	if (IsValid(World))
+	for (const FHitResult& HitResult : HitResults)
 	{
-		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-
-		if (IsValid(BaseGameState))
-		{
-			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
-
-			if (IsValid(StatusComponent))
-			{
-				float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-				AttackData.Damage = GetFinalAttackData(AttackPower);
-			}
-		}
-	}
-
-	AttackData.Instigator = OwnerCharacter;
-	AttackData.Effects = Effects;
-
-	for (const FHitResult& Hit : HitResults)
-	{
-		AActor* HitActor = Hit.GetActor();
-
-		// USkillComponent* HitActorSkillComponent = HitActor->FindComponentByClass<USkillComponent>();
-
-		if (!IsValid(HitActor))
-		{
-			continue;
-		}
-
-		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
-		{
-			AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
-
-			AttackData.LaunchVector.Normalize();
-
-			// 피격자가 실행 중이던 스킬 중단
-			// HitActorSkillComponent->StopSkill();
-			// Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
-
-			IDamagable::Execute_OnAttacked(HitActor, AttackData);
-		}
+		ApplyAttackToHitActor(HitResult, 0.f);
 	}
 }
 
@@ -184,7 +140,7 @@ void UBaseSkill::StopTrace()
 	}
 }
 
-void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
 	AActor* HitActor = HitResult.GetActor();
 
@@ -225,16 +181,6 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 
 		AttackData.LaunchVector.Normalize();
 		
-		// USkillComponent* SkillComponent = HitActor->FindComponentByClass<USkillComponent>();
-		//
-		// if (IsValid(SkillComponent))
-		// {
-		// 	// 피격자가 실행 중이던 스킬 중단
-		// 	SkillComponent->StopSkill();
-		// }
-
-		// Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
-
 		IDamagable::Execute_OnAttacked(HitActor, AttackData);
 	}
 }

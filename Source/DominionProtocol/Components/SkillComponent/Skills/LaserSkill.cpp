@@ -51,7 +51,7 @@ void ULaserSkill::StopTrace()
 	LaserActor = nullptr;
 }
 
-void ULaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+void ULaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
 	AActor* HitActor = HitResult.GetActor();
 

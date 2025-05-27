@@ -14,7 +14,7 @@ void URailGunSkill::Execute()
 	Super::Execute();
 }
 
-void URailGunSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+void URailGunSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
 	Super::ApplyAttackToHitActor(HitResult, DeltaTime);
 }

@@ -15,7 +15,7 @@ void UFireBallSkill::Execute()
 	Super::Execute();
 }
 
-void UFireBallSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+void UFireBallSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
 	Super::ApplyAttackToHitActor(HitResult, DeltaTime);
 }

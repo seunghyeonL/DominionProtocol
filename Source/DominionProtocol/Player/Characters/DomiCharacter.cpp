@@ -104,6 +104,7 @@ ADomiCharacter::ADomiCharacter()
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::UsingDash);
 	InvincibilityTags.AddTag(EffectTags::Death);
+	InvincibilityTags.AddTag(EffectTags::UsingZoneya);
 
 	// ParriedTags Setting
 	ParriedTags.AddTag(EffectTags::UsingParry);
@@ -515,7 +516,7 @@ void ADomiCharacter::Parrying(const FAttackData& IncomingAttackData)
 
 	ParryingData.Instigator = this;
 	// ParryingData.Effects.Add({EffectTags::Parried, 1.f, 1.f});
-	ParryingData.Effects.Add({EffectTags::Stiffness, 1.f, 1.f});
+	ParryingData.Effects.Add({EffectTags::Stiffness, 1.5f, 1.f});
 	ParryingData.Damage = 0.f;
 	ParryingData.LaunchVector = FVector::ZeroVector;
 
