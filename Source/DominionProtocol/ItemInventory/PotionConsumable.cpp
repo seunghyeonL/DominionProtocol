@@ -47,7 +47,6 @@ void APotionConsumable::Consume_Implementation(AActor* ConsumedActor)
 		{
 			Debug::Print(TEXT("포션을 소비하려 했으나 대상에게 ItemComponent가 없습니다."));
 		}
-		// Destroy(); // 더 이상 Consume_Implementation에서 아이템 액터를 바로 제거하지 않습니다.
 	}
 	else
 	{
