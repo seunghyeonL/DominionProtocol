@@ -161,26 +161,16 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 	}
 	
 	FAttackData AttackData;
+	
+	UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
 
-	// UWorld* World = GetWorld();
+	if (IsValid(StatusComponent))
+	{
+		float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
 
-	// if (IsValid(World))
-	// {
-	// 	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-	//
-	// 	if (IsValid(BaseGameState))
-	// 	{
-			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
-
-			if (IsValid(StatusComponent))
-			{
-				float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-				AttackData.Damage = GetFinalAttackData(AttackPower);
-			}
-	// 	}
-	// }
-
+		AttackData.Damage = GetFinalAttackData(AttackPower);
+	}
+	
 	AttackData.Instigator = OwnerCharacter;
 	AttackData.Effects = Effects;
 
@@ -210,17 +200,28 @@ float UBaseSkill::GetFinalAttackData(const float AttackPower) const
 
 bool UBaseSkill::CheckParry(AActor* HitActor) const
 {
-	if (auto ParryableTarget = Cast<IParryable>(HitActor))
-	{
-		if (ParryableTarget->IsParryingCond())
-		{
-			if (auto ParryableOwner = Cast<IParryable>(OwnerCharacter))
-			{
-				ParryableOwner->OnParried();
-				return true;
-			}
-		}
-	}
+	FVector AttackDirectionVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation() ;
+	FVector TargetForwardVector = HitActor->GetActorForwardVector();
 
-	return false;
+	float RadianAngle = FMath::Acos(FVector::DotProduct(TargetForwardVector, -AttackDirectionVector));
+	float DegreeAngle = FMath::RadiansToDegrees(RadianAngle);
+	if (DegreeAngle > 45.f)
+	{
+		return false;
+	}
+	
+	auto ParryableTarget = Cast<IParryable>(HitActor);
+    if (!ParryableTarget || !ParryableTarget->IsParryingCond())
+    {
+	    return false;
+    }
+
+	auto ParryableOwner = Cast<IParryable>(OwnerCharacter);
+	if (!ParryableOwner)
+	{
+		return false;
+	}
+	
+	ParryableOwner->OnParried();
+	return true;
 }

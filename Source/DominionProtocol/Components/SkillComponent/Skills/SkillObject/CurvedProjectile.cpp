@@ -190,21 +190,24 @@ bool ACurvedProjectile::CheckParry(const FHitResult& HitResult)
 	check(InstigatorPawn);
 	AActor* HitActor = HitResult.GetActor();
 
-	if (!IsValid(HitActor))
+	FVector AttackDirectionVector = HitActor->GetActorLocation() - GetActorLocation();
+	FVector TargetForwardVector = HitActor->GetActorForwardVector();
+
+	float RadianAngle = FMath::Acos(FVector::DotProduct(TargetForwardVector, -AttackDirectionVector));
+	float DegreeAngle = FMath::RadiansToDegrees(RadianAngle);
+	if (DegreeAngle > 45.f)
 	{
 		return false;
 	}
 	
-	if (auto ParryableTarget = Cast<IParryable>(HitActor))
+	auto ParryableTarget = Cast<IParryable>(HitActor);
+	if (!ParryableTarget || !ParryableTarget->IsParryingCond())
 	{
-		if (ParryableTarget->IsParryingCond())
-		{
-			OnParried(HitActor);
-			return true;
-		}
+		return false;
 	}
 
-	return false;
+	OnParried(HitActor);
+	return true;
 }
 
 void ACurvedProjectile::OnParried(AActor* ParryActor)
