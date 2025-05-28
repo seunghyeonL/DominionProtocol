@@ -124,7 +124,7 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// 같은 클래스(자기들끼리)라면 무시
-	//if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
+	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
 	
 	// 사용자 본인은 무시
 	if (OtherActor == InstigatorPawn)
@@ -155,7 +155,7 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 			}
 		}
 		
-		UBaseSkill* BaseSkill = SkillOwner->CurrentSkill;
+		UBaseSkill* BaseSkill = SkillOwner;
 		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
 		{
 			Debug::Print(TEXT("ApplyAttackToHitActor"));
