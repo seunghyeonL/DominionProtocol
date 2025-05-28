@@ -10,9 +10,9 @@ UItemComponent::UItemComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// 기본 슬롯 초기화
-	EquipmentSlots.Add(FName("WeaponSlot_Priority"), FGameplayTag());
+	EquipmentSlots.Add(FName("WeaponSlot_Primary"), FGameplayTag());
 	EquipmentSlots.Add(FName("WeaponSlot_Secondary"), FGameplayTag());
-	EquipmentSlots.Add(FName("AccessorySlot_Priority"), FGameplayTag());
+	EquipmentSlots.Add(FName("AccessorySlot_Primary"), FGameplayTag());
 	EquipmentSlots.Add(FName("AccessorySlot_Secondary"), FGameplayTag());
 	EquipmentSlots.Add(FName("SkillSlot"), FGameplayTag());
 
@@ -218,11 +218,11 @@ bool UItemComponent::UnequipItem(FName SlotName)
 
 void UItemComponent::SwapWeapons()
 {
-	FGameplayTag PriorityWeapon = EquipmentSlots.FindRef(FName("WeaponSlot_Priority"));
+	FGameplayTag PrimaryWeapon = EquipmentSlots.FindRef(FName("WeaponSlot_Primary"));
 	FGameplayTag SecondaryWeapon = EquipmentSlots.FindRef(FName("WeaponSlot_Secondary"));
 
-	EquipmentSlots[FName("WeaponSlot_Priority")] = SecondaryWeapon;
-	EquipmentSlots[FName("WeaponSlot_Secondary")] = PriorityWeapon;
+	EquipmentSlots[FName("WeaponSlot_Primary")] = SecondaryWeapon;
+	EquipmentSlots[FName("WeaponSlot_Secondary")] = PrimaryWeapon;
 
 
 	Debug::Print(TEXT("무기 슬롯을 스왑했습니다."));

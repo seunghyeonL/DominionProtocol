@@ -53,7 +53,6 @@ void UDomiInGameHUDWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	ensure(StatusBarWidget);
-	ensure(AbilitySlotsWidget);
 	ensure(ItemSlotsWidget);
 	ensure(InGameMenuWidget);
 	ensure(InteractionWidget);
