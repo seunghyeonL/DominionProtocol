@@ -106,7 +106,7 @@ public:
 
 	// 소비 아이템 사용
 	UFUNCTION(BlueprintCallable)
-	void UseConsumableItem(FName SlotName);
+	void UseConsumableItem(FName SlotName, FGameplayTag ConsumableItemTag = FGameplayTag());
 
 	// 모든 소비 아이템 슬롯 정보 반환
 	UFUNCTION(BlueprintPure)

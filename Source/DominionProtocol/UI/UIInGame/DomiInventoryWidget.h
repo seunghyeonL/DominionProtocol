@@ -42,13 +42,13 @@ protected:
 	TObjectPtr<class UItemComponent> ItemComponent;
 
 	UPROPERTY(BlueprintReadOnly)
-	TMap<FString, FItemUISlotData> EquippableItemsMap;
+	TArray<FItemUISlotData> EquippableItemsArray;
 
 	UPROPERTY(BlueprintReadOnly)
-	TMap<FString, FItemUISlotData> ConsumableItemsMap;
+	TArray<FItemUISlotData> ConsumableItemsArray;
 
 	UPROPERTY(BlueprintReadOnly)
-	TMap<FString, FItemUISlotData> OtherItemsMap;
+	TArray<FItemUISlotData> OtherItemsArray;
 
 	UPROPERTY(BlueprintReadWrite)
 	ELastDisplayArray LastDisplayArray = ELastDisplayArray::AllItemsArray;

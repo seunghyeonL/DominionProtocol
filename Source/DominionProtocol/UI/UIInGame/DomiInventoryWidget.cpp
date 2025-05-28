@@ -28,30 +28,39 @@ void UDomiInventoryWidget::BindInventoryDelegates()
 void UDomiInventoryWidget::OnUpdateInventoryItemList()
 {
 	InventoryAllItems = ItemComponent->GetInventoryDisplayItems();
-
+	
+	TArray<FItemUISlotData> TempEquippableItemsArray;
+	TArray<FItemUISlotData> TempConsumableItemsArray;
+	TArray<FItemUISlotData> TempOtherItemsArray;
+		
 	for (FItemUISlotData& SlotData : InventoryAllItems)
 	{
+
+		
 		if (SlotData.ItemTag.MatchesTag(ItemTags::EquippableItem))
 		{
-			EquippableItemsMap.Add(SlotData.ItemName, SlotData);
+			TempEquippableItemsArray.Add(SlotData);
 			continue;
 		}
 
 		if (SlotData.ItemTag.MatchesTag(ItemTags::ConsumableItem))
 		{
-			ConsumableItemsMap.Add(SlotData.ItemName, SlotData);
+			TempConsumableItemsArray.Add(SlotData);
 			continue;
 		}
 		
 		if (SlotData.ItemTag.MatchesTag(ItemTags::OtherItem))
     	{
-			OtherItemsMap.Add(SlotData.ItemName, SlotData);
+			TempOtherItemsArray.Add(SlotData);
 			continue;
 		}
 
 		ensureMsgf(false, TEXT("%s:: Error Item Tag"), *SlotData.ItemName);
 	}
 
-	UpdateInventoryItemList();
+	EquippableItemsArray = TempEquippableItemsArray;
+	ConsumableItemsArray = TempConsumableItemsArray;
+	OtherItemsArray = TempOtherItemsArray;
 
+	UpdateInventoryItemList();
 }

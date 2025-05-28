@@ -348,10 +348,21 @@ FName UItemComponent::GetRegisteredSlotName(FGameplayTag ItemTag)
 }
 
 //소비아이템 사용
-void UItemComponent::UseConsumableItem(FName SlotName)
+void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableItemTag)
 {
 
-	FGameplayTag ItemToUse = ConsumableSlots[SlotName];
+	FGameplayTag ItemToUse;
+	
+	if (SlotName != NAME_None)
+	{
+		ItemToUse = ConsumableSlots[SlotName];
+	}
+	
+	if (ConsumableItemTag != FGameplayTag())
+	{
+		ItemToUse = ConsumableItemTag;
+	}
+	
 	if (ItemToUse.IsValid())
 	{
 		if (HasItem(ItemToUse, 1)) // 인벤토리에 아이템이 있는지 확인 (수량 1 이상)
@@ -369,6 +380,7 @@ void UItemComponent::UseConsumableItem(FName SlotName)
 				{
 					// Consume 인터페이스 실행 (소비 주체 전달)
 					IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
+					OnInventoryItemListChanged.Execute();
 
 					// 소비 후 임시 액터 파괴 (Consume_Implementation에서 RemoveItem이 호출되었을 것으로 가정)
 					ConsumableActor->Destroy();
@@ -424,7 +436,6 @@ void UItemComponent::ApplyPotionBoost()
 		{
 			// 새로운 태그 'Item.Consumable.Potion.Boosted'로 수량을 옮김
 			NewInventoryMap.Add(ItemTags::PotionBoosted, Quantity);
-			OnInventoryItemListChanged.Execute();
 			Debug::Print(TEXT("Inventory Changed"));
 		}
 		else
@@ -434,6 +445,7 @@ void UItemComponent::ApplyPotionBoost()
 		}
 	}
 	InventoryMap = NewInventoryMap;
+	OnInventoryItemListChanged.Execute();
 
 	//소비슬롯 업데이트
 	for (auto& Pair: ConsumableSlots)
