@@ -149,6 +149,26 @@ const TMap<FGameplayTag, int32>& UItemComponent::GetInventoryMap() const
 //장비 장착
 bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 {
+	FName PreSlotName;
+	
+	for (auto& Pair : EquipmentSlots)
+	{
+		// 이미 장착 중
+		if (Pair.Value == ItemTag)
+		{
+			PreSlotName = Pair.Key;
+			break;
+		}
+	}
+
+	if (PreSlotName != NAME_None)
+	{
+		EquipmentSlots[PreSlotName] = FGameplayTag();
+		EquipmentSlots[SlotName] = ItemTag;
+		OnInventoryEquippedSlotItemsChanged.Execute();
+		return false;
+	}
+	
 	//데이터 테이블 캐싱 여부 확인
 	if (CachedItemDataMap.IsEmpty())
 	{
@@ -229,7 +249,7 @@ void UItemComponent::SwapWeapons()
 
 	Debug::Print(TEXT("무기 슬롯을 스왑했습니다."));
 	// 장비 변경 알림
-	OnInventoryItemListChanged.Execute();
+	OnInventoryEquippedSlotItemsChanged.Execute();
 }
 
 //슬롯에 장착된 아이템 태그 반환
@@ -259,6 +279,27 @@ const TMap<FName, FGameplayTag>& UItemComponent::GetEquipmentSlots() const
 
 bool UItemComponent::PlaceInSlotConsumableItem(FName SlotName, FGameplayTag ItemTag)
 {
+
+	FName PreSlotName;
+	
+	for (auto& Pair : ConsumableSlots)
+	{
+		// 이미 장착 중
+		if (Pair.Value == ItemTag)
+		{
+			PreSlotName = Pair.Key;
+			break;
+		}
+	}
+
+	if (PreSlotName != NAME_None)
+	{
+		ConsumableSlots[PreSlotName] = FGameplayTag();
+		ConsumableSlots[SlotName] = ItemTag;
+		OnInventoryConsumableSlotItemsChanged.Execute();
+		return false;
+	}
+	
 	//데이터 테이블 캐싱 여부 확인
 	if (CachedItemDataMap.IsEmpty())
 	{
