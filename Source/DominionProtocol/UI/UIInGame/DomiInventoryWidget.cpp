@@ -20,8 +20,6 @@ void UDomiInventoryWidget::BindInventoryDelegates()
 		ItemComponent = PlayerCharacter->GetComponentByClass<UItemComponent>();
 		if (ItemComponent)
 		{
-			ItemComponent->OnInventoryEquippedSlotItemsChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateEquippedSlotItems);
-			ItemComponent->OnInventoryConsumableSlotItemsChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateConsumableSlotItems);
 			ItemComponent->OnInventoryItemListChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateInventoryItemList);
 		}
 	}
@@ -56,16 +54,4 @@ void UDomiInventoryWidget::OnUpdateInventoryItemList()
 
 	UpdateInventoryItemList();
 
-}
-
-void UDomiInventoryWidget::OnUpdateEquippedSlotItems()
-{
-	InventoryEquippedSlotItems = ItemComponent->GetEquippedDisplayItems();
-
-	
-}
-
-void UDomiInventoryWidget::OnUpdateConsumableSlotItems()
-{
-	InventoryConsumableSlotItems = ItemComponent->GetConsumableDisplayItems();
 }

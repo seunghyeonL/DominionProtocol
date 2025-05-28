@@ -32,23 +32,11 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateInventoryItemList();
-
-	UFUNCTION()
-	void OnUpdateEquippedSlotItems();
-
-	UFUNCTION()
-	void OnUpdateConsumableSlotItems();
-
+	
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FItemUISlotData> InventoryAllItems;
-
-	UPROPERTY(BlueprintReadOnly)
-	TMap<FName, FItemUISlotData> InventoryEquippedSlotItems;
-
-	UPROPERTY(BlueprintReadOnly)
-	TArray<FItemUISlotData> InventoryConsumableSlotItems;
 
 	UPROPERTY()
 	TObjectPtr<class UItemComponent> ItemComponent;
