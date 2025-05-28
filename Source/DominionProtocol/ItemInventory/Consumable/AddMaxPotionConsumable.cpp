@@ -1,4 +1,4 @@
-#include "ItemInventory/AddMaxPotionConsumable.h"
+#include "ItemInventory/Consumable/AddMaxPotionConsumable.h"
 #include "DominionProtocol/Components/ItemComponent/ItemComponent.h"
 #include "DominionProtocol/Player/Characters/DomiCharacter.h"
 #include "Util/DebugHelper.h"

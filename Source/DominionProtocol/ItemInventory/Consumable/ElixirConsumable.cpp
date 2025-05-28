@@ -1,4 +1,4 @@
-#include "ItemInventory/ElixirConsumable.h"
+#include "ItemInventory/Consumable/ElixirConsumable.h"
 #include "DominionProtocol/Components/StatusComponent/StatusComponent.h"
 #include "DominionProtocol/Player/Characters/DomiCharacter.h"
 #include "DominionProtocol/Components/ItemComponent/ItemComponent.h"
