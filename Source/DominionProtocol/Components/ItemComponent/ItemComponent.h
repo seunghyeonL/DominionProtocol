@@ -41,7 +41,7 @@ protected:
 
 	// 소비 아이템 슬롯
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Consumable")
-	TArray<FGameplayTag> ConsumableSlots;
+	TMap<FName, FGameplayTag> ConsumableSlots;
 
 	// 게임 시작 시 ItemDataTable의 모든 FItemData를 로드해 사용
 	UPROPERTY(Transient) // 런타임에만 존재하고 저장되지 않음
@@ -96,19 +96,21 @@ public:
 
 	//소비아이템 등록
 	UFUNCTION(BlueprintCallable)
-	bool SetConsumableItem(int32 SlotIndex, FGameplayTag ItemTag);
+	bool PlaceInSlotConsumableItem(FName SlotName, FGameplayTag ItemTag);
+
+	UFUNCTION(BlueprintCallable)
+	bool RemoveFromSlotConsumableItemSlot(FName SlotName);
+
+	UFUNCTION(BlueprintCallable)
+	FName GetRegisteredSlotName(FGameplayTag ItemTag);
 
 	// 소비 아이템 사용
 	UFUNCTION(BlueprintCallable)
-	void UseConsumableItem(int32 SlotIndex);
-
-	// 특정 소비 아이템 슬롯 정보 반환
-	UFUNCTION(BlueprintPure)
-	FGameplayTag GetConsumableItem(int32 SlotIndex) const;
+	void UseConsumableItem(FName SlotName);
 
 	// 모든 소비 아이템 슬롯 정보 반환
 	UFUNCTION(BlueprintPure)
-	const TArray<FGameplayTag>& GetConsumableSlots() const;
+	const TMap<FName, FGameplayTag>& GetConsumableSlots() const;
 	
 	//UI 프로퍼티 추가
 
@@ -123,7 +125,7 @@ public:
 
 	// 소비 아이템 슬롯의 모든 아이템 정보를 FItemUISlotData 배열로 반환
 	UFUNCTION(BlueprintPure, Category = "Consumable|UI")
-	TArray<FItemUISlotData> GetConsumableDisplayItems() const;
+	TMap<FName, FItemUISlotData> GetConsumableDisplayItems() const;
 
 	// 포션 태그를 부스트된 태그로 변경
 	UFUNCTION(BlueprintCallable, Category = "Consumable|Potion")

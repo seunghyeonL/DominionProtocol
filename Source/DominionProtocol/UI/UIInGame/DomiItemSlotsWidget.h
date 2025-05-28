@@ -36,7 +36,7 @@ protected:
 	TMap<FName, FItemUISlotData> InventoryEquippableSlotItems;
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<FItemUISlotData> InventoryConsumableSlotItems;
+	TMap<FName, FItemUISlotData> InventoryConsumableSlotItems;
 	
 	UPROPERTY()
 	TObjectPtr<class UItemComponent> ItemComponent;

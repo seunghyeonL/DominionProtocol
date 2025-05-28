@@ -17,7 +17,9 @@ UItemComponent::UItemComponent()
 	EquipmentSlots.Add(FName("SkillSlot"), FGameplayTag());
 
 	// 소비 아이템 슬롯 초기화
-	ConsumableSlots.Init(FGameplayTag(), 3);
+	ConsumableSlots.Add(FName("ConsumableSlot_Primary"), FGameplayTag());
+	ConsumableSlots.Add(FName("ConsumableSlot_Secondary"), FGameplayTag());
+	ConsumableSlots.Add(FName("ConsumableSlot_Tertiary"), FGameplayTag());
 }
 
 void UItemComponent::BeginPlay()
@@ -255,110 +257,148 @@ const TMap<FName, FGameplayTag>& UItemComponent::GetEquipmentSlots() const
 	return EquipmentSlots;
 }
 
-//소비아이템 등록
-bool UItemComponent::SetConsumableItem(int32 SlotIndex, FGameplayTag ItemTag = FGameplayTag())
+bool UItemComponent::PlaceInSlotConsumableItem(FName SlotName, FGameplayTag ItemTag)
 {
-	if (ConsumableSlots[SlotIndex] == ItemTag)
+	//데이터 테이블 캐싱 여부 확인
+	if (CachedItemDataMap.IsEmpty())
 	{
+		Debug::Print(TEXT("ItemComponent: CachedItemDataMap is empty. ItemDataTable might not be loaded or assigned correctly."));
 		return false;
 	}
-	
-	if (SlotIndex >= 0 && SlotIndex < ConsumableSlots.Num())
+	const FItemData* ItemData = GetItemDataFromTable(ItemTag);
+	//데이터 체크
+	if (!ItemData)
 	{
-		// 아이템 이벤트 스크립트용
-		FGameplayTag PreItemTag = ConsumableSlots[SlotIndex];
-
-		ConsumableSlots[SlotIndex] = ItemTag;
-		OnInventoryConsumableSlotItemsChanged.Execute();
-		
-		if (HasItem(ItemTag, 1))
+		Debug::Print(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 데이터가 없습니다."), *ItemTag.ToString()));
+		return false;
+	}
+	EItemType ItemType = ItemData->ItemType;
+	if (ItemType == EItemType::Consumable)
+	{
+		// 슬롯이 존재하는지 확인
+		if (ConsumableSlots.Contains(SlotName))
 		{
-			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d에 '%s'을 등록 합니다."), SlotIndex, *ItemTag.ToString()));
-			return true;
+			// 슬롯의 기존 태그 확인
+			FGameplayTag CurrentTag = ConsumableSlots[SlotName];
+
+			// 태그가 비어있거나 다르다면
+			if (!CurrentTag.IsValid() || CurrentTag != ItemTag)
+			{
+				// 원래의 태그가 유효하다면 장비 해제 (메시지 출력)
+				if (CurrentTag.IsValid())
+				{
+					Debug::Print(FString::Printf(TEXT("슬롯 '%s'의 '%s' 등록 해제"), *SlotName.ToString(), *CurrentTag.ToString()));
+				}
+
+				// 새로운 태그 장착
+				ConsumableSlots[SlotName] = ItemTag;
+				Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 등록"), *SlotName.ToString(), *ItemTag.ToString()));
+				OnInventoryConsumableSlotItemsChanged.Execute();
+				return true;
+			}
+			else
+			{
+				Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 이미 동일한 아이템 '%s'이 등록 되어 있습니다."), *SlotName.ToString(), *ItemTag.ToString()));
+				return false;
+			}
 		}
 		else
 		{
-			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d에서 '%s'을 등록 해제합니다."), SlotIndex, *PreItemTag.ToString()));
+			Debug::PrintError(FString::Printf(TEXT("유효하지 않은 소모품 슬롯 이름: '%s'"), *SlotName.ToString()));
 			return false;
 		}
 	}
 	else
 	{
-		Debug::PrintError(FString::Printf(TEXT("유효하지 않은 소비 아이템 슬롯 인덱스: %d (최대: %d)"), SlotIndex, ConsumableSlots.Num() - 1));
+		Debug::Print(TEXT("아이템의 타입이 소모품이 아닙니다"));
 		return false;
 	}
 }
 
-//소비아이템 사용
-void UItemComponent::UseConsumableItem(int32 SlotIndex)
+bool UItemComponent::RemoveFromSlotConsumableItemSlot(FName SlotName)
 {
-	if (SlotIndex >= 0 && SlotIndex < ConsumableSlots.Num())
+	if (ConsumableSlots.Contains(SlotName))
 	{
-		FGameplayTag ItemToUse = ConsumableSlots[SlotIndex];
-		if (ItemToUse.IsValid())
+		ConsumableSlots[SlotName] = FGameplayTag(); // 태그를 비움
+		OnInventoryConsumableSlotItemsChanged.Execute();
+		return true;
+	}
+	return false;
+}
+
+FName UItemComponent::GetRegisteredSlotName(FGameplayTag ItemTag)
+{
+	for (const auto& SlotData : ConsumableSlots)
+	{
+		if (SlotData.Value == ItemTag)
 		{
-			if (HasItem(ItemToUse, 1)) // 인벤토리에 아이템이 있는지 확인 (수량 1 이상)
+			return SlotData.Key;
+		}
+	}
+
+	for (const auto& SlotData : EquipmentSlots)
+	{
+		if (SlotData.Value == ItemTag)
+		{
+			return SlotData.Key;
+		}
+	}
+	
+	return NAME_None;
+}
+
+//소비아이템 사용
+void UItemComponent::UseConsumableItem(FName SlotName)
+{
+
+	FGameplayTag ItemToUse = ConsumableSlots[SlotName];
+	if (ItemToUse.IsValid())
+	{
+		if (HasItem(ItemToUse, 1)) // 인벤토리에 아이템이 있는지 확인 (수량 1 이상)
+		{
+			const FItemData* ItemData = GetItemDataFromTable(ItemToUse); // 헬퍼 함수 사용
+
+			if (ItemData && ItemData->ItemClass)
 			{
-				const FItemData* ItemData = GetItemDataFromTable(ItemToUse); // 헬퍼 함수 사용
+				// 임시 아이템 액터 생성
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				ABaseItem* ConsumableActor = GetWorld()->SpawnActor<ABaseItem>(ItemData->ItemClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
 
-				if (ItemData && ItemData->ItemClass)
+				if (ConsumableActor && ConsumableActor->Implements<UConsumableItemInterface>())
 				{
-					// 임시 아이템 액터 생성
-					FActorSpawnParameters SpawnParams;
-					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-					ABaseItem* ConsumableActor = GetWorld()->SpawnActor<ABaseItem>(ItemData->ItemClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+					// Consume 인터페이스 실행 (소비 주체 전달)
+					IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
 
-					if (ConsumableActor && ConsumableActor->Implements<UConsumableItemInterface>())
-					{
-						// Consume 인터페이스 실행 (소비 주체 전달)
-						IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
-
-						// 소비 후 임시 액터 파괴 (Consume_Implementation에서 RemoveItem이 호출되었을 것으로 가정)
-						ConsumableActor->Destroy();
-					}
-					else
-					{
-						Debug::PrintError(FString::Printf(TEXT("소비 아이템 '%s'은 IConsumableItemInterface를 구현하지 않습니다."), *ItemToUse.ToString()));
-					}
+					// 소비 후 임시 액터 파괴 (Consume_Implementation에서 RemoveItem이 호출되었을 것으로 가정)
+					ConsumableActor->Destroy();
 				}
 				else
 				{
-					Debug::PrintError(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 아이템 데이터 또는 클래스를 찾을 수 없습니다."), *ItemToUse.ToString()));
+					Debug::PrintError(FString::Printf(TEXT("소비 아이템 '%s'은 IConsumableItemInterface를 구현하지 않습니다."), *ItemToUse.ToString()));
 				}
 			}
 			else
 			{
-				Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d의 '%s'을 사용하려 했으나 인벤토리에 부족합니다."), SlotIndex, *ItemToUse.ToString()));
-				// 인벤토리에 없으므로 슬롯을 다시 비움
-				ConsumableSlots[SlotIndex] = FGameplayTag();
-				OnInventoryConsumableSlotItemsChanged.Execute();
+				Debug::PrintError(FString::Printf(TEXT("아이템 태그 '%s'에 해당하는 아이템 데이터 또는 클래스를 찾을 수 없습니다."), *ItemToUse.ToString()));
 			}
 		}
 		else
 		{
-			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %d이 비어 있습니다."), SlotIndex));
+			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %s의 '%s'을 사용하려 했으나 인벤토리에 부족합니다."), *SlotName.ToString(), *ItemToUse.ToString()));
+			// 인벤토리에 없으므로 슬롯을 다시 비움
+			ConsumableSlots[SlotName] = FGameplayTag();
+			OnInventoryConsumableSlotItemsChanged.Execute();
 		}
 	}
 	else
 	{
-		Debug::PrintError(FString::Printf(TEXT("유효하지 않은 소비 아이템 슬롯 인덱스: %d (최대: %d)"), SlotIndex, ConsumableSlots.Num() - 1));
+		Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %s이 비어 있습니다."), *SlotName.ToString()));
 	}
+	
 }
 
-FGameplayTag UItemComponent::GetConsumableItem(int32 SlotIndex) const
-{
-	if (SlotIndex >= 0 && SlotIndex < ConsumableSlots.Num())
-	{
-		return ConsumableSlots[SlotIndex];
-	}
-	else
-	{
-		Debug::PrintError(FString::Printf(TEXT("유효하지 않은 소비 아이템 슬롯 인덱스 요청: %d (최대: %d)"), SlotIndex, ConsumableSlots.Num() - 1));
-		return FGameplayTag();
-	}
-}
-
-const TArray<FGameplayTag>& UItemComponent::GetConsumableSlots() const
+const TMap<FName, FGameplayTag>& UItemComponent::GetConsumableSlots() const
 {
 	return ConsumableSlots;
 }
@@ -396,9 +436,9 @@ void UItemComponent::ApplyPotionBoost()
 	InventoryMap = NewInventoryMap;
 
 	//소비슬롯 업데이트
-	for (int32 i = 0; i < ConsumableSlots.Num(); ++i)
+	for (auto& Pair: ConsumableSlots)
 	{
-		FGameplayTag& SlotTag = ConsumableSlots[i]; // 참조로 가져와서 직접 수정
+		FGameplayTag& SlotTag = Pair.Value; // 참조로 가져와서 직접 수정
 
 		// 만약 현재 슬롯 태그가 'Item.Consumable.Potion.Health'라면
 		if (SlotTag == ItemTags::Potion)
@@ -406,7 +446,7 @@ void UItemComponent::ApplyPotionBoost()
 			// 새로운 태그 'Item.Consumable.Potion.Health.Boosted'로 변경
 			SlotTag = ItemTags::PotionBoosted;
 			OnInventoryConsumableSlotItemsChanged.Execute();
-			Debug::Print(FString::Printf(TEXT("Consumable Slot %d: Changed to %s"), i, *SlotTag.ToString()));
+			Debug::Print(FString::Printf(TEXT("Consumable Slot %s: Changed to %s"), *Pair.Key.ToString(), *SlotTag.ToString()));
 		}
 	}
 	Debug::Print(TEXT("Potion boost applied! All applicable potions have been upgraded."));
@@ -475,27 +515,30 @@ TMap<FName, FItemUISlotData> UItemComponent::GetEquippedDisplayItems() const
 }
 
 // 소비 아이템 슬롯의 모든 아이템 정보를 FItemUISlotData 배열로 반환
-TArray<FItemUISlotData> UItemComponent::GetConsumableDisplayItems() const
+TMap<FName, FItemUISlotData> UItemComponent::GetConsumableDisplayItems() const
 {
-	TArray<FItemUISlotData> ConsumableDisplayItems;
+	TMap<FName, FItemUISlotData> ConsumableDisplayItems;
 
-	for (const FGameplayTag& ItemTag : ConsumableSlots)
+	for (const auto& Pair : ConsumableSlots)
 	{
-		if (ItemTag.IsValid())
+		const FName& SlotName = Pair.Key;
+		const FGameplayTag& ConsumableTag = Pair.Value;
+		
+		if (ConsumableTag.IsValid())
 		{
-			const FItemData* ItemData = GetItemDataFromTable(ItemTag);
+			const FItemData* ItemData = GetItemDataFromTable(ConsumableTag);
 			if (ItemData)
 			{
 				FItemUISlotData UISlotData;
-				UISlotData.ItemTag = ItemTag;
+				UISlotData.ItemTag = ConsumableTag;
 				UISlotData.ItemIcon = ItemData->ItemIcon;
 				UISlotData.ItemName = ItemData->ItemName;
 				UISlotData.ItemDescription = ItemData->ItemDescription;
-				UISlotData.CurrentQuantity = GetItemQuantity(ItemTag); // 인벤토리에서 실제 수량 가져옴
+				UISlotData.CurrentQuantity = GetItemQuantity(ConsumableTag); // 인벤토리에서 실제 수량 가져옴
 				UISlotData.MaxStackQuantity = ItemData->MaxItemQuantity;
 				UISlotData.ItemType = ItemData->ItemType;
 
-				ConsumableDisplayItems.Add(UISlotData);
+				ConsumableDisplayItems.Add(SlotName, UISlotData);
 			}
 		}
 		else
