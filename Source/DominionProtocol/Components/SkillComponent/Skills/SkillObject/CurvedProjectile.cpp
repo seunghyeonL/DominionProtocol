@@ -158,7 +158,6 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		UBaseSkill* BaseSkill = SkillOwner;
 		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
 		{
-			Debug::Print(TEXT("ApplyAttackToHitActor"));
 			ApplyAttackToHitActor(SweepResult, 0);
 		}
 	}
@@ -215,6 +214,7 @@ void ACurvedProjectile::OnParried(AActor* ParryActor)
 	TargetActor = InstigatorPawn;
 	bReachedTarget = true;
 	DirectionVector = ParryActor->GetActorForwardVector();
+	SetActorRotation(DirectionVector.Rotation());
 }
 
 void ACurvedProjectile::MidPointCalculator()
@@ -334,12 +334,16 @@ void ACurvedProjectile::UpdateCurveMovement(float DeltaTime)
 		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
 	}
 
-	// 이동
 	FVector MoveTarget = bCurveFixed ? TargetPoint : CurvePoint;
-	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), MoveTarget, DeltaTime, CurveSettings.ProjectileSpeed));
 
 	// 회전
-	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), MoveTarget));
+	if (!bReachedTarget)
+	{
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), MoveTarget));
+	}
+	
+	// 이동
+	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), MoveTarget, DeltaTime, CurveSettings.ProjectileSpeed));
 }
 
 void ACurvedProjectile::FixTargetPoint()
@@ -367,5 +371,4 @@ void ACurvedProjectile::MoveInStraightLine(float DeltaTime)
 	// 방향 벡터로 계속 직진
 	FVector NewLocation = GetActorLocation() + (DirectionVector * CurveSettings.ProjectileSpeed * DeltaTime);
 	SetActorLocation(NewLocation);
-	SetActorRotation(DirectionVector.Rotation());
 }

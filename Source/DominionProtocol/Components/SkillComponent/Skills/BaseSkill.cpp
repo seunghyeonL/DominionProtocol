@@ -203,11 +203,6 @@ void UBaseSkill::Tick(float DeltaTime)
 {
 }
 
-TObjectPtr<UAnimMontage> UBaseSkill::GetAnimMontage() const
-{
-	return AnimMontage;
-}
-
 float UBaseSkill::GetFinalAttackData(const float AttackPower) const
 {
 	return AttackPower * DamageCoefficient;

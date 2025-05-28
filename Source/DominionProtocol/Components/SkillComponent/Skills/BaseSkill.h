@@ -1,7 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraCore.h"
 #include "Util/BattleDataTypes.h"
+#include "Util/GameTagList.h"
 #include "BaseSkill.generated.h"
 
 class ACurvedProjectile;
@@ -30,14 +32,18 @@ public:
 
 	virtual void Tick(float DeltaTime);
 
-	TObjectPtr<UAnimMontage> GetAnimMontage() const;
-
+	FORCEINLINE UAnimMontage* GetAnimMontage() const { return AnimMontage; }
 	FORCEINLINE FGameplayTag GetSkillTag() const { return SkillTag; }
 	FORCEINLINE FGameplayTag GetControlEffectTag() const { return ControlEffectTag; }
-
-protected:
+	FORCEINLINE TSubclassOf<ACurvedProjectile> GetCurvedProjectileClass() const { return CurvedProjectileClass; }
+	FORCEINLINE const TArray<USoundBase*>& GetSounds() const { return Sound; }
+	FORCEINLINE const TArray<UParticleSystem*>& GetParticles() const { return Particle; }
+	FORCEINLINE const TArray<FEffectData>& GetEffects() const { return Effects; }
+	FORCEINLINE float GetDamageCoefficient() const { return DamageCoefficient; }
 	float GetFinalAttackData(const float AttackPower) const;
 
+protected:
+	
 	virtual bool CheckParry(AActor* HitActor) const;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner")
@@ -47,10 +53,10 @@ protected:
 	TObjectPtr<UAnimMontage> AnimMontage = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
-	TArray<TObjectPtr<USoundBase>> Sound;
+	TArray<USoundBase*> Sound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
-	TArray<TObjectPtr<UParticleSystem>> Particle;
+	TArray<UParticleSystem*> Particle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TSubclassOf<ACurvedProjectile> CurvedProjectileClass;

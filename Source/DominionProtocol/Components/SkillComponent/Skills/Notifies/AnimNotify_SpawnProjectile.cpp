@@ -5,6 +5,8 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
+#include "Components/StatusComponent/StatusComponent.h"
+#include "Util/DebugHelper.h"
 
 void UAnimNotify_SpawnProjectile::NotifyBegin(USkeletalMeshComponent* MeshComp,	UAnimSequenceBase* Animation, float TotalDuration)
 {
@@ -47,33 +49,62 @@ void UAnimNotify_SpawnProjectile::NotifyTick(USkeletalMeshComponent* MeshComp, U
 
 void UAnimNotify_SpawnProjectile::ProjectileFromPool()
 {
-	if (!CachedMeshComp) return;
+	check(CachedMeshComp);
 
 	FVector SpawnLocation = OwnerCharacter->GetActorTransform().TransformPosition(Offset);
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
+	USkillComponent* SkillComopnent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+	if (!IsValid(SkillComopnent))
+	{
+		Debug::PrintError(TEXT("UAnimNotify_SpawnProjectile::ProjectileFromPool : Invalid SkillComponent."));
+		return;
+	}
+
+	UBaseSkill* CurrentSkill = SkillComopnent->GetCurrentSkill();
+	if (!IsValid(CurrentSkill))
+	{
+		Debug::PrintError(TEXT("UAnimNotify_SpawnProjectile::ProjectileFromPool : Invalid CurrentSkill.."));
+		return;
+	}
+
 	UWorld* World = CachedMeshComp->GetWorld();
 	if (!World) return;
 
-	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-	if (!BaseGameState) return;
-
-	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	if (!IsValid(CurrentSkill->GetCurvedProjectileClass()))
 	{
-		if (!IsValid(SkillData->CurvedProjectileClass)) return;
-
-		ACurvedProjectile* CurvedProjectile = World->SpawnActor<ACurvedProjectile>(SkillData->CurvedProjectileClass, SpawnLocation, SpawnRotation);
-
-		if (SkillData->Sound[0])
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, SkillData->Sound[0], SpawnLocation);
-		}
-
-		if (CurvedProjectile)
-		{
-			CurvedProjectile->SkillOwner = ProjectileSkill;
-			CurvedProjectile->SkillTag = SkillTag;
-			CurvedProjectile->SetLaunchPath(OwnerCharacter, TargetActor);
-		}
+		Debug::PrintError(TEXT("UAnimNotify_SpawnProjectile::ProjectileFromPool : Invalid ProjectileClass."));
+		return;
 	}
+
+	if (auto CurvedProjectile = World->SpawnActor<ACurvedProjectile>(CurrentSkill->GetCurvedProjectileClass(), SpawnLocation, SpawnRotation))
+	{
+		const auto Sounds = CurrentSkill->GetSounds();
+		if (Sounds.IsValidIndex(0))
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, Sounds[0], SpawnLocation);
+		}
+
+		CurvedProjectile->SkillOwner = ProjectileSkill;
+		CurvedProjectile->SkillTag = SkillTag;
+		
+		FAttackData AttackData;
+	
+		UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
+	
+		if (IsValid(StatusComponent))
+		{
+			float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+			AttackData.Damage = CurrentSkill->GetFinalAttackData(AttackPower);
+		}
+	
+		AttackData.Instigator = OwnerCharacter;
+		AttackData.Effects = CurrentSkill->GetEffects();
+		AttackData.LaunchVector = FVector::ZeroVector;
+	
+		CurvedProjectile->AttackData = AttackData;
+			
+		CurvedProjectile->SetLaunchPath(OwnerCharacter, TargetActor);
+	}
+	
 }
