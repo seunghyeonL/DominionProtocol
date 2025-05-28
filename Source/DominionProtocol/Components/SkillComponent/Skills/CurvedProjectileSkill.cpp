@@ -22,6 +22,11 @@ void UCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, 
 	// 투사체에서 처리하도록
 }
 
+bool UCurvedProjectileSkill::CheckParry(AActor* HitActor) const
+{
+	return false;
+}
+
 void UCurvedProjectileSkill::UpdateTarget()
 {
 	if (!IsValid(OwnerCharacter)) return;

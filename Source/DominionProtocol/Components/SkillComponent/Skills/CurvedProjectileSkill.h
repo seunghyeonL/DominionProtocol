@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
@@ -16,9 +16,10 @@ public:
 
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const override;
 
+	virtual bool CheckParry(AActor* HitActor) const override;
+
 	UPROPERTY()
 	TObjectPtr<AActor> TargetActor;
-	virtual bool CheckParry(AActor* HitActor) const override;
 
 private:
 	void UpdateTarget();
