@@ -7,6 +7,9 @@
 
 ASkeletonEnemy::ASkeletonEnemy()
 {
+	PrimaryActorTick.bCanEverTick = true;
+	PawnTag = PawnTags::AxeSkeleton;
+
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(GetMesh(), TEXT("hand_r"));
 
@@ -32,7 +35,14 @@ ASkeletonEnemy::ASkeletonEnemy()
 void ASkeletonEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	InitializeStatusComponent();
-	InitializeSkillComponent();
+void ASkeletonEnemy::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void ASkeletonEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
