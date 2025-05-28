@@ -215,8 +215,6 @@ void ACurvedProjectile::OnParried(AActor* ParryActor)
 	TargetActor = InstigatorPawn;
 	bReachedTarget = true;
 	DirectionVector = ParryActor->GetActorForwardVector();
-	// SetActorRotation(DirectionVector.Rotation());
-	SetActorRotation(ParryActor->GetActorRotation());
 }
 
 void ACurvedProjectile::MidPointCalculator()
@@ -369,4 +367,5 @@ void ACurvedProjectile::MoveInStraightLine(float DeltaTime)
 	// 방향 벡터로 계속 직진
 	FVector NewLocation = GetActorLocation() + (DirectionVector * CurveSettings.ProjectileSpeed * DeltaTime);
 	SetActorLocation(NewLocation);
+	SetActorRotation(DirectionVector.Rotation());
 }
