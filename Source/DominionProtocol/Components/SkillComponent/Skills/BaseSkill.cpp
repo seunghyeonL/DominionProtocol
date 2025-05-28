@@ -7,6 +7,7 @@
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
+#include "Interface/Parryable.h"
 
 UBaseSkill::UBaseSkill()
 {
@@ -83,7 +84,7 @@ void UBaseSkill::AttackTrace() const
 		Start,										// 시작 위치
 		End,										// 끝 위치
 		FQuat::Identity,
-		ECollisionChannel::ECC_Pawn,				// 충돌 채널
+		ECollisionChannel::ECC_Pawn,    			// 충돌 채널
 		FCollisionShape::MakeSphere(AttackRadius),	// 범위 설정 (구체 모양)
 		QueryParams
 	);
@@ -153,16 +154,22 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 
 	check(OwnerCharacter)
 
+	// check Parry
+	if (CheckParry(HitActor))
+	{
+		return;
+	}
+	
 	FAttackData AttackData;
 
-	UWorld* World = GetWorld();
+	// UWorld* World = GetWorld();
 
-	if (IsValid(World))
-	{
-		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-
-		if (IsValid(BaseGameState))
-		{
+	// if (IsValid(World))
+	// {
+	// 	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+	//
+	// 	if (IsValid(BaseGameState))
+	// 	{
 			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
 
 			if (IsValid(StatusComponent))
@@ -171,8 +178,8 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 
 				AttackData.Damage = GetFinalAttackData(AttackPower);
 			}
-		}
-	}
+	// 	}
+	// }
 
 	AttackData.Instigator = OwnerCharacter;
 	AttackData.Effects = Effects;
@@ -204,4 +211,21 @@ TObjectPtr<UAnimMontage> UBaseSkill::GetAnimMontage() const
 float UBaseSkill::GetFinalAttackData(const float AttackPower) const
 {
 	return AttackPower * DamageCoefficient;
+}
+
+bool UBaseSkill::CheckParry(AActor* HitActor) const
+{
+	if (auto ParryableTarget = Cast<IParryable>(HitActor))
+	{
+		if (ParryableTarget->IsParryingCond())
+		{
+			if (auto ParryableOwner = Cast<IParryable>(OwnerCharacter))
+			{
+				ParryableOwner->OnParried();
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

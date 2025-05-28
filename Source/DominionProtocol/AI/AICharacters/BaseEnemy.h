@@ -6,6 +6,7 @@
 #include "Components/SkillComponent/SkillComponentUser.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "GameFramework/Character.h"
+#include "Interface/Parryable.h"
 #include "Util/GameTagList.h"
 #include "Player/Damagable.h"
 #include "Interface/PawnTagInterface.h"
@@ -18,7 +19,13 @@ class UStatusComponent;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseEnemy :
-public ACharacter, public IDamagable, public IPawnTagInterface, public IEffectReceivable, public IStatusComponentUser, public ISkillComponentUser
+public ACharacter,
+public IDamagable,
+public IParryable,
+public IPawnTagInterface,
+public IEffectReceivable,
+public IStatusComponentUser,
+public ISkillComponentUser
 {
 	GENERATED_BODY()
 
@@ -50,6 +57,10 @@ public:
 	// PawnTag
 	virtual FGameplayTag GetPawnTag_Implementation() override;
 
+	// Parryable
+	virtual bool IsParryingCond() override;
+	virtual void OnParried() override;
+	
 	// EffectReceivable (for debug)
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;

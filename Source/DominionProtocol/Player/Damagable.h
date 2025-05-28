@@ -25,10 +25,4 @@ class DOMINIONPROTOCOL_API IDamagable
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Attacked")
 	void OnAttacked(const FAttackData& AttackData);
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Attacked")
-	bool IsParryingCond();
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Attacked")
-	void OnParried();
 };

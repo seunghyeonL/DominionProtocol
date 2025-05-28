@@ -44,42 +44,13 @@ void UCurvedProjectileSkill::Execute()
 
 void UCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
-	AActor* HitActor = HitResult.GetActor();
+	// Super::ApplyAttackToHitActor(HitResult, DeltaTime);
+	// 투사체에서 처리하도록
+}
 
-	if (!IsValid(HitActor))	return;
-
-	UWorld* World = GetWorld();
-
-	if (!IsValid(World)) return;
-
-	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-
-	if (!IsValid(BaseGameState)) return;
-
-	UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
-
-	if (!IsValid(StatusComponent)) return;
-	float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-	FAttackData AttackData;
-
-	check(OwnerCharacter);
-
-	AttackData.Damage = GetFinalAttackData(AttackPower);
-
-	AttackData.Instigator = OwnerCharacter;
-	AttackData.Effects = Effects;
-
-	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
-	{
-		// AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
-		//
-		// AttackData.LaunchVector.Normalize();
-
-		AttackData.LaunchVector = FVector::ZeroVector;
-
-		IDamagable::Execute_OnAttacked(HitActor, AttackData);
-	}
+bool UCurvedProjectileSkill::CheckParry(AActor* HitActor) const
+{
+	return false;
 }
 
 void UCurvedProjectileSkill::UpdateTarget()
@@ -150,21 +121,39 @@ void UCurvedProjectileSkill::ProjectileFromPool()
 			SpawnLocation,
 			SpawnRotation
 		);
-
-		Sound[0] = SkillData->Sound[0];
-		if (Sound[0])
-		{
-			UGameplayStatics::PlaySoundAtLocation(
-				this,
-				Sound[0],
-				SpawnLocation
-			);
-		}
-
+		
 		if (CurvedProjectile)
 		{
+			Sound[0] = SkillData->Sound[0];
+			if (Sound[0])
+			{
+				UGameplayStatics::PlaySoundAtLocation(
+					this,
+					Sound[0],
+					SpawnLocation
+				);
+			}
+			
 			CurvedProjectile->SkillOwner = this;
 			CurvedProjectile->SkillTag = SkillTag;
+
+			FAttackData AttackData;
+
+			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
+
+			if (IsValid(StatusComponent))
+			{
+				float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+
+				AttackData.Damage = GetFinalAttackData(AttackPower);
+			}
+
+			AttackData.Instigator = OwnerCharacter;
+			AttackData.Effects = Effects;
+			AttackData.LaunchVector = FVector::ZeroVector;
+
+			CurvedProjectile->AttackData = AttackData;
+			
 			CurvedProjectile->SetLaunchPath(OwnerCharacter, TargetActor);
 		}
 	}	

@@ -38,6 +38,8 @@ public:
 protected:
 	float GetFinalAttackData(const float AttackPower) const;
 
+	virtual bool CheckParry(AActor* HitActor) const;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner")
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
 

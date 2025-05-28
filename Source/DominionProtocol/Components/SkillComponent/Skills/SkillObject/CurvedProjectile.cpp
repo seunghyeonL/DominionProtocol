@@ -10,6 +10,7 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
+#include "Interface/Parryable.h"
 //#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 
 ACurvedProjectile::ACurvedProjectile()
@@ -137,12 +138,28 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		return;
 	}
 
+	// check Parry
+	if (CheckParry(SweepResult))
+	{
+		return;
+	}
+	
 	if (IsValid(SkillOwner))
 	{
+		AActor* HitActor = SweepResult.GetActor();
+		if (auto ParryableTarget = Cast<IParryable>(HitActor))
+		{
+			if (ParryableTarget->IsParryingCond())
+			{
+				SetLaunchPath(HitActor, InstigatorPawn);
+			}
+		}
+		
 		UBaseSkill* BaseSkill = SkillOwner->CurrentSkill;
 		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
 		{
-			BaseSkill->ApplyAttackToHitActor(SweepResult, 0);
+			Debug::Print(TEXT("ApplyAttackToHitActor"));
+			ApplyAttackToHitActor(SweepResult, 0);
 		}
 	}
 
@@ -150,6 +167,56 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	//ObjectPoolSubsystem->ReturnActorToPool(this);
 
 	DestroyProjectile();
+}
+
+void ACurvedProjectile::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+{
+	AActor* HitActor = HitResult.GetActor();
+
+	if (!IsValid(HitActor))
+	{
+		return;
+	}
+
+	check(InstigatorPawn)
+
+	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
+	{
+		IDamagable::Execute_OnAttacked(HitActor, AttackData);
+	}
+}
+
+bool ACurvedProjectile::CheckParry(const FHitResult& HitResult)
+{
+	check(InstigatorPawn);
+	AActor* HitActor = HitResult.GetActor();
+
+	if (!IsValid(HitActor))
+	{
+		return false;
+	}
+	
+	if (auto ParryableTarget = Cast<IParryable>(HitActor))
+	{
+		if (ParryableTarget->IsParryingCond())
+		{
+			OnParried(HitActor);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void ACurvedProjectile::OnParried(AActor* ParryActor)
+{
+	AttackData.Instigator = ParryActor;
+	InstigatorPawn = Cast<APawn>(ParryActor);
+	TargetActor = InstigatorPawn;
+	bReachedTarget = true;
+	DirectionVector = ParryActor->GetActorForwardVector();
+	// SetActorRotation(DirectionVector.Rotation());
+	SetActorRotation(ParryActor->GetActorRotation());
 }
 
 void ACurvedProjectile::MidPointCalculator()

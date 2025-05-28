@@ -21,6 +21,8 @@ public:
 
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const override;
 
+	virtual bool CheckParry(AActor* HitActor) const override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TObjectPtr<UBaseSkill> CurrentSkill;
 
@@ -50,7 +52,7 @@ private:
 	FTimerHandle FireTimerHandle;
 
 	int32 ProjectileIndexToLaunch = 0;
-
+	
 	//UPROPERTY()
 	//UObjectPoolSubsystem* ObjectPoolSubsystem;
 };
