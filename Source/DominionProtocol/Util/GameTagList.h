@@ -114,6 +114,7 @@ namespace SkillTags
 	inline const FGameplayTag FireBallSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.FireBall"));
 	inline const FGameplayTag ZoneyaSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Zoneya"));
 	inline const FGameplayTag InfiniteStaminaSkill= FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.InfiniteStamina"));
+	inline const FGameplayTag TeleportSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Teleport"));	
 }
 
 namespace PawnTags

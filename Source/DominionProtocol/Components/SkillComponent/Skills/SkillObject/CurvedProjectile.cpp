@@ -77,46 +77,6 @@ void ACurvedProjectile::Tick(float DeltaTime)
 
 	// 커브 이동
 	UpdateCurveMovement(DeltaTime);
-
-	//// 이동 로직
-	//if (GetActorLocation() != TargetPoint)
-	//{
-	//	if (ElapsedTime < CurveSettings.CurveDuration && bIsTargetMove)
-	//	{
-	//		TargetPoint = TargetActor->GetActorLocation();
-	//		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
-	//	}
-	//	else if (ElapsedTime >= CurveSettings.CurveDuration && !bCurveFixed)
-	//	{
-	//		// 시간이 지났을 때 한 번만 타겟 포인트 고정	
-	//		if (bIsTargetMove)
-	//		{
-	//			TargetPoint = TargetActor->GetActorLocation();
-	//		}
-	//		bCurveFixed = true;
-	//	}
-	//	if (!bCurveFixed)
-	//	{
-	//		SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), CurvePoint, DeltaTime, CurveSettings.ProjectileSpeed));
-	//	}
-	//	else
-	//	{
-	//		SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed));
-	//	}
-
-	//	// 회전 설정
-	//	FVector NextLocation = bCurveFixed ? TargetPoint : CurvePoint;
-	//	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextLocation));
-	//}
-	//if (GetActorLocation() == TargetPoint)
-	//{
-	//	if (!bReachedTarget)
-	//	{
-	//		// 타겟에 도달했을 때 방향 벡터 저장
-	//		DirectionVector = GetActorForwardVector();
-	//		bReachedTarget = true;
-	//	}
-	//}
 }
 
 //void ACurvedProjectile::OnObjectSpawn_Implementation()
@@ -259,6 +219,16 @@ void ACurvedProjectile::DestroyProjectile()
 
 	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
 	{
+		Sound = SkillData->Sound[1];
+		if (Sound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				this,
+				Sound,
+				GetActorLocation()
+			);
+		}
+
 		Particle = SkillData->Particle[0];
 		if (Particle)
 		{
@@ -268,16 +238,6 @@ void ACurvedProjectile::DestroyProjectile()
 				GetActorLocation(),
 				FRotator::ZeroRotator,
 				true
-			);
-		}
-
-		Sound = SkillData->Sound[1];
-		if (Sound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(
-				this,
-				Sound,
-				GetActorLocation()
 			);
 		}
 	}

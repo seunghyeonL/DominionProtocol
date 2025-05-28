@@ -103,10 +103,10 @@ private:
 	TObjectPtr<UStaticMeshComponent> Projectile;
 
 	UPROPERTY()
-	TObjectPtr<UParticleSystem> Particle;
+	TObjectPtr<USoundBase> Sound;
 
 	UPROPERTY()
-	TObjectPtr<USoundBase> Sound;
+	TObjectPtr<UParticleSystem> Particle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings", meta = (AllowPrivateAccess = "true"))
 	FProjectileCurveSettings CurveSettings;
