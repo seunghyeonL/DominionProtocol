@@ -4,6 +4,7 @@
 #include "ItemInventory/ItemData.h"
 #include "ItemInventory/BaseItem.h"
 #include "Interface/ConsumableItemInterface.h"
+#include "Interface/EquipEffectableItemInterface.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 
@@ -220,6 +221,35 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 
 				// 새로운 태그 장착
 				SetTagToSlot(SlotName, ItemTag);
+
+				////태그가 악세서리면 효과 적용
+				//if (ItemTag == ItemTags::AccessoryItem)
+				//{
+				//	if (ItemData->ItemClass)
+				//	{
+				//		// 임시 아이템 액터 생성
+				//		FActorSpawnParameters SpawnParams;
+				//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				//		ABaseItem* AccessoryActor = GetWorld()->SpawnActor<ABaseItem>(ItemData->ItemClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+				//		if (AccessoryActor && AccessoryActor->Implements<UEquipEffectableItemInterface>())
+				//		{
+				//			IEquipEffectableItemInterface::Execute_Equip(AccessoryActor, GetOwner());
+				//			//OnInventoryItemListChanged.Execute();
+
+				//			// 효과 적용 후 임시 액터 파괴
+				//			AccessoryActor->Destroy();
+				//		}
+				//		else
+				//		{
+				//			Debug::PrintError(FString::Printf(TEXT("해당 아이템 은 EquipEffectableInterface를 구현하지 않습니다.")));
+				//		}
+				//	}
+				//	else
+				//	{
+				//		Debug::PrintError(FString::Printf(TEXT("아이템 태그에 해당하는 아이템 데이터 또는 클래스를 찾을 수 없습니다.")));
+				//	}
+				//}
 				// EquipmentSlots[SlotName] = ItemTag;
 				Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 장착"), *SlotName.ToString(), *ItemTag.ToString()));
 				OnInventoryEquippedSlotItemsChanged.Execute();
@@ -239,7 +269,7 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 	}
 	else
 	{
-		Debug::Print(TEXT("아이템의 타입이 무기가 아닙니다"));
+		Debug::Print(TEXT("아이템의 타입이 장비가 아닙니다"));
 		return false;
 	}
 }

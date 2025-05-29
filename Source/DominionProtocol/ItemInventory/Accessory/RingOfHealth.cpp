@@ -17,6 +17,15 @@ void ARingOfHealth::Equip_Implementation(AActor* EquipCharacter)
 	}
 }
 
+void ARingOfHealth::UnEquip_Implementation(AActor* UnequipCharacter) // 새로 추가된 부분
+{
+	ADomiCharacter* TargetCharacter = Cast<ADomiCharacter>(UnequipCharacter);
+	if (TargetCharacter)
+	{
+		UnEquipRingOfHealth(TargetCharacter);
+	}
+}
+
 FText ARingOfHealth::GetEquipMessage_Implementation() const
 {
 	return FText();
@@ -38,6 +47,26 @@ void ARingOfHealth::EquipRingOfHealth(ADomiCharacter* TargetCharacter)
 		else
 		{
 			Debug::Print(TEXT("No Status Component Found"));
+		}
+	}
+}
+
+void ARingOfHealth::UnEquipRingOfHealth(ADomiCharacter* TargetCharacter) 
+{
+	if (TargetCharacter)
+	{
+		UStatusComponent* StatusComp = TargetCharacter->FindComponentByClass<UStatusComponent>();
+		if (StatusComp)
+		{
+			float CurMaxHealth = StatusComp->GetStat(StatTags::MaxHealth);
+			float NewMaxHealth = CurMaxHealth - MaxHealthBoostAmount; // 효과 되돌리기
+
+			StatusComp->SetStat(StatTags::MaxHealth, NewMaxHealth);
+			Debug::Print(TEXT("Max Health Deboosted by Ring of Health (Unequipped)"));
+		}
+		else
+		{
+			Debug::Print(TEXT("No Status Component Found on character to unequip ring"));
 		}
 	}
 }

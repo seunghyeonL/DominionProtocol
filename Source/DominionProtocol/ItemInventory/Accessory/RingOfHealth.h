@@ -22,9 +22,15 @@ protected:
 	
 	//EquipEffect
 	virtual void Equip_Implementation(AActor* EquipCharacter)override;
+
+	virtual void UnEquip_Implementation(AActor* UnequipCharacter)override;
+
 	virtual FText GetEquipMessage_Implementation()const override;
 
 public:
 	UFUNCTION(BlueprintCallable)
 	void EquipRingOfHealth(ADomiCharacter* TargetCharacter);
+
+	UFUNCTION(BlueprintCallable) 
+	void UnEquipRingOfHealth(ADomiCharacter* TargetCharacter);
 };
