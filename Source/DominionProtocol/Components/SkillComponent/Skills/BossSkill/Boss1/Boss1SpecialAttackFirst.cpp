@@ -7,6 +7,7 @@
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Player/Damagable.h"
+#include "Engine/SkeletalMeshSocket.h"
 
 UBoss1SpecialAttackFirst::UBoss1SpecialAttackFirst()
 {
@@ -21,6 +22,15 @@ void UBoss1SpecialAttackFirst::AttackTrace() const
 	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
 
 	FVector Start = OwnerCharacter->GetActorLocation() + ForwardVector * (AttackRadius + AttackForwardOffset);
+
+	const USkeletalMeshSocket* TraceSocket = OwnerCharacter->GetMesh()->GetSocketByName("SpecialAttackSocket");
+
+	// 소켓이 있다면 소켓에서 트레이스하기
+	if (IsValid(TraceSocket))
+	{
+		Start = TraceSocket->GetSocketLocation(OwnerCharacter->GetMesh());
+	}
+
 	FVector End = Start;
 
 	TArray<FHitResult> HitResults;

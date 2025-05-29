@@ -8,5 +8,5 @@ UBoss1EvadeAttack::UBoss1EvadeAttack()
 {
 	SkillTag = SkillTags::Boss1EvadeAttack;
 
-	AnimPlayRate = 0.4f;
+	AnimPlayRate = 0.2f;
 }

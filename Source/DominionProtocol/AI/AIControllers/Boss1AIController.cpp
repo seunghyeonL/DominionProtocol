@@ -53,7 +53,9 @@ FGameplayTag ABoss1AIController::GetAttack()
 		return SkillGroupTags::SuperAttack;
 	}
 
-	if (bIsActiveSpecialAttack && RandomWeight <= SpecialAttackCoolDown)
+	RandomWeight -= SuperAttackWeight;
+
+	if (bIsActiveSpecialAttack && RandomWeight <= SpecialAttackWeight)
 	{
 		SpecialAttackWeight = -1;
 		UpdateWeights();
@@ -64,7 +66,7 @@ FGameplayTag ABoss1AIController::GetAttack()
 
 	EvadeAttackWeight = -1;
 	UpdateWeights();
-	DeactivateSpecialAttack();
+	DeactivateEvadeAttack();
 
 	return SkillTags::Boss1EvadeAttack;
 }

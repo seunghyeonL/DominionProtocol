@@ -9,6 +9,7 @@
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "Util/DebugHelper.h"
 #include "Interface/Parryable.h"
+#include "Engine/SkeletalMeshSocket.h"
 
 UBaseSkill::UBaseSkill()
 {
@@ -72,6 +73,15 @@ void UBaseSkill::AttackTrace() const
 	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
 
 	FVector Start = OwnerCharacter->GetActorLocation() + ForwardVector * (AttackRadius + AttackForwardOffset);
+
+	const USkeletalMeshSocket* TraceSocket = OwnerCharacter->GetMesh()->GetSocketByName("TraceSocket");
+
+	// 소켓이 있다면 소켓에서 트레이스하기
+	if (IsValid(TraceSocket))
+	{
+		Start = TraceSocket->GetSocketLocation(OwnerCharacter->GetMesh());
+	}
+
 	FVector End = Start;
 
 	TArray<FHitResult> HitResults;
