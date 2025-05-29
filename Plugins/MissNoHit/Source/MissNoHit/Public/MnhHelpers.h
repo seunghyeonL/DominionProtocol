@@ -10,7 +10,6 @@
 #include "KismetTraceUtils.h"
 #include "UnrealEngine.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "DrawDebugHelpers.h"
 #include "MnhHelpers.generated.h"
 
 
@@ -29,6 +28,19 @@ DECLARE_CYCLE_STAT(TEXT("MissNoHit Tracer Control Node Hit Detected "), STAT_Mnh
 DECLARE_CYCLE_STAT(TEXT("MissNoHit Tracer Get Shape"), STAT_MnhGetTracerShape, STATGROUP_MISSNOHIT)
 
 DECLARE_LOG_CATEGORY_EXTERN(LogMnh, Log, All)
+
+// =====플러그인 커스텀=====(규혁)
+static TAutoConsoleVariable<int32> CVarMnhDebugLines(
+	TEXT("Mnh.ShowLines"),
+	1,
+	TEXT("디버그라인 표시 제어 : 0 = 숨김, 1 = 표시"),
+	ECVF_Cheat);
+
+FORCEINLINE static bool ShouldShowDebugLines(const EDrawDebugTrace::Type DrawDebugType)
+{
+	return DrawDebugType != EDrawDebugTrace::None && CVarMnhDebugLines.GetValueOnAnyThread() != 0;
+}
+// =======================
 
 UENUM(BlueprintType)
 enum class EMnhTraceSource : uint8
@@ -217,6 +229,12 @@ public:
 	FORCEINLINE static void DrawDebug(const FVector& Start, const FVector& End, const FVector& Scale, const FQuat& Rot, TArray<FHitResult> Hits, const FMnhShapeData& ShapeData, const UWorld* World,
 	                                  const EDrawDebugTrace::Type DrawDebugType, float DebugDrawTime, const FColor& DebugTraceColor, const FColor& DebugTraceBlockColor, const FColor& DebugTraceHitColor)
 	{
+		// =====플러그인 커스텀=====(규혁)
+		if (!ShouldShowDebugLines(DrawDebugType))
+		{
+			return;
+		}
+		// =======================
 		SCOPE_CYCLE_COUNTER(STAT_MnhTracerDebugDraw)
 	
 		if (Hits.Num() > 0) {
@@ -248,6 +266,13 @@ public:
 	FORCEINLINE static void DrawTrace(const FVector& Start, const FVector& End, const FVector& Scale, const FQuat& Rot, const FColor Color, const FMnhShapeData& ShapeData, const UWorld* World,
 		const EDrawDebugTrace::Type DrawDebugType, float DebugDrawTime)
 	{
+		// =====플러그인 커스텀=====(규혁)
+		if (!ShouldShowDebugLines(DrawDebugType))
+		{
+			return;
+		}
+		// =======================
+		
 		switch (ShapeData.TraceShape)
 		{
 		case EMnhTraceShape::Sphere:
