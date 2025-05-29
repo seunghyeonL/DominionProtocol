@@ -79,10 +79,10 @@ void UAnimNotify_SpawnProjectile::ProjectileFromPool()
 
 	if (auto CurvedProjectile = World->SpawnActor<ACurvedProjectile>(CurrentSkill->GetCurvedProjectileClass(), SpawnLocation, SpawnRotation))
 	{
-		const auto Sounds = CurrentSkill->GetSounds();
+		const auto& Sounds = CurrentSkill->GetSounds();
 		if (Sounds.IsValidIndex(0))
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, Sounds[0], SpawnLocation);
+			UGameplayStatics::PlaySoundAtLocation(World, Sounds[0], SpawnLocation);
 		}
 
 		CurvedProjectile->SkillOwner = ProjectileSkill;
