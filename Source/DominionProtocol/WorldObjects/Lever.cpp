@@ -2,6 +2,7 @@
 #include "Util/DebugHelper.h"
 #include "Components/BoxComponent.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "DomiFramework/GameInstance/DomiGameInstance.h"
 
 ALever::ALever()
 	:bIsOn(false),
@@ -112,6 +113,11 @@ void ALever::Interact_Implementation(AActor* Interactor)
 	{
 		Timeline.Play();
 		Debug::Print(TEXT("Lever On"));
+		if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(GetGameInstance()))
+		{
+			GI->SetCurrentGameStoryState(EGameStoryState::OperateLever); 
+			Debug::Print(TEXT("스토리 상태 → OperateLever 으로 변경"));
+		}
 	}
 	bIsOn = !bIsOn;
 }

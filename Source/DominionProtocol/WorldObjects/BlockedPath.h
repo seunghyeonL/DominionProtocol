@@ -20,7 +20,7 @@ class DOMINIONPROTOCOL_API ABlockedPath : public AActor, public IStoryDependentI
 public:	
 	ABlockedPath();
 
-	void PostInitializeComponents();
+	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -45,5 +45,5 @@ protected:
 	bool bIsBlocking;
 
 	UPROPERTY(EditAnywhere, Category = "BlockedPath")
-	EGameStoryState RequiredStoryState;
+	EGameStoryState RequiredStoryState = EGameStoryState::Tutorial;
 };

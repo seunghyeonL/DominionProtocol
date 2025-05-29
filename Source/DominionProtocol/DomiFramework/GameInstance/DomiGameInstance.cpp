@@ -45,6 +45,7 @@ void UDomiGameInstance::SetCurrentGameStoryState(EGameStoryState NewGameStorySta
 {
 	if (CurrentGameStoryState != NewGameStoryState)
 	{
+		Debug::Print(FString::Printf(TEXT("AdvanceStoryState called → %d"), NewGameStoryState));
 		CurrentGameStoryState = NewGameStoryState;
 		OnStoryStateChanged.Broadcast(NewGameStoryState);
 	}
