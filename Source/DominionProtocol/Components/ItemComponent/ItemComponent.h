@@ -108,6 +108,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UseConsumableItem(FName SlotName, FGameplayTag ConsumableItemTag = FGameplayTag());
 
+	// 인벤토리에서 바로 아이템 사용
+	UFUNCTION(BlueprintCallable, Category = "Inventory|Item Use")
+	bool UseItemFromInventory(FGameplayTag ItemTag);
+
 	// 모든 소비 아이템 슬롯 정보 반환
 	UFUNCTION(BlueprintPure)
 	const TMap<FName, FGameplayTag>& GetConsumableSlots() const;

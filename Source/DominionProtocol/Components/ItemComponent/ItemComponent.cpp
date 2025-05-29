@@ -652,3 +652,73 @@ void UItemComponent::AddAllItemsToInventoryMaxQuantity()
 		Debug::Print(TEXT("No items were added or all items already at max quantity."));
 	}
 }
+
+//소비 아이템 인벤토리에서 바로 사용
+bool UItemComponent::UseItemFromInventory(FGameplayTag ItemTag)
+{
+	//아이템 유효성 확인
+	if (!ItemTag.IsValid())
+	{
+		Debug::PrintError(TEXT("UseItemFromInventory: 유효하지 않은 아이템 태그입니다."));
+		return false;
+	}
+
+	const int32 QuantityToUse = 1;
+
+	// 인벤토리에 아이템이 있는지 확인
+	if (!HasItem(ItemTag, QuantityToUse))
+	{
+		Debug::Print(FString::Printf(TEXT("UseItemFromInventory: '%s' 아이템이 인벤토리에 충분하지 않습니다."), *ItemTag.ToString()));
+		return false;
+	}
+
+	//아이템 데이터 가져오기
+	const FItemData* ItemData = GetItemDataFromTable(ItemTag);
+	if (!ItemData)
+	{
+		Debug::PrintError(FString::Printf(TEXT("UseItemFromInventory: '%s' 아이템 데이터를 찾을 수 없습니다."), *ItemTag.ToString()));
+		return false;
+	}
+
+	// 아이템 타입 확인
+	if (ItemData->ItemType == EItemType::Consumable)
+	{
+		// 소비 아이템 사용 로직을 실행
+		if (ItemData->ItemClass)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+			// ItemData에 정의된 클래스를 기반으로 임시 액터를 생성
+			ABaseItem* ConsumableActor = GetWorld()->SpawnActor<ABaseItem>(ItemData->ItemClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+			// 생성된 액터가 소비 아이템 인터페이스를 구현하는지 확인.
+			if (ConsumableActor && ConsumableActor->Implements<UConsumableItemInterface>())
+			{
+				// 소비 인터페이스를 실행
+				IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
+				ConsumableActor->Destroy(); // 임시 액터를 파괴
+
+				Debug::Print(FString::Printf(TEXT("인벤토리에서 소비 아이템 '%s' 1개 사용 완료."), *ItemTag.ToString()), FColor::Green);
+				OnInventoryItemListChanged.ExecuteIfBound(); // 인벤토리 목록 변경
+				return true;
+			}
+			else
+			{
+				Debug::PrintError(FString::Printf(TEXT("'%s'은(는) IConsumableItemInterface를 구현하지 않거나 ItemClass가 잘못되었습니다."), *ItemTag.ToString()));
+			}
+		}
+		else
+		{
+			Debug::PrintError(FString::Printf(TEXT("소비 아이템 '%s'에 ItemClass가 지정되지 않았습니다."), *ItemTag.ToString()));
+		}
+		return false; // 소비 아이템 사용 실패
+	}
+	else
+	{
+		// 소비 아이템이 아닌 경우 사용 불가 메시지
+		Debug::Print(FString::Printf(TEXT("'%s'은(는) 소비 아이템이 아니므로 인벤토리에서 직접 사용할 수 없습니다. (타입: %s)"),
+			*ItemTag.ToString(), *UEnum::GetValueAsString(ItemData->ItemType)), FColor::Blue);
+		return false;
+	}
+}

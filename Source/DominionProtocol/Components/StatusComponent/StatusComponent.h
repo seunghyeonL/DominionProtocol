@@ -11,7 +11,9 @@
 class UAIStateBase;
 //UI Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChanged, float, MaxHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxStaminaChanged, float, MaxStamina);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
 
 DECLARE_MULTICAST_DELEGATE(FOnDeath);
@@ -40,7 +42,13 @@ public:
 	FOnHealthChanged OnHealthChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
+	FOnHealthChanged OnMaxHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnStaminaChanged OnStaminaChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
+	FOnStaminaChanged OnMaxStaminaChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnShieldChanged OnShieldChanged;
@@ -64,8 +72,10 @@ public:
 	void SetStat(const FGameplayTag& StatTag, float Value);
 	
 	void SetHealth(const float NewHealth);
+	void SetMaxHealth(const float NewMaxHealth);
 	void SetShield(const float NewShield);
 	void SetStamina(float NewHealth);
+	void SetMaxStamina(float NewMaxStamina);
 	
 	bool HasEnoughStamina(float RequiredAmount) const;
 	void ConsumeStamina(float Amount);
