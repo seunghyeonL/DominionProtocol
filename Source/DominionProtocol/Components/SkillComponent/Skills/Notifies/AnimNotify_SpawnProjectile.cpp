@@ -51,7 +51,13 @@ void UAnimNotify_SpawnProjectile::ProjectileFromPool()
 {
 	check(CachedMeshComp);
 
-	FVector SpawnLocation = OwnerCharacter->GetActorTransform().TransformPosition(Offset);
+	if (!Offsets.IsValidIndex(ProjectileIndexToLaunch))
+	{
+		Debug::PrintError(TEXT("UAnimNotify_SpawnProjectile::ProjectileFromPool : Invalid projectile index."));
+		return;
+	}
+
+	FVector SpawnLocation = OwnerCharacter->GetActorTransform().TransformPosition(Offsets[ProjectileIndexToLaunch]);
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
 	USkillComponent* SkillComopnent = OwnerCharacter->FindComponentByClass<USkillComponent>();
@@ -105,6 +111,5 @@ void UAnimNotify_SpawnProjectile::ProjectileFromPool()
 		CurvedProjectile->AttackData = AttackData;
 			
 		CurvedProjectile->SetLaunchPath(OwnerCharacter, TargetActor);
-	}
-	
+	}	
 }

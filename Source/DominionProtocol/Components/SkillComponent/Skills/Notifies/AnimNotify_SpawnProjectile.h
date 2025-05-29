@@ -24,7 +24,7 @@ public:
 	float LaunchInterval;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
-	FVector Offset;
+	TArray<FVector> Offsets;
 
 private:
 	void ProjectileFromPool();

@@ -4,7 +4,6 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "Util/BattleDataTypes.h"
-//#include "DomiFramework/ObjectPooling/PoolableActorBase.h"
 #include "CurvedProjectile.generated.h"
 
 class USphereComponent;
@@ -65,10 +64,6 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-
-	//void OnObjectSpawn_Implementation() override;
-
-	//void OnObjectReturn_Implementation() override;
 
 	void SetLaunchPath(AActor* NewInstigator, AActor* NewTargetActor);
 
@@ -145,7 +140,4 @@ private:
 	FVector DirectionVector;  // 타겟 도달 후 직진할 방향 벡터
 
 	float ElapsedTime = 0.0f;  // 경과 시간 추적
-
-	//UPROPERTY()
-	//UObjectPoolSubsystem* ObjectPoolSubsystem;
 };
