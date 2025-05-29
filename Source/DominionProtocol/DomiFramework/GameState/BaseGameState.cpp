@@ -98,7 +98,6 @@ void ABaseGameState::InitializeWorldActorLoader()
 	
 	TMap<int32, FRegionActorData> NewRegionDataMap;
 	
-	int32 MaxRegion = WorldActorLoaderSubsystem->GetMaxRegion();
 	for (AActor* Actor : FoundActors)
 	{
 		ALightWeightActor* LightActor = Cast<ALightWeightActor>(Actor);
@@ -112,11 +111,6 @@ void ABaseGameState::InitializeWorldActorLoader()
 
 		int32 RegionIndex = LightActor->GetLocatedRegionIndex();
 		EWorldActorCategory Category = LightActor->GetActorCategory();
-		
-		if (MaxRegion < RegionIndex)
-		{
-			MaxRegion = RegionIndex;
-		}
 
 		if (!NewRegionDataMap.Contains(RegionIndex))
 		{
@@ -154,6 +148,7 @@ void ABaseGameState::InitializeWorldActorLoader()
 		}
 		NewRegionDataMap[RegionIndex].WorldActorArray.Add(NewActorData);
 	}
+	int32 MaxRegion = WorldInstanceSubsystem->GetCrackDataMap()->Find(WorldInstanceSubsystem->GetCurrentLevelName())->CrackDataArray.Last().CrackIndex;
 	WorldActorLoaderSubsystem->SetMaxRegion(MaxRegion);
 	
 	TArray<bool> NewActivateRegionArray;
@@ -283,7 +278,9 @@ void ABaseGameState::InitializeZeroIndexCrackData(const FString CurrentLevelName
 		if (WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level1" &&
 			WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level2" &&
 			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel1" &&
-			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel2")
+			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel2" &&
+			WorldInstanceSubsystem->GetCurrentLevelName() != "PastLevel" &&
+			WorldInstanceSubsystem->GetCurrentLevelName() != "PresentLevel")
 		{
 			return;
 		}

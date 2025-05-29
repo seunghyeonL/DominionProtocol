@@ -23,31 +23,61 @@ void ASplineBlockingVolume::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ASplineBlockingVolume::PostEditUndo()
+{
+	Super::PostEditUndo();
+
+	ClearBox();
+	CreateBox();
+}
+
 void ASplineBlockingVolume::OnConstruction(const FTransform& Transform)
 {
+	SetFlags(RF_Transactional);
+	Modify();
 	Super::OnConstruction(Transform);
 
+	for (UBoxComponent* Box : BoxComponents)
+	{
+		if (IsValid(Box))
+		{
+			Box->SetFlags(RF_Transactional);
+			Box->Modify();
+		}
+	}
+	
 	ClearBox();
 	CreateBox();
 }
 
 void ASplineBlockingVolume::ClearBox()
 {
-	for (UBoxComponent* Box : BoxComponents)
+	// 모든 자식 컴포넌트를 찾아서 제거 (기존 BoxComponents 배열과 관계없이)
+	TArray<USceneComponent*> ChildComponents;
+	GetRootComponent()->GetChildrenComponents(true, ChildComponents);
+    
+	for (USceneComponent* Child : ChildComponents)
 	{
-		if (IsValid(Box))
+		UBoxComponent* BoxComp = Cast<UBoxComponent>(Child);
+		if (BoxComp && Child != SplineComponent)
 		{
-			Box->DestroyComponent();
+			BoxComp->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+			BoxComp->UnregisterComponent();
+			BoxComp->DestroyComponent();
 		}
 	}
+    
+	// BoxComponents 배열도 비움
 	BoxComponents.Empty();
 }
 
 void ASplineBlockingVolume::CreateBox()
 {
+	Modify();
+	
 	float SplineLength = SplineComponent->GetSplineLength();
-
 	float Distance = 0.f;
+	
 	while (Distance < SplineLength)
 	{
 		float Curvature = CalculateCurvatureAtDistance(Distance);
@@ -59,6 +89,8 @@ void ASplineBlockingVolume::CreateBox()
 
 		// Box 컴포넌트 생성
 		UBoxComponent* NewBox = NewObject<UBoxComponent>(this);
+		NewBox->SetFlags(RF_Transactional);
+		NewBox->Modify();
 		NewBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 		NewBox->RegisterComponent();
 
