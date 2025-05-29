@@ -83,8 +83,12 @@ namespace SkillTags
 	inline const FGameplayTag BaseAttackSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Sword"));
 	inline const FGameplayTag BaseAttackSword2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.second.Sword"));
 	inline const FGameplayTag BaseAttackSword3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.third.Sword"));
+	inline const FGameplayTag BaseAttackAxe1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Axe"));
+	inline const FGameplayTag BaseAttackAxe2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.second.Axe"));
+	inline const FGameplayTag BaseAttackAxe3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.third.Axe"));
 
 	inline const FGameplayTag WeaponSkillSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Sword"));
+	inline const FGameplayTag WeaponSkillAxe1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Axe"));
 
 	inline const FGameplayTag BaseAttackSpear1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Spear"));
 	inline const FGameplayTag PlayerDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Dash.Player"));
