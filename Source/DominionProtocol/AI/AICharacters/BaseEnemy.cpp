@@ -38,8 +38,8 @@ ABaseEnemy::ABaseEnemy()
 	InvincibilityTags.AddTag(EffectTags::Death);
 
 	// HardCCTags Setting
-	HardCCTags.AddTag(EffectTags::Stun);
-	HardCCTags.AddTag(EffectTags::Stiffness);
+	// HardCCTags.AddTag(EffectTags::Stun);
+	// HardCCTags.AddTag(EffectTags::Stiffness);
 }
 
 // Called when the game starts or when spawned
@@ -114,13 +114,13 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 	LaunchCharacter(AttackData.LaunchVector, true, true);
 
 	// Skill Stop Check
-	for (FEffectData EffectData : AttackData.Effects)
-	{
-		if (EffectData.EffectTag.MatchesAny(HardCCTags))
-		{
-			SkillComponent->StopSkill();
-		}
-	}
+	// for (FEffectData EffectData : AttackData.Effects)
+	// {
+	// 	if (EffectData.EffectTag.MatchesAny(HardCCTags))
+	// 	{
+	// 		SkillComponent->StopSkill();
+	// 	}
+	// }
 
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)
