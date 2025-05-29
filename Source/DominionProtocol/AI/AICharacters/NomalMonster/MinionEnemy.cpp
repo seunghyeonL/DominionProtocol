@@ -7,7 +7,8 @@
 
 AMinionEnemy::AMinionEnemy()
 {
-	PawnTag = PawnTags::AxeSkeleton;
+	PrimaryActorTick.bCanEverTick = true;
+	PawnTag = PawnTags::Minion;
 
 	// 왼손 무기 트레이스 박스
 	LeftWeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("LeftWeaponTraceBox"));

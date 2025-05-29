@@ -7,7 +7,8 @@
 
 AWoodEnemy::AWoodEnemy()
 {
-	PawnTag = PawnTags::AxeSkeleton;
+	PrimaryActorTick.bCanEverTick = true;
+	PawnTag = PawnTags::Wood;
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(GetMesh(), TEXT("foot_l"));
