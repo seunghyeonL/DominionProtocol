@@ -38,9 +38,9 @@ void UBoss1SpecialAttackFirst::AttackTrace() const
 		FCollisionShape::MakeSphere(AttackRadius),	// 범위 설정 (구체 모양)
 		QueryParams
 	);
-
+	
 	// 디버그용
-	DrawDebugSphere(
+	Debug::DrawSphere(
 		GetWorld(),
 		Start,
 		AttackRadius,
@@ -50,7 +50,7 @@ void UBoss1SpecialAttackFirst::AttackTrace() const
 		2.0f,               // 지속 시간 (초)
 		0,
 		1.0f
-	);
+		);
 
 	if (!bHit)
 	{

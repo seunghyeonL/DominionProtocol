@@ -5,6 +5,7 @@
 #include "Util/GameTagList.h"
 #include "GameFramework/Character.h"
 #include "Player/Damagable.h"
+#include "Util/DebugHelper.h"
 
 UBoss1JumpAttack::UBoss1JumpAttack()
 {
@@ -33,9 +34,9 @@ void UBoss1JumpAttack::Execute()
 		FCollisionShape::MakeSphere(3000.f),	// 범위 설정 (구체 모양)
 		QueryParams
 	);
-
+	
 	// 디버그용
-	DrawDebugSphere(
+	Debug::DrawSphere(
 		GetWorld(),
 		Start,
 		3000.f,
@@ -45,7 +46,7 @@ void UBoss1JumpAttack::Execute()
 		2.0f,               // 지속 시간 (초)
 		0,
 		1.0f
-	);
+		);
 
 	if (!bHit)
 	{

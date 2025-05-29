@@ -7,6 +7,7 @@
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
+#include "Util/DebugHelper.h"
 #include "Interface/Parryable.h"
 
 UBaseSkill::UBaseSkill()
@@ -89,8 +90,9 @@ void UBaseSkill::AttackTrace() const
 		QueryParams
 	);
 
+	
 	// 디버그용
-	DrawDebugSphere(
+	Debug::DrawSphere(
 		GetWorld(),
 		Start,
 		AttackRadius,
@@ -100,7 +102,7 @@ void UBaseSkill::AttackTrace() const
 		2.0f,               // 지속 시간 (초)
 		0,
 		1.0f
-	);
+		);
 
 	if (!bHit)
 	{
