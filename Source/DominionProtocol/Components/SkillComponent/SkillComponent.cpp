@@ -7,6 +7,7 @@
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Util/DebugHelper.h"
 #include "AI/AIControllers/BaseAIController.h"
+#include "Components/ItemComponent/ItemComponent.h"
 
 USkillComponent::USkillComponent()
 {
@@ -40,9 +41,17 @@ void USkillComponent::InitializeComponent()
 {
     Super::InitializeComponent();
 
-    if (auto OnwerCharacter = Cast<ISkillComponentUser>(GetOuter()))
+    auto OwnerCharacter = Cast<ACharacter>(GetOuter());
+    check(OwnerCharacter);
+
+    if (auto ItemComponent = OwnerCharacter->FindComponentByClass<UItemComponent>())
     {
-        OnwerCharacter->InitializeSkillComponent();
+        ItemComponent->OnPrimaryWeaponChanged.BindUObject(this, &USkillComponent::SetSkills);
+    }
+    
+    if (auto SkillComponentUser = Cast<ISkillComponentUser>(GetOuter()))
+    {
+        SkillComponentUser->InitializeSkillComponent();
     }
     else
     {
@@ -50,7 +59,7 @@ void USkillComponent::InitializeComponent()
     }
 }
 
-void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeData& InitializeData)
+void USkillComponent::SetSkills(const FSkillComponentInitializeData& InitializeData)
 {
     for (const auto& [SkillGroupTag, SkillGroupData] : InitializeData.SkillGroupInitializeDatas)
     {
@@ -67,7 +76,7 @@ void USkillComponent::InitializeSkillComponent(const FSkillComponentInitializeDa
             }
             else
             {
-                FString Msg = FString::Printf(TEXT("UStatusComponent::InitializeStatusComponent : Create %s."), *SkillGroupTag.ToString());
+                FString Msg = FString::Printf(TEXT("USkillComponent::InitializeSkillComponent : Create %s."), *SkillGroupTag.ToString());
                 Debug::PrintError(Msg);
             }
         }

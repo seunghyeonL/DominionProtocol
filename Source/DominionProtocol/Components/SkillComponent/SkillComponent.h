@@ -26,7 +26,7 @@ public:
 
 	virtual void InitializeComponent() override;
 
-	void InitializeSkillComponent(const FSkillComponentInitializeData& InitializeData);
+	void SetSkills(const FSkillComponentInitializeData& InitializeData);
 
 	void ExecuteSkill(const FGameplayTag& SkillGroupTag);
 

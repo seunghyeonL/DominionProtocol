@@ -4,6 +4,8 @@
 #include "ItemInventory/ItemData.h"
 #include "ItemInventory/BaseItem.h"
 #include "Interface/ConsumableItemInterface.h"
+#include "Components/SkillComponent/SkillComponentInitializeData.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 
 UItemComponent::UItemComponent()
 {
@@ -47,6 +49,20 @@ void UItemComponent::BeginPlay()
 		Debug::Print(TEXT("Error: ItemDataTable is not assigned in the Editor!"));
 	}
 	
+}
+
+void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
+{
+	if (SlotName == FName("WeaponSlot_Primary"))
+	{
+		if (auto WeaponData = CachedItemDataMap.Find(ItemTag))
+		{
+			FSkillComponentInitializeData InitializeData = WeaponData->WeaponSkillData;
+			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
+		}
+	}
+
+	EquipmentSlots[SlotName] = ItemTag;
 }
 
 bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
@@ -163,8 +179,10 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 
 	if (PreSlotName != NAME_None)
 	{
-		EquipmentSlots[PreSlotName] = FGameplayTag();
-		EquipmentSlots[SlotName] = ItemTag;
+		SetTagToSlot(PreSlotName, FGameplayTag());
+		// EquipmentSlots[PreSlotName] = FGameplayTag();
+		SetTagToSlot(SlotName, ItemTag);
+		// EquipmentSlots[SlotName] = ItemTag;
 		OnInventoryEquippedSlotItemsChanged.Execute();
 		return false;
 	}
@@ -201,7 +219,8 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 				}
 
 				// 새로운 태그 장착
-				EquipmentSlots[SlotName] = ItemTag;
+				SetTagToSlot(SlotName, ItemTag);
+				// EquipmentSlots[SlotName] = ItemTag;
 				Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 장착"), *SlotName.ToString(), *ItemTag.ToString()));
 				OnInventoryEquippedSlotItemsChanged.Execute();
 				return true;
@@ -231,7 +250,8 @@ bool UItemComponent::UnequipItem(FName SlotName)
 {
 	if (EquipmentSlots.Contains(SlotName))
 	{
-		EquipmentSlots[SlotName] = FGameplayTag(); // 태그를 비움
+		SetTagToSlot(SlotName, FGameplayTag());
+		// EquipmentSlots[SlotName] = FGameplayTag(); // 태그를 비움
 		OnInventoryEquippedSlotItemsChanged.Execute();
 		return true;
 	}
@@ -243,9 +263,10 @@ void UItemComponent::SwapWeapons()
 	FGameplayTag PrimaryWeapon = EquipmentSlots.FindRef(FName("WeaponSlot_Primary"));
 	FGameplayTag SecondaryWeapon = EquipmentSlots.FindRef(FName("WeaponSlot_Secondary"));
 
-	EquipmentSlots[FName("WeaponSlot_Primary")] = SecondaryWeapon;
-	EquipmentSlots[FName("WeaponSlot_Secondary")] = PrimaryWeapon;
-
+	SetTagToSlot(FName("WeaponSlot_Primary"), SecondaryWeapon);
+	// EquipmentSlots[FName("WeaponSlot_Primary")] = SecondaryWeapon;
+	SetTagToSlot(FName("WeaponSlot_Secondary"), PrimaryWeapon);
+	// EquipmentSlots[FName("WeaponSlot_Secondary")] = PrimaryWeapon;
 
 	Debug::Print(TEXT("무기 슬롯을 스왑했습니다."));
 	// 장비 변경 알림

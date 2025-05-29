@@ -78,7 +78,7 @@ void ABaseEnemy::InitializeSkillComponent()
 		{
 			if (FSkillComponentInitializeData* InitializeData = BaseGameState->GetSkillComponentInitializeData(PawnTag))
 			{
-				SkillComponent->InitializeSkillComponent(*InitializeData);
+				SkillComponent->SetSkills(*InitializeData);
 				// SkillComponent->OnSkillStart.BindUObject(this, &ADomiCharacter::SkillStart);
 				// SkillComponent->OnSkillEnd.BindUObject(this, &ADomiCharacter::SkillEnd);
 			}
