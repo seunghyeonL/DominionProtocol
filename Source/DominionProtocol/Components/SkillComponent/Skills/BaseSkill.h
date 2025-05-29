@@ -16,6 +16,7 @@ class DOMINIONPROTOCOL_API UBaseSkill : public UObject
 public:
 	UBaseSkill();
 
+	UFUNCTION(BlueprintCallable)
 	virtual void Initialize(ACharacter* OwnerCharacter);
 
 	virtual void Execute();
