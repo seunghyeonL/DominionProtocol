@@ -22,7 +22,7 @@ void UTeleportSkill::Initialize(ACharacter* Instigator)
 
 void UTeleportSkill::Execute()
 {
-	Super::Execute();
+	//Super::Execute();
 
 	Start();
 }
