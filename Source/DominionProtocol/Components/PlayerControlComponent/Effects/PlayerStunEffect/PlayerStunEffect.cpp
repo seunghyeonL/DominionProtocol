@@ -2,6 +2,9 @@
 
 
 #include "PlayerStunEffect.h"
+#include "GameFramework/Character.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Util/DebugHelper.h"
 
 UPlayerStunEffect::UPlayerStunEffect()
 {
@@ -11,11 +14,23 @@ UPlayerStunEffect::UPlayerStunEffect()
 void UPlayerStunEffect::Activate()
 {
 	Super::Activate();
+
+	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
+	{
+		Debug::Print(TEXT("UPlayerStunEffect::Activate : StopSkill."));
+		SkillComponent->StopSkill();
+	}
 }
 
 void UPlayerStunEffect::Activate(float Duration)
 {
 	Super::Activate(Duration);
+
+	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
+	{
+		Debug::Print(TEXT("UPlayerStunEffect::Activate : StopSkill."));
+		SkillComponent->StopSkill();
+	}
 }
 
 void UPlayerStunEffect::Deactivate()

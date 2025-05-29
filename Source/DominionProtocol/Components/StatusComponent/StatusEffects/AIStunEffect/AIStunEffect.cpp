@@ -13,14 +13,10 @@ UAIStunEffect::UAIStunEffect()
 void UAIStunEffect::Activate()
 {
 	Super::Activate();
-	if (bIsActive)
-	{
-		return;
-	}
-	bIsActive = true;
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
+		Debug::Print(TEXT("UAIStunEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
 }
@@ -28,14 +24,10 @@ void UAIStunEffect::Activate()
 void UAIStunEffect::Activate(float Duration)
 {
 	Super::Activate(Duration);
-	if (bIsActive)
-	{
-		return;
-	}
-	bIsActive = true;
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
+		Debug::Print(TEXT("UAIStunEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
 }
@@ -43,9 +35,4 @@ void UAIStunEffect::Activate(float Duration)
 void UAIStunEffect::Deactivate()
 {
 	Super::Deactivate();
-	if (!bIsActive)
-	{
-		return;
-	}
-	bIsActive = false;
 }

@@ -4,6 +4,8 @@
 #include "PlayerDeathEffect.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Util/DebugHelper.h"
 
 UPlayerDeathEffect::UPlayerDeathEffect()
 {
@@ -13,6 +15,12 @@ UPlayerDeathEffect::UPlayerDeathEffect()
 void UPlayerDeathEffect::Activate()
 {
 	Super::Activate();
+
+	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
+	{
+		Debug::Print(TEXT("UPlayerDeathEffect::Activate : StopSkill."));
+		SkillComponent->StopSkill();
+	}
 
 	// Ignore Collision with Pawn
 	if (IsValid(OwnerCharacter))
@@ -24,12 +32,18 @@ void UPlayerDeathEffect::Activate()
 void UPlayerDeathEffect::Activate(float Duration)
 {
 	Super::Activate(Duration);
+
+	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
+	{
+		Debug::Print(TEXT("UPlayerDeathEffect::Activate : StopSkill."));
+		SkillComponent->StopSkill();
+	}
 }
 
 void UPlayerDeathEffect::Deactivate()
 {
 	Super::Deactivate();
-
+	
 	// Set Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{

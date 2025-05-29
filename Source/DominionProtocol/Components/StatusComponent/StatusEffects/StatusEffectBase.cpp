@@ -17,6 +17,7 @@ void UStatusEffectBase::Activate()
 	{
 		return;
 	}
+	bIsActive = true;
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (!IsValid(StatusComponent))
@@ -42,6 +43,7 @@ void UStatusEffectBase::Activate(float Duration)
 		);
 		return;
 	}
+	bIsActive = true;
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (!IsValid(StatusComponent))
@@ -66,6 +68,7 @@ void UStatusEffectBase::Deactivate()
 	{
 		return;
 	}
+	bIsActive = false;
 	// Debug::Print(FString::Printf(TEXT("UStatusEffectBase::Deactivate : bIsActive : %d"), bIsActive ? 1 : 0));
 	GetOuter()->GetWorld()->GetTimerManager().ClearTimer(DurationTimer);
 

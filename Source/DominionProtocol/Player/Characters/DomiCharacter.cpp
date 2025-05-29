@@ -119,14 +119,7 @@ ADomiCharacter::ADomiCharacter()
 	InvincibilityTags.AddTag(EffectTags::UsingDash);
 	InvincibilityTags.AddTag(EffectTags::Death);
 	InvincibilityTags.AddTag(EffectTags::UsingZoneya);
-
-	// ParriedTags Setting
-	// ParriedTags.AddTag(EffectTags::UsingParry);
-
-	// HardCCTags Setting
-	// HardCCTags.AddTag(EffectTags::Stun);
-	// HardCCTags.AddTag(EffectTags::Stiffness);
-
+	
 	// Set PawnTag
 	PawnTag = PawnTags::Player;
 
@@ -442,12 +435,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	check(StatusComponent);
 	
 	auto& ActiveControlEffects = GetActiveControlEffectTags();
-	// if (ActiveControlEffects.HasAny(ParriedTags))
-	// {
-	// 	Parrying(AttackData);
-	// 	return;
-	// }
-	//
+
 	if (ActiveControlEffects.HasAny(InvincibilityTags))
 	{
 		Debug::Print(TEXT("ADomiCharacter::OnAttacked : Invincible!"));
@@ -458,16 +446,6 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
 
 	LaunchCharacter(AttackData.LaunchVector, true, true);
-
-	// Skill Stop Check
-	// for (FEffectData EffectData : AttackData.Effects)
-	// {
-	// 	if (EffectData.EffectTag.MatchesAny(HardCCTags))
-	// 	{
-	// 		Debug::Print(TEXT("ADomiCharacter::OnAttacked : StopSkill call"));
-	// 		SkillComponent->StopSkill();
-	// 	}
-	// }
 
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)
@@ -538,26 +516,3 @@ void ADomiCharacter::EventInteractionWidgetScroll(const float Value)
 {
 	OnInteractionWidgetScroll.Broadcast(Value);
 }
-
-// void ADomiCharacter::Parrying(const FAttackData& IncomingAttackData)
-// {
-// 	FAttackData ParryingData;
-//
-// 	ParryingData.Instigator = this;
-// 	// ParryingData.Effects.Add({EffectTags::Parried, 1.f, 1.f});
-// 	ParryingData.Effects.Add({EffectTags::Stiffness, 1.5f, 1.f});
-// 	ParryingData.Damage = 0.f;
-// 	ParryingData.LaunchVector = FVector::ZeroVector;
-//
-// 	AActor* Attacker = IncomingAttackData.Instigator;
-//
-// 	if (Attacker->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
-// 	{
-// 		if (USkillComponent* AttackerSkillComponent = Attacker->FindComponentByClass<USkillComponent>())
-// 		{
-// 			AttackerSkillComponent->StopSkill();
-// 			// Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled by parry."), *Attacker->GetName()));
-// 		}
-// 		IDamagable::Execute_OnAttacked(Attacker, ParryingData);
-// 	}
-// }

@@ -108,7 +108,6 @@ protected:
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void OnDeath();
-	// void Parrying(const FAttackData& IncomingAttackData);
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
@@ -135,13 +134,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
 	FGameplayTagContainer InvincibilityTags;
-
-	// 추후에는 태그에서 정해놓고 선별해서 쓰는 방식도 고려중
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
-	// FGameplayTagContainer HardCCTags;
-
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
-	// FGameplayTagContainer ParriedTags;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
 	FGameplayTag PawnTag;

@@ -2,6 +2,9 @@
 
 
 #include "PlayerStiffnessEffect.h"
+#include "GameFramework/Character.h"
+#include "Components/SkillComponent/SkillComponent.h"
+#include "Util/DebugHelper.h"
 
 UPlayerStiffnessEffect::UPlayerStiffnessEffect()
 {
@@ -11,11 +14,23 @@ UPlayerStiffnessEffect::UPlayerStiffnessEffect()
 void UPlayerStiffnessEffect::Activate()
 {
 	Super::Activate();
+
+	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
+	{
+		Debug::Print(TEXT("UPlayerStiffnessEffect::Activate : StopSkill."));
+		SkillComponent->StopSkill();
+	}
 }
 
 void UPlayerStiffnessEffect::Activate(float Duration)
 {
 	Super::Activate(Duration);
+
+	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
+	{
+		Debug::Print(TEXT("UPlayerStiffnessEffect::Activate : StopSkill."));
+		SkillComponent->StopSkill();
+	}
 }
 
 void UPlayerStiffnessEffect::Deactivate()

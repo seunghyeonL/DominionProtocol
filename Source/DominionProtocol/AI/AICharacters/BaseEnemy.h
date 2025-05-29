@@ -81,9 +81,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
 	FGameplayTagContainer InvincibilityTags;
-	//
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
-	// FGameplayTagContainer HardCCTags;
 	
 	// UI Section
 	UPROPERTY(BlueprintReadOnly, Category = "Components")

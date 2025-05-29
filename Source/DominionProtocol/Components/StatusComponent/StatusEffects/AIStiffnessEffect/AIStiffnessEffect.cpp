@@ -14,14 +14,10 @@ UAIStiffnessEffect::UAIStiffnessEffect()
 void UAIStiffnessEffect::Activate()
 {
 	Super::Activate();
-	if (bIsActive)
-	{
-		return;
-	}
-	bIsActive = true;
-
+	
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
+		Debug::Print(TEXT("UAIStiffnessEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
 }
@@ -29,14 +25,10 @@ void UAIStiffnessEffect::Activate()
 void UAIStiffnessEffect::Activate(float Duration)
 {
 	Super::Activate(Duration);
-	if (bIsActive)
-	{
-		return;
-	}
-	bIsActive = true;
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
+		Debug::Print(TEXT("UAIStiffnessEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
 }
@@ -44,9 +36,4 @@ void UAIStiffnessEffect::Activate(float Duration)
 void UAIStiffnessEffect::Deactivate()
 {
 	Super::Deactivate();
-	if (!bIsActive)
-	{
-		return;
-	}
-	bIsActive = false;
 }

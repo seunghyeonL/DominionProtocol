@@ -15,18 +15,13 @@ UAIDeathEffect::UAIDeathEffect()
 void UAIDeathEffect::Activate()
 {
 	Super::Activate();
-	
-	if (bIsActive)
-	{
-		return;
-	}
-	bIsActive = true;
-	
+
 	// Ignore Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{
 		if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 		{
+			Debug::Print(TEXT("UAIDeathEffect::Activate : StopSkill."));
 			SkillComponent->StopSkill();
 		}
 		
@@ -49,12 +44,6 @@ void UAIDeathEffect::Activate(float Duration)
 void UAIDeathEffect::Deactivate()
 {
 	Super::Deactivate();
-	
-	if (!bIsActive)
-	{
-		return;
-	}
-	bIsActive = false;
 	
 	// Set Collision with Pawn
 	if (IsValid(OwnerCharacter))

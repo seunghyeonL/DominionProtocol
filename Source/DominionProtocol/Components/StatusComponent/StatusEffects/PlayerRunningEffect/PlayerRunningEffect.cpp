@@ -24,11 +24,11 @@ void UPlayerRunningEffect::Activate()
 		return;
 	}
 
-	if (bIsActive)
-	{
-		return;
-	}
-	bIsActive = true;
+	// if (bIsActive)
+	// {
+	// 	return;
+	// }
+	// bIsActive = true;
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (!StatusComponent)
@@ -59,11 +59,11 @@ void UPlayerRunningEffect::Deactivate()
 		return;
 	}
 
-	if (!bIsActive)
-	{
-		return;
-	}
-	bIsActive = false;
+	// if (!bIsActive)
+	// {
+	// 	return;
+	// }
+	// bIsActive = false;
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (!StatusComponent)
@@ -72,7 +72,7 @@ void UPlayerRunningEffect::Deactivate()
 		return;
 	}
 
-	StatusComponent->StartStaminaRecovery();
+	StatusComponent->BlockStaminaRecovery();
 	auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
 	MovementComponent->MaxWalkSpeed /= SpeedCoefficient;
 }
