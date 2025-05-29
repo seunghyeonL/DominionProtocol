@@ -1,6 +1,7 @@
 #include "WorldObjects/BossTrigger.h"
 #include "Components/BoxComponent.h"
 #include "WorldObjects/BossSpawner.h"
+#include "Util/DebugHelper.h"
 
 ABossTrigger::ABossTrigger()
 {
@@ -23,10 +24,28 @@ void ABossTrigger::BeginPlay()
 void ABossTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player")) return;
+	Debug::Print(TEXT("BossTrigger: OnTriggerOverlapBegin Called"));
 
-	if (IsValid(LinkedBossSpawner))
+	if (!IsValid(OtherActor))
 	{
-		LinkedBossSpawner->SpawnBoss();
+		Debug::Print(TEXT("BossTrigger: OtherActor is not valid"));
+		return;
 	}
+
+	Debug::Print(FString::Printf(TEXT("BossTrigger: Overlapped Actor = %s"), *OtherActor->GetName()));
+
+	if (!OtherActor->ActorHasTag("Player"))
+	{
+		Debug::Print(TEXT("BossTrigger: Actor has no 'Player' tag"));
+		return;
+	}
+
+	if (!IsValid(LinkedBossSpawner))
+	{
+		Debug::Print(TEXT("BossTrigger: LinkedBossSpawner is null"));
+		return;
+	}
+
+	Debug::Print(TEXT("BossTrigger: Calling SpawnBoss()"));
+	LinkedBossSpawner->SpawnBoss();
 }

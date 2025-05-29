@@ -28,7 +28,6 @@ void AProtoLevel1GameMode::StartBattle()
 	{
 		return;
 	}
-
 }
 
 void AProtoLevel1GameMode::EndBattle()
