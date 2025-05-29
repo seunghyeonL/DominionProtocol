@@ -6,8 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
 #include "Interface/StoryDependentInterface.h"
+#include "WorldObjects/BossRoomDoor.h"
 #include "BossSpawner.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBossSpawnedSignature, FGameplayTag, BossTag, ABossRoomDoor*, BossDoor);
 UCLASS()
 class DOMINIONPROTOCOL_API ABossSpawner : public AActor, public IStoryDependentInterface
 {
@@ -25,6 +27,16 @@ protected:
 	UFUNCTION()
 	void OnStoryStateUpdated_Implementation(EGameStoryState NewState);
 
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnBossSpawnedSignature OnBossSpawned;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag BossTag;
+
+	UPROPERTY(EditAnywhere)
+	ABossRoomDoor* RelatedBossDoor;
+
 protected:
 
 	UPROPERTY(EditAnywhere, Category = "Boss")
@@ -32,9 +44,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Boss")
 	TSubclassOf<AActor> BossClass;
-
-	UPROPERTY(EditAnywhere, Category = "Boss")
-	FGameplayTag BossTag;
 
 	UPROPERTY()
 	bool bHasSpawned = false;

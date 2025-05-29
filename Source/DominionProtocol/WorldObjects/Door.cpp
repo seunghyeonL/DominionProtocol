@@ -29,7 +29,7 @@ void ADoor::BeginPlay()
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
-		TimelineProgress.BindDynamic(this, &ADoor::OpenDoor);
+		TimelineProgress.BindDynamic(this, &ADoor::MoveDoor);
 		Timeline.AddInterpFloat(CurveFloat, TimelineProgress);
 
 		FOnTimelineEvent TimelineFinishedEvent;
@@ -82,11 +82,29 @@ void ADoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor
 	}
 }
 
-void ADoor::OpenDoor(float Value)
+void ADoor::MoveDoor(float Value)
 {
 	FRotator Rot = FRotator(0.f, DoorRotateAngle * Value, 0.f);
 
 	DoorMesh->SetRelativeRotation(Rot);
+}
+
+void ADoor::OpenDoor()
+{
+	if (!bIsDoorClosed || Timeline.IsPlaying()) return;
+
+	DoorMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	Timeline.Play();
+	bIsDoorClosed = false;
+}
+
+void ADoor::CloseDoor()
+{
+	if (bIsDoorClosed || Timeline.IsPlaying()) return;
+
+	DoorMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	Timeline.Reverse();
+	bIsDoorClosed = true;
 }
 
 void ADoor::OnTimelineFinished()
@@ -99,15 +117,12 @@ void ADoor::Interact_Implementation(AActor* Interactor)
 	DoorMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	if (bIsDoorClosed)
 	{
-		Timeline.Play();
-		Debug::Print(TEXT("Door Opened"));
+		OpenDoor();
 	}
 	else
 	{
-		Timeline.Reverse();
-		Debug::Print(TEXT("Door Closed"));
+		CloseDoor();
 	}
-	bIsDoorClosed = !bIsDoorClosed;
 }
 
 FText ADoor::GetInteractMessage_Implementation() const

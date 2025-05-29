@@ -34,7 +34,7 @@ void ABossRoomDoor::BeginPlay()
     }
 }
 
-void ABossRoomDoor::OpenDoor(float Value)
+void ABossRoomDoor::MoveDoor(float Value)
 {
 	DoorMesh->SetRelativeRotation(FRotator(0.f, DoorRotateAngle * Value, 0.f));
 	SecondDoorMesh->SetRelativeRotation(FRotator(0.f, 180-DoorRotateAngle * Value, 0.f));
@@ -79,7 +79,7 @@ void ABossRoomDoor::Interact_Implementation(AActor* Interactor)
         if (PlayerItemComponent->HasItem(RequiredKey, 1))
         {
             Timeline.Play();
-            StartDissolve();
+            //StartDissolve();
             bIsDoorClosed = false;
 
             if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(GetGameInstance()))
@@ -95,7 +95,7 @@ void ABossRoomDoor::Interact_Implementation(AActor* Interactor)
     else if (bOpenByLever)
     {
         Timeline.Play();
-        StartDissolve();
+        //StartDissolve();
         bIsDoorClosed = false;
     }
 }

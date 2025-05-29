@@ -19,7 +19,7 @@ public:
 protected:
 
 	void BeginPlay() override;
-	virtual void OpenDoor(float Value) override;
+	virtual void MoveDoor(float Value) override;
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
 

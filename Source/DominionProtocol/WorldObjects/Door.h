@@ -19,6 +19,15 @@ class DOMINIONPROTOCOL_API ADoor : public AActor, public IInteractableInterface
 public:
 	ADoor();
 
+	UFUNCTION()
+	virtual void MoveDoor(float Value);
+
+	UFUNCTION()
+	virtual void OpenDoor();
+
+	UFUNCTION()
+	virtual void CloseDoor();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -42,9 +51,6 @@ protected:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
-
-	UFUNCTION()
-	virtual void OpenDoor(float Value);
 
 	UFUNCTION()
 	void OnTimelineFinished();

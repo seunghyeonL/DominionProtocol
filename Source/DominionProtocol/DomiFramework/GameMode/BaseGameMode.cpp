@@ -100,7 +100,7 @@ void ABaseGameMode::StartPlay()
 	}
 }
 
-void ABaseGameMode::StartBattle()
+void ABaseGameMode::StartBattle(FGameplayTag BossTag, ABossRoomDoor* BossDoor)
 {
 }
 

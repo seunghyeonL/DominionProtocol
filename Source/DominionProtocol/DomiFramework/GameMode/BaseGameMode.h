@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "WorldObjects/BossRoomDoor.h"
 #include "BaseGameMode.generated.h"
 
 class UStatusComponent;
@@ -42,7 +43,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void StartPlay() override;
 	
-	virtual void StartBattle();
+	virtual void StartBattle(FGameplayTag BossTag, ABossRoomDoor* BossDoor);
 	virtual void EndBattle();
 
 	virtual void OnPlayerDeath();

@@ -53,5 +53,6 @@ void ABossSpawner::SpawnBoss()
 	{
 		bHasSpawned = true;
 		Debug::Print(TEXT("BossSpawner: Spawned boss"));
+		OnBossSpawned.Broadcast(BossTag, RelatedBossDoor);
 	}
 }

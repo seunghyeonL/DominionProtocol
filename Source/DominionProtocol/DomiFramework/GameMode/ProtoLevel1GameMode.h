@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Engine/TriggerBox.h"
-#include "WorldObjects/ZoneBarrier.h"
+#include "WorldObjects/BossRoomDoor.h"
 #include "AI/AICharacters/BaseEnemy.h"
 #include "Engine/TargetPoint.h"
 #include "ProtoLevel1GameMode.generated.h"
@@ -21,14 +21,11 @@ protected:
 	virtual void StartPlay() override;
 
 	UFUNCTION()
-	void StartBattle() override;
+	void StartBattle(FGameplayTag BossTag, ABossRoomDoor* BossDoor) override;
 	UFUNCTION()
 	void EndBattle() override;
 
 	virtual void OnPlayerDeath() override;
-
-	UPROPERTY()
-	AZoneBarrier* ZoneBarrier;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Boss")
