@@ -10,6 +10,7 @@
 #include "AI/ProtoBoss/ProtoBossEnemy.h"
 #include "EngineUtils.h"
 #include "WorldObjects/Crack.h"
+#include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
 
 
 void AProtoLevel1GameMode::StartPlay()
@@ -94,7 +95,7 @@ void AProtoLevel1GameMode::StartBattle()
 						}
 					}
 					
-					AProtoBossEnemy* SpawnedBoss = GetWorld()->SpawnActor<AProtoBossEnemy>(BossClass,SpawnTransform);
+					ABaseBossEnemy* SpawnedBoss = GetWorld()->SpawnActor<ABaseBossEnemy>(BossClass,SpawnTransform);
 
 					if (IsValid(SpawnedBoss))
 					{

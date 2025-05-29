@@ -3,38 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AI/AICharacters/BaseEnemy.h"
-#include "ProtoBossEnemy.generated.h"
+#include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
+#include "Boss1Enemy.generated.h"
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBossDeath);
-
+/**
+ * 
+ */
 UCLASS()
-class DOMINIONPROTOCOL_API AProtoBossEnemy : public ABaseEnemy
+class DOMINIONPROTOCOL_API ABoss1Enemy : public ABaseBossEnemy
 {
 	GENERATED_BODY()
-
+	
 public:
-	// Sets default values for this character's properties
-	AProtoBossEnemy();
-
-	//UPROPERTY(BlueprintAssignable)
-	//FOnBossDeath OnBossDeathDelegate;
+	ABoss1Enemy();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere)
-	int32 BossID;
-
 public:
-	FORCEINLINE int32 GetBossID() { return BossID; }
-	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	//void OnDeath() override;
 };

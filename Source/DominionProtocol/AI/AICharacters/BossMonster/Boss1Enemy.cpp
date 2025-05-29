@@ -1,40 +1,32 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ProtoBossEnemy.h"
-
+#include "AI/AICharacters/BossMonster/Boss1Enemy.h"
 
 // Sets default values
-AProtoBossEnemy::AProtoBossEnemy()
+ABoss1Enemy::ABoss1Enemy()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	BossID = 0; // 프로토타입 코드
-	PawnTag = PawnTags::ProtoBoss;
+	BossID = 1;
+	PawnTag = PawnTags::Boss1;
 }
 
 // Called when the game starts or when spawned
-void AProtoBossEnemy::BeginPlay()
+void ABoss1Enemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
-void AProtoBossEnemy::Tick(float DeltaTime)
+void ABoss1Enemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input
-void AProtoBossEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ABoss1Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-
-//void AProtoBossEnemy::OnDeath()
-//{
-//	Super::OnDeath();
-//	OnBossDeathDelegate.Broadcast();
-//}
-
