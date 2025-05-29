@@ -3,7 +3,7 @@
 
 UFireBallSkill::UFireBallSkill()
 {
-	SkillTag = SkillTags::FireBallSkill;
+	SkillTag = SkillTags::MagicFireBallSkill;
 }
 
 void UFireBallSkill::Execute()

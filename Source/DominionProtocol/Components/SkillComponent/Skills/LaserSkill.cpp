@@ -11,7 +11,7 @@
 
 ULaserSkill::ULaserSkill()
 {
-	SkillTag = SkillTags::LaserSkill;
+	SkillTag = SkillTags::MagicLaserSkill;
 }
 
 void ULaserSkill::Execute()

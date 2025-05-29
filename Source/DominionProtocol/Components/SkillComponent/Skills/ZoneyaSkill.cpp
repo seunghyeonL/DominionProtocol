@@ -8,7 +8,7 @@
 
 UZoneyaSkill::UZoneyaSkill()
 {
-	SkillTag = SkillTags::ZoneyaSkill;
+	SkillTag = SkillTags::MagicZoneyaSkill;
 	ControlEffectTag = EffectTags::UsingZoneya;
 	Duration = 3.0f;
 }

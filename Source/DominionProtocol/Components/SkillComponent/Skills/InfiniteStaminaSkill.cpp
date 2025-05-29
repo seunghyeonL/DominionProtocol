@@ -7,7 +7,7 @@
 
 UInfiniteStaminaSkill::UInfiniteStaminaSkill()
 {
-	SkillTag = SkillTags::InfiniteStaminaSkill;
+	SkillTag = SkillTags::MagicInfiniteStaminaSkill;
 	Duration = 10.0f;
 }
 

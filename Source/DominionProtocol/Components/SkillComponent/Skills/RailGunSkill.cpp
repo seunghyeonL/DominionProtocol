@@ -3,7 +3,7 @@
 
 URailGunSkill::URailGunSkill()
 {
-	SkillTag = SkillTags::RailGunSkill;
+	SkillTag = SkillTags::MagicRailGunSkill;
 }
 
 void URailGunSkill::Execute()

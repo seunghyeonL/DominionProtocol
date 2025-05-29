@@ -11,7 +11,7 @@
 
 UTeleportSkill::UTeleportSkill()
 {
-	SkillTag = SkillTags::TeleportSkill;
+	SkillTag = SkillTags::MagicTeleportSkill;
 	Distance = 500.0f;
 }
 

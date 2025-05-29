@@ -19,7 +19,7 @@ ALaserActor::ALaserActor()
 	TraceLength = 1500.f;
 	float HalfTraceLength = TraceLength / 2;
 
-	OwnerSkillTag = SkillTags::LaserSkill;
+	OwnerSkillTag = SkillTags::MagicLaserSkill;
 
 	// Trace Setting
 	TraceComponent = CreateDefaultSubobject<UMnhTracerComponent>(TEXT("TraceComponent"));
@@ -310,7 +310,7 @@ void ALaserActor::HandleTracerHit(FGameplayTag TracerTag, FHitResult PrimaryHitR
 
 		if (IsValid(BaseSkill))
 		{
-			if (BaseSkill->GetSkillTag() == SkillTags::LaserSkill)
+			if (BaseSkill->GetSkillTag() == SkillTags::MagicLaserSkill)
 			{
 				BaseSkill->ApplyAttackToHitActor(PrimaryHitResult, DeltaTime);
 			}
