@@ -46,28 +46,6 @@ void AProtoLevel1GameMode::StartPlay()
 
 	//Debug::PrintError(TEXT("StartPlay: 해당 CrackIndex에 맞는 균열을 찾지 못했습니다."));
 
-	ZoneBarrier = Cast<AZoneBarrier>(UGameplayStatics::GetActorOfClass(GetWorld(), AZoneBarrier::StaticClass()));
-
-	if (IsValid(ZoneBarrier))
-	{
-		// ZoneBarrier 델리게이트
-		ZoneBarrier->OnPlayerEnterZoneDelegate.AddDynamic(this, &AProtoLevel1GameMode::StartBattle);
-		Debug::Print(TEXT("GM1: Delegate ZoneBarrier"));
-
-
-		if (GameInstance->GetIsBossDead(0))
-		{
-			ZoneBarrier->DeactivateBarrier();
-		}
-		else
-		{
-			Debug::Print(TEXT("GM1: Boss Already Dead"));
-		}
-	}
-	else
-	{
-		Debug::Print(TEXT("GM1: Zone Barrier Not Valid"));
-	}
 }
 
 void AProtoLevel1GameMode::StartBattle()
@@ -84,7 +62,7 @@ void AProtoLevel1GameMode::StartBattle()
 	{
 		return;
 	}
-
+	/*
 	if (!GameInstance->GetIsBossDead(0))
 	{
 		FTimerHandle BarrierTimerHandle;
@@ -138,20 +116,13 @@ void AProtoLevel1GameMode::StartBattle()
 	else
 	{
 		Debug::Print(TEXT("Boss Already Dead"));
-	}
+	}*/
 }
 
 void AProtoLevel1GameMode::EndBattle()
 {
 	Super::EndBattle();
 	Debug::Print(TEXT("EndBattle"));
-	
-	GameInstance->SetIsBossDead(0);
-
-	if (ZoneBarrier)
-	{
-		ZoneBarrier->DeactivateBarrier();
-	}
 }
 
 void AProtoLevel1GameMode::OnPlayerDeath()
