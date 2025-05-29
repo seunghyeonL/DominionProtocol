@@ -44,23 +44,10 @@ protected:
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
 
-	UFUNCTION()
-	void OnOverlapBegin(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex);
-
 private:
+	void CheckPlayerInActivationRange();
+	void CheckPlayerInInteractionRange();
+	void SetDetailDetection(bool bEnable);
 
 #pragma endregion
 
@@ -73,9 +60,6 @@ protected:
 	USceneComponent* SceneComp;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	USphereComponent* SphereCollisionComp;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMeshComp;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
@@ -86,6 +70,12 @@ protected:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	int32 CrackIndex;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float InteractableRadius;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float ActivationDistanceCalculateRadius;
 
 private:
 	UPROPERTY()
@@ -100,7 +90,17 @@ private:
 	UPROPERTY()
 	ATargetPoint* RespawnTargetPoint;
 	
+	float DistanceCalculateRadiusSquared;
+	
+	float InteractableRadiusSquared;
+	
+	float Distance;
+	
 	bool bIsActivate;
+	
+	FTimerHandle DetectionTimerHandle;
+	FTimerHandle DetailDetectionTimerHandle;
+	
 	
 #pragma endregion
 };

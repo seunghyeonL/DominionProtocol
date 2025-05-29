@@ -4,6 +4,7 @@
 #include "AIDeathEffect.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkillComponent/SkillComponent.h"
 #include "Components/WidgetComponent/DomiWidgetComponent.h"
 
 UAIDeathEffect::UAIDeathEffect()
@@ -14,12 +15,24 @@ UAIDeathEffect::UAIDeathEffect()
 void UAIDeathEffect::Activate()
 {
 	Super::Activate();
+	
+	if (bIsActive)
+	{
+		return;
+	}
 	bIsActive = true;
+	
 	// Ignore Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Visibility);
-		// OwnerCharacter->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
+		{
+			SkillComponent->StopSkill();
+		}
+		
+		// OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Visibility);
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
+		
 		if (auto WidgetComponent = OwnerCharacter->FindComponentByClass<UDomiWidgetComponent>())
 		{
 			WidgetComponent->DestroyComponent();
@@ -30,13 +43,19 @@ void UAIDeathEffect::Activate()
 void UAIDeathEffect::Activate(float Duration)
 {
 	Super::Activate(Duration);
-	bIsActive = true;
+	Debug::Print(TEXT("UAIDeathEffect::Activate : Use Activate function without Duration."));
 }
 
 void UAIDeathEffect::Deactivate()
 {
 	Super::Deactivate();
+	
+	if (!bIsActive)
+	{
+		return;
+	}
 	bIsActive = false;
+	
 	// Set Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{

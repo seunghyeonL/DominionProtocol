@@ -6,7 +6,7 @@
 #include "AI/AICharacters/BaseEnemy.h"
 #include "ProtoBossEnemy.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBossDeath);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBossDeath);
 
 UCLASS()
 class DOMINIONPROTOCOL_API AProtoBossEnemy : public ABaseEnemy
@@ -17,8 +17,8 @@ public:
 	// Sets default values for this character's properties
 	AProtoBossEnemy();
 
-	UPROPERTY(BlueprintAssignable)
-	FOnBossDeath OnBossDeathDelegate;
+	//UPROPERTY(BlueprintAssignable)
+	//FOnBossDeath OnBossDeathDelegate;
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,5 +36,5 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void OnDeath() override;
+	//void OnDeath() override;
 };

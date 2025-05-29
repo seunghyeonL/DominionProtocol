@@ -32,9 +32,9 @@ void AProtoBossEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AProtoBossEnemy::OnDeath()
-{
-	Super::OnDeath();
-	OnBossDeathDelegate.Broadcast();
-}
+//void AProtoBossEnemy::OnDeath()
+//{
+//	Super::OnDeath();
+//	OnBossDeathDelegate.Broadcast();
+//}
 

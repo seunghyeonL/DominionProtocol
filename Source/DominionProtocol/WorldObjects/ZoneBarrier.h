@@ -26,6 +26,8 @@ public:
 	void ActivateBarrier();
 	void DeactivateBarrier();
 
+	void OnPlayerDied();
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor, 
@@ -49,10 +51,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* CollisionBox;
 
-	UBoxComponent* Wall_Left;
-	UBoxComponent* Wall_Right;
-	UBoxComponent* Wall_Front;
-	UBoxComponent* Wall_Back;
+	UBoxComponent* Wall;
 
 private:
 	UPROPERTY()

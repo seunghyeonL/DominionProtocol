@@ -19,15 +19,15 @@ ASkeletonEnemy::ASkeletonEnemy()
 	AttackTraceComponent = CreateDefaultSubobject<UMnhTracerComponent>(TEXT("AttackTraceComponent"));
 
 	FMnhTracerConfig TracerConfig;
-	TracerConfig.TracerTag = ItemTags::AxeWeapon;
-	TracerConfig.DrawDebugType = EDrawDebugTrace::None;
+	TracerConfig.TracerTag = ItemTags::BasicWeapon;
+	TracerConfig.DrawDebugType = EDrawDebugTrace::ForDuration;
 	TracerConfig.DebugDrawTime = 1.f;
 	TracerConfig.TraceSettings.TraceChannel = ECC_Pawn;
 
 	AttackTraceComponent->TracerConfigs.Add(TracerConfig);
 
 	FGameplayTagContainer TagContainer;
-	TagContainer.AddTag(ItemTags::AxeWeapon);
+	TagContainer.AddTag(ItemTags::BasicWeapon);
 
 	AttackTraceComponent->InitializeTracers(TagContainer, WeaponTraceBox);
 }

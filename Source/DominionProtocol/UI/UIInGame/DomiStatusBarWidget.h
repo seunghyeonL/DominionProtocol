@@ -17,7 +17,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdatePlayerHPBar(const float NewHP);
 	UFUNCTION(BlueprintCallable)
+	void UpdatePlayerMaxHPBar(const float NewMaxHP);
+	UFUNCTION(BlueprintCallable)
 	void UpdatePlayerStaminaBar(const float NewStamina);
+	UFUNCTION(BlueprintCallable)
+	void UpdatePlayerMaxStaminaBar(const float NewMaxStamina);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void AnimUpdatePlayerHPBar();
@@ -46,6 +50,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	float MaxHP;
 
+	UPROPERTY(BlueprintReadOnly)
+	float PreMaxHP;
+
 	UPROPERTY(BlueprintReadWrite)
 	float AlphaForHPAnim;
 
@@ -62,6 +69,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	float MaxStamina;
+
+	UPROPERTY(BlueprintReadOnly)
+	float PreMaxStamina;
 	
 	UPROPERTY(BlueprintReadWrite)
 	float AlphaForStaminaAnim;

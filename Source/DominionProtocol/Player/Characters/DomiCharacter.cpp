@@ -110,8 +110,8 @@ ADomiCharacter::ADomiCharacter()
 	// ParriedTags.AddTag(EffectTags::UsingParry);
 
 	// HardCCTags Setting
-	HardCCTags.AddTag(EffectTags::Stun);
-	HardCCTags.AddTag(EffectTags::Stiffness);
+	// HardCCTags.AddTag(EffectTags::Stun);
+	// HardCCTags.AddTag(EffectTags::Stiffness);
 
 	// Set PawnTag
 	PawnTag = PawnTags::Player;
@@ -399,7 +399,7 @@ void ADomiCharacter::InitializeSkillComponent()
 		{
 			if (FSkillComponentInitializeData* InitializeData = BaseGameState->GetSkillComponentInitializeData(PawnTag))
 			{
-				SkillComponent->InitializeSkillComponent(*InitializeData);
+				SkillComponent->SetSkills(*InitializeData);
 				SkillComponent->OnSkillStart.BindUObject(this, &ADomiCharacter::SkillStart);
 				SkillComponent->OnSkillEnd.BindUObject(this, &ADomiCharacter::SkillEnd);
 			}
@@ -446,14 +446,14 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	LaunchCharacter(AttackData.LaunchVector, true, true);
 
 	// Skill Stop Check
-	for (FEffectData EffectData : AttackData.Effects)
-	{
-		if (EffectData.EffectTag.MatchesAny(HardCCTags))
-		{
-			Debug::Print(TEXT("ADomiCharacter::OnAttacked : StopSkill call"));
-			SkillComponent->StopSkill();
-		}
-	}
+	// for (FEffectData EffectData : AttackData.Effects)
+	// {
+	// 	if (EffectData.EffectTag.MatchesAny(HardCCTags))
+	// 	{
+	// 		Debug::Print(TEXT("ADomiCharacter::OnAttacked : StopSkill call"));
+	// 		SkillComponent->StopSkill();
+	// 	}
+	// }
 
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)

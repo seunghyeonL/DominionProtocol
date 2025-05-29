@@ -7,6 +7,7 @@
 #include "EnumAndStruct/FInstanceData.h"
 #include "EnumAndStruct/EGameStoryState.h"
 #include "EnumAndStruct/FCrackData.h"
+#include "GameplayTagContainer.h"
 #include "DomiGameInstance.generated.h"
 
 class ACrack;
@@ -28,13 +29,13 @@ public:
 	FInstanceData GetSaveData() const;
 	
 	//Setter
-	void SetIsBossDead(int32 BossIndex);
+	void SetIsBossDead(FGameplayTag BossTag);
 	
 	void SetCurrentGameStoryState(EGameStoryState NewGameStoryState);
 
 	
 	//Getter
-	bool GetIsBossDead(int32 BossIndex) const;
+	bool GetIsBossDead(FGameplayTag BossTag) const;
 	
 	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
 	FORCEINLINE EGameStoryState GetCurrentGameStoryState() const { return CurrentGameStoryState; }
@@ -42,16 +43,11 @@ public:
 protected:
 	
 private:
-	//=========
-	//보스 태그 이름 정해지면 bool 말고 태그 이용한 방식으로 변경해야함
 	UPROPERTY()
-	TArray<bool> IsBossDeadArray;
-	//========
+	TSet<FGameplayTag> DeadBossTags;
 
 	UPROPERTY()
 	EGameStoryState CurrentGameStoryState;
-	
-	static const int32 NumBosses;
 
 #pragma endregion
 
@@ -62,9 +58,12 @@ private:
 
 
 #pragma region SeoYoung
-
+public:
 	UPROPERTY(BlueprintAssignable)
 	FOnStoryStateChanged OnStoryStateChanged;
+
+	UFUNCTION(BlueprintCallable)
+	void AdvanceStoryState();
 
 #pragma endregion
 };

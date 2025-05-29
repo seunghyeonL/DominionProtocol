@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Components/AIComponent/AIStateComponent.h"
 #include "Navigation/PathFollowingComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UReturnToHome::UReturnToHome()
 {

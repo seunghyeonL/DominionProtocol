@@ -115,6 +115,16 @@ void UStatusComponent::SetHealth(float NewHealth)
 	}
 }
 
+void UStatusComponent::SetMaxHealth(float NewMaxHealth)
+{
+	ensure(StatMap.Contains(StatTags::MaxHealth));
+
+	const float MaxHealth = NewMaxHealth;
+
+	SetStat(StatTags::MaxHealth, NewMaxHealth);
+	OnMaxHealthChanged.Broadcast(NewMaxHealth);
+}
+
 void UStatusComponent::SetShield(const float NewShield)
 {
 	ensure(StatMap.Contains(StatTags::MaxShield));
@@ -144,6 +154,16 @@ void UStatusComponent::SetStamina(float NewStamina)
 	float ClampedStamina = FMath::Clamp(NewStamina, 0.f, MaxStamina);
 	SetStat(StatTags::Stamina, ClampedStamina);
 	OnStaminaChanged.Broadcast(ClampedStamina);
+}
+
+void UStatusComponent::SetMaxStamina(float NewMaxStamina)
+{
+	ensure(StatMap.Contains(StatTags::MaxStamina));
+
+	const float MaxStamina = NewMaxStamina;
+
+	SetStat(StatTags::MaxStamina, NewMaxStamina);
+	OnMaxHealthChanged.Broadcast(NewMaxStamina);
 }
 
 

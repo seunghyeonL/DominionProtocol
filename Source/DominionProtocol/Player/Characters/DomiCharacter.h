@@ -137,8 +137,8 @@ protected:
 	FGameplayTagContainer InvincibilityTags;
 
 	// 추후에는 태그에서 정해놓고 선별해서 쓰는 방식도 고려중
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
-	FGameplayTagContainer HardCCTags;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	// FGameplayTagContainer HardCCTags;
 
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
 	// FGameplayTagContainer ParriedTags;

@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Util/DebugHelper.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "Components/StatusComponent/StatusComponent.h"
 
 AZoneBarrier::AZoneBarrier()
 {
@@ -23,43 +24,36 @@ AZoneBarrier::AZoneBarrier()
     CollisionBox->OnComponentEndOverlap.AddDynamic(this, &AZoneBarrier::OnOverlapEnd);
 
 
-    Wall_Left = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Left"));
-    Wall_Left->SetupAttachment(RootComponent);
-    Wall_Right = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Right"));
-    Wall_Right->SetupAttachment(RootComponent);
-    Wall_Front = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Front"));
-    Wall_Front->SetupAttachment(RootComponent);
-    Wall_Back = CreateDefaultSubobject<UBoxComponent>(TEXT("Wall_Back"));
-    Wall_Back->SetupAttachment(RootComponent);
+    Wall= CreateDefaultSubobject<UBoxComponent>(TEXT("Wall"));
+    Wall->SetupAttachment(RootComponent);
     
-
-    TArray<UBoxComponent*> Walls = { Wall_Left, Wall_Right, Wall_Front, Wall_Back };
-    for (UBoxComponent* Wall : Walls)
-    {
-        Wall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    }
+    Wall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AZoneBarrier::ActivateBarrier()
 {
     Debug::Print(TEXT("Activate Barrier"));
 
-    TArray<UBoxComponent*> Walls = { Wall_Left, Wall_Right, Wall_Front, Wall_Back };
-    for (UBoxComponent* Wall : Walls)
-    {
-        Wall->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-        Wall->SetCollisionProfileName(TEXT("BlockAll"));
-    }
+    Wall->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    Wall->SetCollisionProfileName(TEXT("BlockAll"));
 }
 
 void AZoneBarrier::DeactivateBarrier()
 {
     Debug::Print(TEXT("Deactivate Barrier"));
 
-    TArray<UBoxComponent*> Walls = { Wall_Left, Wall_Right, Wall_Front, Wall_Back };
-    for (UBoxComponent* Wall : Walls)
+    if (IsValid(Wall))
     {
         Wall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+}
+
+void AZoneBarrier::OnPlayerDied()
+{
+    if (CachedCharacter)
+    {
+        Debug::Print(TEXT("ZoneBarrier: Player died in ZoneBarrier. Deactivating Barrier."));
+        DeactivateBarrier();
     }
 }
 
@@ -76,6 +70,10 @@ void AZoneBarrier::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
     CachedCharacter = PlayerCharacter;
 
     PlayerCharacter->AddInteractableActor(this);
+    if (UStatusComponent* Status = PlayerCharacter->GetStatusComponent())
+    {
+        Status->OnDeath.AddUObject(this, &AZoneBarrier::OnPlayerDied);
+    }
 }
 
 void AZoneBarrier::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

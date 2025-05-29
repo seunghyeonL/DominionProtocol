@@ -8,6 +8,7 @@
 #include "Util/DebugHelper.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AI/AIControllers/BaseAIController.h"
+#include "GameFramework/Character.h"
 
 UExecutePattern::UExecutePattern()
 {
@@ -54,4 +55,15 @@ EBTNodeResult::Type UExecutePattern::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 void UExecutePattern::OnAnimationCompleted()
 {
 	FinishLatentTask(*CachedTemp, EBTNodeResult::Succeeded);
+}
+
+EBTNodeResult::Type UExecutePattern::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	ACharacter* Character = Cast<ACharacter>(OwnerComp.GetAIOwner()->GetPawn());
+	if (Character && Character->GetMesh())
+	{
+		Character->GetMesh()->GetAnimInstance()->Montage_Stop(0.f);
+	}
+
+	return EBTNodeResult::Aborted;
 }

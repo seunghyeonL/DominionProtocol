@@ -19,6 +19,8 @@ public:
 
 	virtual void OnAnimationCompleted();
 
+	virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
 protected:
 	UPROPERTY(EditAnywhere)
 	FGameplayTag SkillGroupTag;

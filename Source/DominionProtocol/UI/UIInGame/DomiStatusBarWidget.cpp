@@ -28,6 +28,13 @@ void UDomiStatusBarWidget::UpdatePlayerHPBar(const float NewHP)
 	CurrentHP = NewHP;
 }
 
+void UDomiStatusBarWidget::UpdatePlayerMaxHPBar(const float NewMaxHP)
+{
+	AlphaForHPAnim = 0.0f;
+	PreMaxHP = MaxHP;
+	MaxHP = NewMaxHP;
+}
+
 void UDomiStatusBarWidget::UpdatePlayerStaminaBar(const float NewStamina)
 {
 	AlphaForStaminaAnim = 0.0f;
@@ -35,6 +42,12 @@ void UDomiStatusBarWidget::UpdatePlayerStaminaBar(const float NewStamina)
 	CurrentStamina = NewStamina;
 }
 
+void UDomiStatusBarWidget::UpdatePlayerMaxStaminaBar(const float NewMaxStamina)
+{
+	AlphaForStaminaAnim = 0.0f;
+	PreStamina = MaxStamina;
+	MaxStamina = NewMaxStamina;
+}
 
 void UDomiStatusBarWidget::SetupStatusBarWidget(const AActor* OwningActor)
 {
@@ -52,5 +65,7 @@ void UDomiStatusBarWidget::SetupStatusBarWidget(const AActor* OwningActor)
 		// Delegate Binding
 		StatusComp->OnHealthChanged.AddDynamic(this, &UDomiStatusBarWidget::UpdatePlayerHPBar);
 		StatusComp->OnStaminaChanged.AddDynamic(this, &UDomiStatusBarWidget::UpdatePlayerStaminaBar);
+		StatusComp->OnMaxHealthChanged.AddDynamic(this, &UDomiStatusBarWidget::UpdatePlayerMaxHPBar);
+		StatusComp->OnMaxStaminaChanged.AddDynamic(this, &UDomiStatusBarWidget::UpdatePlayerMaxStaminaBar);
 	}
 }

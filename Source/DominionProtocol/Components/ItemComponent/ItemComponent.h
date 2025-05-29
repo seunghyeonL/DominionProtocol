@@ -7,9 +7,12 @@
 #include "Engine/DataTable.h"
 #include "ItemComponent.generated.h"
 
+struct FSkillComponentInitializeData;
+
 DECLARE_DELEGATE(FOnInventoryItemListChanged)
 DECLARE_DELEGATE(FOnInventoryEquippedSlotItemsChanged)
 DECLARE_DELEGATE(FOnInventoryConsumableSlotItemsChanged)
+DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChanged, const FSkillComponentInitializeData&)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DOMINIONPROTOCOL_API UItemComponent : public UActorComponent
@@ -22,7 +25,7 @@ public:
 	FOnInventoryItemListChanged OnInventoryItemListChanged;
 	FOnInventoryEquippedSlotItemsChanged OnInventoryEquippedSlotItemsChanged;
 	FOnInventoryConsumableSlotItemsChanged OnInventoryConsumableSlotItemsChanged;
-	
+	FOnPrimaryWeaponChanged OnPrimaryWeaponChanged;
 
 protected:
 	virtual void BeginPlay() override;
@@ -50,6 +53,8 @@ protected:
 	// 포션 부스트가 적용되었는지 추적하는 변수
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Consumable|Potion")
 	bool bIsPotionBoostApplied;
+
+	void SetTagToSlot(FName SlotName, FGameplayTag ItemTag);
 public:	
 	// 아이템 추가
 	UFUNCTION(BlueprintCallable)
