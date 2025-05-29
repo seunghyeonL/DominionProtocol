@@ -7,6 +7,8 @@
 
 AMinionEnemy::AMinionEnemy()
 {
+	PawnTag = PawnTags::AxeSkeleton;
+
 	// 왼손 무기 트레이스 박스
 	LeftWeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("LeftWeaponTraceBox"));
 	LeftWeaponTraceBox->SetupAttachment(GetMesh(), TEXT("hand_l"));

@@ -7,8 +7,10 @@
 
 AWoodEnemy::AWoodEnemy()
 {
+	PawnTag = PawnTags::AxeSkeleton;
+
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
-	//WeaponMesh->SetupAttachment(GetMesh(), TEXT("hand_r"));
+	WeaponMesh->SetupAttachment(GetMesh(), TEXT("foot_l"));
 
 	WeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("WeaponTraceBox"));
 	WeaponTraceBox->SetupAttachment(WeaponMesh);

@@ -10,7 +10,7 @@
 #include "Components/AIComponent/AIStateComponent.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "AI/BT_Tasks/ExecutePattern.h"
-
+#include "Player/Characters/DomiCharacter.h"
 
 // Sets default values
 ABaseAIController::ABaseAIController()
@@ -104,6 +104,9 @@ void ABaseAIController::EvaluateTargetPriority()
 		for (AActor* Target : PerceivedActors)
 		{
 			if (!IsValid(Target)) continue;
+
+			const ADomiCharacter* Player = Cast<ADomiCharacter>(Target);
+			if (!Player) continue;
 
 			const float Dist = FVector::Dist(MyLocation, Target->GetActorLocation());
 			if (Dist < ClosestDist)
