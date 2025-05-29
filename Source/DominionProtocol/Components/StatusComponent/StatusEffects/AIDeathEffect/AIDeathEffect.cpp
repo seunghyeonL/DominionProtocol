@@ -4,6 +4,7 @@
 #include "AIDeathEffect.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent/DomiWidgetComponent.h"
 
 UAIDeathEffect::UAIDeathEffect()
 {
@@ -17,7 +18,12 @@ void UAIDeathEffect::Activate()
 	// Ignore Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Visibility);
+		// OwnerCharacter->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		if (auto WidgetComponent = OwnerCharacter->FindComponentByClass<UDomiWidgetComponent>())
+		{
+			WidgetComponent->DestroyComponent();
+		}
 	}
 }
 

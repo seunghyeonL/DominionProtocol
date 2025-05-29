@@ -32,40 +32,26 @@ void UInfiniteStaminaSkill::Start()
 
 	StatusComponent->SwitchInfiniteStaminaMode();
 
-	UWorld* World = GetWorld();
-	check(World);
-
 	FVector SpawnLocation = OwnerCharacter->GetActorLocation();
 
-	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-	check(BaseGameState);
-
-	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	if (Sound[0])
 	{
-		Sound[0] = SkillData->Sound[0];
-		if (Sound[0])
-		{
-			UGameplayStatics::PlaySoundAtLocation(
-				this,
-				Sound[0],
-				SpawnLocation
-			);
-		}
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			Sound[0],
+			SpawnLocation
+		);
 	}
 
-	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	if (Particle[0])
 	{
-		Particle[0] = SkillData->Particle[0];
-		if (Particle[0])
-		{
-			UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
-				GetWorld(),
-				Particle[0],
-				SpawnLocation,
-				FRotator::ZeroRotator,
-				true
-			);
-		}
+		UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			Particle[0],
+			SpawnLocation,
+			FRotator::ZeroRotator,
+			true
+		);
 	}
 
 	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();

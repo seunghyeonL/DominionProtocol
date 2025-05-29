@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "Util/BattleDataTypes.h"
 //#include "DomiFramework/ObjectPooling/PoolableActorBase.h"
 #include "CurvedProjectile.generated.h"
 
@@ -77,11 +78,20 @@ public:
 	UPROPERTY()
 	FGameplayTag SkillTag;
 
+	UPROPERTY()
+	FAttackData AttackData;
+
 protected:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
+
+	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime);
+
+	virtual bool CheckParry(const FHitResult& HitResult);
+
+	virtual void OnParried(AActor* ParryActor);
 
 private:
 	void MidPointCalculator();
@@ -103,10 +113,10 @@ private:
 	TObjectPtr<UStaticMeshComponent> Projectile;
 
 	UPROPERTY()
-	TObjectPtr<UParticleSystem> Particle;
+	TObjectPtr<USoundBase> Sound;
 
 	UPROPERTY()
-	TObjectPtr<USoundBase> Sound;
+	TObjectPtr<UParticleSystem> Particle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings", meta = (AllowPrivateAccess = "true"))
 	FProjectileCurveSettings CurveSettings;

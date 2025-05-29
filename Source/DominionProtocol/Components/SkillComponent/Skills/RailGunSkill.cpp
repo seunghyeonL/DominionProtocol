@@ -4,9 +4,6 @@
 URailGunSkill::URailGunSkill()
 {
 	SkillTag = SkillTags::RailGunSkill;
-	TotalProjectileCount = 1;
-	LaunchInterval = 0.1;
-	Offset = FVector(180.0f, 0.0f, 70.0f);
 }
 
 void URailGunSkill::Execute()

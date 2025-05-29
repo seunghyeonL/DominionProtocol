@@ -7,6 +7,7 @@
 #include "BufferedInput/BufferedBaseAttack/BufferedBaseAttack.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Util/DebugHelper.h"
+#include "Components/CapsuleComponent.h"
 
 UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 {
@@ -19,7 +20,13 @@ void UPlayerUsingSkillEffect::Activate()
 	Super::Activate();
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
-	check(ControlComponent)
+	check(ControlComponent);
+	check(OwnerCharacter);
+
+	if (ControlEffectTag == EffectTags::UsingDash)
+	{
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel1);
+	}
 
 	// Cashed Movement Vector
 	const FVector& CurrentMovementVector = ControlComponent->GetCurrentMovementVector();
@@ -39,9 +46,15 @@ void UPlayerUsingSkillEffect::Activate(float Duration)
 void UPlayerUsingSkillEffect::Deactivate()
 {
 	Super::Deactivate();
+	if (ControlEffectTag == EffectTags::UsingDash)
+	{
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+	}
+	
 	SetControlEffectTag(EffectTags::UsingSkill);
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
 	
 	for (int32 i = 0; i < BufferedInputArray.Num(); i++)
 	{
@@ -143,38 +156,38 @@ void UPlayerUsingSkillEffect::LockOn()
 
 void UPlayerUsingSkillEffect::Tick(float DeltaTime)
 {
-	// Super::Tick(DeltaTime);
+	Super::Tick(DeltaTime);
 	// Debug::Print(TEXT("DashTick!"));
 
-	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
-	check(ControlComponent);
+	// auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	// check(ControlComponent);
+	//
+	// AActor* LockOnTargetActor = ControlComponent->GetLockOnTargetActor();
+	//
+	// if (!IsValid(LockOnTargetActor))
+	// {
+	// 	return;
+	// }
 
-	AActor* LockOnTargetActor = ControlComponent->GetLockOnTargetActor();
-
-	if (!IsValid(LockOnTargetActor))
-	{
-		return;
-	}
-
-	if (ControlEffectTag == EffectTags::UsingDash)
-	{
-		FVector LockOnTargetActorLocation = LockOnTargetActor->GetActorLocation();
-	
-		// 타겟방향의 벡터 계산
-		const FVector LockOnTargetActorEyeLocation = FVector(LockOnTargetActorLocation.X,LockOnTargetActorLocation.Y,150);
-		float ControllerLockOnHeight = 200;
-		const FRotator NewControllerRotator = (LockOnTargetActorEyeLocation - OwnerCharacter->GetActorLocation() - ControllerLockOnHeight * FVector::UpVector).Rotation();
-		const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
-		// const FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
-		if (!OwnerCharacter) return;
-	
-		// 타겟을 바라보도록 회전 변경
-		// OwnerCharacter->SetActorRotation(NewCharacterRotator);
-		OwnerCharacter->GetController()->SetControlRotation(FMath::RInterpTo(CurrentControlRotation, NewControllerRotator, DeltaTime, 10.0f));
-	}
-	else
-	{
-		Super::Tick(DeltaTime);
-	}
+	// if (ControlEffectTag == EffectTags::UsingDash)
+	// {
+	// 	FVector LockOnTargetActorLocation = LockOnTargetActor->GetActorLocation();
+	//
+	// 	// 타겟방향의 벡터 계산
+	// 	const FVector LockOnTargetActorEyeLocation = FVector(LockOnTargetActorLocation.X,LockOnTargetActorLocation.Y,150);
+	// 	float ControllerLockOnHeight = 200;
+	// 	const FRotator NewControllerRotator = (LockOnTargetActorEyeLocation - OwnerCharacter->GetActorLocation() - ControllerLockOnHeight * FVector::UpVector).Rotation();
+	// 	const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
+	// 	const FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
+	// 	if (!OwnerCharacter) return;
+	//
+	// 	// 타겟을 바라보도록 회전 변경
+	// 	OwnerCharacter->SetActorRotation(NewCharacterRotator);
+	// 	OwnerCharacter->GetController()->SetControlRotation(FMath::RInterpTo(CurrentControlRotation, NewControllerRotator, DeltaTime, 10.0f));
+	// }
+	// else
+	// {
+		// Super::Tick(DeltaTime);
+	// }
 }
 

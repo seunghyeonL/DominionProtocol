@@ -118,7 +118,6 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 	{
 		if (EffectData.EffectTag.MatchesAny(HardCCTags))
 		{
-			Debug::Print(TEXT("ADomiCharacter::OnAttacked : StopSkill call"));
 			SkillComponent->StopSkill();
 		}
 	}
@@ -135,6 +134,22 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 FGameplayTag ABaseEnemy::GetPawnTag_Implementation()
 {
 	return PawnTag;
+}
+
+bool ABaseEnemy::IsParryingCond()
+{
+	auto ActiveStatusEffects = GetActiveStatusEffectTags();
+	if (ActiveStatusEffects.HasTag(EffectTags::UsingParry))
+	{
+		return true;
+	}
+	return false;
+}
+
+void ABaseEnemy::OnParried()
+{
+	SkillComponent->StopSkill();
+	StatusComponent->ActivateStatusEffect(EffectTags::Stiffness, 0.f, 2.f);
 }
 
 void ABaseEnemy::ShowControlEffectTags_Implementation()

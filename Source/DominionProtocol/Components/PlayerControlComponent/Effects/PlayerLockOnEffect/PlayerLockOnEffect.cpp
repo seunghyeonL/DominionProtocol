@@ -54,7 +54,7 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 	if (!OwnerCharacter) return;
 	
 	// 타겟을 바라보도록 회전 변경
-	OwnerCharacter->SetActorRotation(FMath::RInterpTo(CurrentCharacterRotator, NewCharacterRotator, DeltaTime, 10.0f));
+	OwnerCharacter->SetActorRotation(NewCharacterRotator);
 	OwnerCharacter->GetController()->SetControlRotation(FMath::RInterpTo(CurrentControlRotation, NewControllerRotator, DeltaTime, 10.0f));
 }
 

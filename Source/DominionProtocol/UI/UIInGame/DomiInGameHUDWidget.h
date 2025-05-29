@@ -66,9 +66,6 @@ protected:
 	TObjectPtr<class UDomiStatusBarWidget> StatusBarWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UDomiAbilitySlotsWidget> AbilitySlotsWidget;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UDomiItemSlotsWidget> ItemSlotsWidget;
 
 #pragma endregion

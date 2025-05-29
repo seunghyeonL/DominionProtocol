@@ -10,6 +10,7 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
+#include "Interface/Parryable.h"
 //#include "DomiFramework/ObjectPooling/ObjectPoolSubsystem.h"
 
 ACurvedProjectile::ACurvedProjectile()
@@ -18,9 +19,9 @@ ACurvedProjectile::ACurvedProjectile()
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->InitSphereRadius(30.0f);
-	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel1); // ECC_GameTraceChannel1 = Projectile
+	SphereCollision->SetCollisionObjectType(ECC_GameTraceChannel2); // Set ObjectType Projectile
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
-	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	SphereCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore); // Ignore DashingPawn
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetGenerateOverlapEvents(true);
 	RootComponent = SphereCollision;
@@ -77,46 +78,6 @@ void ACurvedProjectile::Tick(float DeltaTime)
 
 	// 커브 이동
 	UpdateCurveMovement(DeltaTime);
-
-	//// 이동 로직
-	//if (GetActorLocation() != TargetPoint)
-	//{
-	//	if (ElapsedTime < CurveSettings.CurveDuration && bIsTargetMove)
-	//	{
-	//		TargetPoint = TargetActor->GetActorLocation();
-	//		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
-	//	}
-	//	else if (ElapsedTime >= CurveSettings.CurveDuration && !bCurveFixed)
-	//	{
-	//		// 시간이 지났을 때 한 번만 타겟 포인트 고정	
-	//		if (bIsTargetMove)
-	//		{
-	//			TargetPoint = TargetActor->GetActorLocation();
-	//		}
-	//		bCurveFixed = true;
-	//	}
-	//	if (!bCurveFixed)
-	//	{
-	//		SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), CurvePoint, DeltaTime, CurveSettings.ProjectileSpeed));
-	//	}
-	//	else
-	//	{
-	//		SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed));
-	//	}
-
-	//	// 회전 설정
-	//	FVector NextLocation = bCurveFixed ? TargetPoint : CurvePoint;
-	//	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextLocation));
-	//}
-	//if (GetActorLocation() == TargetPoint)
-	//{
-	//	if (!bReachedTarget)
-	//	{
-	//		// 타겟에 도달했을 때 방향 벡터 저장
-	//		DirectionVector = GetActorForwardVector();
-	//		bReachedTarget = true;
-	//	}
-	//}
 }
 
 //void ACurvedProjectile::OnObjectSpawn_Implementation()
@@ -163,7 +124,7 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// 같은 클래스(자기들끼리)라면 무시
-	//if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
+	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
 	
 	// 사용자 본인은 무시
 	if (OtherActor == InstigatorPawn)
@@ -177,12 +138,27 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		return;
 	}
 
+	// check Parry
+	if (CheckParry(SweepResult))
+	{
+		return;
+	}
+	
 	if (IsValid(SkillOwner))
 	{
-		UBaseSkill* BaseSkill = SkillOwner->CurrentSkill;
+		AActor* HitActor = SweepResult.GetActor();
+		if (auto ParryableTarget = Cast<IParryable>(HitActor))
+		{
+			if (ParryableTarget->IsParryingCond())
+			{
+				SetLaunchPath(HitActor, InstigatorPawn);
+			}
+		}
+		
+		UBaseSkill* BaseSkill = SkillOwner;
 		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
 		{
-			BaseSkill->ApplyAttackToHitActor(SweepResult, 0);
+			ApplyAttackToHitActor(SweepResult, 0);
 		}
 	}
 
@@ -190,6 +166,58 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	//ObjectPoolSubsystem->ReturnActorToPool(this);
 
 	DestroyProjectile();
+}
+
+void ACurvedProjectile::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime)
+{
+	AActor* HitActor = HitResult.GetActor();
+
+	if (!IsValid(HitActor))
+	{
+		return;
+	}
+
+	check(InstigatorPawn)
+
+	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
+	{
+		IDamagable::Execute_OnAttacked(HitActor, AttackData);
+	}
+}
+
+bool ACurvedProjectile::CheckParry(const FHitResult& HitResult)
+{
+	check(InstigatorPawn);
+	AActor* HitActor = HitResult.GetActor();
+
+	FVector AttackDirectionVector = HitActor->GetActorLocation() - GetActorLocation();
+	FVector TargetForwardVector = HitActor->GetActorForwardVector();
+
+	float RadianAngle = FMath::Acos(FVector::DotProduct(TargetForwardVector, -AttackDirectionVector));
+	float DegreeAngle = FMath::RadiansToDegrees(RadianAngle);
+	if (DegreeAngle > 45.f)
+	{
+		return false;
+	}
+	
+	auto ParryableTarget = Cast<IParryable>(HitActor);
+	if (!ParryableTarget || !ParryableTarget->IsParryingCond())
+	{
+		return false;
+	}
+
+	OnParried(HitActor);
+	return true;
+}
+
+void ACurvedProjectile::OnParried(AActor* ParryActor)
+{
+	AttackData.Instigator = ParryActor;
+	InstigatorPawn = Cast<APawn>(ParryActor);
+	TargetActor = InstigatorPawn;
+	bReachedTarget = true;
+	DirectionVector = ParryActor->GetActorForwardVector();
+	SetActorRotation(DirectionVector.Rotation());
 }
 
 void ACurvedProjectile::MidPointCalculator()
@@ -259,6 +287,16 @@ void ACurvedProjectile::DestroyProjectile()
 
 	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
 	{
+		Sound = SkillData->Sound[1];
+		if (Sound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				this,
+				Sound,
+				GetActorLocation()
+			);
+		}
+
 		Particle = SkillData->Particle[0];
 		if (Particle)
 		{
@@ -268,16 +306,6 @@ void ACurvedProjectile::DestroyProjectile()
 				GetActorLocation(),
 				FRotator::ZeroRotator,
 				true
-			);
-		}
-
-		Sound = SkillData->Sound[1];
-		if (Sound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(
-				this,
-				Sound,
-				GetActorLocation()
 			);
 		}
 	}
@@ -309,12 +337,16 @@ void ACurvedProjectile::UpdateCurveMovement(float DeltaTime)
 		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
 	}
 
-	// 이동
 	FVector MoveTarget = bCurveFixed ? TargetPoint : CurvePoint;
-	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), MoveTarget, DeltaTime, CurveSettings.ProjectileSpeed));
 
 	// 회전
-	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), MoveTarget));
+	if (!bReachedTarget)
+	{
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), MoveTarget));
+	}
+	
+	// 이동
+	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), MoveTarget, DeltaTime, CurveSettings.ProjectileSpeed));
 }
 
 void ACurvedProjectile::FixTargetPoint()

@@ -20,8 +20,6 @@ void UDomiInventoryWidget::BindInventoryDelegates()
 		ItemComponent = PlayerCharacter->GetComponentByClass<UItemComponent>();
 		if (ItemComponent)
 		{
-			ItemComponent->OnInventoryEquippedSlotItemsChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateEquippedSlotItems);
-			ItemComponent->OnInventoryConsumableSlotItemsChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateConsumableSlotItems);
 			ItemComponent->OnInventoryItemListChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateInventoryItemList);
 		}
 	}
@@ -30,40 +28,39 @@ void UDomiInventoryWidget::BindInventoryDelegates()
 void UDomiInventoryWidget::OnUpdateInventoryItemList()
 {
 	InventoryAllItems = ItemComponent->GetInventoryDisplayItems();
-	UpdateInventoryItemList();
-
+	
+	TArray<FItemUISlotData> TempEquippableItemsArray;
+	TArray<FItemUISlotData> TempConsumableItemsArray;
+	TArray<FItemUISlotData> TempOtherItemsArray;
+		
 	for (FItemUISlotData& SlotData : InventoryAllItems)
 	{
+
+		
 		if (SlotData.ItemTag.MatchesTag(ItemTags::EquippableItem))
 		{
-			EquippableItemsMap.Add(SlotData.ItemName, SlotData);
+			TempEquippableItemsArray.Add(SlotData);
 			continue;
 		}
 
 		if (SlotData.ItemTag.MatchesTag(ItemTags::ConsumableItem))
 		{
-			ConsumableItemsMap.Add(SlotData.ItemName, SlotData);
+			TempConsumableItemsArray.Add(SlotData);
 			continue;
 		}
 		
 		if (SlotData.ItemTag.MatchesTag(ItemTags::OtherItem))
     	{
-			OtherItemsMap.Add(SlotData.ItemName, SlotData);
+			TempOtherItemsArray.Add(SlotData);
 			continue;
 		}
 
 		ensureMsgf(false, TEXT("%s:: Error Item Tag"), *SlotData.ItemName);
 	}
-}
 
-void UDomiInventoryWidget::OnUpdateEquippedSlotItems()
-{
-	InventoryEquippedSlotItems = ItemComponent->GetEquippedDisplayItems();
+	EquippableItemsArray = TempEquippableItemsArray;
+	ConsumableItemsArray = TempConsumableItemsArray;
+	OtherItemsArray = TempOtherItemsArray;
 
-	
-}
-
-void UDomiInventoryWidget::OnUpdateConsumableSlotItems()
-{
-	InventoryConsumableSlotItems = ItemComponent->GetConsumableDisplayItems();
+	UpdateInventoryItemList();
 }

@@ -30,11 +30,12 @@ class DOMINIONPROTOCOL_API UStatusComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UStatusComponent();
-	
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	FTimerHandle StaminaRecoveryDelayTimer;
-	
+	// Delegates
+	FOnDeath OnDeath;
+	FOnGroggy OnGroggy;
+	FOnSpawned OnSpawned;
+
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnHealthChanged OnHealthChanged;
 
@@ -44,8 +45,43 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnShieldChanged OnShieldChanged;
 
-	FOnDeath OnDeath;
-	FOnGroggy OnGroggy;
+	// TimerHandles
+	FTimerHandle StaminaRecoveryDelayTimer;
+	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	FORCEINLINE FGameplayTagContainer& GetActiveStatusEffectTags() { return ActiveStatusEffectTags; }
+
+	FORCEINLINE UAIStateBase* GetAIState() { return AIState; }
+	FORCEINLINE void SetAIState(UAIStateBase* InAIState) { AIState = InAIState; }
+
+	UFUNCTION(BlueprintCallable)
+	const TMap<FGameplayTag, float>& GetStatMap() const { return StatMap; }
+	
+	float GetStat(const FGameplayTag& StatTag) const;
+	void SetStat(const FGameplayTag& StatTag, float Value);
+	
+	void SetHealth(const float NewHealth);
+	void SetShield(const float NewShield);
+	void SetStamina(float NewHealth);
+	
+	bool HasEnoughStamina(float RequiredAmount) const;
+	void ConsumeStamina(float Amount);
+	void StartStaminaRecovery();
+	void StopStaminaRecovery();
+	void BlockStaminaRecovery();
+	
+	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
+	void RemoveActiveStatusEffect(const FGameplayTag StatusEffectTag);
+	
+	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);
+	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration);
+	virtual void DeactivateStatusEffect(const FGameplayTag& StatusEffectTag);
+
+	//CheatManager
+	FORCEINLINE void SwitchInfiniteStaminaMode() { bIsInfiniteStaminaMode = !bIsInfiniteStaminaMode; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -77,34 +113,5 @@ protected:
 	//CheatManager
 	bool bIsInfiniteStaminaMode = false;
 
-public:
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	FORCEINLINE FGameplayTagContainer& GetActiveStatusEffectTags() { return ActiveStatusEffectTags; }
-
-	FORCEINLINE UAIStateBase* GetAIState() { return AIState; }
-	FORCEINLINE void SetAIState(UAIStateBase* InAIState) { AIState = InAIState; }
-	
-	float GetStat(const FGameplayTag& StatTag) const;
-	void SetStat(const FGameplayTag& StatTag, float Value);
-	
-	void SetHealth(const float NewHealth);
-	void SetShield(const float NewShield);
-	void SetStamina(float NewHealth);
-	
-	bool HasEnoughStamina(float RequiredAmount) const;
-	void ConsumeStamina(float Amount);
-	void StartStaminaRecovery();
-	void StopStaminaRecovery();
-	void BlockStaminaRecovery();
-	
-	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
-	void RemoveActiveStatusEffect(const FGameplayTag StatusEffectTag);
-	
-	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);
-	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration);
-	virtual void DeactivateStatusEffect(const FGameplayTag& StatusEffectTag);
-
-	//CheatManager
-	FORCEINLINE void SwitchInfiniteStaminaMode() { bIsInfiniteStaminaMode = !bIsInfiniteStaminaMode; }
 };

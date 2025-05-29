@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -48,6 +48,11 @@ public:
 	virtual void MagicSkill() override;
 	virtual void Interact() override;
 	virtual void LockOn() override;
+
+	virtual void ConsumeItemAction_1()override;
+	virtual void ConsumeItemAction_2()override;
+	virtual void ConsumeItemAction_3()override;
+	virtual void SwapWeapon()override;
 
 	FORCEINLINE bool IsActive() const { return bIsActive; }
 	FORCEINLINE UPlayerControlStateBase* GetInnerState() const { return InnerState; }

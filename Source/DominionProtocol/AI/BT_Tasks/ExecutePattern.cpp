@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ExecutePattern.h"
@@ -6,6 +6,8 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentUser.h"
 #include "Util/DebugHelper.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "AI/AIControllers/BaseAIController.h"
 
 UExecutePattern::UExecutePattern()
 {
@@ -34,7 +36,22 @@ EBTNodeResult::Type UExecutePattern::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		Debug::PrintError(TEXT("UExecutePattern::ExecuteTask : OwnerActor doesn't implement ISkillComponentUser.."));
 		return EBTNodeResult::Failed;
 	}
+
+	CachedTemp = &OwnerComp;
+
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
+
+	if (IsValid(BaseAIController))
+	{
+		BaseAIController->SetCachedTask(this);
+	}
 	
-	SkillComponentUser->ExecuteSkill(SkillGroupTags::BaseAttack);
-	return EBTNodeResult::Succeeded;
+	SkillComponentUser->ExecuteSkill(SkillGroupTag);
+
+	return EBTNodeResult::InProgress;
+}
+
+void UExecutePattern::OnAnimationCompleted()
+{
+	FinishLatentTask(*CachedTemp, EBTNodeResult::Succeeded);
 }

@@ -5,10 +5,8 @@
 #include "SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
-#include "Components/PlayerControlComponent/ControlComponentUser.h"
-#include "Components/PlayerControlComponent/PlayerControlComponent.h"
-#include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "Util/DebugHelper.h"
+#include "AI/AIControllers/BaseAIController.h"
 
 USkillComponent::USkillComponent()
 {
@@ -182,6 +180,13 @@ void USkillComponent::EndSkill()
                     AnimInstance->Montage_SetPlayRate(CurrentMontage, CurrentMontage->RateScale * 5);
                 }
             }
+        }
+
+        ABaseAIController* BaseAIController = Cast<ABaseAIController>(Character->GetController());
+
+        if (IsValid(BaseAIController))
+        {
+            BaseAIController->ClearCachedTask();
         }
     }
     

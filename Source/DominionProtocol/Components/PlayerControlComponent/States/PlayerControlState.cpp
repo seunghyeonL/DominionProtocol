@@ -255,7 +255,7 @@ void UPlayerControlState::ConsumeItemAction_1()
 	{
 		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
 		{
-			ItemComponent->UseConsumableItem(0); // 슬롯 인덱스 0
+			ItemComponent->UseConsumableItem(TEXT("ConsumableSlot_Primary")); // 슬롯 인덱스 0
 		}
 		else
 		{
@@ -277,7 +277,7 @@ void UPlayerControlState::ConsumeItemAction_2()
 	{
 		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
 		{
-			ItemComponent->UseConsumableItem(1); // 슬롯 인덱스 1 
+			ItemComponent->UseConsumableItem(TEXT("ConsumableSlot_Secondary")); // 슬롯 인덱스 1 
 		}
 		else
 		{
@@ -299,7 +299,7 @@ void UPlayerControlState::ConsumeItemAction_3()
 	{
 		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
 		{
-			ItemComponent->UseConsumableItem(2); // 슬롯 인덱스 2 사용
+			ItemComponent->UseConsumableItem(TEXT("ConsumableSlot_Tertiary")); // 슬롯 인덱스 2 사용
 		}
 		else
 		{

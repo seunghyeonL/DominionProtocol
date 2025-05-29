@@ -7,10 +7,13 @@
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
+#include "Interface/Parryable.h"
 
 UBaseSkill::UBaseSkill()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
+
+	AnimPlayRate = 1.0f;
 }
 
 void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
@@ -57,13 +60,13 @@ void UBaseSkill::Execute()
 	check(IsValid(AnimMontage));
 	check(IsValid(OwnerCharacter));
 
-	OwnerCharacter->PlayAnimMontage(AnimMontage);
+	OwnerCharacter->PlayAnimMontage(AnimMontage, AnimPlayRate);
 }
 
 // 애님 노티파이에서 실행
 void UBaseSkill::AttackTrace() const
 {
-	check(OwnerCharacter)
+	check(OwnerCharacter);
 
 	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
 
@@ -81,7 +84,7 @@ void UBaseSkill::AttackTrace() const
 		Start,										// 시작 위치
 		End,										// 끝 위치
 		FQuat::Identity,
-		ECollisionChannel::ECC_Pawn,				// 충돌 채널
+		ECollisionChannel::ECC_Pawn,    			// 충돌 채널
 		FCollisionShape::MakeSphere(AttackRadius),	// 범위 설정 (구체 모양)
 		QueryParams
 	);
@@ -151,27 +154,23 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 
 	check(OwnerCharacter)
 
-	FAttackData AttackData;
-
-	UWorld* World = GetWorld();
-
-	if (IsValid(World))
+	// check Parry
+	if (CheckParry(HitActor))
 	{
-		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-
-		if (IsValid(BaseGameState))
-		{
-			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
-
-			if (IsValid(StatusComponent))
-			{
-				float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-				AttackData.Damage = GetFinalAttackData(AttackPower);
-			}
-		}
+		return;
 	}
+	
+	FAttackData AttackData;
+	
+	UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
 
+	if (IsValid(StatusComponent))
+	{
+		float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+
+		AttackData.Damage = GetFinalAttackData(AttackPower);
+	}
+	
 	AttackData.Instigator = OwnerCharacter;
 	AttackData.Effects = Effects;
 
@@ -194,12 +193,35 @@ void UBaseSkill::Tick(float DeltaTime)
 {
 }
 
-TObjectPtr<UAnimMontage> UBaseSkill::GetAnimMontage() const
-{
-	return AnimMontage;
-}
-
 float UBaseSkill::GetFinalAttackData(const float AttackPower) const
 {
 	return AttackPower * DamageCoefficient;
+}
+
+bool UBaseSkill::CheckParry(AActor* HitActor) const
+{
+	FVector AttackDirectionVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation() ;
+	FVector TargetForwardVector = HitActor->GetActorForwardVector();
+
+	float RadianAngle = FMath::Acos(FVector::DotProduct(TargetForwardVector, -AttackDirectionVector));
+	float DegreeAngle = FMath::RadiansToDegrees(RadianAngle);
+	if (DegreeAngle > 45.f)
+	{
+		return false;
+	}
+	
+	auto ParryableTarget = Cast<IParryable>(HitActor);
+    if (!ParryableTarget || !ParryableTarget->IsParryingCond())
+    {
+	    return false;
+    }
+
+	auto ParryableOwner = Cast<IParryable>(OwnerCharacter);
+	if (!ParryableOwner)
+	{
+		return false;
+	}
+	
+	ParryableOwner->OnParried();
+	return true;
 }

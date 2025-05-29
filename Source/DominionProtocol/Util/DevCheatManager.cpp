@@ -45,3 +45,19 @@ void UDevCheatManager::StoryState(EGameStoryState NewStoryState)
 	}
 }
 
+void UDevCheatManager::Suicide()
+{
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
+
+	IDamagable::Execute_OnAttacked(PlayerCharacter, { nullptr, 100, FVector::ZeroVector, {}});
+}
+
+void UDevCheatManager::AddAllItems()
+{
+	UWorld* World = GetWorld();
+	if (IsValid(World))
+	{
+		UCheatBPLib::AddAllItemsToPlayerInventoryMaxQuantity(World);
+	}
+}
+

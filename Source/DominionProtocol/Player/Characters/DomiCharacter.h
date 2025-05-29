@@ -11,6 +11,7 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Components/SkillComponent/SkillComponentUser.h"
+#include "Interface/Parryable.h"
 #include "DomiCharacter.generated.h"
 
 class UStatusComponent;
@@ -33,7 +34,14 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnInteractionWidgetScroll, float)
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
-public ACharacter, public IDamagable, public IPawnTagInterface, public IEffectReceivable, public IControlComponentUser, public IStatusComponentUser, public ISkillComponentUser
+public ACharacter,
+public IDamagable,
+public IPawnTagInterface,
+public IEffectReceivable,
+public IControlComponentUser,
+public IStatusComponentUser,
+public ISkillComponentUser,
+public IParryable
 {
 	GENERATED_BODY()
 	
@@ -60,8 +68,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	FORCEINLINE FGameplayTag GetPawnTag() const { return PawnTag; }
-
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
@@ -85,10 +91,14 @@ public:
 	// PawnTag
 	virtual FGameplayTag GetPawnTag_Implementation() override;
 
-	// EffectReceivable
+	// EffectReceivable (for debugging)
 	virtual void ShowControlEffectTags_Implementation() override;
 	virtual void ShowStatusEffectTags_Implementation() override;
 	virtual void ActivateStatusEffect_Implementation(const FGameplayTag& EffectTag) override;
+
+	// Parryable
+	virtual bool IsParryingCond() override;
+	virtual void OnParried() override;
 
 	void EventInteractionWidgetScroll(const float Value);
 
@@ -98,7 +108,7 @@ protected:
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void OnDeath();
-	void Parrying(const FAttackData& IncomingAttackData);
+	// void Parrying(const FAttackData& IncomingAttackData);
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
@@ -130,8 +140,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
 	FGameplayTagContainer HardCCTags;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
-	FGameplayTagContainer ParriedTags;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
+	// FGameplayTagContainer ParriedTags;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
 	FGameplayTag PawnTag;
@@ -142,15 +152,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;	// 추후에 무기 쪽으로 이동 필요
 
-	
-
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AActor> InteractableActor;
 
 	UPROPERTY()
 	TSet<AActor*> InteractableActorSet = {};
-
-	
 };
 

@@ -7,6 +7,15 @@
 #include "Blueprint/UserWidget.h"
 #include "DomiInventoryWidget.generated.h"
 
+UENUM(BlueprintType)
+enum class ELastDisplayArray : uint8
+{
+	AllItemsArray				UMETA(DisplayName="AllItemsArray"),
+	EquippableItemsArray		UMETA(DisplayName="EquippableItemsArray"),
+	ConsumableItemsArray		UMETA(DisplayName="ConsumableItemsArray"),
+	OtherItemsArray				UMETA(DisplayName="OtherItemsArray"),
+};
+
 
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiInventoryWidget : public UUserWidget
@@ -23,33 +32,24 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateInventoryItemList();
-
-	UFUNCTION()
-	void OnUpdateEquippedSlotItems();
-
-	UFUNCTION()
-	void OnUpdateConsumableSlotItems();
-
+	
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FItemUISlotData> InventoryAllItems;
 
-	UPROPERTY(BlueprintReadOnly)
-	TMap<FName, FItemUISlotData> InventoryEquippedSlotItems;
-
-	UPROPERTY(BlueprintReadOnly)
-	TArray<FItemUISlotData> InventoryConsumableSlotItems;
-
 	UPROPERTY()
 	TObjectPtr<class UItemComponent> ItemComponent;
 
 	UPROPERTY(BlueprintReadOnly)
-	TMap<FString, FItemUISlotData> EquippableItemsMap;
+	TArray<FItemUISlotData> EquippableItemsArray;
 
 	UPROPERTY(BlueprintReadOnly)
-	TMap<FString, FItemUISlotData> ConsumableItemsMap;
+	TArray<FItemUISlotData> ConsumableItemsArray;
 
 	UPROPERTY(BlueprintReadOnly)
-	TMap<FString, FItemUISlotData> OtherItemsMap;
+	TArray<FItemUISlotData> OtherItemsArray;
+
+	UPROPERTY(BlueprintReadWrite)
+	ELastDisplayArray LastDisplayArray = ELastDisplayArray::AllItemsArray;
 };

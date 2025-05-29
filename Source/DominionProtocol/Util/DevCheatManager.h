@@ -25,4 +25,10 @@ public:
 
 	UFUNCTION(Exec)
 	void StoryState(EGameStoryState NewStoryState);
+
+	UFUNCTION(Exec)
+	void Suicide();
+
+	UFUNCTION(Exec)
+	void AddAllItems();
 };

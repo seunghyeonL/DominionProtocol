@@ -8,7 +8,9 @@
 #include "Components/AIComponent/AIState/AIStateBase.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/AIComponent/AIStateComponent.h"
-
+#include "BehaviorTree/BTTaskNode.h"
+#include "AI/BT_Tasks/ExecutePattern.h"
+#include "Player/Characters/DomiCharacter.h"
 
 // Sets default values
 ABaseAIController::ABaseAIController()
@@ -103,6 +105,9 @@ void ABaseAIController::EvaluateTargetPriority()
 		{
 			if (!IsValid(Target)) continue;
 
+			const ADomiCharacter* Player = Cast<ADomiCharacter>(Target);
+			if (!Player) continue;
+
 			const float Dist = FVector::Dist(MyLocation, Target->GetActorLocation());
 			if (Dist < ClosestDist)
 			{
@@ -120,6 +125,21 @@ void ABaseAIController::EvaluateTargetPriority()
 	else
 	{
 		GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), BestTarget);
+	}
+}
+
+void ABaseAIController::SetCachedTask(UBTTaskNode* NewCachedTask)
+{
+	CachedTask = NewCachedTask;
+}
+
+void ABaseAIController::ClearCachedTask()
+{
+	UExecutePattern* ExecutePattern = Cast<UExecutePattern>(CachedTask);
+
+	if (IsValid(ExecutePattern))
+	{
+		ExecutePattern->OnAnimationCompleted();
 	}
 }
 

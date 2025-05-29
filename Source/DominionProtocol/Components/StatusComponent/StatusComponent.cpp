@@ -60,9 +60,7 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 			StatusEffectMap[Tag]->Tick(DeltaTime);
 		}
 	}
-
 }
-
 
 float UStatusComponent::GetStat(const FGameplayTag& StatTag) const
 {
