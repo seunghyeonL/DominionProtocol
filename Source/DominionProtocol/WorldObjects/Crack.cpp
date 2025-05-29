@@ -21,151 +21,177 @@ DEFINE_LOG_CATEGORY(LogCrackSystem);
 
 // Sets default values
 ACrack::ACrack()
-	:   CrackName(FText::GetEmpty()),
-        CrackIndex(0),
-        bIsActivate(false)
+	: CrackName(FText::GetEmpty()),
+	  CrackIndex(0),
+	  InteractableRadius(150.f),
+	  ActivationDistanceCalculateRadius(1500.f),
+	  Distance(1600.f),
+	  bIsActivate(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
 	SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
 	SetRootComponent(SceneComp);
 
-	SphereCollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
-    SphereCollisionComp->SetupAttachment(SceneComp);
-    SphereCollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    SphereCollisionComp->SetCollisionResponseToChannel(ECC_Pawn,ECR_Overlap);
-    
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComp->SetupAttachment(SceneComp);
-    StaticMeshComp->SetCollisionProfileName(TEXT("BlockAll"));
+	StaticMeshComp->SetCollisionProfileName(TEXT("BlockAll"));
 
-    RespawnTargetPointComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("RespawnTargetPoint"));
-    RespawnTargetPointComp->SetupAttachment(SceneComp);
-    RespawnTargetPointComp->SetChildActorClass(ATargetPoint::StaticClass());
-    RespawnTargetPointComp->SetRelativeLocation(FVector(0.f, 0.f, 300.f));
+	RespawnTargetPointComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("RespawnTargetPoint"));
+	RespawnTargetPointComp->SetupAttachment(SceneComp);
+	RespawnTargetPointComp->SetChildActorClass(ATargetPoint::StaticClass());
+	RespawnTargetPointComp->SetRelativeLocation(FVector(0.f, 0.f, 300.f));
 }
 
 void ACrack::BeginPlay()
 {
-    Super::BeginPlay();
+	Super::BeginPlay();
 
-    RespawnTargetPoint = Cast<ATargetPoint>(RespawnTargetPointComp->GetChildActor());
-    
-    WorldInstanceSubsystem = GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
-    check(WorldInstanceSubsystem);
-    
-    BaseGameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
-    
-    SphereCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ACrack::OnOverlapBegin);
-    SphereCollisionComp->OnComponentEndOverlap.AddDynamic(this, &ACrack::OnOverlapEnd);
-}
+	DistanceCalculateRadiusSquared = ActivationDistanceCalculateRadius * ActivationDistanceCalculateRadius;
+	InteractableRadiusSquared = InteractableRadius * InteractableRadius;
 
-void ACrack::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-    if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
-    {
-        return;
-    }
+	RespawnTargetPoint = Cast<ATargetPoint>(RespawnTargetPointComp->GetChildActor());
 
-    ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
-    ensure(PlayerCharacter);
-    CachedCharacter = PlayerCharacter;
-    
-    PlayerCharacter->AddInteractableActor(this);
-}
+	WorldInstanceSubsystem = GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
+	check(WorldInstanceSubsystem);
 
-void ACrack::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-    int32 OtherBodyIndex)
-{
-    if (IsValid(OtherActor) && OtherActor == CachedCharacter)
-    {
-        ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
-        ensure(PlayerCharacter);
+	BaseGameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
 
-        CachedCharacter = nullptr;
-        PlayerCharacter->RemoveInteractableActor(this);
-    }
-    else
-    {
-        Debug::Print(TEXT("ACrack::OnOverlapEnd : OtherActor Is not PlayerCharacter"));
-    }
+	GetWorldTimerManager().SetTimer(
+		DetectionTimerHandle,
+		this,
+		&ACrack::CheckPlayerInActivationRange,
+		1.f,
+		true);
 }
 
 void ACrack::Interact_Implementation(AActor* Interactor)
 {
-    UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-    if (!GameInstance) return;
+	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+	if (!GameInstance) return;
 
-    //최근 균열 업데이트
-    BaseGameMode->SetRecentCrackCache(this);
-    
-    WorldInstanceSubsystem->SetRecentCrackName(CrackName);
-    WorldInstanceSubsystem->SetRecentCrackIndex(CrackIndex);
-    
-    // 흐름
-    // 1. 비활성화시 활성화
-    // 2. 기능
-    
-    // 1. 해당 균열 활성화
-    if (!bIsActivate)
-    {
-        bIsActivate = true;
-        WorldInstanceSubsystem->SetIsActivateCrackIndex(WorldInstanceSubsystem->GetCurrentLevelName(), CrackIndex);
-        UE_LOG(LogCrackSystem, Warning, TEXT("%s 활성화"), *CrackName.ToString());
-        Debug::Print(CrackName.ToString()+TEXT(" 활성화"));
-        return;
-    }
-    
-    // 2. 기능
-    auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
-    if (PlayerCharacter)
-    {
-        auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
-        if (PlayerController)
-        {
-            UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
+	//최근 균열 업데이트
+	BaseGameMode->SetRecentCrackCache(this);
 
-            // 균열 이동
-            if (InGameHUDWidget)
-            {
-                InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
-            }
+	WorldInstanceSubsystem->SetRecentCrackName(CrackName);
+	WorldInstanceSubsystem->SetRecentCrackIndex(CrackIndex);
 
-            // 레벨업
+	// 흐름
+	// 1. 비활성화시 활성화
+	// 2. 기능
 
-            // 회복포션 업그레이트
-        }
-    }
-    
+	// 1. 해당 균열 활성화
+	if (!bIsActivate)
+	{
+		bIsActivate = true;
+		WorldInstanceSubsystem->SetIsActivateCrackIndex(WorldInstanceSubsystem->GetCurrentLevelName(), CrackIndex);
+		UE_LOG(LogCrackSystem, Warning, TEXT("%s 활성화"), *CrackName.ToString());
+		Debug::Print(CrackName.ToString() + TEXT(" 활성화"));
+		return;
+	}
+
+	// 2. 기능
+	auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
+	if (PlayerCharacter)
+	{
+		auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
+		if (PlayerController)
+		{
+			UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
+
+			// 균열 이동
+			if (InGameHUDWidget)
+			{
+				InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
+			}
+
+			// 레벨업
+
+			// 회복포션 업그레이트
+		}
+	}
 }
 
 FText ACrack::GetInteractMessage_Implementation() const
 {
-    return FText::FromString(TEXT("F 키를 눌러 균열과 상호작용"));
+	return FText::FromString(TEXT("F 키를 눌러 균열과 상호작용"));
+}
+
+void ACrack::CheckPlayerInActivationRange()
+{
+	if (!IsValid(CachedCharacter))
+	{
+		CachedCharacter = Cast<ADomiCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	}
+
+	Distance = FVector::DistSquared(GetActorLocation(), CachedCharacter->GetActorLocation());
+
+	if (Distance <= DistanceCalculateRadiusSquared)
+	{
+		SetDetailDetection(true);
+	}
+	else if (Distance > DistanceCalculateRadiusSquared)
+	{
+		SetDetailDetection(false);
+	}
+}
+
+void ACrack::CheckPlayerInInteractionRange()
+{
+	if (IsValid(CachedCharacter))
+	{
+		Distance = FVector::DistSquared(GetActorLocation(), CachedCharacter->GetActorLocation());
+
+		if (Distance <= InteractableRadiusSquared)
+		{
+			CachedCharacter->AddInteractableActor(this);
+		}
+		else if (Distance > InteractableRadiusSquared)
+		{
+			CachedCharacter->RemoveInteractableActor(this);
+		}
+	}
+}
+
+void ACrack::SetDetailDetection(bool bEnable)
+{
+	if (bEnable)
+	{
+		GetWorldTimerManager().SetTimer(
+			DetailDetectionTimerHandle,
+			this,
+			&ACrack::CheckPlayerInInteractionRange,
+			0.1f,
+			true);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(DetailDetectionTimerHandle);
+	}
 }
 
 FVector ACrack::GetRespawnTargetPointLocation() const
 {
-    if (IsValid(RespawnTargetPoint))
-    {
-        return RespawnTargetPoint->GetActorLocation();
-    }
-    else
-    {
-        Debug::PrintError(TEXT("Invalid RespawnTargetPoint"));
-        return FVector::ZeroVector;
-    }
+	if (IsValid(RespawnTargetPoint))
+	{
+		return RespawnTargetPoint->GetActorLocation();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("Invalid RespawnTargetPoint"));
+		return FVector::ZeroVector;
+	}
 }
 
 FRotator ACrack::GetRespawnTargetPointRotation() const
 {
-    if (IsValid(RespawnTargetPoint))
-    {
-        return RespawnTargetPoint->GetActorRotation();
-    }
-    else
-    {
-        Debug::PrintError(TEXT("Invalid RespawnTargetPoint"));
-        return FRotator::ZeroRotator;
-    }
+	if (IsValid(RespawnTargetPoint))
+	{
+		return RespawnTargetPoint->GetActorRotation();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("Invalid RespawnTargetPoint"));
+		return FRotator::ZeroRotator;
+	}
 }
