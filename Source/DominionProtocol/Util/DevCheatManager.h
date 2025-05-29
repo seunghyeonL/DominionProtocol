@@ -18,6 +18,15 @@ public:
 	void Save();
 
 	UFUNCTION(Exec)
+	void ToggleDebugLines();
+
+	UFUNCTION(Exec)
+	void ToggleMnhDebug();
+
+	UFUNCTION(Exec)
+	void ToggleAllDebug();
+
+	UFUNCTION(Exec)
 	void InfiniteStamina();
 
 	UFUNCTION(Exec)

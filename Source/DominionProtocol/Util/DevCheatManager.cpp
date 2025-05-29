@@ -2,11 +2,15 @@
 
 
 #include "DevCheatManager.h"
-#include "Util/CheatBPLib.h"
+
+#include "MnhHelpers.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "Util/CheatBPLib.h"
+#include "Util/DebugHelper.h"
 
 void UDevCheatManager::Save()
 {
@@ -15,6 +19,34 @@ void UDevCheatManager::Save()
 	{
 		UCheatBPLib::Save(World);
 	}
+}
+
+void UDevCheatManager::ToggleDebugLines()
+{
+	Debug::ToggleDebugLines();
+}
+
+void UDevCheatManager::ToggleMnhDebug()
+{
+	//MissNoHit 플러그인 디버그 토글
+	int32 CurrentValue = CVarMnhDebugLines.GetValueOnAnyThread();
+	int32 NewValue = (CurrentValue == 0) ? 1 : 0;
+	IConsoleManager::Get().FindConsoleVariable(TEXT("Mnh.ShowLines"))->Set(NewValue);
+
+	Debug::Print(FString::Printf(TEXT("MissNoHit Debug : %s"), NewValue ? TEXT("On") : TEXT("Off")));
+}
+
+void UDevCheatManager::ToggleAllDebug()
+{
+	// 엔진 디버그 + MissNoHit 동시 토글
+	int32 CurrentValue = CVarShowDebugLines.GetValueOnAnyThread();
+	int32 NewValue = (CurrentValue == 0) ? 1 : 0;
+    
+	// 두 콘솔 변수 함께 설정
+	IConsoleManager::Get().FindConsoleVariable(TEXT("Debug.ShowLines"))->Set(NewValue);
+	IConsoleManager::Get().FindConsoleVariable(TEXT("Mnh.ShowLines"))->Set(NewValue);
+
+	Debug::Print(FString::Printf(TEXT("All Debug : %s"), NewValue ? TEXT("On") : TEXT("Off")));
 }
 
 void UDevCheatManager::InfiniteStamina()
