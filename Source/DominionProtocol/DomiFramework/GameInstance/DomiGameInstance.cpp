@@ -6,41 +6,39 @@
 #include "WorldObjects/Crack.h"
 #include "Util/DebugHelper.h"
 
-const int32 UDomiGameInstance::NumBosses = 5;
-
 UDomiGameInstance::UDomiGameInstance()
 {
-	IsBossDeadArray.Init(false, NumBosses);
-	
 	CurrentGameStoryState = EGameStoryState::Tutorial;
 }
 
 void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)
 {
-	IsBossDeadArray = SaveData.IsBossDeadArray;
+	// DeadBossTags = SaveData.DeadBossTags;
 	// CurrentLevelName = SaveData.CurrentLevelName;
 	// CurrentLevelDisplayName = SaveData.CurrentLevelDisplayName;
 	// RecentCrackName = SaveData.RecentCrackName;
 	// RecentCrackIndex = SaveData.RecentCrackIndex;
+	// CurrentGameStoryState = SaveData.CurrentGameStoryState;
 }
 
 FInstanceData UDomiGameInstance::GetSaveData() const
 {
 	FInstanceData SaveData;
-
-	// SaveData.IsBossDeadArray = IsBossDeadArray;
+	// SaveData.DeadBossTags = DeadBossTags;
 	// SaveData.CurrentLevelName = CurrentLevelName;
 	// SaveData.CurrentLevelDisplayName = CurrentLevelDisplayName;
 	// SaveData.RecentCrackName = RecentCrackName;
 	// SaveData.RecentCrackIndex = RecentCrackIndex;
-
+	// SaveData.CurrentGameStoryState = CurrentGameStoryState;
 	return SaveData;
 }
 
-void UDomiGameInstance::SetIsBossDead(int32 BossIndex)
+void UDomiGameInstance::SetIsBossDead(FGameplayTag BossTag)
 {
-	check(IsBossDeadArray.IsValidIndex(BossIndex));
-	IsBossDeadArray[BossIndex] = true;
+	if (BossTag.IsValid())
+	{
+		DeadBossTags.Add(BossTag);
+	}
 }
 
 void UDomiGameInstance::SetCurrentGameStoryState(EGameStoryState NewGameStoryState)
@@ -52,8 +50,27 @@ void UDomiGameInstance::SetCurrentGameStoryState(EGameStoryState NewGameStorySta
 	}
 }
 
-bool UDomiGameInstance::GetIsBossDead(int32 BossIndex) const
+bool UDomiGameInstance::GetIsBossDead(FGameplayTag BossTag) const
 {
-	check(IsBossDeadArray.IsValidIndex(BossIndex));
-	return IsBossDeadArray[BossIndex];
+	return DeadBossTags.Contains(BossTag);
+}
+
+void UDomiGameInstance::AdvanceStoryState()
+{
+	int32 CurrentIndex = static_cast<int32>(CurrentGameStoryState);
+	EGameStoryState NextState = static_cast<EGameStoryState>(CurrentIndex + 1);
+
+	if (UEnum* EnumPtr = StaticEnum<EGameStoryState>())
+	{
+		int32 MaxIndex = EnumPtr->NumEnums() - 1;
+		if (CurrentIndex + 1 < MaxIndex)
+		{
+			SetCurrentGameStoryState(NextState);
+			Debug::Print(FString::Printf(TEXT("GameInstance - AdvanceStoryState: [%d] → [%d]"), CurrentIndex, static_cast<int32>(NextState)));
+		}
+		else
+		{
+			Debug::Print(TEXT("GameInstance - AdvanceStoryState: Already at last state."));
+		}
+	}
 }
