@@ -27,8 +27,5 @@ protected:
 	TObjectPtr<UMnhBoxComponent> RightWeaponTraceBox;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhTracerComponent> LeftAttackTraceComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhTracerComponent> RightAttackTraceComponent;
+	TObjectPtr<UMnhTracerComponent> AttackTraceComponent;
 };

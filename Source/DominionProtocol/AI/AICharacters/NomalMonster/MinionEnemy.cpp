@@ -12,31 +12,29 @@ AMinionEnemy::AMinionEnemy()
 
 	// 왼손 무기 트레이스 박스
 	LeftWeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("LeftWeaponTraceBox"));
-	LeftWeaponTraceBox->SetupAttachment(GetMesh(), TEXT("hand_l"));
-
-	LeftAttackTraceComponent = CreateDefaultSubobject<UMnhTracerComponent>(TEXT("LeftAttackTraceComponent"));
-
-	FMnhTracerConfig LeftTracerConfig;
-	LeftTracerConfig.TracerTag = ItemTags::SwordWeapon;
-	LeftTracerConfig.TraceSettings.TraceChannel = ECC_Pawn;
-	LeftTracerConfig.DrawDebugType = EDrawDebugTrace::None;
-
-	LeftAttackTraceComponent->TracerConfigs.Add(LeftTracerConfig);
-	LeftAttackTraceComponent->InitializeTracers(FGameplayTagContainer({ ItemTags::SwordWeapon }), LeftWeaponTraceBox);
+	LeftWeaponTraceBox->SetupAttachment(GetMesh(), TEXT("weapon_sword_l"));
 
 	// 오른손 무기 트레이스 박스
 	RightWeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("RightWeaponTraceBox"));
-	RightWeaponTraceBox->SetupAttachment(GetMesh(), TEXT("hand_r"));
+	RightWeaponTraceBox->SetupAttachment(GetMesh(), TEXT("weapon_sword_r"));
 
-	RightAttackTraceComponent = CreateDefaultSubobject<UMnhTracerComponent>(TEXT("RightAttackTraceComponent"));
+	AttackTraceComponent = CreateDefaultSubobject<UMnhTracerComponent>(TEXT("RightAttackTraceComponent"));
 
-	FMnhTracerConfig RightTracerConfig;
-	RightTracerConfig.TracerTag = ItemTags::SwordWeapon;
-	RightTracerConfig.TraceSettings.TraceChannel = ECC_Pawn;
-	RightTracerConfig.DrawDebugType = EDrawDebugTrace::None;
+	FMnhTracerConfig TracerConfig;
+	TracerConfig.TracerTag = ItemTags::BasicWeapon;
+	TracerConfig.TraceSettings.TraceChannel = ECC_Pawn;
+	TracerConfig.DrawDebugType = EDrawDebugTrace::ForDuration;
 
-	RightAttackTraceComponent->TracerConfigs.Add(RightTracerConfig);
-	RightAttackTraceComponent->InitializeTracers(FGameplayTagContainer({ ItemTags::SwordWeapon }), RightWeaponTraceBox);
+	AttackTraceComponent->TracerConfigs.Add(TracerConfig);
+
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(ItemTags::BasicWeapon);
+
+	TArray<UMnhBoxComponent*> TraceBoxes = { LeftWeaponTraceBox, RightWeaponTraceBox };
+	for (UMnhBoxComponent* Box : TraceBoxes)
+	{
+		AttackTraceComponent->InitializeTracers(TagContainer, Box);
+	}
 }
 
 void AMinionEnemy::BeginPlay()
