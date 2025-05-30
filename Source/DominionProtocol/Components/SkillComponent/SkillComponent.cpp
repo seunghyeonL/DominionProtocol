@@ -250,7 +250,9 @@ void USkillComponent::StopSkill()
         Debug::Print(TEXT("USkillComponent::StopSkill : Montage not stop."));
     }
 
-    CurrentSkill->StopTrace();
+    FGameplayTagContainer TagContainer;
+
+    CurrentSkill->StopTrace(TagContainer);
 
     // 콤보 초기화
     // 이부분 그냥 ResetCombo같은 함수로 뺄까요?

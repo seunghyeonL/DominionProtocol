@@ -20,7 +20,7 @@ void UAnimNotify_StartTrace::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 				if (IsValid(BaseSkill))
 				{
-					BaseSkill->StartTrace();
+					BaseSkill->StartTrace(TagContainer);
 				}
 			}
 		}

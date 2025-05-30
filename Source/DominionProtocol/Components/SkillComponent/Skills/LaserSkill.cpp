@@ -21,7 +21,7 @@ void ULaserSkill::Execute()
 	check(OwnerCharacter);
 }
 
-void ULaserSkill::StartTrace()
+void ULaserSkill::StartTrace(const FGameplayTagContainer& TagContainer)
 {
 	LaserActor = GetWorld()->SpawnActor<ALaserActor>(
 		ALaserActor::StaticClass(),
@@ -43,7 +43,7 @@ void ULaserSkill::StartTrace()
 	}
 }
 
-void ULaserSkill::StopTrace()
+void ULaserSkill::StopTrace(const FGameplayTagContainer& TagContainer)
 {
 	check(LaserActor);
 

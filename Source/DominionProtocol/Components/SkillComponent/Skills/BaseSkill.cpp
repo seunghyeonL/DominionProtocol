@@ -125,7 +125,7 @@ void UBaseSkill::AttackTrace() const
 	}
 }
 
-void UBaseSkill::StartTrace()
+void UBaseSkill::StartTrace(const FGameplayTagContainer& TagContainer)
 {
 	check(OwnerCharacter);
 
@@ -133,14 +133,20 @@ void UBaseSkill::StartTrace()
 
 	if (IsValid(MnhTracerComponent))
 	{
-		FGameplayTagContainer TagContainer;
-		TagContainer.AddTag(ItemTags::BasicWeapon);
+		if (TagContainer.IsEmpty())
+		{
+			FGameplayTagContainer GameplayTagContainer;
+			GameplayTagContainer.AddTag(ItemTags::BasicWeapon);
+			MnhTracerComponent->StartTracers(GameplayTagContainer);
+
+			return;
+		}
 
 		MnhTracerComponent->StartTracers(TagContainer);
 	}
 }
 
-void UBaseSkill::StopTrace()
+void UBaseSkill::StopTrace(const FGameplayTagContainer& TagContainer)
 {
 	check(OwnerCharacter);
 
@@ -148,8 +154,14 @@ void UBaseSkill::StopTrace()
 
 	if (IsValid(MnhTracerComponent))
 	{
-		FGameplayTagContainer TagContainer;
-		TagContainer.AddTag(ItemTags::BasicWeapon);
+		if (TagContainer.IsEmpty())
+		{
+			FGameplayTagContainer GameplayTagContainer;
+			GameplayTagContainer.AddTag(ItemTags::BasicWeapon);
+			MnhTracerComponent->StopTracers(GameplayTagContainer);
+
+			return;
+		}
 
 		MnhTracerComponent->StopTracers(TagContainer);
 	}

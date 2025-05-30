@@ -19,8 +19,8 @@ public:
 
 	virtual void Execute() override;
 
-	virtual void StartTrace() override;
-	virtual void StopTrace() override;
+	virtual void StartTrace(const FGameplayTagContainer& TagContainer) override;
+	virtual void StopTrace(const FGameplayTagContainer& TagContainer) override;
 
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const override;
 

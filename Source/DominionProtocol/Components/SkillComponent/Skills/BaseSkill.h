@@ -23,8 +23,8 @@ public:
 
 	virtual void AttackTrace() const;
 
-	virtual void StartTrace();
-	virtual void StopTrace();
+	virtual void StartTrace(const FGameplayTagContainer& TagContainer);
+	virtual void StopTrace(const FGameplayTagContainer& TagContainer);
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure=false)
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const;
@@ -44,7 +44,6 @@ public:
 	float GetFinalAttackData(const float AttackPower) const;
 
 protected:
-	
 	virtual bool CheckParry(AActor* HitActor) const;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner")

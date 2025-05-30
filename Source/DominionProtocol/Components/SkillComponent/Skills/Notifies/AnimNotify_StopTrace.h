@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
+#include "GameplayTagContainer.h"
 #include "AnimNotify_StopTrace.generated.h"
 
 /**
@@ -16,4 +17,7 @@ class DOMINIONPROTOCOL_API UAnimNotify_StopTrace : public UAnimNotify
 	
 public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	FGameplayTagContainer TagContainer;
 };
