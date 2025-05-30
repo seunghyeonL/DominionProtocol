@@ -50,10 +50,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	TSubclassOf<class ABaseItem> ItemClass;
 
-	//무기 메시
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
-	UStaticMesh* WeaponMesh;
-
 };
 
 // Item.Consume.이름

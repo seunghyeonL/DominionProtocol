@@ -163,7 +163,7 @@ void UStatusComponent::SetMaxStamina(float NewMaxStamina)
 	const float MaxStamina = NewMaxStamina;
 
 	SetStat(StatTags::MaxStamina, NewMaxStamina);
-	OnMaxHealthChanged.Broadcast(NewMaxStamina);
+	OnMaxStaminaChanged.Broadcast(NewMaxStamina);
 }
 
 
