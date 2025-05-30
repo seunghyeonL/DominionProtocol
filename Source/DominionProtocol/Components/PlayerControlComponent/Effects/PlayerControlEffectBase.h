@@ -31,8 +31,8 @@ protected:
 public:
 	UPlayerControlEffectBase();
 	
-	virtual void Activate();
-	virtual void Activate(float Duration);
+	virtual bool Activate();
+	virtual bool Activate(float Duration);
 	virtual void Deactivate();
 	virtual void Tick(float DeltaTime) override;
 

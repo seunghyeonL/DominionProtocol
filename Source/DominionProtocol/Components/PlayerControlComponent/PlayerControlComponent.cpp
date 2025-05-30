@@ -279,7 +279,7 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	{
 		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
 		{
-			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect); !UsingSkillEffect->IsActive())
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
 			{
 				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
 				UsingSkillEffect->Activate();
@@ -295,10 +295,7 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		if (!(*ControlEffect)->IsActive())
-		{
-			(*ControlEffect)->Activate();
-		}
+		(*ControlEffect)->Activate();
 	}
 	else
 	{
@@ -312,7 +309,7 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	{
 		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
 		{
-			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect); !UsingSkillEffect->IsActive())
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
 			{
 				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
 				UsingSkillEffect->Activate(Duration);
@@ -328,10 +325,7 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		if (!(*ControlEffect)->IsActive())
-		{
-			(*ControlEffect)->Activate(Duration);
-		}
+		(*ControlEffect)->Activate(Duration);
 	}
 	else
 	{
@@ -345,7 +339,7 @@ void UPlayerControlComponent::DeactivateControlEffect(const FGameplayTag& Contro
 	{
 		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
 		{
-			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect); UsingSkillEffect->IsActive())
+			if (auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*ControlEffect))
 			{
 				UsingSkillEffect->SetControlEffectTag(ControlEffectTag);
 				UsingSkillEffect->Deactivate();
@@ -361,10 +355,7 @@ void UPlayerControlComponent::DeactivateControlEffect(const FGameplayTag& Contro
 	
 	if (auto ControlEffect = ControlEffectMap.Find(ControlEffectTag))
 	{
-		if ((*ControlEffect)->IsActive())
-		{
-			(*ControlEffect)->Deactivate();
-		}
+		(*ControlEffect)->Deactivate();
 	}
 	else
 	{

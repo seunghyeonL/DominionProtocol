@@ -8,17 +8,32 @@ UAttackDownEffect::UAttackDownEffect()
 	StatusEffectTag = EffectTags::AttackDown;
 }
 
-void UAttackDownEffect::Activate()
+bool UAttackDownEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
+
+	return true;
 }
 
-void UAttackDownEffect::Activate(float Duration)
+bool UAttackDownEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void UAttackDownEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 }

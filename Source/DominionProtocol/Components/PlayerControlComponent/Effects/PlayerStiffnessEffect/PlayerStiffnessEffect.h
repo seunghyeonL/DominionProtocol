@@ -17,8 +17,8 @@ class DOMINIONPROTOCOL_API UPlayerStiffnessEffect : public UPlayerControlEffectB
 public:
 	UPlayerStiffnessEffect();
 	
-	virtual void Activate() override;
-	virtual void Activate(float Duration) override;
+	virtual bool Activate() override;
+	virtual bool Activate(float Duration) override;
 	virtual void Deactivate() override;
 	
 	virtual void Move(const FInputActionValue& Value) override;

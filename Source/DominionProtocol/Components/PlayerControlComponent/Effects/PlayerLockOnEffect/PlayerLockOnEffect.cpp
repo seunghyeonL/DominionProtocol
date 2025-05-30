@@ -17,18 +17,31 @@ UPlayerLockOnEffect::UPlayerLockOnEffect()
 	ControlEffectTag = EffectTags::LockOn;
 }
 
-void UPlayerLockOnEffect::Activate()
+bool UPlayerLockOnEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
+	return true;
 }
 
-void UPlayerLockOnEffect::Activate(float Duration)
+bool UPlayerLockOnEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
+	return true;
 }
 
 void UPlayerLockOnEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 }
 

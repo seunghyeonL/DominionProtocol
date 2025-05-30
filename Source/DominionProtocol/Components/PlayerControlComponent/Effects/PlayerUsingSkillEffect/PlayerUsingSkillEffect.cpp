@@ -15,9 +15,12 @@ UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 	BufferedInputArray.Reserve(10);
 }
 
-void UPlayerUsingSkillEffect::Activate()
+bool UPlayerUsingSkillEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
 	check(ControlComponent);
@@ -36,11 +39,18 @@ void UPlayerUsingSkillEffect::Activate()
 		OwnerCharacter->SetActorRotation(CurrentMovementVector.Rotation());
 		Debug::Print(FString::Printf(TEXT("UPlayerUsingSkillEffect::Activate : SetRotation : %f, %f, %f"), CurrentMovementVector.Rotation().Pitch, CurrentMovementVector.Rotation().Yaw, CurrentMovementVector.Rotation().Roll));
 	}
+
+	return true;
 }
 
-void UPlayerUsingSkillEffect::Activate(float Duration)
+bool UPlayerUsingSkillEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void UPlayerUsingSkillEffect::Deactivate()

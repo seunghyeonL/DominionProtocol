@@ -8,17 +8,32 @@ UPoisonEffect::UPoisonEffect()
 	StatusEffectTag = EffectTags::Poison;
 }
 
-void UPoisonEffect::Activate()
+bool UPoisonEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
+
+	return true;
 }
 
-void UPoisonEffect::Activate(float Duration)
+bool UPoisonEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void UPoisonEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 }

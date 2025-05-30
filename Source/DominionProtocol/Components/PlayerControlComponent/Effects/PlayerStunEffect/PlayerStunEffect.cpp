@@ -11,30 +11,45 @@ UPlayerStunEffect::UPlayerStunEffect()
 	ControlEffectTag = EffectTags::Stun;
 }
 
-void UPlayerStunEffect::Activate()
+bool UPlayerStunEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
 		Debug::Print(TEXT("UPlayerStunEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
+
+	return true;
 }
 
-void UPlayerStunEffect::Activate(float Duration)
+bool UPlayerStunEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
 		Debug::Print(TEXT("UPlayerStunEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
+
+	return true;
 }
 
 void UPlayerStunEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 }
 

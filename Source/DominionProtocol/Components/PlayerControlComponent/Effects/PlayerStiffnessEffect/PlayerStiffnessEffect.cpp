@@ -11,30 +11,45 @@ UPlayerStiffnessEffect::UPlayerStiffnessEffect()
 	ControlEffectTag = EffectTags::Stiffness;
 }
 
-void UPlayerStiffnessEffect::Activate()
+bool UPlayerStiffnessEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
 		Debug::Print(TEXT("UPlayerStiffnessEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
+
+	return true;
 }
 
-void UPlayerStiffnessEffect::Activate(float Duration)
+bool UPlayerStiffnessEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
 		Debug::Print(TEXT("UPlayerStiffnessEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
+
+	return true;
 }
 
 void UPlayerStiffnessEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 }
 

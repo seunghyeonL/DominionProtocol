@@ -16,8 +16,8 @@ class DOMINIONPROTOCOL_API UPlayerLockOnEffect : public UPlayerControlEffectBase
 	GENERATED_BODY()
 	UPlayerLockOnEffect();
 
-	virtual void Activate() override;
-	virtual void Activate(float Duration) override;
+	virtual bool Activate() override;
+	virtual bool Activate(float Duration) override;
 	virtual void Deactivate() override;
 	virtual void Tick(float DeltaTime) override;
 	

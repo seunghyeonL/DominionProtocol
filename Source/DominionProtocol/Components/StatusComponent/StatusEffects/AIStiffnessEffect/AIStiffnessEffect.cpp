@@ -11,29 +11,43 @@ UAIStiffnessEffect::UAIStiffnessEffect()
 	bIsActive = false;
 }
 
-void UAIStiffnessEffect::Activate()
+bool UAIStiffnessEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
 	
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
 		Debug::Print(TEXT("UAIStiffnessEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
+	return true;
 }
 
-void UAIStiffnessEffect::Activate(float Duration)
+bool UAIStiffnessEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
 		Debug::Print(TEXT("UAIStiffnessEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
+
+	return true;
 }
 
 void UAIStiffnessEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 }

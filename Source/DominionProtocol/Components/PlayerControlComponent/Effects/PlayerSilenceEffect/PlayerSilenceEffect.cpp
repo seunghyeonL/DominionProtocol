@@ -8,18 +8,31 @@ UPlayerSilenceEffect::UPlayerSilenceEffect()
 	ControlEffectTag = EffectTags::Silence;
 }
 
-void UPlayerSilenceEffect::Activate()
+bool UPlayerSilenceEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
+	return true;
 }
 
-void UPlayerSilenceEffect::Activate(float Duration)
+bool UPlayerSilenceEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
+	return true;
 }
 
 void UPlayerSilenceEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 }
 

@@ -23,8 +23,8 @@ protected:
 public:
 	UPlayerRunningEffect();
 
-	virtual void Activate() override;
-	virtual void Activate(float Duration) override;
+	virtual bool Activate() override;
+	virtual bool Activate(float Duration) override;
 	virtual void Deactivate() override;
 
 	virtual void Tick(float DeltaTime) override;

@@ -12,9 +12,12 @@ UAIDeathEffect::UAIDeathEffect()
 	StatusEffectTag = EffectTags::Death;
 }
 
-void UAIDeathEffect::Activate()
+bool UAIDeathEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
 
 	// Ignore Collision with Pawn
 	if (IsValid(OwnerCharacter))
@@ -33,16 +36,25 @@ void UAIDeathEffect::Activate()
 			WidgetComponent->DestroyComponent();
 		}
 	}
+
+	return true;
 }
 
-void UAIDeathEffect::Activate(float Duration)
+bool UAIDeathEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	// Super::Activate(Duration);
+	
 	Debug::Print(TEXT("UAIDeathEffect::Activate : Use Activate function without Duration."));
+	return false;
 }
 
 void UAIDeathEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 	
 	// Set Collision with Pawn

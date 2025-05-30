@@ -9,18 +9,31 @@ UPlayerConfusedEffect::UPlayerConfusedEffect()
 	ControlEffectTag = EffectTags::Confused;
 }
 
-void UPlayerConfusedEffect::Activate()
+bool UPlayerConfusedEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
+	return true;
 }
 
-void UPlayerConfusedEffect::Activate(float Duration)
+bool UPlayerConfusedEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
+	return true;
 }
 
 void UPlayerConfusedEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 }
 

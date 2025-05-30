@@ -17,7 +17,7 @@ class DOMINIONPROTOCOL_API UAttackDownEffect : public UStatusEffectBase
 public:
 	UAttackDownEffect();
 
-	virtual void Activate() override;
-	virtual void Activate(float Duration) override;
+	virtual bool Activate() override;
+	virtual bool Activate(float Duration) override;
 	virtual void Deactivate() override;
 };

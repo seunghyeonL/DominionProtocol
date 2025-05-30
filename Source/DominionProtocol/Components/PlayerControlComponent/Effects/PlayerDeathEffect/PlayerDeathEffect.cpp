@@ -12,9 +12,12 @@ UPlayerDeathEffect::UPlayerDeathEffect()
 	ControlEffectTag = EffectTags::Death;
 }
 
-void UPlayerDeathEffect::Activate()
+bool UPlayerDeathEffect::Activate()
 {
-	Super::Activate();
+	if (!Super::Activate())
+	{
+		return false;
+	}
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
@@ -27,21 +30,33 @@ void UPlayerDeathEffect::Activate()
 	{
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	}
+
+	return true;
 }
 
-void UPlayerDeathEffect::Activate(float Duration)
+bool UPlayerDeathEffect::Activate(float Duration)
 {
-	Super::Activate(Duration);
+	if (!Super::Activate(Duration))
+	{
+		return false;
+	}
 
 	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
 	{
 		Debug::Print(TEXT("UPlayerDeathEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
+
+	return true;
 }
 
 void UPlayerDeathEffect::Deactivate()
 {
+	if (!bIsActive)
+	{
+		return;
+	}
+	
 	Super::Deactivate();
 	
 	// Set Collision with Pawn

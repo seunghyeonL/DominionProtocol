@@ -13,18 +13,18 @@ UPlayerControlEffectBase::UPlayerControlEffectBase()
 	OuterState = nullptr;
 }
 
-void UPlayerControlEffectBase::Activate()
+bool UPlayerControlEffectBase::Activate()
 {
 	if (bIsActive)
 	{
-		return;
+		return false;
 	}
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
 	if (!IsValid(ControlComponent))
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlComponent"));
-		return;
+		return false;
 	}
 	
 	if (UPlayerControlStateBase* PlayerControlState = ControlComponent->GetPlayerControlState())
@@ -40,9 +40,11 @@ void UPlayerControlEffectBase::Activate()
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlState"));
 	}
+
+	return true;
 }
 
-void UPlayerControlEffectBase::Activate(float Duration)
+bool UPlayerControlEffectBase::Activate(float Duration)
 {
 	if (bIsActive)
 	{
@@ -54,14 +56,14 @@ void UPlayerControlEffectBase::Activate(float Duration)
 			Duration,
 			false
 		);
-		return;
+		return false;
 	}
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
 	if (!IsValid(ControlComponent))
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlComponent"));
-		return;
+		return false;
 	}
 	
 	if (UPlayerControlStateBase* PlayerControlState = ControlComponent->GetPlayerControlState())
@@ -84,6 +86,8 @@ void UPlayerControlEffectBase::Activate(float Duration)
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlState"));
 	}
+
+	return true;
 }
 
 void UPlayerControlEffectBase::Deactivate()

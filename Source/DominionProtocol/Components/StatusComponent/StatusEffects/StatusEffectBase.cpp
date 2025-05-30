@@ -11,25 +11,25 @@ UStatusEffectBase::UStatusEffectBase()
 	bIsActive = false;
 }
 
-void UStatusEffectBase::Activate()
+bool UStatusEffectBase::Activate()
 {
 	if (bIsActive)
 	{
-		return;
+		return false;
 	}
-	bIsActive = true;
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (!IsValid(StatusComponent))
 	{
 		Debug::PrintError(TEXT("UStatusEffectBase::Activate : Invalid StatusComponent"));
-		return;
+		return false;
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
+	return bIsActive = true;
 }
 
-void UStatusEffectBase::Activate(float Duration)
+bool UStatusEffectBase::Activate(float Duration)
 {
 	if (bIsActive)
 	{
@@ -41,15 +41,14 @@ void UStatusEffectBase::Activate(float Duration)
 			Duration,
 			false
 		);
-		return;
+		return false;
 	}
-	bIsActive = true;
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	if (!IsValid(StatusComponent))
 	{
 		Debug::PrintError(TEXT("UStatusEffectBase::Activate : Invalid StatusComponent"));
-		return;
+		return false;
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
@@ -60,6 +59,8 @@ void UStatusEffectBase::Activate(float Duration)
 		Duration,
 		false
 	);
+	
+	return bIsActive = true;
 }
 
 void UStatusEffectBase::Deactivate()
@@ -68,8 +69,7 @@ void UStatusEffectBase::Deactivate()
 	{
 		return;
 	}
-	bIsActive = false;
-	// Debug::Print(FString::Printf(TEXT("UStatusEffectBase::Deactivate : bIsActive : %d"), bIsActive ? 1 : 0));
+
 	GetOuter()->GetWorld()->GetTimerManager().ClearTimer(DurationTimer);
 
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
@@ -80,6 +80,7 @@ void UStatusEffectBase::Deactivate()
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().RemoveTag(StatusEffectTag);
+	bIsActive = false;
 }
 
 void UStatusEffectBase::Tick(float DeltaTime)
