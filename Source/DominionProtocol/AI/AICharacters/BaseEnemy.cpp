@@ -135,7 +135,7 @@ bool ABaseEnemy::IsParryingCond()
 
 void ABaseEnemy::OnParried()
 {
-	StatusComponent->ActivateStatusEffect(EffectTags::Stiffness, 0.f, 2.f);
+	StatusComponent->ActivateStatusEffect(EffectTags::Parried, 0.f, 2.f);
 }
 
 void ABaseEnemy::ShowControlEffectTags_Implementation()
