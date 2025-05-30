@@ -79,6 +79,20 @@ ADomiCharacter::ADomiCharacter()
 	ItemComponent = CreateDefaultSubobject<UItemComponent>(TEXT("ItemComponent"));
 	AttackTraceComponent = CreateDefaultSubobject<UMnhTracerComponent>(TEXT("AttackTraceComponent"));
 
+	// Teleport
+	auto CreateHidden = [this](const FName& Name)
+		{
+			UStaticMeshComponent* Comp = CreateDefaultSubobject<UStaticMeshComponent>(Name);
+			Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Comp->SetVisibility(false);
+			Comp->SetHiddenInGame(true);
+			return Comp;
+		};
+
+	StartPoint = CreateHidden(TEXT("StartPoint"));
+	BeginTrace = CreateHidden(TEXT("BeginTrace"));
+	DownTrace = CreateHidden(TEXT("DownTrace"));
+
 	// TraceBox
 	WeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("WeaponTraceBox"));
 
