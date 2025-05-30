@@ -222,34 +222,34 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 				// 새로운 태그 장착
 				SetTagToSlot(SlotName, ItemTag);
 
-				////태그가 악세서리면 효과 적용
-				//if (ItemTag == ItemTags::AccessoryItem)
-				//{
-				//	if (ItemData->ItemClass)
-				//	{
-				//		// 임시 아이템 액터 생성
-				//		FActorSpawnParameters SpawnParams;
-				//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-				//		ABaseItem* AccessoryActor = GetWorld()->SpawnActor<ABaseItem>(ItemData->ItemClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+				//태그가 악세서리면 효과 적용
+				if (ItemTag.MatchesTag(ItemTags::AccessoryItem))
+				{
+					if (ItemData->ItemClass)
+					{
+						// 임시 아이템 액터 생성
+						FActorSpawnParameters SpawnParams;
+						SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+						ABaseItem* AccessoryActor = GetWorld()->SpawnActor<ABaseItem>(ItemData->ItemClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
 
-				//		if (AccessoryActor && AccessoryActor->Implements<UEquipEffectableItemInterface>())
-				//		{
-				//			IEquipEffectableItemInterface::Execute_Equip(AccessoryActor, GetOwner());
-				//			//OnInventoryItemListChanged.Execute();
+						if (AccessoryActor && AccessoryActor->Implements<UEquipEffectableItemInterface>())
+						{
+							IEquipEffectableItemInterface::Execute_Equip(AccessoryActor, GetOwner());
+							//OnInventoryItemListChanged.Execute();
 
-				//			// 효과 적용 후 임시 액터 파괴
-				//			AccessoryActor->Destroy();
-				//		}
-				//		else
-				//		{
-				//			Debug::PrintError(FString::Printf(TEXT("해당 아이템 은 EquipEffectableInterface를 구현하지 않습니다.")));
-				//		}
-				//	}
-				//	else
-				//	{
-				//		Debug::PrintError(FString::Printf(TEXT("아이템 태그에 해당하는 아이템 데이터 또는 클래스를 찾을 수 없습니다.")));
-				//	}
-				//}
+							// 효과 적용 후 임시 액터 파괴
+							AccessoryActor->Destroy();
+						}
+						else
+						{
+							Debug::PrintError(FString::Printf(TEXT("해당 아이템 은 EquipEffectableInterface를 구현하지 않습니다.")));
+						}
+					}
+					else
+					{
+						Debug::PrintError(FString::Printf(TEXT("아이템 태그에 해당하는 아이템 데이터 또는 클래스를 찾을 수 없습니다.")));
+					}
+				}
 				// EquipmentSlots[SlotName] = ItemTag;
 				Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 장착"), *SlotName.ToString(), *ItemTag.ToString()));
 				OnInventoryEquippedSlotItemsChanged.Execute();
@@ -280,6 +280,41 @@ bool UItemComponent::UnequipItem(FName SlotName)
 {
 	if (EquipmentSlots.Contains(SlotName))
 	{
+		FGameplayTag ItemTag = EquipmentSlots[SlotName];
+		if (CachedItemDataMap.IsEmpty())
+		{
+			Debug::Print(TEXT("ItemComponent: CachedItemDataMap is empty. ItemDataTable might not be loaded or assigned correctly."));
+			return false;
+		}
+		const FItemData* ItemData = GetItemDataFromTable(ItemTag);
+
+		if (ItemTag.MatchesTag(ItemTags::AccessoryItem))
+		{
+			if (ItemData->ItemClass)
+			{
+				// 임시 아이템 액터 생성
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				ABaseItem* AccessoryActor = GetWorld()->SpawnActor<ABaseItem>(ItemData->ItemClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+				if (AccessoryActor && AccessoryActor->Implements<UEquipEffectableItemInterface>())
+				{
+					IEquipEffectableItemInterface::Execute_UnEquip(AccessoryActor, GetOwner());
+					//OnInventoryItemListChanged.Execute();
+
+					// 효과 적용 후 임시 액터 파괴
+					AccessoryActor->Destroy();
+				}
+				else
+				{
+					Debug::PrintError(FString::Printf(TEXT("해당 아이템 은 EquipEffectableInterface를 구현하지 않습니다.")));
+				}
+			}
+			else
+			{
+				Debug::PrintError(FString::Printf(TEXT("아이템 태그에 해당하는 아이템 데이터 또는 클래스를 찾을 수 없습니다.")));
+			}
+		}
 		SetTagToSlot(SlotName, FGameplayTag());
 		// EquipmentSlots[SlotName] = FGameplayTag(); // 태그를 비움
 		OnInventoryEquippedSlotItemsChanged.Execute();
