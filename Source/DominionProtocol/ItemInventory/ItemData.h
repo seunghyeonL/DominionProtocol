@@ -50,6 +50,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	TSubclassOf<class ABaseItem> ItemClass;
 
+	//드랍 전용
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UStaticMesh* ItemStaticMesh;
+
 };
 
 // Item.Consume.이름
