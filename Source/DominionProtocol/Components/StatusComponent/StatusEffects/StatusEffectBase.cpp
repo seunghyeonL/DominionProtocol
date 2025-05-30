@@ -86,3 +86,4 @@ void UStatusEffectBase::Deactivate()
 void UStatusEffectBase::Tick(float DeltaTime)
 {
 }
+

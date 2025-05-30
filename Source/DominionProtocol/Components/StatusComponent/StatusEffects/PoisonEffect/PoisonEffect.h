@@ -20,5 +20,7 @@ public:
 	virtual bool Activate() override;
 	virtual bool Activate(float Duration) override;
 	virtual void Deactivate() override;
-	
+
+	UFUNCTION()
+	void ApplyDoTDamage();
 };

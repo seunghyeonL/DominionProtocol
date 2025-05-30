@@ -3,6 +3,10 @@
 
 #include "PoisonEffect.h"
 
+#include "Components/StatusComponent/StatusComponent.h"
+#include "GameFramework/Character.h"
+#include "Player/Damagable.h"
+
 UPoisonEffect::UPoisonEffect()
 {
 	StatusEffectTag = EffectTags::Poison;
@@ -14,7 +18,15 @@ bool UPoisonEffect::Activate()
 	{
 		return false;
 	}
-
+	
+	OwnerCharacter->GetWorldTimerManager().SetTimer(
+		DoTTimer,
+		this,
+		&UPoisonEffect::ApplyDoTDamage,
+		0.5f,
+		true
+		);
+	
 	return true;
 }
 
@@ -25,6 +37,14 @@ bool UPoisonEffect::Activate(float Duration)
 		return false;
 	}
 
+	OwnerCharacter->GetWorldTimerManager().SetTimer(
+		DoTTimer,
+		this,
+		&UPoisonEffect::ApplyDoTDamage,
+		0.25f,
+		true
+		);
+	
 	return true;
 }
 
@@ -34,6 +54,17 @@ void UPoisonEffect::Deactivate()
 	{
 		return;
 	}
+
+	OwnerCharacter->GetWorldTimerManager().ClearTimer(DoTTimer);
 	
 	Super::Deactivate();
+}
+
+void UPoisonEffect::ApplyDoTDamage()
+{
+	if (auto StatusComponent = Cast<UStatusComponent>(GetOuter()))
+	{
+		float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
+		StatusComponent->SetHealth(CurrentHealth - Magnitude / 4);
+	}
 }
