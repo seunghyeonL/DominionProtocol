@@ -6,9 +6,6 @@
 #include "AI/AICharacters/BaseEnemy.h"
 #include "BaseBossEnemy.generated.h"
 
-/**
- * 
- */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBossDeath);
 

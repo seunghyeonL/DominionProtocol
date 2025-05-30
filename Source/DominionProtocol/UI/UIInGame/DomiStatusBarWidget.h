@@ -14,13 +14,13 @@ class DOMINIONPROTOCOL_API UDomiStatusBarWidget : public UUserWidget
 
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void UpdatePlayerHPBar(const float NewHP);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void UpdatePlayerMaxHPBar(const float NewMaxHP);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void UpdatePlayerStaminaBar(const float NewStamina);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void UpdatePlayerMaxStaminaBar(const float NewMaxStamina);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

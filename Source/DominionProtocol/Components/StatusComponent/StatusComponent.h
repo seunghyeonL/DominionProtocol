@@ -16,6 +16,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxStaminaChanged, float, MaxStamina);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMaxShieldChanged, float);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBattleMonster, FString);
 DECLARE_MULTICAST_DELEGATE(FOnDeath);
 
 DECLARE_DELEGATE(FOnSpawned);
@@ -52,6 +54,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnShieldChanged OnShieldChanged;
+
+	FOnMaxShieldChanged OnMaxShieldChanged;
+	FOnBattleMonster OnBattleMonster;
 
 	// TimerHandles
 	FTimerHandle StaminaRecoveryDelayTimer;

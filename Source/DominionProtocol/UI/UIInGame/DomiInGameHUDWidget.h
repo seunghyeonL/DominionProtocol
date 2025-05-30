@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnumAndStruct/EGameStoryState.h"
 #include "Blueprint/UserWidget.h"
 #include "DomiInGameHUDWidget.generated.h"
 
@@ -46,6 +47,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SwitchShowAndHideInventoryWidget();
 
+	UFUNCTION()
+	void OnStoryStateChanged(EGameStoryState NewGameStoryState);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StoryStateChanged();
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder);
 
@@ -53,12 +60,18 @@ protected:
 	virtual void NativeConstruct() override;
 	void SetupStatusBarWidget(const AActor* OwningActor);
 
+	void BindStoryStateChangedDelegate();
+
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AInGameController> OwningController;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bShowCrackWarpWidget = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	EGameStoryState CurrentGameStoryState;
 
 #pragma region UI Alway
 	
@@ -84,5 +97,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UDomiInventoryWidget> InventoryWidget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UBossMonsterHPBarWidget> BossMonsterHPBar;
+	
 #pragma endregion
 };

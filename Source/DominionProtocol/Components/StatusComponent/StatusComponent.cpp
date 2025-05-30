@@ -100,6 +100,7 @@ void UStatusComponent::SetHealth(float NewHealth)
 
 	SetStat(StatTags::Health ,ClampedHealth);
 	OnHealthChanged.Broadcast(ClampedHealth);
+	OnBattleMonster.Broadcast(GetOwner()->GetName());
 	
 	// OnDeath 
 	if (FMath::IsNearlyZero(GetStat(StatTags::Health)))
@@ -134,6 +135,7 @@ void UStatusComponent::SetShield(const float NewShield)
 
 	SetStat(StatTags::Shield ,ClampedShield);
 	OnShieldChanged.Broadcast(ClampedShield);
+	OnBattleMonster.Broadcast(GetOwner()->GetName());
 }
 
 void UStatusComponent::SetStamina(float NewStamina)

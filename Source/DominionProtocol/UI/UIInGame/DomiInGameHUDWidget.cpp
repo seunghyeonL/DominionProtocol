@@ -8,6 +8,7 @@
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Player/InGameController.h"
 
+
 void UDomiInGameHUDWidget::OnPlayerDeath()
 {
 	ShowDeathScriptWidget();
@@ -31,6 +32,12 @@ void UDomiInGameHUDWidget::OnSwitchShowAndHideCrackWarpWidget()
 void UDomiInGameHUDWidget::OnSwitchShowAndHideInventoryWidget()
 {
 	SwitchShowAndHideInventoryWidget();
+}
+
+void UDomiInGameHUDWidget::OnStoryStateChanged(EGameStoryState NewGameStoryState)
+{
+	CurrentGameStoryState = NewGameStoryState;
+	StoryStateChanged();
 }
 
 void UDomiInGameHUDWidget::ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder)
@@ -69,6 +76,8 @@ void UDomiInGameHUDWidget::NativeConstruct()
 	{
 		OwningController = InGameController;
 	}
+
+	BindStoryStateChangedDelegate();
 }
 
 void UDomiInGameHUDWidget::SetupStatusBarWidget(const AActor* OwningActor)
@@ -87,3 +96,16 @@ void UDomiInGameHUDWidget::SetupStatusBarWidget(const AActor* OwningActor)
 		GameMode->OnPlayerSpawn.AddUObject(this, &UDomiInGameHUDWidget::OnPlayerSpawn);
 	}
 }
+
+void UDomiInGameHUDWidget::BindStoryStateChangedDelegate()
+{
+	auto* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		GameInstance->OnStoryStateChanged.AddDynamic(this, &UDomiInGameHUDWidget::OnStoryStateChanged);
+	}
+}
+
+
+
+

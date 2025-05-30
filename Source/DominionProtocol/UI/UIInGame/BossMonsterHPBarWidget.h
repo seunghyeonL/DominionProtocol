@@ -15,21 +15,35 @@ class DOMINIONPROTOCOL_API UBossMonsterHPBarWidget : public UUserWidget
 
 public:
 	UFUNCTION()
-	void SetActiveBossBattle(const bool NewValue);
-	
-	void UpdateBossMonsterHP(const float NewHP);
-	void UpdateBossMonsterShield(const float NewShield);
-	
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void CreateBossMonsterHPBarWidget();
+	void UpdateBossMonsterMaxHP(const float NewMaxHP);
 
+	UFUNCTION()
+	void UpdateBossMonsterMaxShield(const float NewMaxShield);
+
+	UFUNCTION()
+	void UpdateBossMonsterHP(const float NewHP);
+
+	UFUNCTION()
+	void UpdateBossMonsterShield(const float NewShield);
+
+	UFUNCTION()
+	void UpdateBossMonsterName(const FString NewBossMonsterName);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnUpdateBossMonsterName();
+	
 protected:
 	virtual void NativeConstruct() override;
+	
+	void BindBossSpawnedToWidgetDelegate();
+
+	UFUNCTION()
+	void BindSpawnedBossStatusDelegate(AActor* SpawnedBoss);
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	bool bActiveBossBattle;
-
+	UPROPERTY(BlueprintReadOnly)
+	FString BossMonsterName;
+	
 	// HP Section
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float CurrentBossMonsterHP;

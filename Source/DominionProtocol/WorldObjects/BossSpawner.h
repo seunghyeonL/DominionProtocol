@@ -10,6 +10,8 @@
 #include "BossSpawner.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBossSpawnedSignature, FGameplayTag, BossTag, ABossRoomDoor*, BossDoor);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossSpawnedToWidget, AActor*);
+
 UCLASS()
 class DOMINIONPROTOCOL_API ABossSpawner : public AActor, public IStoryDependentInterface
 {
@@ -30,6 +32,8 @@ protected:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnBossSpawnedSignature OnBossSpawned;
+
+	FOnBossSpawnedToWidget OnBossSpawnedToWidget;
 
 	UPROPERTY(EditAnywhere)
 	FGameplayTag BossTag;
