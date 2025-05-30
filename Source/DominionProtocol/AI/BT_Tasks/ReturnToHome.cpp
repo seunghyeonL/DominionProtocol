@@ -8,6 +8,7 @@
 #include "Components/AIComponent/AIStateComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Util/DebugHelper.h"
 
 UReturnToHome::UReturnToHome()
 {
@@ -53,7 +54,7 @@ void UReturnToHome::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 		if (UAIStateComponent* AIStateComp = ControlledActor->FindComponentByClass<UAIStateComponent>())
 		{
 			AIStateComp->SetAIStateByTag(EffectTags::Idle);
-			UE_LOG(LogTemp, Warning, TEXT("Returned Home → Set to Idle"));
+			Debug::PrintError(TEXT("Skeleton HomeIldeIldeHomeIldeIldeHomeIldeIldeHomeIldeIldeHomeIldeIlde"));
 		}
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

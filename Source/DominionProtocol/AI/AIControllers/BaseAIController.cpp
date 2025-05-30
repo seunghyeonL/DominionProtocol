@@ -11,6 +11,7 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "AI/BT_Tasks/ExecutePattern.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "Util/DebugHelper.h"
 
 // Sets default values
 ABaseAIController::ABaseAIController()
@@ -23,9 +24,9 @@ ABaseAIController::ABaseAIController()
 
 	// 시야 감각 구성
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
-	SightConfig->SightRadius = 500.f;
-	SightConfig->LoseSightRadius = 500.f;
-	SightConfig->PeripheralVisionAngleDegrees = 360.f;
+	SightConfig->SightRadius = AISightRadius;
+	SightConfig->LoseSightRadius = LoseSightRadius;
+	SightConfig->PeripheralVisionAngleDegrees = AIVisionAngle;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
@@ -64,7 +65,7 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (AIStateComponent)
 	{
 		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
-		UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
+		Debug::PrintError(TEXT("Skeleton IdleIdleIdleIdleIdleIdleIdleIdle.."));
 	}
 }
 
@@ -82,7 +83,7 @@ void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 	else
 	{
 		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
-		UE_LOG(LogTemp, Warning, TEXT("IdleState Activated"));
+		Debug::PrintError(TEXT("Skeleton TargetIdleTargetIdleTargetIdleTargetIdleTargetIdle"));
 		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);	
 	}
 }
