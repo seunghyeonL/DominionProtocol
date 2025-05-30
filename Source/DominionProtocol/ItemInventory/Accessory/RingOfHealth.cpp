@@ -40,8 +40,12 @@ void ARingOfHealth::EquipRingOfHealth(ADomiCharacter* TargetCharacter)
 		{
 			float CurMaxHealth = StatusComp->GetStat(StatTags::MaxHealth);
 			float NewMaxHealth = CurMaxHealth + MaxHealthBoostAmount;
+
+			float CurHealth = StatusComp->GetStat(StatTags::Health);
+			float NewHealth = CurHealth + MaxHealthBoostAmount;
 			
-			StatusComp->SetStat(StatTags::MaxHealth, NewMaxHealth);
+			StatusComp->SetMaxHealth(NewMaxHealth);
+			StatusComp->SetHealth(NewHealth);
 			Debug::Print(TEXT("Max Health Boosted"));
 		}
 		else
@@ -61,7 +65,16 @@ void ARingOfHealth::UnEquipRingOfHealth(ADomiCharacter* TargetCharacter)
 			float CurMaxHealth = StatusComp->GetStat(StatTags::MaxHealth);
 			float NewMaxHealth = CurMaxHealth - MaxHealthBoostAmount; // 효과 되돌리기
 
-			StatusComp->SetStat(StatTags::MaxHealth, NewMaxHealth);
+			float CurHealth = StatusComp->GetStat(StatTags::Health);
+			//체력이 5 이하로 안떨어지도록
+			float NewHealth = CurHealth - MaxHealthBoostAmount;
+			if (NewHealth <= 0)
+			{
+				NewHealth = 1.f;
+			}
+
+			StatusComp->SetMaxHealth(NewMaxHealth);
+			StatusComp->SetHealth(NewHealth);
 			Debug::Print(TEXT("Max Health Deboosted by Ring of Health (Unequipped)"));
 		}
 		else
