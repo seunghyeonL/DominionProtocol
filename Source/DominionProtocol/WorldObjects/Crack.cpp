@@ -3,7 +3,7 @@
 
 #include "Crack.h"
 #include "Kismet/GameplayStatics.h"
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/TargetPoint.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
@@ -33,9 +33,9 @@ ACrack::ACrack()
 	SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
 	SetRootComponent(SceneComp);
 
-	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComp->SetupAttachment(SceneComp);
-	StaticMeshComp->SetCollisionProfileName(TEXT("BlockAll"));
+	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BlockSphereComponent"));
+	CapsuleComp->SetupAttachment(SceneComp);
+	CapsuleComp->SetCollisionProfileName(TEXT("BlockAll"));
 
 	RespawnTargetPointComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("RespawnTargetPoint"));
 	RespawnTargetPointComp->SetupAttachment(SceneComp);

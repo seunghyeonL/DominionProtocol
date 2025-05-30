@@ -11,7 +11,7 @@ class UWorldInstanceSubsystem;
 class ABaseGameMode;
 class ATargetPoint;
 class ADomiCharacter;
-class USphereComponent;
+class UCapsuleComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCrackSystem, Log, All);
 
@@ -57,13 +57,13 @@ private:
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	USceneComponent* SceneComp;
+	TObjectPtr<USceneComponent> SceneComp;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* StaticMeshComp;
+	TObjectPtr<UCapsuleComponent> CapsuleComp;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	UChildActorComponent* RespawnTargetPointComp;
+	TObjectPtr<UChildActorComponent> RespawnTargetPointComp;
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FText CrackName; // UI전용
@@ -79,16 +79,16 @@ protected:
 
 private:
 	UPROPERTY()
-	ADomiCharacter* CachedCharacter;
+	TObjectPtr<ADomiCharacter> CachedCharacter;
 
 	UPROPERTY()
-	ABaseGameMode* BaseGameMode;
+	TObjectPtr<ABaseGameMode> BaseGameMode;
 
 	UPROPERTY()
-	UWorldInstanceSubsystem* WorldInstanceSubsystem;
+	TObjectPtr<UWorldInstanceSubsystem> WorldInstanceSubsystem;
 	
 	UPROPERTY()
-	ATargetPoint* RespawnTargetPoint;
+	TObjectPtr<ATargetPoint> RespawnTargetPoint;
 	
 	float DistanceCalculateRadiusSquared;
 	
