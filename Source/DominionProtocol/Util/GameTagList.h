@@ -84,9 +84,14 @@ namespace SkillTags
 	inline const FGameplayTag BaseAttackAxe1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Axe"));
 	inline const FGameplayTag BaseAttackAxe2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.second.Axe"));
 	inline const FGameplayTag BaseAttackAxe3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.third.Axe"));
+	inline const FGameplayTag BaseAttackClaw1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Claw"));
+	inline const FGameplayTag BaseAttackClaw2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.second.Claw"));
+	inline const FGameplayTag BaseAttackClaw3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.third.Claw"));
+	inline const FGameplayTag BaseAttackClaw4 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.fourth.Claw"));
 
 	inline const FGameplayTag WeaponSkillSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Sword"));
 	inline const FGameplayTag WeaponSkillAxe1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Axe"));
+	inline const FGameplayTag WeaponSkillClaw1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Claw"));
 
 	inline const FGameplayTag BaseAttackSpear1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Spear"));
 	inline const FGameplayTag PlayerDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Dash.Player"));
@@ -150,6 +155,7 @@ namespace ItemTags
 	inline const FGameplayTag BasicWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Basic"));
 	inline const FGameplayTag SwordWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Sword"));
 	inline const FGameplayTag AxeWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Axe"));
+	inline const FGameplayTag ClawWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Claw"));
 	inline const FGameplayTag SkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill"));
 	inline const FGameplayTag AccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory"));
 
@@ -164,4 +170,10 @@ namespace ItemTags
 	//Other Item Tags
 	inline const FGameplayTag OtherItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Other"));
 	inline const FGameplayTag Key = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.Key"));
+}
+
+namespace TraceTags
+{
+	inline const FGameplayTag HandRight = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right"));
+	inline const FGameplayTag HandLeft = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Left"));
 }
