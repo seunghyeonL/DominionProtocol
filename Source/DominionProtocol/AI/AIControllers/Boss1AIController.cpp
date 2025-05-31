@@ -5,10 +5,15 @@
 
 ABoss1AIController::ABoss1AIController()
 {
-	BaseAttackWeight = 3;
-	SuperAttackWeight = 2;
-	SpecialAttackWeight = 1;
-	EvadeAttackWeight = 0;
+	DefaultBaseAttackWeight = 3;
+	DefaultSuperAttackWeight = 2;
+	DefaultSpecialAttackWeight = 1;
+	DefaultEvadeAttackWeight = 0;
+
+	BaseAttackWeightIncrement = 3;
+	SuperAttackWeightIncrement = 3;
+	SpecialAttackWeightIncrement = 2;
+	EvadeAttackWeightIncrement = 2;
 
 	SpecialAttackCoolDown = 20.f;
 	RangedAttackCoolDown = 20.f;
@@ -19,53 +24,62 @@ ABoss1AIController::ABoss1AIController()
 	bIsActiveEvadeAttack = true;
 }
 
+void ABoss1AIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CurrentBaseAttackWeight = DefaultBaseAttackWeight;
+	CurrentSuperAttackWeight = DefaultSuperAttackWeight;
+	CurrentSpecialAttackWeight = DefaultSpecialAttackWeight;
+	CurrentEvadeAttackWeight = DefaultEvadeAttackWeight;
+}
+
 FGameplayTag ABoss1AIController::GetAttack()
 {
-	int32 TotalWeight = BaseAttackWeight + SuperAttackWeight;
+	int32 TotalWeight = CurrentBaseAttackWeight + CurrentSuperAttackWeight;
 
 	if (bIsActiveSpecialAttack)
 	{
-		TotalWeight += SpecialAttackWeight;
+		TotalWeight += CurrentSpecialAttackWeight;
 	}
 
 	if (bIsActiveEvadeAttack)
 	{
-		TotalWeight += EvadeAttackWeight;
+		TotalWeight += CurrentEvadeAttackWeight;
 	}
 
 	int32 RandomWeight = FMath::RandRange(1, TotalWeight);
 
-	if (RandomWeight <= BaseAttackWeight)
+	if (RandomWeight <= CurrentBaseAttackWeight)
 	{
-		BaseAttackWeight = 0;
 		UpdateWeights();
+		CurrentBaseAttackWeight = DefaultBaseAttackWeight;
 
 		return SkillGroupTags::BaseAttack;
 	}
 
-	RandomWeight -= BaseAttackWeight;
+	RandomWeight -= CurrentBaseAttackWeight;
 
-	if (RandomWeight <= SuperAttackWeight)
+	if (RandomWeight <= CurrentSuperAttackWeight)
 	{
-		SuperAttackWeight = -1;
 		UpdateWeights();
+		CurrentSuperAttackWeight = DefaultSuperAttackWeight;
 
 		return SkillGroupTags::SuperAttack;
 	}
 
-	RandomWeight -= SuperAttackWeight;
+	RandomWeight -= CurrentSuperAttackWeight;
 
-	if (bIsActiveSpecialAttack && RandomWeight <= SpecialAttackWeight)
+	if (bIsActiveSpecialAttack && RandomWeight <= CurrentSpecialAttackWeight)
 	{
-		SpecialAttackWeight = -1;
 		UpdateWeights();
+		CurrentSpecialAttackWeight = DefaultSpecialAttackWeight;
 		DeactivateSpecialAttack();
 
 		return SkillGroupTags::SpecialAttack;
 	}
 
-	EvadeAttackWeight = -1;
-	UpdateWeights();
+	CurrentEvadeAttackWeight = DefaultEvadeAttackWeight;
 	DeactivateEvadeAttack();
 
 	return SkillTags::Boss1EvadeAttack;
@@ -160,16 +174,16 @@ void ABoss1AIController::ActivateEvadeAttack()
 
 void ABoss1AIController::UpdateWeights()
 {
-	BaseAttackWeight += 3;
-	SuperAttackWeight += 3;
+	CurrentBaseAttackWeight += BaseAttackWeightIncrement;
+	CurrentSuperAttackWeight += SuperAttackWeightIncrement;
 
 	if (bIsActiveSpecialAttack)
 	{
-		SpecialAttackWeight += 2;
+		CurrentSpecialAttackWeight += SpecialAttackWeightIncrement;
 	}
 
 	if (bIsActiveEvadeAttack)
 	{
-		EvadeAttackWeight += 2;
+		CurrentEvadeAttackWeight += EvadeAttackWeightIncrement;
 	}
 }

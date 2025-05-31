@@ -95,8 +95,6 @@ void UBoss1SpecialAttackFirst::AttackTrace() const
 	{
 		AActor* HitActor = Hit.GetActor();
 
-		// USkillComponent* HitActorSkillComponent = HitActor->FindComponentByClass<USkillComponent>();
-
 		if (!IsValid(HitActor))
 		{
 			continue;
@@ -104,13 +102,14 @@ void UBoss1SpecialAttackFirst::AttackTrace() const
 
 		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 		{
+			if (CheckParry(HitActor))
+			{
+				return;
+			}
+
 			AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
 
 			AttackData.LaunchVector.Normalize();
-
-			// 피격자가 실행 중이던 스킬 중단
-			// HitActorSkillComponent->StopSkill();
-			// Debug::Print(FString::Printf(TEXT("%s :: Skill is canceled."), *HitActor->GetName()));
 
 			IDamagable::Execute_OnAttacked(HitActor, AttackData);
 

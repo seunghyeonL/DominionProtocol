@@ -32,7 +32,7 @@ public:
 
 	void EndSkill();
 
-	void StopSkill();
+	virtual void StopSkill();
 
 	UBaseSkill* GetCurrentSkill() const { return CurrentSkill; }
 	void SetCurrentSkill(UBaseSkill* Skill) { CurrentSkill = Skill; }
