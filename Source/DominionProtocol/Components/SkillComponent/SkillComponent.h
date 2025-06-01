@@ -56,6 +56,4 @@ private:
 	FTimerHandle ResetComboTimer;
 
 	FGameplayTag CurrentSkillGroupTag;
-
-	
 };

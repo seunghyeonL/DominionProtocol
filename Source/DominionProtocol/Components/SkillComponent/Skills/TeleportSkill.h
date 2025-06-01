@@ -4,6 +4,12 @@
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "TeleportSkill.generated.h"
 
+class ADomiCharacter;
+class UStaticMeshComponent;
+
+constexpr float BackwardOffsetDistance = 100.f;
+constexpr float DownTraceLength = 1000.f;
+
 UCLASS()
 class DOMINIONPROTOCOL_API UTeleportSkill : public UBaseSkill
 {
@@ -17,11 +23,24 @@ public:
 	virtual void Execute() override;
 
 private:
-	void Start();
+	void Move();
 
-	void End();
+	virtual void Tick(float DeltaTime) override;
 
-	FTimerHandle TeleportTimerHandle;
+	UPROPERTY()
+	ADomiCharacter* DomiChar;
 
-	float Distance;
+	UPROPERTY()
+	TObjectPtr<UStaticMeshComponent> StartPoint;
+	UPROPERTY()
+	TObjectPtr<UStaticMeshComponent> BeginTrace;
+	UPROPERTY()
+	TObjectPtr<UStaticMeshComponent> MovePoint;
+	UPROPERTY()
+	TObjectPtr<UParticleSystemComponent> Aura;
+	UPROPERTY()
+	TObjectPtr<UParticleSystemComponent> CantAura;
+
+	bool IsTeleport;
+	bool CanTeleport;
 };

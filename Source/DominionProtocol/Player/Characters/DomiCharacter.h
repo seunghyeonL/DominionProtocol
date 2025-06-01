@@ -68,6 +68,16 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	/** Returns StartPoint subobject **/
+	FORCEINLINE class UStaticMeshComponent* GetStartPoint() const { return StartPoint; }
+	/** Returns BeginTrace subobject **/
+	FORCEINLINE class UStaticMeshComponent* GetBeginTrace() const { return BeginTrace; }
+	/** Returns MovePoint subobject **/
+	FORCEINLINE class UStaticMeshComponent* GetMovePoint() const { return MovePoint; }
+	/** Returns TeleportAura subobject **/
+	FORCEINLINE class UParticleSystemComponent* GetTeleportAura() const { return TeleportAura; }
+	/** Returns CantTeleportAura subobject **/
+	FORCEINLINE class UParticleSystemComponent* GetCantTeleportAura() const { return CantTeleportAura; }
 
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
@@ -155,8 +165,13 @@ protected:
 	TObjectPtr<UStaticMeshComponent> BeginTrace;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
-	TObjectPtr<UStaticMeshComponent> DownTrace;
+	TObjectPtr<UStaticMeshComponent> MovePoint;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
+	TObjectPtr<UParticleSystemComponent> TeleportAura;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
+	TObjectPtr<UParticleSystemComponent> CantTeleportAura;
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AActor> InteractableActor;

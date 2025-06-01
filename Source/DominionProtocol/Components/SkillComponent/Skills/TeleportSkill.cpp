@@ -6,14 +6,17 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
-#include "Engine/EngineTypes.h"
+#include "Player/Characters/DomiCharacter.h"
+#include "Components/StaticMeshComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/SkillComponent.h"
 
 UTeleportSkill::UTeleportSkill()
 {
 	SkillTag = SkillTags::MagicTeleportSkill;
-	Distance = 500.0f;
+	IsTeleport = false;
+	CanTeleport = false;
 }
 
 void UTeleportSkill::Initialize(ACharacter* Instigator)
@@ -25,107 +28,182 @@ void UTeleportSkill::Execute()
 {
 	//Super::Execute();
 
-	Start();
-}
+	DomiChar = Cast<ADomiCharacter>(OwnerCharacter);
+	check(DomiChar);
 
-void UTeleportSkill::Start()
-{
-	// 수정 중
-}
+	StartPoint = DomiChar->GetStartPoint();
+	BeginTrace = DomiChar->GetBeginTrace();
+	MovePoint = DomiChar->GetMovePoint();
+	Aura = DomiChar->GetTeleportAura();
+	CantAura = DomiChar->GetCantTeleportAura();
 
-
-void UTeleportSkill::End()
-{
-	UWorld* World = GetWorld();
-	check(World);
-
-	FVector SpawnLocation = OwnerCharacter->GetActorLocation();
-
-	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
-	check(BaseGameState);
-
-	if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
+	if (!IsTeleport)
 	{
-		Particle[0] = SkillData->Particle[0];
-		if (Particle[0])
-		{
-			UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
-				GetWorld(),
-				Particle[0],
-				SpawnLocation,
-				FRotator::ZeroRotator,
-				true
-			);
-		}
+		IsTeleport = true;
+
+		return;
 	}
 
-	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
-
-	check(SkillComponent);
-	SkillComponent->EndSkill();
+	Move();
 }
 
-// 경사면은 순간이동 안됨
-//void UTeleportSkill::Start()
-//{
-//	UCameraComponent* Camera = OwnerCharacter->FindComponentByClass<UCameraComponent>();
-//	if (!Camera) return;
-//
-//	FVector PlayerForward = OwnerCharacter->GetActorForwardVector();
-//	PlayerForward.Z = 0.f;
-//	PlayerForward.Normalize();
-//
-//	FVector StartLocation = OwnerCharacter->GetActorLocation();
-//	FVector TargetLocation = StartLocation + PlayerForward * Distance;
-//
-//	FRotator PlayerYawRotation = OwnerCharacter->GetActorRotation();
-//	PlayerYawRotation.Pitch = 0.f;
-//	PlayerYawRotation.Roll = 0.f;
-//
-//	if (Sound[0])
-//	{
-//		UGameplayStatics::PlaySoundAtLocation(this, Sound[0], StartLocation);
-//	}
-//
-//	if (Particle[0])
-//	{
-//		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particle[0], StartLocation, FRotator::ZeroRotator, true);
-//	}
-//
-//	FHitResult Hit;
-//	bool bMoved = OwnerCharacter->SetActorLocation(TargetLocation, true, &Hit);
-//
-//	if (!bMoved && Hit.bBlockingHit)
-//	{
-//		float SlopeAngleDeg = FMath::RadiansToDegrees(acosf(Hit.ImpactNormal.Z));
-//
-//		if (SlopeAngleDeg <= 45.f) // 경사면
-//		{
-//			// 경사면 위를 따라 이동할 방향 (경사면의 접선 방향)
-//			FVector ForwardOnSlope = FVector::VectorPlaneProject(PlayerForward, Hit.ImpactNormal).GetSafeNormal();
-//
-//			// 경사면을 따라 Distance만큼 이동한 목표 위치
-//			FVector SlideTarget = StartLocation + ForwardOnSlope * Distance;
-//
-//			// 경사면 방향으로 Sweep 이동 시도
-//			FHitResult SlideHit;
-//			bool bSlideMoved = OwnerCharacter->SetActorLocation(SlideTarget, true, &SlideHit);
-//
-//			if (!bSlideMoved)
-//			{
-//				// 실패하면 장애물 위로 순간이동
-//				FVector OverObstacle = Hit.ImpactPoint + FVector(0, 0, 100.f);
-//				OwnerCharacter->SetActorLocation(OverObstacle, false);
-//			}
-//		}
-//		else // 수직 장애물로 판단
-//		{
-//			FVector OverObstacle = Hit.ImpactPoint + FVector(0, 0, 100.f); // 위로 100 이동
-//			OwnerCharacter->SetActorLocation(OverObstacle, false); // 강제 이동
-//		}
-//	}
-//
-//	OwnerCharacter->SetActorRotation(PlayerYawRotation);
-//
-//	GetWorld()->GetTimerManager().SetTimer(TeleportTimerHandle, this, &UTeleportSkill::End, 0.1f, false);
-//}
+void UTeleportSkill::Move()
+{
+	if (CanTeleport)
+	{
+		OwnerCharacter->TeleportTo(Aura->GetComponentLocation() + FVector(0, 0, 100.0f), OwnerCharacter->GetActorRotation());
+		IsTeleport = false;
+		Aura->SetVisibility(false);
+		CantAura->SetVisibility(false);
+
+		USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+
+		check(SkillComponent);
+		SkillComponent->EndSkill();
+	}
+}
+
+void UTeleportSkill::Tick(float DeltaTime)
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+	if (!SkillComponent->GetCurrentSkill()) return;
+
+	// 텔레포트 조준 모드가 활성화된 경우에만 실행
+	if (IsTeleport)
+	{
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(DomiChar);
+
+		// 캐릭터의 조준 방향을 가져와 Yaw 반영하여 회전 조정
+		FRotator AimRotation = DomiChar->GetControlRotation();
+		FRotator AdjustedRotation = FRotator(0.f, AimRotation.Yaw, 0.f);
+
+		StartPoint->SetWorldRotation(AdjustedRotation);
+		MovePoint->SetWorldRotation(AdjustedRotation);
+
+		const FVector Start = StartPoint->GetComponentLocation();
+		const FVector End = BeginTrace->GetComponentLocation();
+
+		// 캐릭터가 바라보는 방향에 벽이 있는지 확인
+		FHitResult ForwardAimHitResult;
+		bool bForwardHit = World->LineTraceSingleByChannel(
+			ForwardAimHitResult,
+			Start,
+			End,
+			ECC_Visibility,
+			Params
+		);
+
+		//DrawDebugLine(
+		//	World,
+		//	Start,
+		//	End,
+		//	FColor::White,
+		//	false,
+		//	2.0f,
+		//	0,
+		//	2.0f
+		//);
+
+		// 벽 발견
+		if (bForwardHit)
+		{
+			// 충돌 지점으로 이동 포인트 설정
+			MovePoint->SetWorldLocation(ForwardAimHitResult.ImpactPoint);
+
+			// 약간 앞쪽으로 안전하게 텔레포트할 수 있는지 확인
+			const FVector SafeLandingLocation = MovePoint->GetComponentLocation();
+			const FVector AdjustedBackwardLocation = SafeLandingLocation + (MovePoint->GetForwardVector() * -BackwardOffsetDistance);
+
+			FHitResult BackStepAdjustResult;
+			bool bBackHit = World->LineTraceSingleByChannel(
+				BackStepAdjustResult,
+				SafeLandingLocation,
+				AdjustedBackwardLocation,
+				ECC_Visibility,
+				Params
+			);
+
+			//DrawDebugLine(
+			//	World,
+			//	SafeLandingLocation,
+			//	AdjustedBackwardLocation,
+			//	FColor::Blue,
+			//	false,
+			//	2.0f,
+			//	0,
+			//	2.0f
+			//);
+
+			// 벽 위치에서 안전거리만큼 앞으로 이동한 지점 아래 바닥 확인
+			const FVector GroundBackCheckStart = AdjustedBackwardLocation;
+			const FVector GroundBackCheckEnd = GroundBackCheckStart + FVector(0.f, 0.f, -DownTraceLength);
+
+			FHitResult GroundBackHitResult;
+			bool bGroundBackHit = World->LineTraceSingleByChannel(
+				GroundBackHitResult,
+				GroundBackCheckStart,
+				GroundBackCheckEnd,
+				ECC_Visibility,
+				Params
+			);
+
+			//DrawDebugLine(
+			//	World,
+			//	GroundBackCheckStart,
+			//	GroundBackCheckEnd,
+			//	FColor::Green,
+			//	false,
+			//	2.0f,
+			//	0,
+			//	2.0f
+			//);
+
+			Aura->SetWorldLocation(GroundBackHitResult.ImpactPoint);
+
+			Aura->SetVisibility(true);
+			CantAura->SetVisibility(false);
+
+			CanTeleport = true;
+		}
+		// 벽 없음 - 조준 방향 끝점에서 직접 바닥 탐색
+		else
+		{
+			const FVector DirectTraceStart = BeginTrace->GetComponentLocation();
+			const FVector DirectTraceEnd = DirectTraceStart + FVector(0.f, 0.f, -DownTraceLength);
+
+			FHitResult DirectDownwardHitResult;
+			bool bDirectHit = World->LineTraceSingleByChannel(
+				DirectDownwardHitResult,
+				DirectTraceStart,
+				DirectTraceEnd,
+				ECC_Visibility,
+				Params
+			);
+
+			if (bDirectHit)
+			{
+				// 조준 방향에 안전한 바닥 발견 - 직접 텔레포트 가능
+				Aura->SetWorldLocation(DirectDownwardHitResult.ImpactPoint);
+
+				Aura->SetVisibility(true);
+				CantAura->SetVisibility(false);
+
+				CanTeleport = true;
+			}
+			else
+			{
+				// 바닥 없음 - 텔레포트 불가 (낭떠러지 등)
+				CantAura->SetWorldLocation(DirectDownwardHitResult.ImpactPoint);
+
+				Aura->SetVisibility(false);
+				CantAura->SetVisibility(true);
+
+				CanTeleport = false;
+			}
+		}
+	}
+}

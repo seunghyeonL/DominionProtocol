@@ -1,10 +1,11 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "DomiCharacter.h"
 #include "Util/DebugHelper.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "NavigationInvokerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -86,18 +87,17 @@ ADomiCharacter::ADomiCharacter()
 	NavigationInvokerComponent->SetGenerationRadii(6000.f, 10000.f);
 	
 	// Teleport
-	auto CreateHidden = [this](const FName& Name)
-		{
-			UStaticMeshComponent* Comp = CreateDefaultSubobject<UStaticMeshComponent>(Name);
-			Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			Comp->SetVisibility(false);
-			Comp->SetHiddenInGame(true);
-			return Comp;
-		};
+	StartPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StartPoint"));
+	BeginTrace = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BeginTrace"));
+	MovePoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MovePoint"));
+	TeleportAura = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TeleportAura"));
+	CantTeleportAura = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("CantTeleportAura"));
 
-	StartPoint = CreateHidden(TEXT("StartPoint"));
-	BeginTrace = CreateHidden(TEXT("BeginTrace"));
-	DownTrace = CreateHidden(TEXT("DownTrace"));
+	StartPoint->SetupAttachment(GetMesh());
+	BeginTrace->SetupAttachment(StartPoint);
+	MovePoint->SetupAttachment(RootComponent);
+	TeleportAura->SetupAttachment(RootComponent);
+	CantTeleportAura->SetupAttachment(RootComponent);
 
 	// TraceBox
 	WeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("WeaponTraceBox"));

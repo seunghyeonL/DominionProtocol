@@ -126,13 +126,19 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     StatusComponent->ConsumeStamina(Skill->GetStamina());
                 }
 
-                // 스킬 실행전 스킬실행 상태로 바꾸기
-                if (OnSkillStart.IsBound())
-                {
-                    OnSkillStart.Execute(Skill->GetControlEffectTag());
-                }
-                // 해당 스킬 실행
+                // 스킬 실행 전, 현재 사용할 스킬로 저장
                 SetCurrentSkill(Skill);
+                
+                if (CurrentSkill->GetSkillTag() != SkillTags::MagicTeleportSkill)
+                {
+                    // 스킬 실행 전, 스킬 실행 상태로 바꾸기
+                    if (OnSkillStart.IsBound())
+                    {
+                        OnSkillStart.Execute(Skill->GetControlEffectTag());
+                    }
+                }
+
+                // 해당 스킬 실행
                 Skill->Execute(); 
                
                 // 공격이 바뀔 경우 바로 콤보 초기화
@@ -169,7 +175,7 @@ void USkillComponent::EndSkill()
     {
         return;
     }
-    
+
     ACharacter* Character = Cast<ACharacter>(GetOwner());
 
     if (IsValid(Character))
@@ -221,7 +227,11 @@ void USkillComponent::EndSkill()
     // CurrentSkill을 null로 바꾸는 로직을 먼저하기
     // 안그러면 스킬 실행 후 CurrentSkill이 nullptr로 바뀐다. 
     auto CurrentSkillControlEffectTag = CurrentSkill->GetControlEffectTag();
-    CurrentSkill = nullptr;
+
+    if (CurrentSkill->GetSkillTag() != SkillTags::MagicTeleportSkill)
+    {
+        CurrentSkill = nullptr;
+    }    
 
     if (OnSkillEnd.IsBound())
     {
