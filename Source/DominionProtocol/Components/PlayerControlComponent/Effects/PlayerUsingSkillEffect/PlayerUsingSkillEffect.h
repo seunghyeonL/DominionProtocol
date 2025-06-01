@@ -19,10 +19,15 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TArray<UBaseBufferedInput*> BufferedInputArray;
 
+	UPROPERTY(EditAnywhere)
+	FGameplayTagContainer DoubleExecuteSkillEffectTags;
+
 public:
 	UPlayerUsingSkillEffect();
 
 	FORCEINLINE void SetControlEffectTag(FGameplayTag InControlEffectTag) { ControlEffectTag = InControlEffectTag; }
+
+	FORCEINLINE bool IsDoubleExecuteSkillEffect() const { return DoubleExecuteSkillEffectTags.HasTagExact(ControlEffectTag); }
 	
 	virtual bool Activate() override;
 	virtual bool Activate(float Duration) override;

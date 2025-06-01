@@ -13,6 +13,7 @@ UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
 	BufferedInputArray.Reserve(10);
+	DoubleExecuteSkillEffectTags.AddTag(EffectTags::UsingTeleport);
 }
 
 bool UPlayerUsingSkillEffect::Activate()
@@ -80,7 +81,12 @@ void UPlayerUsingSkillEffect::Deactivate()
 
 void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)
 {
-	// Super::Move(Value);
+	if (IsDoubleExecuteSkillEffect())
+	{
+		Super::Move(Value);
+		return;
+	}
+	
 	check(OwnerCharacter);
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
@@ -115,7 +121,10 @@ void UPlayerUsingSkillEffect::Look(const FInputActionValue& Value)
 
 void UPlayerUsingSkillEffect::Dash()
 {
-	// Super::Dash();
+	if (IsDoubleExecuteSkillEffect())
+	{
+		Super::Dash();
+	}
 }
 
 void UPlayerUsingSkillEffect::SprintStart()
@@ -130,12 +139,20 @@ void UPlayerUsingSkillEffect::SprintEnd()
 
 void UPlayerUsingSkillEffect::Parry()
 {
-	// Super::Parry();
+	if (IsDoubleExecuteSkillEffect())
+	{
+		Super::Parry();
+	}
 }
 
 void UPlayerUsingSkillEffect::BaseAttack()
 {
-	// Super::BaseAttack();
+	if (IsDoubleExecuteSkillEffect())
+	{
+		Super::BaseAttack();
+		return;
+	}
+
 	if (auto ControlComponent = GetOuter())
 	{
 		auto BufferedBaseAttack = NewObject<UBufferedBaseAttack>(ControlComponent);
@@ -146,22 +163,34 @@ void UPlayerUsingSkillEffect::BaseAttack()
 
 void UPlayerUsingSkillEffect::WeaponSkill()
 {
-	// Super::WeaponSkill();
+	if (IsDoubleExecuteSkillEffect())
+	{
+		Super::WeaponSkill();
+	}
 }
 
 void UPlayerUsingSkillEffect::MagicSkill()
 {
-	// Super::MagicSkill();
+	if (IsDoubleExecuteSkillEffect())
+	{
+		Super::MagicSkill();
+	}
 }
 
 void UPlayerUsingSkillEffect::Interact()
 {
-	// Super::Interact();
+	if (IsDoubleExecuteSkillEffect())
+	{
+		Super::Interact();
+	}
 }
 
 void UPlayerUsingSkillEffect::LockOn()
 {
-	// Super::LockOn();
+	if (IsDoubleExecuteSkillEffect())
+	{
+		Super::LockOn();
+	}
 }
 
 void UPlayerUsingSkillEffect::Tick(float DeltaTime)

@@ -22,6 +22,9 @@ public:
 
 	virtual void Execute() override;
 
+	FORCEINLINE void SetReadyToTeleport(bool ReadyFlag) { bReadyToTeleport = ReadyFlag; }
+	FORCEINLINE void SetCanTeleport(bool CanFlag) { bCanTeleport = CanFlag; }
+
 private:
 	void Move();
 
@@ -41,6 +44,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UParticleSystemComponent> CantAura;
 
-	bool IsTeleport;
-	bool CanTeleport;
+	bool bReadyToTeleport;
+	bool bCanTeleport;
 };

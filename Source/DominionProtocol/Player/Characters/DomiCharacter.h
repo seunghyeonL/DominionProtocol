@@ -157,21 +157,23 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;	// 추후에 무기 쪽으로 이동 필요
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
 	TObjectPtr<UStaticMeshComponent> StartPoint;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
 	TObjectPtr<UStaticMeshComponent> BeginTrace;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
 	TObjectPtr<UStaticMeshComponent> MovePoint;
 
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
 	TObjectPtr<UParticleSystemComponent> TeleportAura;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
 	TObjectPtr<UParticleSystemComponent> CantTeleportAura;
+	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AActor> InteractableActor;

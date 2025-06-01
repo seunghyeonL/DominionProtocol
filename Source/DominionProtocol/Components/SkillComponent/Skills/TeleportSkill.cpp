@@ -15,8 +15,9 @@
 UTeleportSkill::UTeleportSkill()
 {
 	SkillTag = SkillTags::MagicTeleportSkill;
-	IsTeleport = false;
-	CanTeleport = false;
+	ControlEffectTag = EffectTags::UsingTeleport;
+	bReadyToTeleport = false;
+	bCanTeleport = false;
 }
 
 void UTeleportSkill::Initialize(ACharacter* Instigator)
@@ -37,22 +38,23 @@ void UTeleportSkill::Execute()
 	Aura = DomiChar->GetTeleportAura();
 	CantAura = DomiChar->GetCantTeleportAura();
 
-	if (!IsTeleport)
+	if (!bReadyToTeleport)
 	{
-		IsTeleport = true;
+		bReadyToTeleport = true;
 
 		return;
 	}
-
+	
 	Move();
 }
 
 void UTeleportSkill::Move()
 {
-	if (CanTeleport)
+	if (bCanTeleport)
 	{
 		OwnerCharacter->TeleportTo(Aura->GetComponentLocation() + FVector(0, 0, 100.0f), OwnerCharacter->GetActorRotation());
-		IsTeleport = false;
+		bReadyToTeleport = false;
+		bCanTeleport = false;
 		Aura->SetVisibility(false);
 		CantAura->SetVisibility(false);
 
@@ -72,7 +74,7 @@ void UTeleportSkill::Tick(float DeltaTime)
 	if (!SkillComponent->GetCurrentSkill()) return;
 
 	// 텔레포트 조준 모드가 활성화된 경우에만 실행
-	if (IsTeleport)
+	if (bReadyToTeleport)
 	{
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(DomiChar);
@@ -167,7 +169,7 @@ void UTeleportSkill::Tick(float DeltaTime)
 			Aura->SetVisibility(true);
 			CantAura->SetVisibility(false);
 
-			CanTeleport = true;
+			bCanTeleport = true;
 		}
 		// 벽 없음 - 조준 방향 끝점에서 직접 바닥 탐색
 		else
@@ -192,7 +194,7 @@ void UTeleportSkill::Tick(float DeltaTime)
 				Aura->SetVisibility(true);
 				CantAura->SetVisibility(false);
 
-				CanTeleport = true;
+				bCanTeleport = true;
 			}
 			else
 			{
@@ -202,7 +204,7 @@ void UTeleportSkill::Tick(float DeltaTime)
 				Aura->SetVisibility(false);
 				CantAura->SetVisibility(true);
 
-				CanTeleport = false;
+				bCanTeleport = false;
 			}
 		}
 	}

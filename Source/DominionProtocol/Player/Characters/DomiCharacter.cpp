@@ -92,7 +92,7 @@ ADomiCharacter::ADomiCharacter()
 	MovePoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MovePoint"));
 	TeleportAura = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TeleportAura"));
 	CantTeleportAura = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("CantTeleportAura"));
-
+	
 	StartPoint->SetupAttachment(GetMesh());
 	BeginTrace->SetupAttachment(StartPoint);
 	MovePoint->SetupAttachment(RootComponent);
