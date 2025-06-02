@@ -10,12 +10,13 @@
 #include "Util/DebugHelper.h"
 
 AEssence::AEssence()
-	:	MaxSpeed(1500.f),
+	:	MaxSpeed(5000.f),
 		InitialSpeed(0.f),
-		Accelerate(10),
+		Accelerate(300),
+		EssenceAmount(1),
 		CurrentSpeed(InitialSpeed)
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	SceneRoot = CreateDefaultSubobject<USceneComponent>("SceneRoot");
 	SetRootComponent(SceneRoot);
@@ -34,7 +35,7 @@ void AEssence::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SphereComponent->OnComponentHit.AddDynamic(this, &AEssence::OnHitWithPlayer);
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AEssence::OnOverlapBegin);
 
 	PlayerCharacter = Cast<ADomiCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	checkf(PlayerCharacter, TEXT("AEssence::BeginPlay : DomiCharacter Not Found"));
@@ -57,10 +58,11 @@ void AEssence::Tick(float DeltaTime)
 	CurrentSpeed = FMath::Clamp(CurrentSpeed, 0.f, MaxSpeed);
 
 	FVector Movement = NewDirection * CurrentSpeed * DeltaTime;
+	AddActorWorldOffset(Movement);
 }
 
-void AEssence::OnHitWithPlayer(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+void AEssence::OnOverlapBegin(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!IsValid(OtherActor) && !OtherActor->ActorHasTag("Player"))
 	{
