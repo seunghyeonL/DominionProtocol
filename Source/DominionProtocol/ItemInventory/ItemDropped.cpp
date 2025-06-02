@@ -1,5 +1,5 @@
 #include "ItemInventory/ItemDropped.h"
-#include "Particles/ParticleSystem.h" 
+#include "NiagaraComponent.h"
 #include "Components/ItemComponent/ItemComponent.h" 
 #include "ItemData.h"
 #include "Util/DebugHelper.h"
@@ -7,9 +7,13 @@
 AItemDropped::AItemDropped()
 {
 	// VFX 컴포넌트 생성 및 초기화
-	AuraVFXComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AuraVFX"));
+	AuraVFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("AuraVFX"));
 	AuraVFXComponent->SetupAttachment(RootComponent); //스태틱 메시에 attach
 	AuraVFXComponent->bAutoActivate = true; //VFX를 재생
+
+	AuraVFXComponent->SetRelativeLocation(FVector::ZeroVector);
+	AuraVFXComponent->SetRelativeRotation(FRotator::ZeroRotator);
+	AuraVFXComponent->SetRelativeScale3D(FVector(1.0f));
 
 	ItemSubclassToAward = ABaseItem::StaticClass();
 }
@@ -58,10 +62,15 @@ void AItemDropped::BeginPlay()
 		Debug::Print(TEXT("ItemDropped: ItemSubclassToAward is not set!"), FColor::Red);
 	}
 
-	// AuraVFXComponent에 파티클 시스템이 할당되어 있다면 재생
-	if (AuraVFXComponent && AuraVFXComponent->Template)
+	//나이아가라 이펙트 재생
+	if (AuraVFXComponent && AuraNiagaraSystem)
 	{
-		AuraVFXComponent->ActivateSystem();
+		AuraVFXComponent->SetAsset(AuraNiagaraSystem);
+		AuraVFXComponent->Activate(true);
+	}
+	else
+	{
+		Debug::Print(TEXT("ItemDropped: AuraVFXComponent or AuraNiagaraSystem is null. Niagara effect will not play."), FColor::Yellow);
 	}
 }
 
