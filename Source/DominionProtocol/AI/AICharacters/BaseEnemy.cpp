@@ -10,9 +10,11 @@
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Components/WidgetComponent/DomiWidgetComponent.h"
 #include "DomiFramework/GameState/BaseGameState.h"
+#include "WorldObjects/Essence.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
+	:	EssenceAmount(500)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -47,6 +49,26 @@ void ABaseEnemy::BeginPlay()
 void ABaseEnemy::OnDeath()
 {
 	StatusComponent->ActivateStatusEffect(EffectTags::Death, 0);
+
+	// 사망 시Essence 생성
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	//캡슐컴포넌트 HalfHeight로 Essence 스폰위치 조절
+	UCapsuleComponent* CapsuleComp = FindComponentByClass<UCapsuleComponent>();
+	if (!IsValid(CapsuleComp))
+	{
+		Debug::PrintError(TEXT("ABaseEnemy::OnDeath : CapsuleComponent is not founded"));
+		return;
+	}
+	FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, CapsuleComp->GetScaledCapsuleHalfHeight());
+	
+	AEssence* NewEssence = Cast<AEssence>(GetWorld()->SpawnActor<AEssence>(SpawnLocation, GetActorRotation(), SpawnParams));
+	if (IsValid(NewEssence))
+	{
+		// 각 몬스터별 균열 정수량만큼 Essence에 세팅
+		NewEssence->SetEssenceAmount(EssenceAmount);
+	}
 }
 
 void ABaseEnemy::OnGroggy()

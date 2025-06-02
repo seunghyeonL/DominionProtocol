@@ -81,6 +81,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
 	FGameplayTagContainer InvincibilityTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property")
+	int32 EssenceAmount;
 	
 	// UI Section
 	UPROPERTY(BlueprintReadOnly, Category = "Components")
