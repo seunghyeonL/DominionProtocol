@@ -61,6 +61,12 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 			FSkillComponentInitializeData InitializeData = WeaponData->WeaponSkillData;
 			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
 		}
+		else
+		{
+			FSkillComponentInitializeData InitializeData;
+			InitializeData.SkillGroupInitializeDatas.Add({SkillGroupTags::WeaponSkill, {}});
+			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
+		}
 	}
 
 	EquipmentSlots[SlotName] = ItemTag;
