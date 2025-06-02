@@ -128,6 +128,19 @@ namespace SkillTags
 	inline const FGameplayTag Boss1JumpAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.JumpAttack"));
 
 	inline const FGameplayTag Boss1RangedAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.RangedAttack"));
+
+	// Boss2
+	inline const FGameplayTag Boss2LevelStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.LevelStart"));
+	inline const FGameplayTag Boss2BaseAttack1First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1.first"));
+	inline const FGameplayTag Boss2BaseAttack1Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1.second"));
+	inline const FGameplayTag Boss2BaseAttack1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1.third"));
+	inline const FGameplayTag Boss2BaseAttack1Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1.Fourth"));
+
+	inline const FGameplayTag Boss2BaseAttack2First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.first"));
+	inline const FGameplayTag Boss2BaseAttack2Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.second"));
+	inline const FGameplayTag Boss2BaseAttack2Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.third"));
+	inline const FGameplayTag Boss2BaseAttack2Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.Fourth"));
+	inline const FGameplayTag Boss2BaseAttack2Fifth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.Fourth"));
 }
 
 namespace PawnTags
