@@ -209,10 +209,7 @@ void USkillComponent::EndSkill()
                 return;
             }
 
-            if (FSkillGroup* SkillGroup = WeakThis->SkillGroupMap.Find(WeakThis->CurrentSkillGroupTag))
-            {
-                SkillGroup->ComboIdx = 0;
-            }
+            WeakThis->ResetCombo(WeakThis->CurrentSkillGroupTag);
         },
         ComboResetDelay,
         false
@@ -226,6 +223,14 @@ void USkillComponent::EndSkill()
     if (OnSkillEnd.IsBound())
     {
         OnSkillEnd.Execute(CurrentSkillControlEffectTag);
+    }
+}
+
+void USkillComponent::ResetCombo(const FGameplayTag& SkillGroupTag)
+{
+    if (FSkillGroup* SkillGroup = SkillGroupMap.Find(SkillGroupTag))
+    {
+        SkillGroup->ComboIdx = 0;
     }
 }
 
