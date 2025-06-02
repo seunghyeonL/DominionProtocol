@@ -18,6 +18,7 @@
 #include "Effects/PlayerStunEffect/PlayerStunEffect.h"
 #include "Effects/PlayerUsingSkillEffect/PlayerUsingSkillEffect.h"
 #include "InputActionValue.h"
+#include "Components/StatusComponent/StatusComponentUser.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -140,7 +141,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()
 		SphereTraceQueryParams
 	);
 
-	SetLockOnTargetActor(nullptr);
+	// SetLockOnTargetActor(nullptr);
 	
 	if (bHit)
 	{
@@ -149,6 +150,12 @@ bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()
 		for (const FHitResult& Hit : SphereTraceHitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
+			// StatusComponent를 가지고 있는지 == Pawn 중에 Enemy인 액터들만 통과
+			auto StatusComponenetUser = Cast<IStatusComponentUser>(HitActor);
+			if (!StatusComponenetUser)
+			{
+				continue;
+			}
 
 			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
 			{
@@ -214,6 +221,12 @@ bool UPlayerControlComponent::SetLockOnTargetActorInVisibility()
 		for (const FHitResult& Hit : SphereTraceHitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
+			// StatusComponent를 가지고 있는지 == Pawn 중에 Enemy인 액터들만 통과
+			auto StatusComponenetUser = Cast<IStatusComponentUser>(HitActor);
+			if (!StatusComponenetUser)
+			{
+				continue;
+			}
 
 			if (APawn* HitPawn = Cast<APawn>(Hit.GetActor()))
 			{

@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "LandscapeGizmoActiveActor.h"
 #include "VectorTypes.h"
+#include "AI/AIControllers/BaseAIController.h"
 #include "GameFramework/Character.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Util/DebugHelper.h"
@@ -55,15 +56,26 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 	check(ControlComponent);
 
 	AActor* LockOnTargetActor = ControlComponent->GetLockOnTargetActor();
-	check(LockOnTargetActor);
+	auto StatusComponenetUser = Cast<IStatusComponentUser>(LockOnTargetActor);
+	check(StatusComponenetUser);
+	if (StatusComponenetUser->GetActiveStatusEffectTags().HasTagExact(EffectTags::Death))
+	{
+		LockOnTargetActor = nullptr;
+		Deactivate();
+		ControlComponent->LockOn();
+		return;
+	}
 	
 	FVector LockOnTargetActorLocation = LockOnTargetActor->GetActorLocation();
 
 	auto Controller = OwnerCharacter->GetController();
 	check(Controller);
+	FVector ViewLocation;
+	FRotator ViewRotation;
+	Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	
 	// 타겟방향의 벡터 계산
-	FRotator NewControllerRotator = (LockOnTargetActorLocation - OwnerCharacter->GetActorLocation()).Rotation();
+	FRotator NewControllerRotator = (LockOnTargetActorLocation - ViewLocation).Rotation();
 	NewControllerRotator.Pitch = FMath::Min(NewControllerRotator.Pitch, -15.0f);
 	
 	const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();

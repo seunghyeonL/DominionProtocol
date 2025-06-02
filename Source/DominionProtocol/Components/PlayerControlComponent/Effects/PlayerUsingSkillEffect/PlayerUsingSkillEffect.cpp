@@ -161,7 +161,7 @@ void UPlayerUsingSkillEffect::Interact()
 
 void UPlayerUsingSkillEffect::LockOn()
 {
-	// Super::LockOn();
+	Super::LockOn();
 }
 
 void UPlayerUsingSkillEffect::Tick(float DeltaTime)
