@@ -6,9 +6,12 @@
 #include "WorldObjects/Crack.h"
 #include "Util/DebugHelper.h"
 
-UDomiGameInstance::UDomiGameInstance()
+void UDomiGameInstance::Init()
 {
+	Super::Init();
+
 	CurrentGameStoryState = EGameStoryState::Tutorial;
+	PlayerCurrentEssence = 0;
 }
 
 void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)

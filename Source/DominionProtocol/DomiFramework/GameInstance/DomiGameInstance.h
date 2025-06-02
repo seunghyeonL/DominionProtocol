@@ -22,8 +22,8 @@ class DOMINIONPROTOCOL_API UDomiGameInstance : public UGameInstance
 #pragma region Share
 	
 public:
-	UDomiGameInstance();
-
+	virtual void Init() override;
+	
 	//Save & Load
 	void LoadSaveData(const FInstanceData& SaveData);
 	FInstanceData GetSaveData() const;
@@ -33,14 +33,23 @@ public:
 	
 	void SetCurrentGameStoryState(EGameStoryState NewGameStoryState);
 
+	FORCEINLINE void SetPlayerCurrentEssence(int32 NewPlayerCurrentEssence) { PlayerCurrentEssence = NewPlayerCurrentEssence; }
+
+	FORCEINLINE void AddPlayerCurrentEssence(int32 AddEssenceValue) { PlayerCurrentEssence += AddEssenceValue; }
+	
+	FORCEINLINE void SubtractPlayerCurrentEssence(int32 SubtractEssenceValue) { PlayerCurrentEssence -= SubtractEssenceValue; }
 	
 	//Getter
+	UFUNCTION(BlueprintCallable)
+	int32 GetPlayerCurrentEssence() const { return PlayerCurrentEssence; }
+	
 	bool GetIsBossDead(FGameplayTag BossTag) const;
 	
 	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
 	FORCEINLINE EGameStoryState GetCurrentGameStoryState() const { return CurrentGameStoryState; }
 
 protected:
+	
 	
 private:
 	UPROPERTY()
@@ -54,6 +63,9 @@ private:
 
 #pragma region KyuHyeok
 
+private:
+	int32 PlayerCurrentEssence;
+	
 #pragma endregion
 
 
