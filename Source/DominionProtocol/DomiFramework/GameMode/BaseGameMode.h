@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LevelSequence.h"
 #include "GameFramework/GameMode.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "WorldObjects/BossRoomDoor.h"
 #include "BaseGameMode.generated.h"
 
+class ALevelSequenceActor;
+class ULevelSequencePlayer;
 class UStatusComponent;
 class UItemInstanceSubsystem;
 class UWorldInstanceSubsystem;
@@ -98,13 +101,42 @@ protected:
 	UPROPERTY()
 	TArray<FEnemySpawnInfo> CachedEnemyInfo;
 
+	bool bIsSameLevelMove;
+
+	FName MoveTargetLevelName;
+	
+	FVector PendingMoveLocation;
+	
+	FRotator PendingMoveRotation;
+
 #pragma endregion
 
 	
 #pragma region KyuHyeok
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void PlayFade(bool bFadeIn);
+	
 	void PlayerLevelUp(FGameplayTag StatTag);
+	
+protected:
+	UFUNCTION()
+	void OnFadeSequenceFinished();
+	
+	void SetPlayerInputEnable(bool bEnable);
+	
+	UPROPERTY()
+	TObjectPtr<ULevelSequence> FadeSequence;
+
+	UPROPERTY()
+	TObjectPtr<ULevelSequencePlayer> SequencePlayer;
+
+	UPROPERTY()
+	ALevelSequenceActor* SequenceActor;
+
+	UPROPERTY()
+	bool bIsFadeIn;
 	
 #pragma endregion
 

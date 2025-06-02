@@ -16,6 +16,12 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "EngineUtils.h"
+#include "LevelSequencePlayer.h"
+#include "LevelSequenceActor.h"
+#include "MovieSceneSequencePlaybackSettings.h"
+#include "MovieScene.h"
+#include "MovieSceneSequence.h"
+#include "Engine/Engine.h"
 
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
@@ -24,7 +30,8 @@ ABaseGameMode::ABaseGameMode()
 	:	GameInstance(nullptr),
 		PlayerCharacter(nullptr),
 		RecentCrackCache(nullptr),
-		RespawnDelay(2.f)
+		RespawnDelay(2.f),
+		bIsFadeIn(true)
 {
 }
 
@@ -43,6 +50,29 @@ void ABaseGameMode::BeginPlay()
 
 	World = GetWorld();
 	check(World);
+	
+	if (!IsValid(FadeSequence))
+	{
+		FadeSequence = LoadObject<ULevelSequence>(nullptr, TEXT("/Game/Levels/LevelSequence/FadeTrack"));
+		if (!IsValid(FadeSequence))
+		{
+			Debug::Print(FString::Printf(TEXT("%s::BeginPlay : Failed to load 'FadeTrack' Level Sequence"), *GetName()));
+			return;
+		}
+	}
+	
+	SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
+		GetWorld(), 
+		FadeSequence, 
+		FMovieSceneSequencePlaybackSettings(),
+		SequenceActor
+	);
+
+	if (IsValid(SequencePlayer))
+	{
+		SequencePlayer->SetPlayRate(1.0f);
+		SequencePlayer->OnFinished.AddDynamic(this, &ABaseGameMode::OnFadeSequenceFinished);
+	}
 }
 
 void ABaseGameMode::StartPlay()
@@ -98,6 +128,10 @@ void ABaseGameMode::StartPlay()
 			IStoryDependentInterface::Execute_OnStoryStateUpdated(Actor, GameInstance->GetCurrentGameStoryState());
 		}
 	}
+
+	// 페이드인
+	SetPlayerInputEnable(false);
+	PlayFade(true);
 }
 
 void ABaseGameMode::StartBattle(FGameplayTag BossTag, ABossRoomDoor* BossDoor)
@@ -167,27 +201,31 @@ void ABaseGameMode::MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCr
 		Debug::Print(TEXT("TargetCrackData is nullptr"));
 		return;
 	}
-
-	Debug::Print(FString::Printf(TEXT("Target Location: X=%.2f, Y=%.2f, Z=%.2f"), 
-								TargetCrackData->RespawnLocation.X,
-								TargetCrackData->RespawnLocation.Y,
-								TargetCrackData->RespawnLocation.Z));
+	
+	// Debug::Print(FString::Printf(TEXT("Target Location: X=%.2f, Y=%.2f, Z=%.2f"), 
+	// 							TargetCrackData->RespawnLocation.X,
+	// 							TargetCrackData->RespawnLocation.Y,
+	// 							TargetCrackData->RespawnLocation.Z));
 	
 	WorldInstanceSubsystem->SetRecentCrackIndex(InCrackIndex);
 	WorldInstanceSubsystem->SetRecentCrackName(TargetCrackData->CrackName);
 	WorldInstanceSubsystem->SetMoveTargetLocation(TargetCrackData->RespawnLocation);
 	WorldInstanceSubsystem->SetMoveTargetRotator(TargetCrackData->RespawnRotation);
-	
+
+	PlayFade(false);
 	if (CurrentLevelName == InOwningCrackLevelName)
 	{
-		PlayerCharacter->SetActorLocationAndRotation(TargetCrackData->RespawnLocation, TargetCrackData->RespawnRotation);
+		bIsSameLevelMove = true;
+		PendingMoveLocation = TargetCrackData->RespawnLocation;
+		PendingMoveRotation = TargetCrackData->RespawnRotation;
 		RecentCrackCache = BaseGameState->GetCrackByIndex(InCrackIndex);
 	}
 	else if (CurrentLevelName != InOwningCrackLevelName)
 	{
+		bIsSameLevelMove = false;
+		MoveTargetLevelName = FName(InOwningCrackLevelName);
 		Debug::Print(TEXT("Move Another Level"));
 		WorldInstanceSubsystem->SwitchIsLevelChanged();
-		UGameplayStatics::OpenLevel(this, FName(InOwningCrackLevelName));
 	}
 }
 
@@ -219,6 +257,40 @@ void ABaseGameMode::RespawnEnemies()
 
 #pragma region KyuHyeok
 
+void ABaseGameMode::PlayFade(bool bFadeIn)
+{
+	if (!IsValid(FadeSequence))
+	{
+		Debug::Print(TEXT("FadeSequence is not valid"));
+		return;
+	}
+
+	if (!IsValid(SequencePlayer))
+	{
+		Debug::Print(TEXT("SequencePlayer is not valid"));
+		return;
+	}
+
+	FFrameRate FrameRate = FadeSequence->GetMovieScene()->GetTickResolution();
+	FFrameTime SequenceLength = FadeSequence->GetMovieScene()->GetPlaybackRange().Size<FFrameTime>();
+	
+	if (bFadeIn)
+	{
+		bIsFadeIn = true;
+		SequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(FFrameTime(0), EUpdatePositionMethod::Play));
+		SequencePlayer->SetPlayRate(1.f);
+		SequencePlayer->Play();
+	}
+	else
+	{
+		bIsFadeIn = false;
+		SetPlayerInputEnable(false);
+		SequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(SequenceLength, EUpdatePositionMethod::Play));
+		SequencePlayer->SetPlayRate(-1.f);
+		SequencePlayer->Play();
+	}
+}
+
 void ABaseGameMode::PlayerLevelUp(FGameplayTag StatTag)
 {
 	if (IsValid(PlayerCharacter))
@@ -229,6 +301,63 @@ void ABaseGameMode::PlayerLevelUp(FGameplayTag StatTag)
 		}
 		//레벨업 로직 추후 작성
 	}
+}
+
+void ABaseGameMode::OnFadeSequenceFinished()
+{
+	if (bIsFadeIn)
+	{
+		bIsFadeIn = false;
+		SetPlayerInputEnable(true);
+	}
+	else
+	{
+		if (bIsSameLevelMove)
+		{
+			PlayerCharacter->SetActorLocationAndRotation(PendingMoveLocation, PendingMoveRotation);
+			PlayFade(true);
+		}
+		else
+		{
+			UGameplayStatics::OpenLevel(this, FName(MoveTargetLevelName));
+		}
+	}
+}
+
+void ABaseGameMode::SetPlayerInputEnable(bool bEnable)
+{
+	if (!IsValid(PlayerCharacter))
+	{
+		Debug::Print(TEXT("PlayerCharacter is not valid"));
+		return;
+	}
+
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
+	if (!IsValid(PlayerController))
+	{
+		Debug::Print(TEXT("PlayerController is not valid"));
+		return;
+	}
+	
+	if (bEnable)
+	{
+		PlayerController->SetIgnoreMoveInput(false);
+		PlayerController->SetIgnoreLookInput(false);
+		PlayerController->EnableInput(PlayerController);
+
+		FInputModeGameOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+	}
+	else
+	{
+		PlayerController->SetIgnoreMoveInput(true);
+		PlayerController->SetIgnoreLookInput(true);
+		PlayerController->DisableInput(PlayerController);
+
+		FInputModeUIOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+	}
+	
 }
 
 #pragma endregion
