@@ -187,6 +187,12 @@ void ABaseGameState::CacheAllCracks()
 {
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(World, ACrack::StaticClass(), FoundActors);
+
+	if (FoundActors.IsEmpty())
+	{
+		return;
+	}
+	
 	for (AActor* Actor : FoundActors)
 	{
 		ACrack* Crack = Cast<ACrack>(Actor);
