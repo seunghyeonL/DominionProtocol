@@ -49,6 +49,8 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	check(IsValid(OwnerCharacter));
+
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
 	check(ControlComponent);
 
@@ -56,15 +58,16 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 	check(LockOnTargetActor);
 	
 	FVector LockOnTargetActorLocation = LockOnTargetActor->GetActorLocation();
+
+	auto Controller = OwnerCharacter->GetController();
+	check(Controller);
 	
 	// 타겟방향의 벡터 계산
-	const FVector LockOnTargetActorEyeLocation = FVector(LockOnTargetActorLocation.X,LockOnTargetActorLocation.Y,150);
-	float ControllerLockOnHeight = 200;
-	const FRotator NewControllerRotator = (LockOnTargetActorEyeLocation - OwnerCharacter->GetActorLocation() - ControllerLockOnHeight * FVector::UpVector).Rotation();
+	FRotator NewControllerRotator = (LockOnTargetActorLocation - OwnerCharacter->GetActorLocation()).Rotation();
+	NewControllerRotator.Pitch = FMath::Min(NewControllerRotator.Pitch, -15.0f);
+	
 	const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
-	const FRotator CurrentCharacterRotator = OwnerCharacter->GetActorRotation();
 	const FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
-	if (!OwnerCharacter) return;
 	
 	// 타겟을 바라보도록 회전 변경
 	OwnerCharacter->SetActorRotation(NewCharacterRotator);
