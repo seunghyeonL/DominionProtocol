@@ -40,6 +40,8 @@ public:
 	FORCEINLINE void SetMoveTargetRotator(const FRotator& NewMoveTargetRotation) { MoveTargetRotation = NewMoveTargetRotation; }
 
 	FORCEINLINE void SwitchIsLevelChanged() { bIsLevelChanged = !bIsLevelChanged; }
+
+	FORCEINLINE void SetFieldEssenceAmount(int32 NewFieldEssenceAmount) { FieldEssenceAmount = NewFieldEssenceAmount; }
 	
 	//Getter
 	UFUNCTION(BlueprintPure)
@@ -69,6 +71,8 @@ public:
 
 	FORCEINLINE bool GetIsLevelChanged() const { return bIsLevelChanged; }
 
+	int32 GetFieldEssenceAmount() const { return FieldEssenceAmount; }
+
 
 	void InitializeCrackDataMap(FCrackData Level1, FCrackData Level2);
 	
@@ -80,7 +84,8 @@ protected:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnRecentCrackChanged OnRecentCrackChanged;
-	
+
+//SaveData
 private:
 	UPROPERTY()
 	FString CurrentLevelName;
@@ -100,6 +105,11 @@ private:
 	UPROPERTY()
 	TMap<FString, FCrackDataArrayStruct> CrackDataMap;
 
+	UPROPERTY()
+	int32 FieldEssenceAmount = 0;
+
+//Not Save Variables
+private:
 	FVector MoveTargetLocation = FVector::ZeroVector;
 
 	FRotator MoveTargetRotation = FRotator::ZeroRotator;
