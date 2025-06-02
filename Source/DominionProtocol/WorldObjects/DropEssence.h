@@ -8,6 +8,7 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "DropEssence.generated.h"
 
+class UNiagaraComponent;
 class UWorldInstanceSubsystem;
 class UDomiGameInstance;
 class USphereComponent;
@@ -51,7 +52,7 @@ protected:
 	TObjectPtr<USceneComponent> SceneRoot;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
-	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
+	TObjectPtr<UNiagaraComponent> NiagaraComp;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USphereComponent> SphereComponent;

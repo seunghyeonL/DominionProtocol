@@ -3,23 +3,24 @@
 
 #include "DropEssence.h"
 #include "Components/SphereComponent.h"
+#include "NiagaraComponent.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 
 #include "Util/DebugHelper.h"
 
 ADropEssence::ADropEssence()
+	:	EssenceAmount(0)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	SceneRoot = CreateDefaultSubobject<USceneComponent>("SceneRoot");
+	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	SetRootComponent(SceneRoot);
 
-	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
-	StaticMeshComp->SetupAttachment(SceneRoot);
-	StaticMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComp"));
+	NiagaraComp->SetupAttachment(SceneRoot);
 
-	SphereComponent = CreateDefaultSubobject<USphereComponent>("InteractRadiusSphereComponent");
+	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("InteractRadiusSphereComponent"));
 	SphereComponent->SetupAttachment(SceneRoot);
 	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
