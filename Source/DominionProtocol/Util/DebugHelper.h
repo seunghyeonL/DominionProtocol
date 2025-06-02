@@ -24,19 +24,37 @@
 
 // 추가 : DebugLine 콘솔 변수 설정
 
+#include "DevCheatManager.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 static TAutoConsoleVariable<int32> CVarShowDebugLines(
 	TEXT("Debug.ShowLines"),
 	1,
 	TEXT("디버그라인 표시 제어 : 0 = 숨김, 1 = 표시"),
-	ECVF_Cheat);
+	ECVF_Default);
+
+static TAutoConsoleVariable<bool> CVarEnableDebugPrint(
+	TEXT("Debug.ToggleLogPrint"),
+	true,
+	TEXT("Enable or disable Debug::Log print globally"),
+	ECVF_Default);
 
 namespace Debug
 {
+	static bool IsDebugPrintEnable()
+	{
+		return CVarEnableDebugPrint.GetValueOnAnyThread();
+	}
+	
 	//로그와 스크린디버그메시지 동시 출력
 	static void Print(const FString& Msg, const FColor& Color = FColor::Green, int32 Inkey = -1)
 	{
+		if (!IsDebugPrintEnable())
+		{
+			return;
+		}
+		
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(Inkey, 7.f, Color, Msg);
@@ -48,18 +66,33 @@ namespace Debug
 	//로그만 출력(Warning)
 	static void PrintLog(const FString& Msg)
 	{
+		if (!IsDebugPrintEnable())
+		{
+			return;
+		}
+		
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *Msg);
 	}
 
 	//로그만 출력(Error)
 	static void PrintError(const FString& Msg)
 	{
+		if (!IsDebugPrintEnable())
+		{
+			return;
+		}
+		
 		UE_LOG(LogTemp, Error, TEXT("%s"), *Msg);
 	}
 
 	//스크린디버그메시지만 출력
 	static void PrintDM(const FString& Msg, const FColor& Color = FColor::Green, int32 Inkey = -1)
 	{
+		if (!IsDebugPrintEnable())
+		{
+			return;
+		}
+		
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(Inkey, 5.f, Color, Msg);

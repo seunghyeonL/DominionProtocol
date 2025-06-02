@@ -34,7 +34,7 @@ static TAutoConsoleVariable<int32> CVarMnhDebugLines(
 	TEXT("Mnh.ShowLines"),
 	1,
 	TEXT("디버그라인 표시 제어 : 0 = 숨김, 1 = 표시"),
-	ECVF_Cheat);
+	ECVF_Default);
 
 FORCEINLINE static bool ShouldShowDebugLines(const EDrawDebugTrace::Type DrawDebugType)
 {
