@@ -31,7 +31,13 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnUpdateBossMonsterName();
-	
+
+	UFUNCTION()
+	void SpawnedBossMonster(AActor* NewMonster);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSpawnedBossMonster();
+
 protected:
 	virtual void NativeConstruct() override;
 	

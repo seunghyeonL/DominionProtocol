@@ -67,6 +67,8 @@ public:
 	virtual void ShowStatusEffectTags_Implementation() override;
 	virtual void ActivateStatusEffect_Implementation(const FGameplayTag& EffectTag) override;
 
+	virtual FString GetPawnName_Implementation() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -92,5 +94,8 @@ protected:
 	// UI Section
 	UPROPERTY(BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UDomiWidgetComponent> HPWidgetComponent;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FString MonsterName;
 
 };

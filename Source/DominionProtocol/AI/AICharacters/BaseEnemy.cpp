@@ -39,6 +39,8 @@ ABaseEnemy::ABaseEnemy()
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::Death);
 
+	MonsterName = TEXT("DefaultMonster");
+
 	// BP_Class Settings
 	static ConstructorHelpers::FClassFinder<AEssence> EssenceBPClass(TEXT("/Game/WorldObjects/BP_Essence"));
 	if (EssenceBPClass.Succeeded())
@@ -192,6 +194,11 @@ void ABaseEnemy::ActivateStatusEffect_Implementation(const FGameplayTag& EffectT
 	check(StatusComponent);
 
 	StatusComponent->ActivateStatusEffect(EffectTag, 0);
+}
+
+FString ABaseEnemy::GetPawnName_Implementation()
+{
+	return MonsterName;
 }
 
 void ABaseEnemy::InitializeStatusComponent()

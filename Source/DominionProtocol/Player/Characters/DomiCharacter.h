@@ -109,6 +109,8 @@ protected:
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void OnDeath();
+
+	virtual FString GetPawnName_Implementation() override;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
@@ -147,7 +149,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;	// 추후에 무기 쪽으로 이동 필요
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
+	TObjectPtr<UStaticMeshComponent> StartPoint;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
+	TObjectPtr<UStaticMeshComponent> BeginTrace;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
+	TObjectPtr<UStaticMeshComponent> DownTrace;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AActor> InteractableActor;

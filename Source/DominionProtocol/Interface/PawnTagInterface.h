@@ -18,4 +18,7 @@ class DOMINIONPROTOCOL_API IPawnTagInterface
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	FGameplayTag GetPawnTag();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	FString GetPawnName();
 };

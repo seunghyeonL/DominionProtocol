@@ -5,6 +5,7 @@
 #include "StatusComponentInitializeData.h"
 #include "StatusEffects/StatusEffectBase.h"
 #include "GameFramework/Character.h"
+#include "Interface/PawnTagInterface.h"
 
 UStatusComponent::UStatusComponent()
 {
@@ -100,7 +101,12 @@ void UStatusComponent::SetHealth(float NewHealth)
 
 	SetStat(StatTags::Health ,ClampedHealth);
 	OnHealthChanged.Broadcast(ClampedHealth);
-	OnBattleMonster.Broadcast(GetOwner()->GetName());
+
+	if (GetOwner()->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
+	{
+		const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(GetOwner());
+		OnBattleMonster.Broadcast(CharacterName);
+	}
 	
 	// OnDeath 
 	if (FMath::IsNearlyZero(GetStat(StatTags::Health)))
@@ -124,6 +130,11 @@ void UStatusComponent::SetMaxHealth(float NewMaxHealth)
 
 	SetStat(StatTags::MaxHealth, NewMaxHealth);
 	OnMaxHealthChanged.Broadcast(NewMaxHealth);
+	if (GetOwner()->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
+	{
+		const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(GetOwner());
+		OnBattleMonster.Broadcast(CharacterName);
+	}
 }
 
 void UStatusComponent::SetShield(const float NewShield)
@@ -135,7 +146,11 @@ void UStatusComponent::SetShield(const float NewShield)
 
 	SetStat(StatTags::Shield ,ClampedShield);
 	OnShieldChanged.Broadcast(ClampedShield);
-	OnBattleMonster.Broadcast(GetOwner()->GetName());
+	if (GetOwner()->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
+	{
+		const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(GetOwner());
+		OnBattleMonster.Broadcast(CharacterName);
+	}
 }
 
 void UStatusComponent::SetStamina(float NewStamina)

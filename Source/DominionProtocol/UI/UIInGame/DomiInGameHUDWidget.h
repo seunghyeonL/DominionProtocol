@@ -47,20 +47,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SwitchShowAndHideInventoryWidget();
 
-	UFUNCTION()
-	void OnStoryStateChanged(EGameStoryState NewGameStoryState);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void StoryStateChanged();
-
 	UFUNCTION(BlueprintCallable)
 	void ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder);
 
 protected:
 	virtual void NativeConstruct() override;
 	void SetupStatusBarWidget(const AActor* OwningActor);
-
-	void BindStoryStateChangedDelegate();
 
 
 protected:
@@ -69,9 +61,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bShowCrackWarpWidget = false;
-
-	UPROPERTY(BlueprintReadWrite)
-	EGameStoryState CurrentGameStoryState;
 
 #pragma region UI Alway
 	

@@ -40,6 +40,21 @@ void UBossMonsterHPBarWidget::UpdateBossMonsterName(const FString NewBossMonster
 	OnUpdateBossMonsterName();
 }
 
+
+void UBossMonsterHPBarWidget::SpawnedBossMonster(AActor* NewMonster)
+{
+	if (BossMonsterName.IsEmpty())
+	{
+		if (NewMonster->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
+		{
+			const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(NewMonster);
+			BossMonsterName = CharacterName;
+		}
+	}
+	
+	OnSpawnedBossMonster();
+}
+
 void UBossMonsterHPBarWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -60,6 +75,7 @@ void UBossMonsterHPBarWidget::BindBossSpawnedToWidgetDelegate()
 		if (BossSpawner)
 		{
 			BossSpawner->OnBossSpawnedToWidget.AddUObject(this, &UBossMonsterHPBarWidget::BindSpawnedBossStatusDelegate);
+			BossSpawner->OnBossSpawnedToWidget.AddUObject(this, &UBossMonsterHPBarWidget::SpawnedBossMonster);
 		}
 	}
 }
