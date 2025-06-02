@@ -20,7 +20,11 @@ public class DominionProtocol : ModuleRules
 			"NavigationSystem",
 			"GameplayTasks",
 			"MissNoHit",
-            "Niagara"
+            "Niagara",
+            "LevelSequence",
+            "MovieScene",
+            "MovieSceneTools",
+            "MovieSceneTracks"
         });
 		
 		PrivateIncludePaths.Add("DominionProtocol");
