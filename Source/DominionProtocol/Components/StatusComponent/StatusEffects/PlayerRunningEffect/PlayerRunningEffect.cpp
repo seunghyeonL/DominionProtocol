@@ -10,7 +10,7 @@
 UPlayerRunningEffect::UPlayerRunningEffect()
 {
 	StatusEffectTag = EffectTags::Running;
-	SpeedCoefficient = 1.5f;
+	SpeedCoefficient = 1.7f;
 	StaminaPerSecond = 5.0f;
 }
 

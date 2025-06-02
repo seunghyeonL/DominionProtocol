@@ -42,6 +42,9 @@ protected:
 	float GroundSpeed;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
+	float LockOnAngle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
 	bool bShouldMove;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
