@@ -12,6 +12,7 @@
 #include "Interface/StoryDependentInterface.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "WorldObjects/Crack.h"
+#include "WorldObjects/DropEssence.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "EnumAndStruct/FCrackData.h"
@@ -33,6 +34,11 @@ ABaseGameMode::ABaseGameMode()
 		RespawnDelay(2.f),
 		bIsFadeIn(true)
 {
+	static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
+	if (DropEssenceBPClass.Succeeded())
+	{
+		DropEssenceClass = DropEssenceBPClass.Class;
+	}
 }
 
 void ABaseGameMode::BeginPlay()
@@ -160,6 +166,27 @@ void ABaseGameMode::OnPlayerDeath()
 void ABaseGameMode::RespawnPlayerCharacter()
 {
 	DestroyAllNormalEnemy();
+
+	// Essence 레벨에 드랍
+	ADropEssence* DropEssence = WorldInstanceSubsystem->GetDropEssenceCache();
+	if (IsValid(DropEssence))
+	{
+		DropEssence->Destroy();
+		WorldInstanceSubsystem->SetDropEssenceCache(nullptr);
+	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ADropEssence* NewDropEssence = World->SpawnActor<ADropEssence>(DropEssenceClass, PlayerCharacter->GetActorLocation(), PlayerCharacter->GetActorRotation(), SpawnParams);
+	if (IsValid(NewDropEssence))
+	{
+		Debug::Print(FString::Printf(TEXT("Spawned DropEssence : %s"), *NewDropEssence->GetName()));
+		WorldInstanceSubsystem->SetDropEssenceCache(NewDropEssence);
+		WorldInstanceSubsystem->SetIsDropEssenceExist(true);
+		WorldInstanceSubsystem->SetDropEssenceAmount(GameInstance->GetPlayerCurrentEssence());
+		WorldInstanceSubsystem->SetDropEssenceLocation(PlayerCharacter->GetActorLocation());
+		GameInstance->SetPlayerCurrentEssence(0);
+	}
 	
 	if (IsValid(PlayerCharacter))
 	{
@@ -174,10 +201,10 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		{
 			StatusComponent = PlayerCharacter->GetStatusComponent();
 		}
-		StatusComponent->SetHealth(FLT_MAX);
+		StatusComponent->SetHealth(UE_BIG_NUMBER);
 		TObjectPtr<UPlayerControlComponent> PlayerControlComponent = PlayerCharacter->GetPlayerControlComponent();
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::Death);
-
+		
 		// Using InGameHUD
 		OnPlayerSpawn.Broadcast();
 

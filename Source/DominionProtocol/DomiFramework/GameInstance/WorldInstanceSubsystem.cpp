@@ -26,6 +26,11 @@ void UWorldInstanceSubsystem::InitializeCrackDataMap(FCrackData Level1, FCrackDa
 void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+	DropEssenceCache = nullptr;
+	bIsDropEssenceExist = false;
+	DropEssenceAmount = 0;
+	DropEssenceLocation = FVector::ZeroVector;
 }
 
 void UWorldInstanceSubsystem::Deinitialize()

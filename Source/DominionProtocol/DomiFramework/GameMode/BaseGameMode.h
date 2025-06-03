@@ -9,6 +9,7 @@
 #include "WorldObjects/BossRoomDoor.h"
 #include "BaseGameMode.generated.h"
 
+class ADropEssence;
 class ALevelSequenceActor;
 class ULevelSequencePlayer;
 class UStatusComponent;
@@ -71,6 +72,9 @@ public:
 	FOnPlayerSpawn OnPlayerSpawn;
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawning")
+	TSubclassOf<ADropEssence> DropEssenceClass;
+	
 	UPROPERTY()
 	UDomiGameInstance* GameInstance;
 

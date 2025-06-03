@@ -8,6 +8,7 @@
 
 #include "WorldInstanceSubsystem.generated.h"
 
+class ADropEssence;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRecentCrackChanged, int32, NewValue);
 
 UCLASS()
@@ -19,6 +20,7 @@ class DOMINIONPROTOCOL_API UWorldInstanceSubsystem : public UGameInstanceSubsyst
 
 //Functions
 public:
+	void InitializeCrackDataMap(FCrackData Level1, FCrackData Level2);
 	
 	//Setter
 	void SetCrackDataMap(TMap<FString, FCrackDataArrayStruct> InCrackDataMap) { CrackDataMap = InCrackDataMap; }
@@ -41,8 +43,13 @@ public:
 
 	FORCEINLINE void SwitchIsLevelChanged() { bIsLevelChanged = !bIsLevelChanged; }
 
-	FORCEINLINE void SetFieldEssenceAmount(int32 NewFieldEssenceAmount) { FieldEssenceAmount = NewFieldEssenceAmount; }
+	FORCEINLINE void SetDropEssenceCache(ADropEssence* NewDropEssence) { DropEssenceCache = NewDropEssence; }
 	
+	FORCEINLINE void SetDropEssenceAmount(int32 NewDropEssenceAmount) { DropEssenceAmount = NewDropEssenceAmount; }
+
+	FORCEINLINE void SetIsDropEssenceExist(bool bExist) { bIsDropEssenceExist = bExist; }
+
+	FORCEINLINE void SetDropEssenceLocation(const FVector& NewDropEssenceLocation) { DropEssenceLocation = NewDropEssenceLocation; }
 	//Getter
 	UFUNCTION(BlueprintPure)
 	TMap<FString, FCrackDataArrayStruct> GetCrackDataMapForBlueprint() { return CrackDataMap; }
@@ -71,10 +78,13 @@ public:
 
 	FORCEINLINE bool GetIsLevelChanged() const { return bIsLevelChanged; }
 
-	int32 GetFieldEssenceAmount() const { return FieldEssenceAmount; }
+	FORCEINLINE TObjectPtr<ADropEssence> GetDropEssenceCache() const { return DropEssenceCache; }
+	
+	FORCEINLINE int32 GetDropEssenceAmount() const { return DropEssenceAmount; }
 
+	FORCEINLINE bool GetIsDropEssenceExist() const { return bIsDropEssenceExist; }
 
-	void InitializeCrackDataMap(FCrackData Level1, FCrackData Level2);
+	FORCEINLINE const FVector& GetDropEssenceLocation() const { return DropEssenceLocation; }
 	
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -106,7 +116,16 @@ private:
 	TMap<FString, FCrackDataArrayStruct> CrackDataMap;
 
 	UPROPERTY()
-	int32 FieldEssenceAmount = 0;
+	TObjectPtr<ADropEssence> DropEssenceCache;
+	
+	UPROPERTY()
+	bool bIsDropEssenceExist;
+	
+	UPROPERTY()
+	int32 DropEssenceAmount;
+
+	UPROPERTY()
+	FVector DropEssenceLocation;
 
 //Not Save Variables
 private:
