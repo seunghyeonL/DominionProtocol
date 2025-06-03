@@ -5,6 +5,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DominionProtocol/Player/Characters/DomiCharacter.h"
+#include "ItemInventory/BaseItem.h"
+#include "Engine/World.h" 
 #include "Util/BattleDataTypes.h"
 #include "Util/DebugHelper.h"
 
@@ -45,6 +47,8 @@ void AItemContainer::OnAttacked_Implementation(const FAttackData& AttackData)
 			CurrentHealth -= AttackData.Damage;
 			Debug::Print(FString::Printf(TEXT("컨테이너 현재 체력: %.2f"), CurrentHealth));
 
+			PlayShakeAnimation();
+
 			if (CurrentHealth <= 0)
 			{
 				OnHealthZeroed();
@@ -60,6 +64,8 @@ void AItemContainer::OnHealthZeroed()
 		ContainerShellMesh->SetVisibility(false); // 껍데기 메시 숨기기
 		ContainerShellMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 껍데기 메시 콜리전 비활성화
 	}
+
+	SpawnRandomItems();
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AItemContainer::DestroyContainerActor, DestroyDelayAfterBreak, false);
 
@@ -74,4 +80,38 @@ void AItemContainer::DestroyContainerActor()
 void AItemContainer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AItemContainer::SpawnRandomItems()
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr || ItemsToSpawn.Num() == 0)
+	{
+		// 스폰할 아이템이 없으면 스폰하지 않음
+		return;
+	}
+
+	// 스폰할 아이템 배열에서 무작위로 클래스 선택
+	int32 RandomItemIndex = FMath::RandRange(0, ItemsToSpawn.Num() - 1);
+	TSubclassOf<ABaseItem> ItemClassToSpawn = ItemsToSpawn[RandomItemIndex];
+
+	if (ItemClassToSpawn)
+	{
+		FVector SpawnLocation = GetActorLocation();
+		SpawnLocation.X += FMath::RandRange(-50.0f, 50.0f);
+		SpawnLocation.Y += FMath::RandRange(-50.0f, 50.0f);
+		SpawnLocation.Z += 20.0f; //높이 조정
+
+		FRotator SpawnRotation = FRotator::ZeroRotator;
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		// 아이템 스폰
+		ABaseItem* SpawnedItem = World->SpawnActor<ABaseItem>(ItemClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		if (SpawnedItem)
+		{
+			Debug::Print(FString::Printf(TEXT("아이템 스폰됨: %s"), *SpawnedItem->GetName()));
+		}
+	}
 }
