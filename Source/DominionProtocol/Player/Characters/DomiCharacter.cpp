@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "DomiCharacter.h"
 #include "Util/DebugHelper.h"
@@ -85,19 +85,6 @@ ADomiCharacter::ADomiCharacter()
 	NavigationInvokerComponent = CreateDefaultSubobject<UNavigationInvokerComponent>(TEXT("NavigationInvokerComponent"));
 
 	NavigationInvokerComponent->SetGenerationRadii(6000.f, 10000.f);
-	
-	// Teleport
-	StartPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StartPoint"));
-	BeginTrace = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BeginTrace"));
-	MovePoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MovePoint"));
-	TeleportAura = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TeleportAura"));
-	CantTeleportAura = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("CantTeleportAura"));
-	
-	StartPoint->SetupAttachment(GetMesh());
-	BeginTrace->SetupAttachment(StartPoint);
-	MovePoint->SetupAttachment(RootComponent);
-	TeleportAura->SetupAttachment(RootComponent);
-	CantTeleportAura->SetupAttachment(RootComponent);
 
 	// TraceBox
 	WeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("WeaponTraceBox"));

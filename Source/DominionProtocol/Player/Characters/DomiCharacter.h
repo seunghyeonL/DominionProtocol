@@ -68,16 +68,6 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	/** Returns StartPoint subobject **/
-	FORCEINLINE class UStaticMeshComponent* GetStartPoint() const { return StartPoint; }
-	/** Returns BeginTrace subobject **/
-	FORCEINLINE class UStaticMeshComponent* GetBeginTrace() const { return BeginTrace; }
-	/** Returns MovePoint subobject **/
-	FORCEINLINE class UStaticMeshComponent* GetMovePoint() const { return MovePoint; }
-	/** Returns TeleportAura subobject **/
-	FORCEINLINE class UParticleSystemComponent* GetTeleportAura() const { return TeleportAura; }
-	/** Returns CantTeleportAura subobject **/
-	FORCEINLINE class UParticleSystemComponent* GetCantTeleportAura() const { return CantTeleportAura; }
 
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
@@ -157,22 +147,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;	// 추후에 무기 쪽으로 이동 필요
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
-	TObjectPtr<UStaticMeshComponent> StartPoint;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
-	TObjectPtr<UStaticMeshComponent> BeginTrace;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
-	TObjectPtr<UStaticMeshComponent> MovePoint;
-
-public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
-	TObjectPtr<UParticleSystemComponent> TeleportAura;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
-	TObjectPtr<UParticleSystemComponent> CantTeleportAura;
 	
 private:
 	UPROPERTY(VisibleAnywhere)

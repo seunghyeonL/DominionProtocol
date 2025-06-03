@@ -12,6 +12,7 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Skills/TeleportSkill.h"
+#include "Components/SkillComponent/Skills/SkillObject/Portal.h"
 
 USkillComponent::USkillComponent()
 {
@@ -126,25 +127,15 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                         return;
                     }
 
-                    // !~!~!~!~!~!~!
-                    // 임시로직
                     if (CurrentSkill->GetSkillTag() != Skill->GetSkillTag())
                     {
                         if (auto TeleportSkill = Cast<UTeleportSkill>(CurrentSkill))
                         {
-                            TeleportSkill->SetReadyToTeleport(false);
-                            TeleportSkill->SetCanTeleport(false);
-                        }
-
-                        if (auto DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
-                        {
-                            DomiCharacter->TeleportAura->SetVisibility(false);
-                            DomiCharacter->CantTeleportAura->SetVisibility(false);
+                            TeleportSkill->Portal->DestroyPortal();
                         }
                 
                         EndSkill();
                     }
-                    // !~!~!~!~!~!~!
                 }
                 else
                 {

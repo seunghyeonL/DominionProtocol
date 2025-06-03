@@ -29,13 +29,17 @@ public:
 private:
 	void ProjectileFromPool();
 
-	USkeletalMeshComponent* CachedMeshComp;
+	UPROPERTY()
+	TObjectPtr<USkeletalMeshComponent> CachedMeshComp;
 
-	AActor* OwnerCharacter;
+	UPROPERTY()
+	TObjectPtr<AActor> OwnerCharacter;
 
-	AActor* TargetActor;
+	UPROPERTY()
+	TObjectPtr<AActor> TargetActor;
 
-	UCurvedProjectileSkill* ProjectileSkill;
+	UPROPERTY()
+	TObjectPtr<UCurvedProjectileSkill> ProjectileSkill;
 
 	FGameplayTag SkillTag;
 

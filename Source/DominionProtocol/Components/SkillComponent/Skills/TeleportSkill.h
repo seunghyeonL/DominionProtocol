@@ -4,11 +4,12 @@
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "TeleportSkill.generated.h"
 
-class ADomiCharacter;
-class UStaticMeshComponent;
+class APortal;
 
-constexpr float BackwardOffsetDistance = 100.f;
-constexpr float DownTraceLength = 1000.f;
+constexpr float ForwardOffsetDistance = 10.f;
+constexpr float DownTraceDistance = 5000.f;
+constexpr float MaxTeleportDistance = 1200.f;
+constexpr float MaxSlopeAngle = 45.f;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UTeleportSkill : public UBaseSkill
@@ -25,24 +26,21 @@ public:
 	FORCEINLINE void SetReadyToTeleport(bool ReadyFlag) { bReadyToTeleport = ReadyFlag; }
 	FORCEINLINE void SetCanTeleport(bool CanFlag) { bCanTeleport = CanFlag; }
 
-private:
-	void Move();
+	UPROPERTY()
+	TObjectPtr<APortal> Portal;
 
+private:
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY()
-	ADomiCharacter* DomiChar;
+	void Move();
 
-	UPROPERTY()
-	TObjectPtr<UStaticMeshComponent> StartPoint;
-	UPROPERTY()
-	TObjectPtr<UStaticMeshComponent> BeginTrace;
-	UPROPERTY()
-	TObjectPtr<UStaticMeshComponent> MovePoint;
-	UPROPERTY()
-	TObjectPtr<UParticleSystemComponent> Aura;
-	UPROPERTY()
-	TObjectPtr<UParticleSystemComponent> CantAura;
+	bool IsValidAngle(const FVector& StartLocation, const FVector& TargetLocation);
+	bool IsValidDistance(const FVector& StartLocation);
+
+	void ActivateBlue();
+	void ActivateRed();
+
+	FVector OwnerLocation;
 
 	bool bReadyToTeleport;
 	bool bCanTeleport;
