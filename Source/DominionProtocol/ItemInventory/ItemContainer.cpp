@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "DominionProtocol/Player/Characters/DomiCharacter.h"
 #include "ItemInventory/BaseItem.h"
+#include "NiagaraComponent.h"
+#include "Sound/SoundCue.h"
 #include "Engine/World.h" 
 #include "Util/BattleDataTypes.h"
 #include "Util/DebugHelper.h"
@@ -24,6 +26,14 @@ AItemContainer::AItemContainer()
 	//콜리전 오버랩 채널 설정
 	ContainerShellMesh->SetCollisionResponseToAllChannels(ECR_Block); // 기본은 모든 채널에 대해 Block
 	ContainerShellMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // <-- 캐릭터 공격 채널에 대해 Overlap
+
+	DustVFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DustVFX"));
+	DustVFXComponent->SetupAttachment(RootComponent); //스태틱 메시에 attach
+	DustVFXComponent->bAutoActivate = false; 
+
+	DustVFXComponent->SetRelativeLocation(FVector::ZeroVector);
+	DustVFXComponent->SetRelativeRotation(FRotator::ZeroRotator);
+	DustVFXComponent->SetRelativeScale3D(FVector(1.0f));
 
 	CurrentHealth = MaxHealth;
 
@@ -64,7 +74,16 @@ void AItemContainer::OnHealthZeroed()
 		ContainerShellMesh->SetVisibility(false); // 껍데기 메시 숨기기
 		ContainerShellMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 껍데기 메시 콜리전 비활성화
 	}
-
+	if (DustVFXComponent && DustNiagaraSystem)
+	{
+		DustVFXComponent->SetAsset(DustNiagaraSystem);
+		DustVFXComponent->Activate(true);
+	}
+	else
+	{
+		Debug::Print(TEXT("ItemDropped: DustVFXComponent or DustNiagaraSystem is null. Niagara effect will not play."), FColor::Yellow);
+	}
+	PlayDestructionSound();
 	SpawnRandomItems();
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AItemContainer::DestroyContainerActor, DestroyDelayAfterBreak, false);
@@ -75,6 +94,18 @@ void AItemContainer::OnHealthZeroed()
 void AItemContainer::DestroyContainerActor()
 {
 	Destroy();
+}
+
+void AItemContainer::PlayDestructionSound()
+{
+	if (DestructionSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DestructionSound, GetActorLocation());
+	}
+	else
+	{
+		Debug::Print(TEXT("OpenSound is null. Cannot play open sound."), FColor::Yellow);
+	}
 }
 
 void AItemContainer::Tick(float DeltaTime)

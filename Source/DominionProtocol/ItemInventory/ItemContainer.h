@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Player/Damagable.h"
+#include "NiagaraComponent.h"
 #include "ItemContainer.generated.h"
 
 class UStaticMeshComponent;
 class ABaseItem;
+class USoundCue;
 
 UCLASS()
 class DOMINIONPROTOCOL_API AItemContainer : public AActor, public IDamagable
@@ -37,6 +39,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Items")
 	TArray<TSubclassOf<ABaseItem>> ItemsToSpawn;
 
+	// 박스 터질때 재생
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	UNiagaraComponent* DustVFXComponent;
+
+	// 박스 터질때 재생
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	class UNiagaraSystem* DustNiagaraSystem;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundCue* DestructionSound;
+
 	UFUNCTION()
 	void OnHealthZeroed(); // 체력이 0이 되었을 때 호출될 함수
 
@@ -48,9 +61,12 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Animation")
 	void PlayShakeAnimation();
+
+	void PlayDestructionSound();
 public:
 	virtual void Tick(float DeltaTime) override;
 
 	// IDamagable 인터페이스 구현
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
+
 };
