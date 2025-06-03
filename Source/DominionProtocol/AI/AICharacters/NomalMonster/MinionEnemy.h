@@ -18,8 +18,6 @@ public:
 	AMinionEnemy();
 
 protected:
-	virtual void BeginPlay() override;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UMnhBoxComponent> LeftWeaponTraceBox;
 

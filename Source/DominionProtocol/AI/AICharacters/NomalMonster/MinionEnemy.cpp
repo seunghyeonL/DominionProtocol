@@ -36,11 +36,3 @@ AMinionEnemy::AMinionEnemy()
 		AttackTraceComponent->InitializeTracers(TagContainer, Box);
 	}
 }
-
-void AMinionEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-	InitializeStatusComponent();
-	InitializeSkillComponent();
-}

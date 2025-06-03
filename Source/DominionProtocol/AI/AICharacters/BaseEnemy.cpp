@@ -121,6 +121,7 @@ void ABaseEnemy::ExecuteSkill(FGameplayTag SkillGroupTag)
 
 void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 {
+	if (Cast<ABaseEnemy>(AttackData.Instigator)) { return; }
 	IDamagable::OnAttacked_Implementation(AttackData);
 
 	check(StatusComponent);
