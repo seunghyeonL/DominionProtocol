@@ -4,6 +4,13 @@
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "TeleportSkill.generated.h"
 
+class APortal;
+
+constexpr float ForwardOffsetDistance = 10.f;
+constexpr float DownTraceDistance = 5000.f;
+constexpr float MaxTeleportDistance = 1200.f;
+constexpr float MaxSlopeAngle = 45.f;
+
 UCLASS()
 class DOMINIONPROTOCOL_API UTeleportSkill : public UBaseSkill
 {
@@ -16,12 +23,25 @@ public:
 
 	virtual void Execute() override;
 
+	FORCEINLINE void SetReadyToTeleport(bool ReadyFlag) { bReadyToTeleport = ReadyFlag; }
+	FORCEINLINE void SetCanTeleport(bool CanFlag) { bCanTeleport = CanFlag; }
+
+	UPROPERTY()
+	TObjectPtr<APortal> Portal;
+
 private:
-	void Start();
+	virtual void Tick(float DeltaTime) override;
 
-	void End();
+	void Move();
 
-	FTimerHandle TeleportTimerHandle;
+	bool IsValidAngle(const FVector& StartLocation, const FVector& TargetLocation);
+	bool IsValidDistance(const FVector& StartLocation);
 
-	float Distance;
+	void ActivateBlue();
+	void ActivateRed();
+
+	FVector OwnerLocation;
+
+	bool bReadyToTeleport;
+	bool bCanTeleport;
 };

@@ -26,7 +26,7 @@ ACurvedProjectile::ACurvedProjectile()
 	RootComponent = SphereCollision;
 
 	Projectile = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile"));
-	Projectile->SetupAttachment(SphereCollision);
+	Projectile->SetupAttachment(RootComponent);
 	Projectile->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 

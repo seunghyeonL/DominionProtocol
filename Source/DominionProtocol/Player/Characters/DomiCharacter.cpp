@@ -5,6 +5,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "NavigationInvokerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -84,20 +85,6 @@ ADomiCharacter::ADomiCharacter()
 	NavigationInvokerComponent = CreateDefaultSubobject<UNavigationInvokerComponent>(TEXT("NavigationInvokerComponent"));
 
 	NavigationInvokerComponent->SetGenerationRadii(6000.f, 10000.f);
-	
-	// Teleport
-	auto CreateHidden = [this](const FName& Name)
-		{
-			UStaticMeshComponent* Comp = CreateDefaultSubobject<UStaticMeshComponent>(Name);
-			Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			Comp->SetVisibility(false);
-			Comp->SetHiddenInGame(true);
-			return Comp;
-		};
-
-	StartPoint = CreateHidden(TEXT("StartPoint"));
-	BeginTrace = CreateHidden(TEXT("BeginTrace"));
-	DownTrace = CreateHidden(TEXT("DownTrace"));
 
 	// TraceBox
 	WeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("WeaponTraceBox"));

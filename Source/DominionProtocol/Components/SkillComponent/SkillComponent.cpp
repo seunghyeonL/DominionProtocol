@@ -8,6 +8,11 @@
 #include "Util/DebugHelper.h"
 #include "AI/AIControllers/BaseAIController.h"
 #include "Components/ItemComponent/ItemComponent.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
+#include "Player/Characters/DomiCharacter.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Skills/TeleportSkill.h"
+#include "Components/SkillComponent/Skills/SkillObject/Portal.h"
 
 USkillComponent::USkillComponent()
 {
@@ -86,11 +91,6 @@ void USkillComponent::SetSkills(const FSkillComponentInitializeData& InitializeD
 
 void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 {
-    if (IsValid(CurrentSkill))
-    {
-        Debug::Print(TEXT("USkillComponent::ExecuteSkill : Skill Already Executing"));
-        return;
-    }
     
 	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
     check(IsValid(OwnerCharacter));
@@ -111,46 +111,79 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
         if (Skills.IsValidIndex(ComboIdx))
         {
             UBaseSkill* Skill = Skills[ComboIdx];
-            if (IsValid(Skill))
+            if (!IsValid(Skill))
             {
-                // Check to use Stamina
-                if (float CurrentStamina = StatusComponent->GetStat(StatTags::Stamina); CurrentStamina > 0.f)
+                return;
+            }
+            
+            if (IsValid(CurrentSkill))
+            {
+                if (auto ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>())
                 {
-                    // Check to have enough Stamina 
-                    if (CurrentStamina < Skill->GetStamina())
+                    if (!ControlComponent->IsUsingDoubleExecuteSkill())
                     {
+                        Debug::Print(TEXT("USkillComponent::ExecuteSkill : Skill Already Executing."));
+                        
                         return;
                     }
 
-                    // Use Stamina
-                    StatusComponent->ConsumeStamina(Skill->GetStamina());
-                }
-
-                // 스킬 실행전 스킬실행 상태로 바꾸기
-                if (OnSkillStart.IsBound())
-                {
-                    OnSkillStart.Execute(Skill->GetControlEffectTag());
-                }
-                // 해당 스킬 실행
-                SetCurrentSkill(Skill);
-                Skill->Execute(); 
-               
-                // 공격이 바뀔 경우 바로 콤보 초기화
-                if (CurrentSkillGroupTag.IsValid() && CurrentSkillGroupTag != SkillGroupTag)
-                {
-                    if (FSkillGroup* CurrentSkillGroup = SkillGroupMap.Find(CurrentSkillGroupTag))
+                    if (CurrentSkill->GetSkillTag() != Skill->GetSkillTag())
                     {
-                        CurrentSkillGroup->ComboIdx = 0;
+                        if (auto TeleportSkill = Cast<UTeleportSkill>(CurrentSkill))
+                        {
+                            TeleportSkill->Portal->DestroyPortal();
+                        }
+                
+                        EndSkill();
                     }
                 }
-
-                CurrentSkillGroupTag = SkillGroupTag;
-
-                GetWorld()->GetTimerManager().ClearTimer(ResetComboTimer);
-                
-                // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴
-                ComboIdx = (ComboIdx + 1) % SkillGroup->Skills.Num();
+                else
+                {
+                    Debug::PrintError(TEXT("USkillComponent::ExecuteSkill : ControlComponent is not valid."));
+                    return;
+                }
             }
+            
+            // Check to use Stamina
+            if (float CurrentStamina = StatusComponent->GetStat(StatTags::Stamina); CurrentStamina > 0.f)
+            {
+                // Check to have enough Stamina 
+                if (CurrentStamina < Skill->GetStamina())
+                {
+                    return;
+                }
+
+                // Use Stamina
+                StatusComponent->ConsumeStamina(Skill->GetStamina());
+            }
+
+            // 스킬 실행 전, 현재 사용할 스킬로 저장
+            SetCurrentSkill(Skill);
+            
+            // 스킬 실행 전, 스킬 실행 상태로 바꾸기
+            if (OnSkillStart.IsBound())
+            {
+                OnSkillStart.Execute(Skill->GetControlEffectTag());
+            }
+
+            // 해당 스킬 실행
+            Skill->Execute(); 
+           
+            // 공격이 바뀔 경우 바로 콤보 초기화
+            if (CurrentSkillGroupTag.IsValid() && CurrentSkillGroupTag != SkillGroupTag)
+            {
+                if (FSkillGroup* CurrentSkillGroup = SkillGroupMap.Find(CurrentSkillGroupTag))
+                {
+                    CurrentSkillGroup->ComboIdx = 0;
+                }
+            }
+
+            CurrentSkillGroupTag = SkillGroupTag;
+
+            GetWorld()->GetTimerManager().ClearTimer(ResetComboTimer);
+            
+            // 콤보 공격일 경우, 다음 실행을 위해 인덱스를 증가시킴
+            ComboIdx = (ComboIdx + 1) % SkillGroup->Skills.Num();
         }
         else
         {
@@ -169,7 +202,7 @@ void USkillComponent::EndSkill()
     {
         return;
     }
-    
+
     ACharacter* Character = Cast<ACharacter>(GetOwner());
 
     if (IsValid(Character))
@@ -218,8 +251,9 @@ void USkillComponent::EndSkill()
     // CurrentSkill을 null로 바꾸는 로직을 먼저하기
     // 안그러면 스킬 실행 후 CurrentSkill이 nullptr로 바뀐다. 
     auto CurrentSkillControlEffectTag = CurrentSkill->GetControlEffectTag();
+    
     CurrentSkill = nullptr;
-
+    
     if (OnSkillEnd.IsBound())
     {
         OnSkillEnd.Execute(CurrentSkillControlEffectTag);

@@ -34,6 +34,8 @@ UPlayerControlComponent::UPlayerControlComponent()
 	LockOnTargetActor = nullptr;
 	// bIsComponentReady = false;
 	// ...
+
+	
 }
 
 void UPlayerControlComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -117,6 +119,18 @@ void UPlayerControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 	
 	PlayerControlState->Tick(DeltaTime);
+}
+
+bool UPlayerControlComponent::IsUsingDoubleExecuteSkill()
+{
+	if (auto UsingSkillEffectBase = ControlEffectMap.Find(EffectTags::UsingSkill))
+	{
+		auto UsingSkillEffect = Cast<UPlayerUsingSkillEffect>(*UsingSkillEffectBase);
+		return UsingSkillEffect->IsDoubleExecuteSkillEffect();
+	}
+
+	Debug::PrintError(TEXT("UPlayerControlComponent::IsUsingDoubleExecuteSkill : UsingSkillEffect is not set."));
+	return false;
 }
 
 bool UPlayerControlComponent::SetLockOnTargetActorInPublicSpace()

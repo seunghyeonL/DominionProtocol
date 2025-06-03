@@ -31,6 +31,8 @@ public:
 	FORCEINLINE virtual FVector& GetCurrentMovementVector() { return CurrentMovementVector; }
 	FORCEINLINE virtual void ResetLastMovementVector() { CurrentMovementVector = FVector::ZeroVector; }
 
+	bool IsUsingDoubleExecuteSkill();
+
 	bool SetLockOnTargetActorInPublicSpace();
 	bool SetLockOnTargetActorInVisibility();
 	bool IsActorInViewport(const FVector& ActorLocation) const;

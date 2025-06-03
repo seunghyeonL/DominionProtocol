@@ -36,6 +36,7 @@ public:
 	FORCEINLINE UAnimMontage* GetAnimMontage() const { return AnimMontage; }
 	FORCEINLINE FGameplayTag GetSkillTag() const { return SkillTag; }
 	FORCEINLINE FGameplayTag GetControlEffectTag() const { return ControlEffectTag; }
+	FORCEINLINE TObjectPtr<ACharacter> GetOwnerCharacter() const { return OwnerCharacter; }
 	FORCEINLINE TSubclassOf<ACurvedProjectile> GetCurvedProjectileClass() const { return CurvedProjectileClass; }
 	FORCEINLINE const TArray<USoundBase*>& GetSounds() const { return Sound; }
 	FORCEINLINE const TArray<UParticleSystem*>& GetParticles() const { return Particle; }
