@@ -13,6 +13,7 @@
 #include "Player/EffectReceivable.h"
 #include "BaseEnemy.generated.h"
 
+class AEssence;
 class USkillComponent;
 class UStatusComponent;
 
@@ -82,6 +83,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "States", meta = (AllowPrivateAccess = "true"))
 	FGameplayTagContainer InvincibilityTags;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawning")
+	TSubclassOf<AEssence> EssenceClass;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property")
 	int32 EssenceAmount;
 	

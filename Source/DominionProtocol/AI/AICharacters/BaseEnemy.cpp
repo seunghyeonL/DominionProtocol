@@ -38,6 +38,13 @@ ABaseEnemy::ABaseEnemy()
 
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::Death);
+
+	// BP_Class Settings
+	static ConstructorHelpers::FClassFinder<AEssence> EssenceBPClass(TEXT("/Game/WorldObjects/BP_Essence"));
+	if (EssenceBPClass.Succeeded())
+	{
+		EssenceClass = EssenceBPClass.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -63,7 +70,7 @@ void ABaseEnemy::OnDeath()
 	}
 	FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, CapsuleComp->GetScaledCapsuleHalfHeight());
 	
-	AEssence* NewEssence = Cast<AEssence>(GetWorld()->SpawnActor<AEssence>(SpawnLocation, GetActorRotation(), SpawnParams));
+	AEssence* NewEssence = Cast<AEssence>(GetWorld()->SpawnActor<AEssence>(EssenceClass, SpawnLocation, GetActorRotation(), SpawnParams));
 	if (IsValid(NewEssence))
 	{
 		// 각 몬스터별 균열 정수량만큼 Essence에 세팅
