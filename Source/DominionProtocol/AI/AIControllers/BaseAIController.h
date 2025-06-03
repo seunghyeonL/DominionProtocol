@@ -31,6 +31,8 @@ public:
 
 	void ClearCachedTask();
 
+	virtual FGameplayTag GetAttack();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

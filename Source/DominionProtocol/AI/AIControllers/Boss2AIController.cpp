@@ -7,159 +7,49 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Util/DebugHelper.h"
 
+#include "Util/DebugHelper.h"
+
 ABoss2AIController::ABoss2AIController()
 {
-	BaseAttackWeight = 3;
-	SuperAttackWeight = 2;
-	SpecialAttackWeight = 1;
-	EvadeAttackWeight = 0;
+	DefaultBaseAttack1Weight = 3;
+	DefaultBaseAttack2Weight = 3;
 
-	SpecialAttackCoolDown = 20.f;
-	RangedAttackCoolDown = 20.f;
-	EvadeAttackCoolDown = 20.f;
+	BaseAttack1WeightIncrement = 3;
+	BaseAttack2WeightIncrement = 3;
+}
 
-	bIsActiveSpecialAttack = true;
-	bIsActiveRangedAttack = true;
-	bIsActiveEvadeAttack = true;
+void ABoss2AIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CurrentBaseAttack1Weight = DefaultBaseAttack1Weight;
+	CurrentBaseAttack2Weight = DefaultBaseAttack2Weight;
 }
 
 FGameplayTag ABoss2AIController::GetAttack()
 {
-	int32 TotalWeight = BaseAttackWeight + SuperAttackWeight;
-
-	if (bIsActiveSpecialAttack)
-	{
-		TotalWeight += SpecialAttackWeight;
-	}
-
-	if (bIsActiveEvadeAttack)
-	{
-		TotalWeight += EvadeAttackWeight;
-	}
+	int32 TotalWeight = CurrentBaseAttack1Weight + CurrentBaseAttack2Weight;
 
 	int32 RandomWeight = FMath::RandRange(1, TotalWeight);
 
-	if (RandomWeight <= BaseAttackWeight)
+	if (RandomWeight <= CurrentBaseAttack1Weight)
 	{
-		BaseAttackWeight = 0;
 		UpdateWeights();
+		CurrentBaseAttack1Weight = DefaultBaseAttack1Weight;
 
-		return SkillGroupTags::BaseAttack;
+		return SkillGroupTags::Boss2BaseAttack1;
 	}
 
-	RandomWeight -= BaseAttackWeight;
+	RandomWeight -= CurrentBaseAttack1Weight;
 
-	if (RandomWeight <= SuperAttackWeight)
+	if (RandomWeight <= CurrentBaseAttack2Weight)
 	{
-		SuperAttackWeight = -1;
 		UpdateWeights();
+		CurrentBaseAttack2Weight = DefaultBaseAttack2Weight;
 
-		return SkillGroupTags::SuperAttack;
+		return SkillGroupTags::Boss2BaseAttack2;
 	}
-
-	RandomWeight -= SuperAttackWeight;
-
-	if (bIsActiveSpecialAttack && RandomWeight <= SpecialAttackWeight)
-	{
-		SpecialAttackWeight = -1;
-		UpdateWeights();
-		DeactivateSpecialAttack();
-
-		return SkillGroupTags::SpecialAttack;
-	}
-
-	EvadeAttackWeight = -1;
-	UpdateWeights();
-	DeactivateEvadeAttack();
-
-	return SkillTags::Boss1EvadeAttack;
-}
-
-bool ABoss2AIController::CanAttack(FGameplayTag SkillTag)
-{
-	if (SkillTag == SkillTags::Boss1RangedAttack && bIsActiveRangedAttack)
-	{
-		DeactivateRangedAttack();
-
-		return true;
-	}
-
-	return false;
-}
-
-void ABoss2AIController::DeactivateSpecialAttack()
-{
-	bIsActiveSpecialAttack = false;
-
-	TWeakObjectPtr<ABoss2AIController> WeakThis(this);
-
-	GetWorld()->GetTimerManager().SetTimer(
-		SpecialAttackCoolDownTimer,
-		[WeakThis]()
-		{
-			if (WeakThis.IsValid())
-			{
-				WeakThis->ActivateSpecialAttack();
-			}
-		},
-		SpecialAttackCoolDown,
-		false
-	);
-}
-
-void ABoss2AIController::ActivateSpecialAttack()
-{
-	bIsActiveSpecialAttack = true;
-}
-
-void ABoss2AIController::DeactivateRangedAttack()
-{
-	bIsActiveRangedAttack = false;
-
-	TWeakObjectPtr<ABoss2AIController> WeakThis(this);
-
-	GetWorld()->GetTimerManager().SetTimer(
-		RangedAttackCoolDownTimer,
-		[WeakThis]()
-		{
-			if (WeakThis.IsValid())
-			{
-				WeakThis->ActivateRangedAttack();
-			}
-		},
-		RangedAttackCoolDown,
-		false
-	);
-}
-
-void ABoss2AIController::ActivateRangedAttack()
-{
-	bIsActiveRangedAttack = true;
-}
-
-void ABoss2AIController::DeactivateEvadeAttack()
-{
-	bIsActiveEvadeAttack = false;
-
-	TWeakObjectPtr<ABoss2AIController> WeakThis(this);
-
-	GetWorld()->GetTimerManager().SetTimer(
-		EvadeAttackCoolDownTimer,
-		[WeakThis]()
-		{
-			if (WeakThis.IsValid())
-			{
-				WeakThis->ActivateEvadeAttack();
-			}
-		},
-		EvadeAttackCoolDown,
-		false
-	);
-}
-
-void ABoss2AIController::ActivateEvadeAttack()
-{
-	bIsActiveEvadeAttack = true;
+	return SkillGroupTags::Boss2BaseAttack2;
 }
 
 void ABoss2AIController::Tick(float DeltaTime)
@@ -189,16 +79,6 @@ void ABoss2AIController::Tick(float DeltaTime)
 
 void ABoss2AIController::UpdateWeights()
 {
-	BaseAttackWeight += 3;
-	SuperAttackWeight += 3;
-
-	if (bIsActiveSpecialAttack)
-	{
-		SpecialAttackWeight += 2;
-	}
-
-	if (bIsActiveEvadeAttack)
-	{
-		EvadeAttackWeight += 2;
-	}
+	CurrentBaseAttack1Weight += BaseAttack1WeightIncrement;
+	CurrentBaseAttack2Weight += BaseAttack2WeightIncrement;
 }

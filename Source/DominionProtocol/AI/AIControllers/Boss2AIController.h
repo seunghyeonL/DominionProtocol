@@ -18,40 +18,34 @@ class DOMINIONPROTOCOL_API ABoss2AIController : public ABaseAIController
 public:
 	ABoss2AIController();
 
-	FGameplayTag GetAttack();
+	virtual FGameplayTag GetAttack() override;
 
-	bool CanAttack(FGameplayTag SkillTag);
-
-	void DeactivateSpecialAttack();
-	void ActivateSpecialAttack();
-
-	void DeactivateRangedAttack();
-	void ActivateRangedAttack();
-
-	void DeactivateEvadeAttack();
-	void ActivateEvadeAttack();
-	
-	virtual void Tick(float DeltaTime) override;
 protected:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	UPROPERTY()
 	AActor* TargetActor;
 private:
-	int32 BaseAttackWeight;
-	int32 SuperAttackWeight;
-	int32 SpecialAttackWeight;
-	int32 EvadeAttackWeight;
+	// 현재 가중치
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = true))
+	int32 CurrentBaseAttack1Weight;
 
-	float SpecialAttackCoolDown;
-	float RangedAttackCoolDown;
-	float EvadeAttackCoolDown;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = true))
+	int32 CurrentBaseAttack2Weight;
 
-	bool bIsActiveSpecialAttack;
-	bool bIsActiveRangedAttack;
-	bool bIsActiveEvadeAttack;
+	// 초기 가중치
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = true))
+	int32 DefaultBaseAttack1Weight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = true))
+	int32 DefaultBaseAttack2Weight;
+
+	// 가중치 증가량
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = true))
+	int32 BaseAttack1WeightIncrement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = true))
+	int32 BaseAttack2WeightIncrement;
 
 	void UpdateWeights();
-
-	FTimerHandle SpecialAttackCoolDownTimer;
-	FTimerHandle RangedAttackCoolDownTimer;
-	FTimerHandle EvadeAttackCoolDownTimer;
 };

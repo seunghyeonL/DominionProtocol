@@ -144,6 +144,11 @@ void ABaseAIController::ClearCachedTask()
 	}
 }
 
+FGameplayTag ABaseAIController::GetAttack()
+{
+	return FGameplayTag::EmptyTag;
+}
+
 // Called every frame
 void ABaseAIController::Tick(float DeltaTime)
 {

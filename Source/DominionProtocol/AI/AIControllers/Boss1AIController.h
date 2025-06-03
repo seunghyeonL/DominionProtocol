@@ -18,7 +18,7 @@ class DOMINIONPROTOCOL_API ABoss1AIController : public ABaseAIController
 public:
 	ABoss1AIController();
 
-	FGameplayTag GetAttack();
+	virtual FGameplayTag GetAttack() override;
 
 	bool CanAttack(FGameplayTag SkillTag);
 

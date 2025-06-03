@@ -25,15 +25,15 @@ void UBTService_SelectSkill::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp,
 		return;
 	}
 
-	ABoss1AIController* Boss1AIController = Cast<ABoss1AIController>(AIController);
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
 
-	if (!Boss1AIController)
+	if (!BaseAIController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[UBTService_SelectSkill] Failed: No Boss1AIController"));
+		UE_LOG(LogTemp, Warning, TEXT("[UBTService_SelectSkill] Failed: No BaseAIController"));
 		return;
 	}
 
-	FGameplayTag GameplayTag = Boss1AIController->GetAttack();
+	const FGameplayTag GameplayTag = BaseAIController->GetAttack();
 
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
 
