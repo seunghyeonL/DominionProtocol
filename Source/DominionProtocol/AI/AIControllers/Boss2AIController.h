@@ -31,6 +31,10 @@ public:
 	void DeactivateEvadeAttack();
 	void ActivateEvadeAttack();
 	
+	virtual void Tick(float DeltaTime) override;
+protected:
+	UPROPERTY()
+	AActor* TargetActor;
 private:
 	int32 BaseAttackWeight;
 	int32 SuperAttackWeight;
