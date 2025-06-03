@@ -2,8 +2,6 @@
 
 
 #include "BaseFirstAxe.h"
-
-#include "Components/SkillComponent/Skills/BaseFirstSword.h"
 #include "Util/GameTagList.h"
 
 UBaseFirstAxe::UBaseFirstAxe()

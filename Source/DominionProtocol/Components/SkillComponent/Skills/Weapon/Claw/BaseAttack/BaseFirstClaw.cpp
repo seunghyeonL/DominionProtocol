@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Components/SkillComponent/Skills/BaseFirstClaw.h"
+#include "BaseFirstClaw.h"
 #include "Util/GameTagList.h"
 
 UBaseFirstClaw::UBaseFirstClaw()
