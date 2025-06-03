@@ -52,8 +52,6 @@ void AItemSpawner::SpawnItems()
 			ABaseItem* SpawnedItem = GetWorld()->SpawnActor<ABaseItem>(RandomItemClass, SpawnPoint->GetActorLocation(), FRotator::ZeroRotator);
 			if (SpawnedItem)
 			{
-				UE_LOG(LogTemp, Log, TEXT("[ItemSpawner] is spawned: %s (Location: %s)"), *SpawnedItem->GetName(), *SpawnPoint->GetName());
-				
 				SpawnedItem->OnDestroyed.AddDynamic(this, &AItemSpawner::OnItemDestroyed);
 
 				SpawnedItems.Add(SpawnPoint, SpawnedItem);
@@ -82,14 +80,11 @@ void AItemSpawner::OnItemDestroyed(AActor* DestroyedActor)
 			AItemSpawnPoint* SpawnPoint = Elem.Key;
 			SpawnedItems[SpawnPoint] = nullptr;
 
-			UE_LOG(LogTemp, Log, TEXT("[ItemSpawner] %.1f to respawn item in [%s]"), RespawnTime, *SpawnPoint->GetName());
-
 			FTimerHandle RespawnTimerHandle;
 			GetWorld()->GetTimerManager().SetTimer(RespawnTimerHandle, FTimerDelegate::CreateLambda([this, SpawnPoint]()
 				{
 					if (SpawnPoint)
 					{
-						UE_LOG(LogTemp, Log, TEXT("[ItemSpawner] Respawn"));
 						this->SpawnItems();
 					}
 				}), RespawnTime, false);
