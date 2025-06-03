@@ -4,9 +4,11 @@
 #include "DevCheatManager.h"
 
 #include "MnhHelpers.h"
+#include "Components/ExponentialHeightFogComponent.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
+#include "Engine/ExponentialHeightFog.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "Util/CheatBPLib.h"
@@ -90,6 +92,28 @@ void UDevCheatManager::AddAllItems()
 	if (IsValid(World))
 	{
 		UCheatBPLib::AddAllItemsToPlayerInventoryMaxQuantity(World);
+	}
+}
+
+void UDevCheatManager::ToggleFog()
+{
+	UWorld* World = GetWorld();
+	check(IsValid(World));
+	
+	AExponentialHeightFog* Fog = Cast<AExponentialHeightFog>(UGameplayStatics::GetActorOfClass(World, AExponentialHeightFog::StaticClass()));
+	if (IsValid(Fog))
+	{
+		UExponentialHeightFogComponent* FogComp = Fog->GetComponent();
+		if (FogComp)
+		{
+			float CurrentOpacity = FogComp->FogMaxOpacity;
+			float NewOpacity = (CurrentOpacity > 0.f) ? 0.f : 1.f;
+			FogComp->FogMaxOpacity = NewOpacity;
+			FogComp->SetFogMaxOpacity(NewOpacity);
+			FogComp->MarkRenderStateDirty();
+			
+			Debug::Print(FString::Printf(TEXT("Fog Opacity toggled, New Opacity : %f"), NewOpacity));
+		}
 	}
 }
 

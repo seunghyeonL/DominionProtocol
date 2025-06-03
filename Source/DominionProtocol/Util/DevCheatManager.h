@@ -40,4 +40,7 @@ public:
 
 	UFUNCTION(Exec)
 	void AddAllItems();
+
+	UFUNCTION(Exec)
+	void ToggleFog();
 };
