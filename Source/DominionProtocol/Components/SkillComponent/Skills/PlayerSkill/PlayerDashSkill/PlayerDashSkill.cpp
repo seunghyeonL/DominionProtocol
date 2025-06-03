@@ -17,12 +17,23 @@ UPlayerDashSkill::UPlayerDashSkill()
 	ControlEffectTag = EffectTags::UsingDash;
 	DashMoveDirection = { 0.f, 0.f, 0.f };
 	DashSpeed = 1000.f;
+	DashDuration = 0.5f;
 }
 
 void UPlayerDashSkill::Execute()
 {
-	Super::Execute();
+	// Super::Execute();
+	auto SkillComponent = Cast<USkillComponent>(GetOuter());
+	check(SkillComponent);
+	
 	SetDashDirection();
+	OwnerCharacter->GetWorldTimerManager().SetTimer(
+		DurationTimer,
+		SkillComponent,
+		&USkillComponent::EndSkill,
+		DashDuration,
+		false
+		);
 }
 
 void UPlayerDashSkill::SetDashDirection()

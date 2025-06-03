@@ -30,7 +30,9 @@ public:
 	// === Dash 수치 설정값 ===
 	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashSpeed;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash")
+	float DashDuration;
 	
 };
 

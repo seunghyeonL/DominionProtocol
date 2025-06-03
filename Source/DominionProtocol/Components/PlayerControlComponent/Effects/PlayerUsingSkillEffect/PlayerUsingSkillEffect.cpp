@@ -4,10 +4,11 @@
 #include "PlayerUsingSkillEffect.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
-#include "BufferedInput/BufferedBaseAttack/BufferedBaseAttack.h"
+#include "../BufferedInput/BufferedBaseAttack/BufferedBaseAttack.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Util/DebugHelper.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkillComponent/SkillComponent.h"
 
 UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 {
@@ -50,7 +51,7 @@ bool UPlayerUsingSkillEffect::Activate(float Duration)
 	{
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -60,6 +61,11 @@ void UPlayerUsingSkillEffect::Deactivate()
 	if (ControlEffectTag == EffectTags::UsingDash)
 	{
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+	}
+
+	if (auto SkillComponent = Cast<USkillComponent>(OwnerCharacter))
+	{
+		SkillComponent->EndSkill();
 	}
 	
 	SetControlEffectTag(EffectTags::UsingSkill);
