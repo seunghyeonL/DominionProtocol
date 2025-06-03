@@ -6,7 +6,6 @@
 #include "Engine/GameInstance.h"
 #include "EnumAndStruct/FInstanceData.h"
 #include "EnumAndStruct/EGameStoryState.h"
-#include "EnumAndStruct/FCrackData.h"
 #include "GameplayTagContainer.h"
 #include "DomiGameInstance.generated.h"
 
