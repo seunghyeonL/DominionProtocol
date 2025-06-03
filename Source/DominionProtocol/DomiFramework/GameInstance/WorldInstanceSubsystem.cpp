@@ -6,6 +6,22 @@
 
 #include "Util/DebugHelper.h"
 
+void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	DropEssenceCache = nullptr;
+	bIsDropEssenceExist = false;
+	DropEssenceAmount = 0;
+	DropEssenceLocation = FVector::ZeroVector;
+}
+
+void UWorldInstanceSubsystem::Deinitialize()
+{
+	OnRecentCrackChanged.Clear();
+	Super::Deinitialize();
+}
+
 void UWorldInstanceSubsystem::InitializeCrackDataMap(FCrackData Level1, FCrackData Level2)
 {
 	if (!CrackDataMap.Contains(Level1.OwnerLevelName))
@@ -21,22 +37,6 @@ void UWorldInstanceSubsystem::InitializeCrackDataMap(FCrackData Level1, FCrackDa
 		Level2CrackArray.CrackDataArray.Add(Level2);
 		CrackDataMap.Add(Level2.OwnerLevelName, Level2CrackArray);
 	}
-}
-
-void UWorldInstanceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
-{
-	Super::Initialize(Collection);
-
-	DropEssenceCache = nullptr;
-	bIsDropEssenceExist = false;
-	DropEssenceAmount = 0;
-	DropEssenceLocation = FVector::ZeroVector;
-}
-
-void UWorldInstanceSubsystem::Deinitialize()
-{
-	OnRecentCrackChanged.Clear();
-	Super::Deinitialize();
 }
 
 void UWorldInstanceSubsystem::SetRecentCrackIndex(int32 NewRecentCrackIndex)

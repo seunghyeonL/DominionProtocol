@@ -6,15 +6,11 @@
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/SoundInstanceSubsystem.h"
-#include "DomiFramework/WorldActorLoader/WorldActorLoaderSubsystem.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "EnumAndStruct/FCrackData.h"
-#include "EnumAndStruct/ECategory.h"
-#include "EnumAndStruct/FWorldActorData.h"
 #include "WorldObjects/Crack.h"
 #include "Kismet/GameplayStatics.h"
-#include "WorldObjects/LightWeightActor.h"
 
 #include "Util/DebugHelper.h"
 
@@ -69,97 +65,6 @@ void ABaseGameState::InitializeSoundSubsystem()
 	SoundSubsystem->SetWorldCache(World);
 	SoundSubsystem->LoadSoundClass();
 	SoundSubsystem->LoadVolumeSettings();
-}
-
-void ABaseGameState::InitializeWorldActorLoader()
-{
-	//새 게임 시작 시, 경량 액터 초기화
-	if (!bIsNewGame)
-	{
-		return;
-	}
-
-	WorldActorLoaderSubsystem = World->GetSubsystem<UWorldActorLoaderSubsystem>();
-	check(WorldActorLoaderSubsystem);
-
-	WorldActorLoaderSubsystem->BindDelegateToWorldActorLoader();
-	
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(World, ALightWeightActor::StaticClass(), FoundActors);
-
-	if (FoundActors.Num() == 0)
-	{
-		Debug::Print(TEXT("ABaseGameState::InitializeWorldActorLoader : No LightWeightActors found in the World"));
-
-		//크래시 방지(경량 액터가 존재하지 않을 시 바인딩 제거하지 않으면 크래시발생)
-		WorldInstanceSubsystem->OnRecentCrackChanged.Clear();
-		return;
-	}
-	
-	TMap<int32, FRegionActorData> NewRegionDataMap;
-	
-	for (AActor* Actor : FoundActors)
-	{
-		ALightWeightActor* LightActor = Cast<ALightWeightActor>(Actor);
-		if (!IsValid(LightActor))
-		{
-			Debug::Print(FString::Printf(TEXT("LightWeightActor is invalid : %s"), *LightActor->GetName()));
-			continue;
-		}
-
-		AllLightWeightActorsCache.Add(LightActor);
-
-		int32 RegionIndex = LightActor->GetLocatedRegionIndex();
-		EWorldActorCategory Category = LightActor->GetActorCategory();
-
-		if (!NewRegionDataMap.Contains(RegionIndex))
-		{
-			FRegionActorData NewRegionActorData;
-			NewRegionActorData.ActorCategory = Category;
-			NewRegionDataMap.Add(RegionIndex, NewRegionActorData);
-		}
-		else
-		{
-			NewRegionDataMap[RegionIndex].ActorCategory = Category;
-		}
-
-		FWorldActorData NewActorData;
-		NewActorData.InstanceGuid = LightActor->GetUniqueGuid();
-		NewActorData.LinkedActorClass = LightActor->GetLinkedActorClass();
-		NewActorData.bIsActivate = false;
-		NewActorData.Location = LightActor->GetActorLocation();
-		NewActorData.Rotation = LightActor->GetActorRotation();
-
-		switch (Category)
-		{
-		case EWorldActorCategory::None:
-			break;
-		case EWorldActorCategory::Item:
-			NewActorData.bIsCollected = false;
-			break;
-		case EWorldActorCategory::Interactable:
-			NewActorData.bIsInteracted = false;
-			break;
-		case EWorldActorCategory::Enemy:
-			NewActorData.CurrentHealth = 100.f;
-			break;
-		default:
-			break;
-		}
-		NewRegionDataMap[RegionIndex].WorldActorArray.Add(NewActorData);
-	}
-	int32 MaxRegion = WorldInstanceSubsystem->GetCrackDataMap()->Find(WorldInstanceSubsystem->GetCurrentLevelName())->CrackDataArray.Last().CrackIndex;
-	WorldActorLoaderSubsystem->SetMaxRegion(MaxRegion);
-	
-	TArray<bool> NewActivateRegionArray;
-	NewActivateRegionArray.SetNumZeroed(MaxRegion + 1);
-	WorldActorLoaderSubsystem->SetActivateRegionArray(NewActivateRegionArray);
-	
-	WorldActorLoaderSubsystem->SetRegionDataMap(NewRegionDataMap);
-
-	//초기 스폰 Update 및 실행
-	WorldActorLoaderSubsystem->UpdateActivateRegions(0);
-	WorldActorLoaderSubsystem->ActiveRegion(0);
 }
 
 FSkillData* ABaseGameState::GetSkillData(const FGameplayTag SkillTag) const
@@ -283,8 +188,6 @@ void ABaseGameState::InitializeZeroIndexCrackData(const FString CurrentLevelName
 	{
 		if (WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level1" &&
 			WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level2" &&
-			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel1" &&
-			WorldInstanceSubsystem->GetCurrentLevelName() != "TestCrackLevel2" &&
 			WorldInstanceSubsystem->GetCurrentLevelName() != "PastLevel" &&
 			WorldInstanceSubsystem->GetCurrentLevelName() != "PresentLevel")
 		{

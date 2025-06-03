@@ -97,7 +97,6 @@ void ABaseGameMode::StartPlay()
 	BaseGameState->LoadCrackDataFromInstance();
 	BaseGameState->InitializeCrackDataMap();
 	RecentCrackCache = BaseGameState->FindNearestCrack();
-	BaseGameState->InitializeWorldActorLoader();
 
 	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
@@ -187,7 +186,8 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		WorldInstanceSubsystem->SetDropEssenceLocation(PlayerCharacter->GetActorLocation());
 		GameInstance->SetPlayerCurrentEssence(0);
 	}
-	
+
+	// 플레이어 리스폰
 	if (IsValid(PlayerCharacter))
 	{
 		FVector RespawnLocation = RecentCrackCache->GetRespawnTargetPointLocation();
