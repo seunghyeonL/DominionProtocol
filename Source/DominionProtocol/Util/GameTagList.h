@@ -151,6 +151,9 @@ namespace SkillTags
 	inline const FGameplayTag Boss2BaseAttack2Fifth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.fifth"));
 
 	inline const FGameplayTag Boss2Circling = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.Circling"));
+
+	// Boss4
+	inline const FGameplayTag Boss4FlameStrike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.FlameStrike"));
 }
 
 namespace PawnTags
@@ -168,6 +171,7 @@ namespace PawnTags
 	inline const FGameplayTag Boss1 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.1"));
 	inline const FGameplayTag Boss2 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.2"));
 	inline const FGameplayTag Boss3 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.3"));
+	inline const FGameplayTag Boss4 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.4"));
 }
 
 namespace ItemTags
