@@ -2,7 +2,8 @@
 #include "DominionProtocol/Player/Characters/DomiCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
-#include "Animation/AnimMontage.h"
+#include "Components/TimelineComponent.h"
+#include "Curves/CurveFloat.h"
 #include "Util/DebugHelper.h"
 
 
@@ -10,8 +11,11 @@ AOpenableChestItem::AOpenableChestItem()
 {
  	PrimaryActorTick.bCanEverTick = false;
 
-    ItemBoxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemBoxMesh"));
-    RootComponent = ItemBoxMesh; 
+    BottomMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BottomMesh"));
+    RootComponent = BottomMesh; 
+
+    TopMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TopMesh")); // ✨ TopMesh로 변경
+    TopMesh->SetupAttachment(RootComponent);
 
     // InteractionVolume 생성 및 설정 추가
     InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionVolume"));
@@ -27,9 +31,12 @@ AOpenableChestItem::AOpenableChestItem()
     InteractionVolume->OnComponentEndOverlap.AddDynamic(this, &AOpenableChestItem::OnOverlapEnd);
 
     // 기본 설정
-    ItemBoxMesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+    BottomMesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+    TopMesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
     bHasBeenOpened = false; 
     SpawnOffset = FVector(0, 0, 50.0f);
+
+    OpenTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("OpenTimeline"));
 }
 
 // Called when the game starts or when spawned
@@ -37,10 +44,27 @@ void AOpenableChestItem::BeginPlay()
 {
 	Super::BeginPlay();
 	
-    if (!ItemBoxMesh->GetStaticMesh())
+    if (!BottomMesh->GetStaticMesh())
     {
-        Debug::Print(FString::Printf(TEXT("Warning: ItemBox '%s' has no StaticMesh assigned!"), *GetName()), FColor::Yellow);
+        Debug::Print(FString::Printf(TEXT("Warning: Bottom '%s' has no StaticMesh assigned!"), *GetName()), FColor::Yellow);
     }
+    if (!TopMesh->GetStaticMesh())
+    {
+        Debug::Print(FString::Printf(TEXT("Warning: TopMesh '%s' has no StaticMesh assigned!"), *GetName()), FColor::Yellow);
+    }
+    if (OpenCurve)
+    {
+        FOnTimelineFloat UpdateFunction;
+        UpdateFunction.BindDynamic(this, &AOpenableChestItem::OpenChestUpdate);
+        OpenTimeline->AddInterpFloat(OpenCurve, UpdateFunction);
+
+        
+    }
+    else
+    {
+        Debug::Print(FString::Printf(TEXT("Error: OpenCurve is not assigned for Chest '%s'!"), *GetName()), FColor::Red);
+    }
+
 }
 
 void AOpenableChestItem::Interact_Implementation(AActor* Interactor)
@@ -55,7 +79,7 @@ void AOpenableChestItem::Interact_Implementation(AActor* Interactor)
     bHasBeenOpened = true;
     PlayOpeningAnimation();
     PlayOpenSound();
-
+    
     if (ItemClassesToSpawn.Num() > 0)
     {
         // 배열에서 무작위로 하나의 아이템 클래스 선택
@@ -92,7 +116,6 @@ void AOpenableChestItem::Interact_Implementation(AActor* Interactor)
     {
         InteractingDomiCharacter->RemoveInteractableActor(this);
     }
-    Destroy();
 }
 
 FText AOpenableChestItem::GetInteractMessage_Implementation() const
@@ -100,8 +123,23 @@ FText AOpenableChestItem::GetInteractMessage_Implementation() const
     return FText();
 }
 
+void AOpenableChestItem::OpenChestUpdate(float Alpha)
+{
+    if (TopMesh)
+    {
+        // Y축으로 0도에서 180도까지 회전 (피치, X축 회전)
+        FRotator NewRotation = FRotator(0.0f, 0.0f, FMath::Lerp(0.0f, 120.0f, Alpha));
+        TopMesh->SetRelativeRotation(NewRotation);
+    }
+}
+
 void AOpenableChestItem::PlayOpeningAnimation()
 {
+    if (OpenTimeline)
+    {
+        OpenTimeline->PlayFromStart();
+        Debug::Print(TEXT("Chest opening animation started."), FColor::Cyan);
+    }
 }
 
 //사운드 출력

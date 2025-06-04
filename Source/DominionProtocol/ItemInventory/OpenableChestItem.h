@@ -10,6 +10,8 @@ class UStaticMeshComponent;
 class USoundCue;
 class UAnimMontage;
 class ADomiCharacter;
+class UCurveFloat;
+class UTimelineComponent;
 
 UCLASS()
 class DOMINIONPROTOCOL_API AOpenableChestItem : public AActor, public IInteractableInterface
@@ -28,7 +30,10 @@ public:
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
-    UStaticMeshComponent* ItemBoxMesh; // 아이템 박스 메쉬
+    UStaticMeshComponent* BottomMesh; // 아이템 박스 하단
+
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UStaticMeshComponent* TopMesh; //아이템 박스 상단
 
     UPROPERTY(VisibleAnywhere, Category = "Components")
     UBoxComponent* InteractionVolume;
@@ -40,7 +45,7 @@ protected:
     FVector SpawnOffset; 
 
     UPROPERTY(EditAnywhere, Category = "Animations")
-    UAnimMontage* OpeningMontage; //애니메이션 몽타주
+    UCurveFloat* OpenCurve;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
     USoundCue* OpenSound; //열림 사운드
@@ -49,7 +54,17 @@ protected:
     bool bHasBeenOpened; // 박스가 이미 열렸는지 여부
 
 private:
-    void PlayOpeningAnimation(); // 애니메이션 재생 함수
+    UPROPERTY()
+    UTimelineComponent* OpenTimeline;
+
+    void PlayOpeningAnimation();
+
+    UFUNCTION()
+    void OpenChestUpdate(float Alpha);
+
+    /*UFUNCTION()
+    void OpenChestFinished();*/
+
     void PlayOpenSound(); // 사운드 재생 함수
 
     UFUNCTION()
