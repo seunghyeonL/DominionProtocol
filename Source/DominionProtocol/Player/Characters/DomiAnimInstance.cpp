@@ -2,9 +2,12 @@
 
 
 #include "DomiAnimInstance.h"
+
+#include "AITypes.h"
 #include "DomiCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
+#include "Components/SkillComponent/SkillComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Util/DebugHelper.h"
 
@@ -18,6 +21,39 @@ UDomiAnimInstance::UDomiAnimInstance()
 	LockOnAngle = 0.f;
 	bShouldMove = false;
 	bIsFalling = false;
+}
+
+void UDomiAnimInstance::NativeInitializeAnimation()
+{
+	Super::NativeInitializeAnimation(); // BlueprintInitializeAnimation
+
+	Character = Cast<ACharacter>(TryGetPawnOwner());
+	if (!IsValid(Character))
+	{
+		Debug::PrintError(TEXT("UDomiAnimInstance::NativeInitializeAnimation : Invalid Character."));
+		return;
+	}
+
+	MovementComponent = Character->GetCharacterMovement();
+
+	bIsPlayer = Character->IsA<ADomiCharacter>();
+	
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(Character))
+	{
+		if (auto SkillComponent = SkillComponentUser->GetSkillComponent())
+		{
+			SkillComponent->OnDashDirectionSet.BindUObject(this, &UDomiAnimInstance::SetDashAngle);
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UDomiAnimInstance::NativeInitializeAnimation : Invalid SkillComponent."));
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UDomiAnimInstance::NativeInitializeAnimation : Character is not SkillComponentUser."));
+	}
+	
 }
 
 void UDomiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -67,6 +103,20 @@ void UDomiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsFalling = MovementComponent->IsFalling();
 	// bIsCrouched = MovementComponent->IsCrouching();
 	
+}
+
+void UDomiAnimInstance::SetDashAngle(const FVector& DashDirection)
+{
+	FVector ForwardVector = Character->GetActorForwardVector();
+
+	float Dot = FVector::DotProduct(ForwardVector, DashDirection);
+	float AngleDegrees = FMath::RadiansToDegrees(FMath::Acos(Dot));
+
+	FVector Cross = FVector::CrossProduct(ForwardVector, DashDirection);
+	
+	// + -> LockOnTarget is at RightSide, - : -> LockOnTarget is at LeftSide
+	DashAngle = (Cross.Z > 0) ? AngleDegrees : -AngleDegrees;
+	Debug::Print(FString::Printf(TEXT("DashAngle: %f"), DashAngle));
 }
 
 

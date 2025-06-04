@@ -43,6 +43,8 @@ void UPlayerDashSkill::SetDashDirection()
 	auto ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
 	check(IsValid(ControlComponent));
 
+	auto SkillComponent = Cast<USkillComponent>(GetOuter());
+
 	auto LastMovementVector = ControlComponent->GetCurrentMovementVector();
 		
 	if (LastMovementVector.IsNearlyZero())
@@ -53,6 +55,8 @@ void UPlayerDashSkill::SetDashDirection()
 	{
 		DashMoveDirection = LastMovementVector.GetSafeNormal();
 	}
+
+	SkillComponent->OnDashDirectionSet.ExecuteIfBound(DashMoveDirection);
 }
 
 void UPlayerDashSkill::Tick(float DeltaTime)

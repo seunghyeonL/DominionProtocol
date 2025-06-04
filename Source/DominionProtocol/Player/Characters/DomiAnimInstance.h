@@ -21,7 +21,10 @@ public:
 	UDomiAnimInstance();
 
 protected:
+	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	void SetDashAngle(const FVector& DashDirection);
 
 	UPROPERTY(visibleAnywhere, BlueprintReadWrite, Category = "References")
 	TObjectPtr<ACharacter> Character;
@@ -43,6 +46,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
 	float LockOnAngle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
+	float DashAngle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
 	bool bShouldMove;
