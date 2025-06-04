@@ -114,7 +114,7 @@ namespace SkillTags
 	inline const FGameplayTag AxeSkeletonComboAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.AxeSkeleton.ComboAttack"));
 	inline const FGameplayTag KnifeThrow = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.KnifeSkeleton.KnifeThrow"));
 	inline const FGameplayTag MinionBaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Minion.BaseAttack"));
-	inline const FGameplayTag MinionFire = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Minion.MinionFire"));
+	inline const FGameplayTag GunMinionFire = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.GunMinion.MinionFire"));
 	inline const FGameplayTag WoodSwiping = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Wood.Swiping"));
 	inline const FGameplayTag WoodHurricaneKick = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Wood.HurricaneKick"));
 

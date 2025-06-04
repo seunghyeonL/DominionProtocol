@@ -5,5 +5,5 @@
 
 UMinionFire::UMinionFire()
 {
-	SkillTag = SkillTags::MinionFire;
+	SkillTag = SkillTags::GunMinionFire;
 }

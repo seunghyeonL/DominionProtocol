@@ -62,13 +62,13 @@ protected:
 
 	UBTTaskNode* CachedTask;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Perception")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Perception")
 	float AISightRadius = 500;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Perception")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Perception")
 	float LoseSightRadius = 600;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Perception")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Perception")
 	float AIVisionAngle = 360;
 public:
 	// Called every frame

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SkillComponent/Skills/BaseSkill.h"
+#include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
 #include "KnifeThrowBaseSkill.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UKnifeThrowBaseSkill : public UBaseSkill
+class DOMINIONPROTOCOL_API UKnifeThrowBaseSkill : public UCurvedProjectileSkill
 {
 	GENERATED_BODY()
 public:

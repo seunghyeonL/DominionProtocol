@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SkillComponent/Skills/BaseSkill.h"
+#include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
 #include "MinionFire.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UMinionFire : public UBaseSkill
+class DOMINIONPROTOCOL_API UMinionFire : public UCurvedProjectileSkill
 {
 	GENERATED_BODY()
 public:
