@@ -204,3 +204,10 @@ namespace TraceTags
 	inline const FGameplayTag HandRight = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right"));
 	inline const FGameplayTag HandLeft = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Left"));
 }
+
+namespace WorldActorTags
+{
+	inline const FGameplayTag ItemDropped = FGameplayTag::RequestGameplayTag(TEXT("WorldActor.Item.ItemDropped"));
+	inline const FGameplayTag OpenableChestItem = FGameplayTag::RequestGameplayTag(TEXT("WorldActor.Item.OpenableChestItem"));
+	inline const FGameplayTag ItemContainer = FGameplayTag::RequestGameplayTag(TEXT("WorldActor.Item.ItemContainer"));
+}

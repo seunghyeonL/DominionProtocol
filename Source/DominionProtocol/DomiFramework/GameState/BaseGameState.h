@@ -9,7 +9,6 @@
 #include "BaseGameState.generated.h"
 
 struct FCrackInitializeData;
-class UWorldActorLoaderSubsystem;
 class UWorldInstanceSubsystem;
 struct FStatusComponentInitializeData;
 struct FSkillComponentInitializeData;
@@ -40,8 +39,6 @@ public:
 	void LoadCrackDataFromInstance();
 
 	void InitializeCrackDataMap();
-	
-	void InitializeWorldActorLoader();
 
 	ACrack* FindNearestCrack();
 	
@@ -70,9 +67,6 @@ private:
 	UPROPERTY()
 	USoundInstanceSubsystem* SoundSubsystem;
 
-	UPROPERTY()
-	UWorldActorLoaderSubsystem* WorldActorLoaderSubsystem;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Crack", meta = (AllowPrivateAccess = "true"))
 	UDataTable* CrackInitializeDataTable;
 
@@ -87,9 +81,6 @@ private:
 
 	UPROPERTY()
 	TArray<ACrack*> AllCracksCache;
-
-	UPROPERTY()
-	TArray<ALightWeightActor*> AllLightWeightActorsCache;
 
 	bool bIsNewGame = true;
 

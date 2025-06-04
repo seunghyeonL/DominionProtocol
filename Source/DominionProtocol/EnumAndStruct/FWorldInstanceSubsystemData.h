@@ -11,9 +11,4 @@ struct FWorldInstanceSubsystemData
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
-	TMap<int32, FRegionActorData> RegionDataMap;
-
-	UPROPERTY()
-	TSet<int32> ActivateRegions;
 };

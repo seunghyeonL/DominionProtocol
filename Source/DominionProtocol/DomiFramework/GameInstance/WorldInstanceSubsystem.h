@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "EnumAndStruct/FCrackData.h"
-
+#include "EnumAndStruct/FWorldActorData.h"
 #include "WorldInstanceSubsystem.generated.h"
 
 class ADropEssence;
@@ -50,6 +50,14 @@ public:
 	FORCEINLINE void SetIsDropEssenceExist(bool bExist) { bIsDropEssenceExist = bExist; }
 
 	FORCEINLINE void SetDropEssenceLocation(const FVector& NewDropEssenceLocation) { DropEssenceLocation = NewDropEssenceLocation; }
+
+	FORCEINLINE void SetWorldActorDataMap(TMap<FGuid, FWorldActorData>& NewWorldActorDataMap) { WorldActorDataMap.Append(NewWorldActorDataMap); }
+
+	FORCEINLINE void AddWorldActorData(FGuid ID, FWorldActorData NewWorldActorData)
+	{
+		WorldActorDataMap.Add(ID, NewWorldActorData);
+	}
+
 	//Getter
 	UFUNCTION(BlueprintPure)
 	TMap<FString, FCrackDataArrayStruct> GetCrackDataMapForBlueprint() { return CrackDataMap; }
@@ -85,6 +93,24 @@ public:
 	FORCEINLINE bool GetIsDropEssenceExist() const { return bIsDropEssenceExist; }
 
 	FORCEINLINE const FVector& GetDropEssenceLocation() const { return DropEssenceLocation; }
+
+	FORCEINLINE bool GetIsWorldActorDataExist(FGuid ActorID) const
+	{
+		if (WorldActorDataMap.Contains(ActorID))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	FORCEINLINE FWorldActorData GetWorldActorData(FGuid ActorID) const
+	{
+		if (WorldActorDataMap.Contains(ActorID))
+		{
+			return WorldActorDataMap[ActorID];
+		}
+		return FWorldActorData();
+	}
 	
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -114,6 +140,9 @@ private:
 
 	UPROPERTY()
 	TMap<FString, FCrackDataArrayStruct> CrackDataMap;
+
+	UPROPERTY()
+	TMap<FGuid, FWorldActorData> WorldActorDataMap;
 
 	UPROPERTY()
 	TObjectPtr<ADropEssence> DropEssenceCache;
