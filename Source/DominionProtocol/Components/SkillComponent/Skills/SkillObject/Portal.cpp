@@ -23,7 +23,7 @@ APortal::APortal()
 	StartPoint->SetRelativeLocation(FVector(0.f, 0.f, 500.f));
 	EndPoint->SetRelativeLocation(FVector(1000.f, 0.f, 0.f));
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> AuraAsset1(TEXT("/Game/FXVarietyPack/Particles/P_ky_healAura.P_ky_healAura"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> AuraAsset1(TEXT("/Game/Blueprints/Skills/SkillObject/Teleport/Particles/P_ky_healAura.P_ky_healAura"));
 	if (AuraAsset1.Succeeded())
 	{
 		BlueAura->SetTemplate(AuraAsset1.Object);
@@ -34,7 +34,7 @@ APortal::APortal()
 		Debug::PrintError(TEXT("Portal:: Blue Aura Asset's location is not assigned"));
 	}
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> AuraAsset2(TEXT("/Game/FXVarietyPack/Particles/P_ky_magicCircle1.P_ky_magicCircle1"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> AuraAsset2(TEXT("/Game/Blueprints/Skills/SkillObject/Teleport/Particles/P_ky_magicCircle1.P_ky_magicCircle1"));
 	if (AuraAsset2.Succeeded())
 	{
 		RedAura->SetTemplate(AuraAsset2.Object);
