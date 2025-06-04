@@ -167,6 +167,15 @@ void ADomiCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// ControlComponent->OnComponentReady.BindUObject(this, &ADomiCharacter::BindInputFunctions);
 }
 
+void ADomiCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(IsValid(ItemComponent));
+
+	ItemComponent->OnPrimaryWeaponChangedForWeaponVisibility.BindUObject(this, &ADomiCharacter::ChangePrimaryWeapon);
+}
+
 void ADomiCharacter::BindInputFunctions()
 {
 	if (auto PlayerController = Cast<AInGameController>(Controller))
@@ -497,7 +506,9 @@ void ADomiCharacter::EventInteractionWidgetScroll(const float Value)
 FGameplayTagContainer ADomiCharacter::GetAllActivateEffects() const
 {
 	FGameplayTagContainer ActiveEffects;
-
+    check(StatusComponent);
+    check(ControlComponent);
+    
 	ActiveEffects.AppendTags(StatusComponent->GetActiveStatusEffectTags());
 	ActiveEffects.AppendTags(ControlComponent->GetActiveControlEffectTags());
 	

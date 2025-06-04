@@ -122,7 +122,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitBackAnimMontage();
 
+	// WeaopnMeshChange
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChangePrimaryWeapon(const FGameplayTag& WeaponTag);
+
 protected:
+	virtual void BeginPlay() override;
+	
 	// Bind Matched Input Functions
 	void BindInputFunctions();
 	virtual void NotifyControllerChanged() override;

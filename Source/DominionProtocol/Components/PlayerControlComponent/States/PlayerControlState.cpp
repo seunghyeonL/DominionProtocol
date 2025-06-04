@@ -322,6 +322,7 @@ void UPlayerControlState::SwapWeapon()
 		if (UItemComponent* ItemComponent = DomiCharacter->FindComponentByClass<UItemComponent>())
 		{
 			ItemComponent->SwapWeapons();
+			DomiCharacter->PlayWeaponSwapAnimMontage();
 		}
 		else
 		{

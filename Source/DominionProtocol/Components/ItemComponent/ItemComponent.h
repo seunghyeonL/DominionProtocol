@@ -13,8 +13,9 @@ DECLARE_DELEGATE(FOnInventoryItemListChanged)
 DECLARE_DELEGATE(FOnInventoryEquippedSlotItemsChanged)
 DECLARE_DELEGATE(FOnInventoryConsumableSlotItemsChanged)
 DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChanged, const FSkillComponentInitializeData&)
+DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChangedForWeaponVisibility, const FGameplayTag&)
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DOMINIONPROTOCOL_API UItemComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -26,6 +27,7 @@ public:
 	FOnInventoryEquippedSlotItemsChanged OnInventoryEquippedSlotItemsChanged;
 	FOnInventoryConsumableSlotItemsChanged OnInventoryConsumableSlotItemsChanged;
 	FOnPrimaryWeaponChanged OnPrimaryWeaponChanged;
+	FOnPrimaryWeaponChangedForWeaponVisibility OnPrimaryWeaponChangedForWeaponVisibility;
 
 protected:
 	virtual void BeginPlay() override;

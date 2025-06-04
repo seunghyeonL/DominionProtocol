@@ -49,6 +49,7 @@ void UItemComponent::BeginPlay()
 	{
 		Debug::Print(TEXT("Error: ItemDataTable is not assigned in the Editor!"));
 	}
+
 	
 }
 
@@ -60,6 +61,7 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 		{
 			FSkillComponentInitializeData InitializeData = WeaponData->WeaponSkillData;
 			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
+			OnPrimaryWeaponChangedForWeaponVisibility.ExecuteIfBound(ItemTag);
 		}
 		else
 		{
@@ -67,6 +69,7 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 			InitializeData.SkillGroupInitializeDatas.Add({SkillGroupTags::WeaponSkill, {}});
 			InitializeData.SkillGroupInitializeDatas.Add({SkillGroupTags::BaseAttack, {}});
 			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
+			OnPrimaryWeaponChangedForWeaponVisibility.ExecuteIfBound(ItemTag);
 		}
 	}
 
