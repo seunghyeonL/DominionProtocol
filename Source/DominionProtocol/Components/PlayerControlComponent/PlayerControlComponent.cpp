@@ -89,11 +89,12 @@ void UPlayerControlComponent::InitializeComponent()
 	ControlEffectMap.Add(EffectTags::Death, NewObject<UPlayerDeathEffect>(this));
 	ControlEffectMap.Add(EffectTags::UsingSkill, NewObject<UPlayerUsingSkillEffect>(this));
 	ControlEffectMap.Add(EffectTags::LockOn, NewObject<UPlayerLockOnEffect>(this));
-
-	// Set OwnerCharacter to ControlEffects
+	
+	// Effects Initialize
 	for (auto& [ControlEffectTag, ControlEffect] : ControlEffectMap)
 	{
 		ControlEffect->SetOwnerCharacter(OwnerCharacter);
+		ControlEffect->Initialize();
 	}
 
 	// Notify Component Ready
@@ -299,6 +300,25 @@ bool UPlayerControlComponent::IsActorInViewport(const FVector& ActorLocation) co
 		   ScreenLocation.Y >= 0 && ScreenLocation.Y <= ViewportSize.Y;
 }
 
+
+TArray<FEffectUIData> UPlayerControlComponent::GetEffectUIDatas()
+{
+	TArray<FEffectUIData> EffectUIDatas;
+	FGameplayTagContainer BuffDebuffContainer;
+	
+	BuffDebuffContainer.AddTag(EffectTags::ControlBuff);
+	BuffDebuffContainer.AddTag(EffectTags::ControlDebuff);
+	
+	for (const auto& [EffectTag, ControlEffect] : ControlEffectMap)
+	{
+		if (EffectTag.MatchesAny(BuffDebuffContainer))
+		{
+			EffectUIDatas.Add(ControlEffect->GetEffectUIData());
+		}
+	}
+
+	return EffectUIDatas;
+}
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag)
 {

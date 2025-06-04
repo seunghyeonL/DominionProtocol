@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnumAndStruct/EffectData/EffectUIData.h"
 #include "UObject/Object.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
@@ -26,11 +27,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	FGameplayTag StatusEffectTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UTexture2D> EffectImage;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
 	float CachedDuration;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	UTexture2D* EffectIcon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	bool bIsActive;
@@ -38,11 +39,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	float Magnitude;
 
-	
-
 public:
 	FORCEINLINE void SetOwnerCharacter(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
 	FORCEINLINE void SetMagnitude(float InMagnitude) { Magnitude = InMagnitude; }
+	FORCEINLINE FEffectUIData GetEffectUIData() const { return {StatusEffectTag, EffectIcon, CachedDuration };}
 
 	UFUNCTION(BlueprintCallable)
 	bool IsActive() const { return bIsActive; }

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "../States/PlayerControlStateBase.h"
+#include "EnumAndStruct/EffectData/EffectUIData.h"
 #include "Util/GameTagList.h"
 #include "PlayerControlEffectBase.generated.h"
 
@@ -22,6 +23,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	FGameplayTag ControlEffectTag;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	float CachedDuration;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	UTexture2D* EffectIcon;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	bool bIsActive;
 
@@ -30,6 +37,7 @@ protected:
 
 public:
 	UPlayerControlEffectBase();
+	virtual void Initialize();
 	
 	virtual bool Activate();
 	virtual bool Activate(float Duration);
@@ -57,5 +65,5 @@ public:
 	FORCEINLINE bool IsActive() const { return bIsActive; }
 	FORCEINLINE UPlayerControlStateBase* GetInnerState() const { return InnerState; }
 	FORCEINLINE void SetInnerState(UPlayerControlStateBase* NewInnerState) { InnerState = NewInnerState; }
-	
+	FORCEINLINE FEffectUIData GetEffectUIData() const { return {ControlEffectTag, EffectIcon, CachedDuration };}
 };

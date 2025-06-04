@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "EnumAndStruct/EffectData/EffectUIData.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
 #include "StatusComponent.generated.h"
@@ -68,6 +69,8 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	FORCEINLINE FGameplayTagContainer& GetActiveStatusEffectTags() { return ActiveStatusEffectTags; }
+
+	TArray<FEffectUIData> GetEffectUIDatas();
 
 	FORCEINLINE UAIStateBase* GetAIState() { return AIState; }
 	FORCEINLINE void SetAIState(UAIStateBase* InAIState) { AIState = InAIState; }

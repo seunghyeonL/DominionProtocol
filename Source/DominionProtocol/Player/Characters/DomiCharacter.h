@@ -11,6 +11,7 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Components/SkillComponent/SkillComponentUser.h"
+#include "Interface/EffectUser.h"
 #include "Interface/Parryable.h"
 #include "DomiCharacter.generated.h"
 
@@ -42,7 +43,8 @@ public IEffectReceivable,
 public IControlComponentUser,
 public IStatusComponentUser,
 public ISkillComponentUser,
-public IParryable
+public IParryable,
+public IEffectUser
 {
 	GENERATED_BODY()
 	
@@ -102,9 +104,12 @@ public:
 	virtual bool IsParryingCond() override;
 	virtual void OnParried() override;
 
+	// EffectUser
+	virtual FGameplayTagContainer GetAllActivateEffectDatas_Implementation() const override;
+	virtual TArray<FEffectUIData> GetEffectUIDatas_Implementation() const override;
+
 	// UI
 	void EventInteractionWidgetScroll(const float Value);
-	FGameplayTagContainer GetAllActivateEffects() const;
 
 	// Animation Montageplay
 	UFUNCTION(BlueprintImplementableEvent)

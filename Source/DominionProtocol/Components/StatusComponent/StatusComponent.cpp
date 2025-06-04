@@ -63,6 +63,25 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	}
 }
 
+TArray<FEffectUIData> UStatusComponent::GetEffectUIDatas()
+{
+	TArray<FEffectUIData> EffectUIDatas;
+	FGameplayTagContainer BuffDebuffContainer;
+	
+	BuffDebuffContainer.AddTag(EffectTags::StatusBuff);
+	BuffDebuffContainer.AddTag(EffectTags::StatusDebuff);
+	
+	for (const auto& [EffectTag, StatusEffect] : StatusEffectMap)
+	{
+		if (EffectTag.MatchesAny(BuffDebuffContainer))
+		{
+			EffectUIDatas.Add(StatusEffect->GetEffectUIData());
+		}
+	}
+
+	return EffectUIDatas;
+}
+
 float UStatusComponent::GetStat(const FGameplayTag& StatTag) const
 {
 	if (const float* FoundStat = StatMap.Find(StatTag))

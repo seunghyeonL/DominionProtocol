@@ -4,6 +4,7 @@
 #include "PlayerControlEffectBase.h"
 #include "Util/DebugHelper.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 
 UPlayerControlEffectBase::UPlayerControlEffectBase()
 {
@@ -11,6 +12,18 @@ UPlayerControlEffectBase::UPlayerControlEffectBase()
 	OwnerCharacter = nullptr;
 	InnerState = nullptr;
 	OuterState = nullptr;
+}
+
+void UPlayerControlEffectBase::Initialize()
+{
+	UWorld* World = GetWorld();
+
+	if (IsValid(World))
+	{
+		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+
+		
+	}
 }
 
 bool UPlayerControlEffectBase::Activate()

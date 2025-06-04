@@ -63,11 +63,6 @@ void UPlayerUsingSkillEffect::Deactivate()
 	{
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
 	}
-
-	if (auto SkillComponent = Cast<USkillComponent>(OwnerCharacter))
-	{
-		SkillComponent->EndSkill();
-	}
 	
 	SetControlEffectTag(EffectTags::UsingSkill);
 

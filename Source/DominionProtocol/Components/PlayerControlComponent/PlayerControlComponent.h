@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "EnumAndStruct/EffectData/EffectUIData.h"
 #include "Util/GameTagList.h"
 #include "PlayerControlComponent.generated.h"
 
@@ -38,6 +39,8 @@ public:
 	bool SetLockOnTargetActorInPublicSpace();
 	bool SetLockOnTargetActorInVisibility();
 	bool IsActorInViewport(const FVector& ActorLocation) const;
+
+	TArray<FEffectUIData> GetEffectUIDatas();
 
 	// FOnDashDirectionSet OnDashDirectionSet;
 

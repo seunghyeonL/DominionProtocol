@@ -196,6 +196,17 @@ void ABaseEnemy::ActivateStatusEffect_Implementation(const FGameplayTag& EffectT
 	StatusComponent->ActivateStatusEffect(EffectTag, 0);
 }
 
+FGameplayTagContainer ABaseEnemy::GetAllActivateEffectDatas_Implementation() const
+{
+	return StatusComponent->GetActiveStatusEffectTags();
+}
+
+TArray<FEffectUIData> ABaseEnemy::GetEffectUIDatas_Implementation() const
+{
+	check(StatusComponent);
+	return StatusComponent->GetEffectUIDatas();
+}
+
 FString ABaseEnemy::GetPawnName_Implementation()
 {
 	return MonsterName;

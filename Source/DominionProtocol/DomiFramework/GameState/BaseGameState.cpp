@@ -8,6 +8,7 @@
 #include "DomiFramework/GameInstance/SoundInstanceSubsystem.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
+#include "EnumAndStruct/EffectData/EffectInitializeData.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "WorldObjects/Crack.h"
 #include "Kismet/GameplayStatics.h"
@@ -86,6 +87,13 @@ FStatusComponentInitializeData* ABaseGameState::GetStatusComponentInitializeData
 	check(StatusInitializeDataTable);
 
 	return StatusInitializeDataTable->FindRow<FStatusComponentInitializeData>(PawnTag.GetTagName(), TEXT(""));
+}
+
+FEffectInitializeData* ABaseGameState::GetEffectInitializeData(const FGameplayTag EffectTag) const
+{
+	check(EffectInitializeDataTable);
+
+	return EffectInitializeDataTable->FindRow<FEffectInitializeData>(EffectTag.GetTagName(), TEXT(""));
 }
 
 void ABaseGameState::CacheAllCracks()

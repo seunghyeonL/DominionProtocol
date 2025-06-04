@@ -8,6 +8,7 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+struct FEffectInitializeData;
 struct FCrackInitializeData;
 class UWorldInstanceSubsystem;
 struct FStatusComponentInitializeData;
@@ -32,6 +33,7 @@ public:
 	FORCEINLINE FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
 	FSkillComponentInitializeData* GetSkillComponentInitializeData(const FGameplayTag PawnTag) const;
 	FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
+	FEffectInitializeData* GetEffectInitializeData(const FGameplayTag EffectTag) const;
 	FORCEINLINE ACrack* GetCrackByIndex(int32 InCrackIndex) const {return AllCracksCache[InCrackIndex]; }
 	
 	void CacheAllCracks();
@@ -79,6 +81,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
 	UDataTable* StatusInitializeDataTable;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
+	UDataTable* EffectInitializeDataTable;
+	
 	UPROPERTY()
 	TArray<ACrack*> AllCracksCache;
 

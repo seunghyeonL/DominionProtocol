@@ -6,6 +6,7 @@
 #include "Components/SkillComponent/SkillComponentUser.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "GameFramework/Character.h"
+#include "Interface/EffectUser.h"
 #include "Interface/Parryable.h"
 #include "Util/GameTagList.h"
 #include "Player/Damagable.h"
@@ -17,7 +18,6 @@ class AEssence;
 class USkillComponent;
 class UStatusComponent;
 
-
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseEnemy :
 public ACharacter,
@@ -26,7 +26,8 @@ public IParryable,
 public IPawnTagInterface,
 public IEffectReceivable,
 public IStatusComponentUser,
-public ISkillComponentUser
+public ISkillComponentUser,
+public IEffectUser
 {
 	GENERATED_BODY()
 
@@ -54,9 +55,6 @@ public:
 	
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
-	
-	// PawnTag
-	virtual FGameplayTag GetPawnTag_Implementation() override;
 
 	// Parryable
 	virtual bool IsParryingCond() override;
@@ -67,7 +65,13 @@ public:
 	virtual void ShowStatusEffectTags_Implementation() override;
 	virtual void ActivateStatusEffect_Implementation(const FGameplayTag& EffectTag) override;
 
+	// EffectUser
+	virtual FGameplayTagContainer GetAllActivateEffectDatas_Implementation() const override;
+	virtual TArray<FEffectUIData> GetEffectUIDatas_Implementation() const override;
+	
+	// PawnTagInterface
 	virtual FString GetPawnName_Implementation() override;
+	virtual FGameplayTag GetPawnTag_Implementation() override;
 
 protected:
 	// Called when the game starts or when spawned

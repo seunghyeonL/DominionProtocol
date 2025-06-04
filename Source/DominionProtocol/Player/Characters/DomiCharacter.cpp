@@ -503,14 +503,27 @@ void ADomiCharacter::EventInteractionWidgetScroll(const float Value)
 	OnInteractionWidgetScroll.Broadcast(Value);
 }
 
-FGameplayTagContainer ADomiCharacter::GetAllActivateEffects() const
+FGameplayTagContainer ADomiCharacter::GetAllActivateEffectDatas_Implementation() const
 {
-	FGameplayTagContainer ActiveEffects;
     check(StatusComponent);
     check(ControlComponent);
+
+	FGameplayTagContainer ActiveEffects;
     
 	ActiveEffects.AppendTags(StatusComponent->GetActiveStatusEffectTags());
 	ActiveEffects.AppendTags(ControlComponent->GetActiveControlEffectTags());
 	
-	return MoveTemp(ActiveEffects);
+	return ActiveEffects;
+}
+
+TArray<FEffectUIData> ADomiCharacter::GetEffectUIDatas_Implementation() const
+{
+	check(StatusComponent);
+	check(ControlComponent);
+
+	TArray<FEffectUIData> EffectUIDatas;
+	EffectUIDatas.Append(ControlComponent->GetEffectUIDatas());
+	EffectUIDatas.Append(StatusComponent->GetEffectUIDatas());
+
+	return EffectUIDatas;
 }
