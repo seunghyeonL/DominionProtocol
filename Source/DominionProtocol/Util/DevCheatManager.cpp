@@ -83,7 +83,10 @@ void UDevCheatManager::Suicide()
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
 
-	IDamagable::Execute_OnAttacked(PlayerCharacter, { nullptr, 100, FVector::ZeroVector, {}});
+	if (PlayerCharacter->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
+	{
+		IDamagable::Execute_OnAttacked(PlayerCharacter, { nullptr, 100, FVector::ZeroVector, {}});
+	}
 }
 
 void UDevCheatManager::AddAllItems()
@@ -92,6 +95,44 @@ void UDevCheatManager::AddAllItems()
 	if (IsValid(World))
 	{
 		UCheatBPLib::AddAllItemsToPlayerInventoryMaxQuantity(World);
+	}
+}
+
+void UDevCheatManager::ActivateEffect(FName GameplayTag, float Magnitude, float Duration)
+{
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
+	check(PlayerCharacter);
+	
+	FGameplayTag EffectTag = FGameplayTag::RequestGameplayTag(GameplayTag);
+	
+	if (EffectTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Control"))))
+	{
+		if (auto ControlComponent = PlayerCharacter->FindComponentByClass<UPlayerControlComponent>())
+		{
+			if (FMath::IsNearlyZero(Duration))
+			{
+				ControlComponent->ActivateControlEffect(EffectTag);
+			}
+			else
+			{
+				ControlComponent->ActivateControlEffect(EffectTag, Duration);
+			}
+		}
+	}
+	else
+	{
+		if (auto StatusComponent = PlayerCharacter->FindComponentByClass<UStatusComponent>())
+		{
+			if (FMath::IsNearlyZero(Duration))
+			{
+				StatusComponent->ActivateStatusEffect(EffectTag, Magnitude);
+			}
+			else
+			{
+				StatusComponent->ActivateStatusEffect(EffectTag, Magnitude, Duration);
+			}
+			
+		}
 	}
 }
 

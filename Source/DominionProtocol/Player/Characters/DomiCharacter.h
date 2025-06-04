@@ -53,6 +53,9 @@ public:
 	FOnRemoveInteractableActor OnRemoveInteractableActor;
 	FOnInteractionWidgetScroll OnInteractionWidgetScroll;
 
+	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
+	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
+
 	//Getter
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AActor* GetCurrentInteractableActor() const;
@@ -72,15 +75,12 @@ public:
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
-	
-	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
-	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
 
 	// StatusComponentUser
 	FORCEINLINE virtual UStatusComponent* GetStatusComponent() const override { return StatusComponent; }
 	virtual void InitializeStatusComponent() override;
 	virtual FGameplayTagContainer& GetActiveStatusEffectTags() override;
-
+	
 	// SkillComponentUser
 	FORCEINLINE virtual USkillComponent* GetSkillComponent() const override { return SkillComponent; }
 	virtual void InitializeSkillComponent() override;
@@ -89,8 +89,9 @@ public:
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 
-	// PawnTag
+	// awnTagInterface
 	virtual FGameplayTag GetPawnTag_Implementation() override;
+	virtual FString GetPawnName_Implementation() override;
 
 	// EffectReceivable (for debugging)
 	virtual void ShowControlEffectTags_Implementation() override;
@@ -101,7 +102,24 @@ public:
 	virtual bool IsParryingCond() override;
 	virtual void OnParried() override;
 
+	// UI
 	void EventInteractionWidgetScroll(const float Value);
+
+	// Animation Montageplay
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayWeaponSwapAnimMontage();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitFrontAnimMontage();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitRightAnimMontage();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitLeftAnimMontage();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitBackAnimMontage();
 
 protected:
 	// Bind Matched Input Functions
@@ -109,8 +127,6 @@ protected:
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void OnDeath();
-
-	virtual FString GetPawnName_Implementation() override;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
