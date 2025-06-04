@@ -8,6 +8,7 @@
 #include "NiagaraComponent.h"
 #include "ItemContainer.generated.h"
 
+class UActorStateComponent;
 class UStaticMeshComponent;
 class ABaseItem;
 class USoundCue;
@@ -26,6 +27,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* ContainerShellMesh; // 파괴 전 오크통/상자의 온전한 스태틱 메시
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UActorStateComponent> ActorStateComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Destructible")
 	float MaxHealth = 50.0f; // 컨테이너의 최대 체력

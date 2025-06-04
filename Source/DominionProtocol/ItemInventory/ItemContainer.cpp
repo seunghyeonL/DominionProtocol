@@ -7,8 +7,10 @@
 #include "DominionProtocol/Player/Characters/DomiCharacter.h"
 #include "ItemInventory/BaseItem.h"
 #include "NiagaraComponent.h"
+#include "DomiFramework/WorldActorManage/ActorStateComponent.h"
 #include "Sound/SoundCue.h"
-#include "Engine/World.h" 
+#include "Engine/World.h"
+#include "Util/GameTagList.h"
 #include "Util/BattleDataTypes.h"
 #include "Util/DebugHelper.h"
 
@@ -22,6 +24,9 @@ AItemContainer::AItemContainer()
 
 	ContainerShellMesh->SetCollisionProfileName(TEXT("Custom")); // 사용자 정의 콜리전으로 변경
 	ContainerShellMesh->SetGenerateOverlapEvents(true); // 오버랩 이벤트를 생성하도록 설정
+
+	ActorStateComponent = CreateDefaultSubobject<UActorStateComponent>(TEXT("ActorStateComponent"));
+	ActorStateComponent->SetGameplayTag(WorldActorTags::ItemContainer);
 
 	//콜리전 오버랩 채널 설정
 	ContainerShellMesh->SetCollisionResponseToAllChannels(ECR_Block); // 기본은 모든 채널에 대해 Block
@@ -84,7 +89,10 @@ void AItemContainer::OnHealthZeroed()
 		Debug::Print(TEXT("ItemDropped: DustVFXComponent or DustNiagaraSystem is null. Niagara effect will not play."), FColor::Yellow);
 	}
 	PlayDestructionSound();
-	SpawnRandomItems();
+	if (!ActorStateComponent->GetActorData().bIsItemCollected)
+	{
+		SpawnRandomItems();
+	}
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AItemContainer::DestroyContainerActor, DestroyDelayAfterBreak, false);
 
@@ -142,6 +150,7 @@ void AItemContainer::SpawnRandomItems()
 		ABaseItem* SpawnedItem = World->SpawnActor<ABaseItem>(ItemClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
 		if (SpawnedItem)
 		{
+			ActorStateComponent->SwitchStateAndUpdateInstance(WorldActorTags::ItemContainer);
 			Debug::Print(FString::Printf(TEXT("아이템 스폰됨: %s"), *SpawnedItem->GetName()));
 		}
 	}
