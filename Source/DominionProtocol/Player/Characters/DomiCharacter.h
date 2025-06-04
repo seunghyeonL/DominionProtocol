@@ -159,6 +159,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
 	TObjectPtr<UStaticMeshComponent> DownTrace;
 
+	FString PlayerName;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AActor> InteractableActor;
