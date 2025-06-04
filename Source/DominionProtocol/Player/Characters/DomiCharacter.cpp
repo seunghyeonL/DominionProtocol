@@ -516,3 +516,13 @@ void ADomiCharacter::EventInteractionWidgetScroll(const float Value)
 {
 	OnInteractionWidgetScroll.Broadcast(Value);
 }
+
+FGameplayTagContainer ADomiCharacter::GetAllActivateEffects() const
+{
+	FGameplayTagContainer ActiveEffects;
+
+	ActiveEffects.AppendTags(StatusComponent->GetActiveStatusEffectTags());
+	ActiveEffects.AppendTags(ControlComponent->GetActiveControlEffectTags());
+	
+	return MoveTemp(ActiveEffects);
+}

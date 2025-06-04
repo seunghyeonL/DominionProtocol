@@ -9,7 +9,6 @@
 // This class does not need to be modified.
 UINTERFACE(BlueprintType, Blueprintable)
 
-DECLARE
 class UInteractableInterface : public UInterface
 {
 	GENERATED_BODY()

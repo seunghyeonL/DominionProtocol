@@ -104,6 +104,7 @@ public:
 
 	// UI
 	void EventInteractionWidgetScroll(const float Value);
+	FGameplayTagContainer GetAllActivateEffects() const;
 
 	// Animation Montageplay
 	UFUNCTION(BlueprintImplementableEvent)
