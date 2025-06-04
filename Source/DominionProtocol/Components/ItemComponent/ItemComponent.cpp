@@ -7,6 +7,7 @@
 #include "Interface/EquipEffectableItemInterface.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "DomiFramework/GameState/BaseGameState.h"
+#include "Sound/SoundCue.h"
 
 UItemComponent::UItemComponent()
 {
@@ -231,7 +232,7 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 
 				// 새로운 태그 장착
 				SetTagToSlot(SlotName, ItemTag);
-
+				PlayEquipSound();
 				//태그가 악세서리면 효과 적용
 				if (ItemTag.MatchesTag(ItemTags::AccessoryItem))
 				{
@@ -327,6 +328,7 @@ bool UItemComponent::UnequipItem(FName SlotName)
 		}
 		SetTagToSlot(SlotName, FGameplayTag());
 		// EquipmentSlots[SlotName] = FGameplayTag(); // 태그를 비움
+		PlayUnEquipSound();
 		OnInventoryEquippedSlotItemsChanged.Execute();
 		return true;
 	}
@@ -342,7 +344,8 @@ void UItemComponent::SwapWeapons()
 	// EquipmentSlots[FName("WeaponSlot_Primary")] = SecondaryWeapon;
 	SetTagToSlot(FName("WeaponSlot_Secondary"), PrimaryWeapon);
 	// EquipmentSlots[FName("WeaponSlot_Secondary")] = PrimaryWeapon;
-
+	
+	PlaySwapSound();
 	Debug::Print(TEXT("무기 슬롯을 스왑했습니다."));
 	// 장비 변경 알림
 	OnInventoryEquippedSlotItemsChanged.Execute();
@@ -516,6 +519,7 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 				if (ConsumableActor && ConsumableActor->Implements<UConsumableItemInterface>())
 				{
 					// Consume 인터페이스 실행 (소비 주체 전달)
+					PlayConsumeSound();
 					IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
 					OnInventoryItemListChanged.Execute();
 
@@ -746,5 +750,50 @@ void UItemComponent::AddAllItemsToInventoryMaxQuantity()
 	else
 	{
 		Debug::Print(TEXT("No items were added or all items already at max quantity."));
+	}
+}
+
+void UItemComponent::PlayEquipSound()
+{
+	if (EquipSound)
+	{
+		AActor* OwningActor = GetOwner();
+		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, OwningActor->GetActorLocation());
+	}
+}
+
+void UItemComponent::PlayUnEquipSound()
+{
+	if (UnEquipSound)
+	{
+		AActor* OwningActor = GetOwner();
+		if (OwningActor)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, UnEquipSound, OwningActor->GetActorLocation());
+		}
+	}
+}
+
+void UItemComponent::PlayConsumeSound()
+{
+	if (ConsumeSound) 
+	{
+		AActor* OwningActor = GetOwner();
+		if (OwningActor)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, ConsumeSound, OwningActor->GetActorLocation());
+		}
+	}
+}
+
+void UItemComponent::PlaySwapSound()
+{
+	if (SwapSound)
+	{
+		AActor* OwningActor = GetOwner();
+		if (OwningActor)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, SwapSound, OwningActor->GetActorLocation());
+		}
 	}
 }

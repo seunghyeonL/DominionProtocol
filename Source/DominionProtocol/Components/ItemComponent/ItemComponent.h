@@ -8,6 +8,7 @@
 #include "ItemComponent.generated.h"
 
 struct FSkillComponentInitializeData;
+class USoundCue;
 
 DECLARE_DELEGATE(FOnInventoryItemListChanged)
 DECLARE_DELEGATE(FOnInventoryEquippedSlotItemsChanged)
@@ -51,6 +52,19 @@ protected:
 	// 게임 시작 시 ItemDataTable의 모든 FItemData를 로드해 사용
 	UPROPERTY(Transient) // 런타임에만 존재하고 저장되지 않음
 	TMap<FGameplayTag, FItemData> CachedItemDataMap;
+
+	//사운드
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundCue* EquipSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundCue* UnEquipSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundCue* ConsumeSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundCue* SwapSound;
 
 	// 포션 부스트가 적용되었는지 추적하는 변수
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Consumable|Potion")
@@ -145,4 +159,10 @@ public:
 private:
 	//캐싱된 ItemDataTable에서 FItemData를 로드하는 헬퍼 함수
 	const FItemData* GetItemDataFromTable(FGameplayTag ItemTag) const;
+
+	//사운드 재생 함수
+	void PlayEquipSound();
+	void PlayUnEquipSound();
+	void PlayConsumeSound();
+	void PlaySwapSound();
 };
