@@ -65,6 +65,7 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 		{
 			FSkillComponentInitializeData InitializeData;
 			InitializeData.SkillGroupInitializeDatas.Add({SkillGroupTags::WeaponSkill, {}});
+			InitializeData.SkillGroupInitializeDatas.Add({SkillGroupTags::BaseAttack, {}});
 			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
 		}
 	}
