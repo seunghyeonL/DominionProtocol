@@ -9,6 +9,7 @@
 #include "WorldObjects/BossRoomDoor.h"
 #include "BaseGameMode.generated.h"
 
+class UActorStateManageWorldSubsystem;
 class ADropEssence;
 class ALevelSequenceActor;
 class ULevelSequencePlayer;
@@ -141,6 +142,9 @@ protected:
 
 	UPROPERTY()
 	bool bIsFadeIn;
+
+	UPROPERTY()
+	TObjectPtr<UActorStateManageWorldSubsystem> StateWorldSubsystem;
 	
 #pragma endregion
 
