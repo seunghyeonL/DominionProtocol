@@ -6,9 +6,7 @@
 #include "Components/StatusComponent/StatusEffects/StatusEffectBase.h"
 #include "PlayerRunningEffect.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API UPlayerRunningEffect : public UStatusEffectBase
 {

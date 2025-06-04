@@ -18,6 +18,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMaxShieldChanged, float);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnBattleMonster, FString);
+DECLARE_MULTICAST_DELEGATE(FOnStatusEffectsChanged);
 DECLARE_MULTICAST_DELEGATE(FOnDeath);
 
 DECLARE_DELEGATE(FOnSpawned);
@@ -39,6 +40,7 @@ public:
 	FOnDeath OnDeath;
 	FOnGroggy OnGroggy;
 	FOnSpawned OnSpawned;
+	FOnStatusEffectsChanged OnStatusEffectsChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnHealthChanged OnHealthChanged;
@@ -72,6 +74,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	const TMap<FGameplayTag, float>& GetStatMap() const { return StatMap; }
+
+	UFUNCTION()
+	const TMap<FGameplayTag, UStatusEffectBase*>& GetStatusEffectMap() const { return StatusEffectMap; }
 	
 	float GetStat(const FGameplayTag& StatTag) const;
 	void SetStat(const FGameplayTag& StatTag, float Value);

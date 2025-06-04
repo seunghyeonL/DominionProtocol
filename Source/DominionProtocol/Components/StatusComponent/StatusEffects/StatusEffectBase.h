@@ -8,10 +8,8 @@
 #include "Util/DebugHelper.h"
 #include "StatusEffectBase.generated.h"
 
-/**
- * 
- */
-UCLASS()
+
+UCLASS(BlueprintType)
 class DOMINIONPROTOCOL_API UStatusEffectBase : public UObject
 {
 	GENERATED_BODY()
@@ -34,11 +32,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true"))
 	float Magnitude;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UTexture2D> EffectImage;
+
 public:
 	FORCEINLINE void SetOwnerCharacter(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
 	FORCEINLINE void SetMagnitude(float InMagnitude) { Magnitude = InMagnitude; }
 
-	FORCEINLINE bool IsActive() const { return bIsActive; }
+	UFUNCTION(BlueprintCallable)
+	bool IsActive() const { return bIsActive; }
+
+	UFUNCTION(BlueprintCallable)
+	FGameplayTag GetStatusEffectTag() const { return StatusEffectTag; }
 	
 	virtual bool Activate();
 	virtual bool Activate(float Duration);

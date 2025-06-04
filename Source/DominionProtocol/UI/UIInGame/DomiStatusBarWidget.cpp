@@ -17,7 +17,12 @@ void UDomiStatusBarWidget::NativeConstruct()
 	AActor* OwningActor = GetOwningPlayerPawn();
 	if (OwningActor)
 	{
-		SetupStatusBarWidget(OwningActor);	
+		SetupStatusBarWidget(OwningActor);
+		StatusComponent = OwningActor->GetComponentByClass<UStatusComponent>();
+		if (StatusComponent)
+		{
+			StatusComponent->OnStatusEffectsChanged.AddUObject(this, &UDomiStatusBarWidget::UpdateStatusEffectMap);
+		}
 	}
 }
 
@@ -47,6 +52,13 @@ void UDomiStatusBarWidget::UpdatePlayerMaxStaminaBar(const float NewMaxStamina)
 	AlphaForStaminaAnim = 0.0f;
 	PreStamina = MaxStamina;
 	MaxStamina = NewMaxStamina;
+}
+
+void UDomiStatusBarWidget::UpdateStatusEffectMap()
+{
+	StatusEffectMap = StatusComponent->GetStatusEffectMap();
+
+	OnUpdateStatusEffectMap();
 }
 
 void UDomiStatusBarWidget::SetupStatusBarWidget(const AActor* OwningActor)

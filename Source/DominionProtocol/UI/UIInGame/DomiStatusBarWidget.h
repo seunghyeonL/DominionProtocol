@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Blueprint/UserWidget.h"
 #include "DomiStatusBarWidget.generated.h"
 
@@ -22,6 +23,11 @@ public:
 	void UpdatePlayerStaminaBar(const float NewStamina);
 	UFUNCTION()
 	void UpdatePlayerMaxStaminaBar(const float NewMaxStamina);
+	UFUNCTION()
+	void UpdateStatusEffectMap();
+
+	UFUNCTION(BlueprintimplementableEvent)
+	void OnUpdateStatusEffectMap();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void AnimUpdatePlayerHPBar();
@@ -37,6 +43,15 @@ protected:
 	
 
 protected:
+	UPROPERTY()
+	TObjectPtr<class UStatusComponent> StatusComponent;
+
+	UPROPERTY(BlueprintReadOnly)
+	TMap<FGameplayTag, class UStatusEffectBase*> StatusEffectMap;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<class UStatusEffectBase*> CurrentStatusEffectArray;
+	
 	// HP Section
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<class UProgressBar> PlayerHPBar;

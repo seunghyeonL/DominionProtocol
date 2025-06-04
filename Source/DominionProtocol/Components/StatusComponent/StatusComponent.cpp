@@ -276,6 +276,7 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 	{
 		(*StatusEffect)->SetMagnitude(Magnitude);
 		(*StatusEffect)->Activate();
+		OnStatusEffectsChanged.Broadcast();
 	}
 	else
 	{
@@ -289,6 +290,7 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 	{
 		(*StatusEffect)->SetMagnitude(Magnitude);
 		(*StatusEffect)->Activate(Duration);
+		OnStatusEffectsChanged.Broadcast();
 	}
 	else
 	{
