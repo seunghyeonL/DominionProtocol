@@ -2,6 +2,8 @@
 #include "NiagaraComponent.h"
 #include "Components/ItemComponent/ItemComponent.h" 
 #include "ItemData.h"
+#include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
+#include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
 
 AItemDropped::AItemDropped()
@@ -15,12 +17,21 @@ AItemDropped::AItemDropped()
 	AuraVFXComponent->SetRelativeRotation(FRotator::ZeroRotator);
 	AuraVFXComponent->SetRelativeScale3D(FVector(1.0f));
 
+	ActorStateComponent = CreateDefaultSubobject<UActorStateComponent>(TEXT("ActorState"));
+	ActorStateComponent->SetGameplayTag(WorldActorTags::ItemDropped);
+	
 	ItemSubclassToAward = ABaseItem::StaticClass();
 }
 
 void AItemDropped::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (ActorStateComponent->GetActorData().bIsItemCollected)
+	{
+		Destroy();
+	}
+	
 	if (ItemSubclassToAward)
 	{
 		ABaseItem* DefaultItemObject = ItemSubclassToAward.GetDefaultObject();
@@ -98,6 +109,8 @@ void AItemDropped::Interact_Implementation(AActor* Interactor)
 							return;
 						}
 
+						ActorStateComponent->SwitchStateAndUpdateInstance(WorldActorTags::ItemDropped);
+						
 						// 지정된 서브클래스의 아이템 태그를 사용해 아이템 추가
 						InventoryComp->AddItem(Data->ItemTag, 1);
 						Destroy(); 
