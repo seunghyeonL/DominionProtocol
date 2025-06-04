@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "OpenableChestItem.generated.h"
 
+class UActorStateComponent;
 class UStaticMeshComponent;
 class USoundCue;
 class UAnimMontage;
@@ -20,6 +21,8 @@ class DOMINIONPROTOCOL_API AOpenableChestItem : public AActor, public IInteracta
 	
 public:
 	AOpenableChestItem();
+
+	TObjectPtr<UActorStateComponent> GetStateComponent() const { return ActorStateComponent; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -37,6 +40,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Components")
     UBoxComponent* InteractionVolume;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UActorStateComponent> ActorStateComponent;
 
     UPROPERTY(EditAnywhere, Category = "Item Spawning")
     TArray<TSubclassOf<AActor>> ItemClassesToSpawn; // 스폰할 아이템 클래스들의 배열

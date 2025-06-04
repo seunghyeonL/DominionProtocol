@@ -1,7 +1,11 @@
 #include "ItemInventory/BaseItem.h"
+
+#include "ItemContainer.h"
+#include "OpenableChestItem.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
 #include "Components/ItemComponent/ItemComponent.h"
+#include "DomiFramework/WorldActorManage/ActorStateComponent.h"
 #include "DominionProtocol/Player/Characters/DomiCharacter.h" 
 
 ABaseItem::ABaseItem()
@@ -100,6 +104,14 @@ void ABaseItem::Interact_Implementation(AActor* Interactor)
 				{
 					Debug::Print(TEXT("인벤토리에 최대 수량만큼 아이템이 존재합니다."));
 					return; // 더 이상 아이템을 줍지 않음
+				}
+				if (IsValid(OwnerActorCache))
+				{
+					if (OwnerActorCache.IsA(AOpenableChestItem::StaticClass()))
+					{
+						TObjectPtr<UActorStateComponent> StateComponent = Cast<AOpenableChestItem>(OwnerActorCache)->GetStateComponent();
+						StateComponent->SwitchStateAndUpdateInstance(WorldActorTags::OpenableChestItem, 1);
+					}
 				}
 				//아이템 추가 후 액터 제거
 				InventoryComp->AddItem(Data->ItemTag, 1);

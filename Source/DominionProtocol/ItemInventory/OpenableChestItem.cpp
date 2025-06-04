@@ -4,7 +4,9 @@
 #include "Sound/SoundCue.h"
 #include "Components/TimelineComponent.h"
 #include "Curves/CurveFloat.h"
+#include "DomiFramework/WorldActorManage/ActorStateComponent.h"
 #include "Util/DebugHelper.h"
+#include "Util/GameTagList.h"
 
 
 AOpenableChestItem::AOpenableChestItem()
@@ -26,6 +28,10 @@ AOpenableChestItem::AOpenableChestItem()
 
     InteractionVolume->SetGenerateOverlapEvents(true);
 
+    //StateComponent 추가
+    ActorStateComponent = CreateDefaultSubobject<UActorStateComponent>(TEXT("ActorStateComponent"));
+    ActorStateComponent->SetGameplayTag(WorldActorTags::OpenableChestItem);
+    
     // 오버랩 이벤트 바인딩 추가
     InteractionVolume->OnComponentBeginOverlap.AddDynamic(this, &AOpenableChestItem::OnOverlapBegin);
     InteractionVolume->OnComponentEndOverlap.AddDynamic(this, &AOpenableChestItem::OnOverlapEnd);
@@ -65,11 +71,15 @@ void AOpenableChestItem::BeginPlay()
         Debug::Print(FString::Printf(TEXT("Error: OpenCurve is not assigned for Chest '%s'!"), *GetName()), FColor::Red);
     }
 
+    if (ActorStateComponent->GetActorData().bIsChestOpened)
+    {
+        PlayOpeningAnimation();
+    }
 }
 
 void AOpenableChestItem::Interact_Implementation(AActor* Interactor)
 {
-    if (bHasBeenOpened)
+    if (bHasBeenOpened || ActorStateComponent->GetActorData().bIsChestOpened)
     {
         Debug::Print(TEXT("This Item Box has already been opened."), FColor::Yellow);
         return;
@@ -79,6 +89,7 @@ void AOpenableChestItem::Interact_Implementation(AActor* Interactor)
     bHasBeenOpened = true;
     PlayOpeningAnimation();
     PlayOpenSound();
+    ActorStateComponent->SwitchStateAndUpdateInstance(WorldActorTags::OpenableChestItem, 0);
     
     if (ItemClassesToSpawn.Num() > 0)
     {
@@ -95,6 +106,7 @@ void AOpenableChestItem::Interact_Implementation(AActor* Interactor)
 
             if (SpawnedItem)
             {
+                SpawnedItem->SetOwner(this);
                 Debug::Print(FString::Printf(TEXT("Spawned item: %s from Item Box."), *SpawnedItem->GetName()), FColor::Blue);
             }
             else

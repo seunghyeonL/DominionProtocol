@@ -17,6 +17,8 @@ class DOMINIONPROTOCOL_API ABaseItem : public AActor, public IInteractableInterf
 public:	
 	ABaseItem();
 
+	FORCEINLINE void SetOwner(AActor* OwnerActor) { OwnerActorCache = OwnerActor; }
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* StaticMesh;
@@ -55,4 +57,8 @@ public:
 	FGameplayTag GetItemGameplayTag() const;
 
 	virtual void BeginPlay()override;
+
+private:
+	UPROPERTY()
+	TObjectPtr<AActor> OwnerActorCache;
 };
