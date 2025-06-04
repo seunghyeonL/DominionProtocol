@@ -2,8 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/SkillComponent/Skills/TeleportSkill.h"
 #include "Portal.generated.h"
+
+class UMagicTeleportSkill;
 
 UCLASS()
 class DOMINIONPROTOCOL_API APortal : public AActor
@@ -22,7 +23,7 @@ public:
 	FORCEINLINE TObjectPtr<UParticleSystemComponent> GetRedAura() { return RedAura; }
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Teleport")
-	TObjectPtr<UTeleportSkill> SkillOwner = nullptr;
+	TObjectPtr<UMagicTeleportSkill> SkillOwner = nullptr;
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Teleport")

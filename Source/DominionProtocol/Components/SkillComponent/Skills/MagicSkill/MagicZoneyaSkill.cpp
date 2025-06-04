@@ -1,4 +1,4 @@
-#include "Components/SkillComponent/Skills/ZoneyaSkill.h"
+#include "Components/SkillComponent/Skills/MagicSkill/MagicZoneyaSkill.h"
 #include "Util/GameTagList.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
@@ -6,28 +6,28 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 
-UZoneyaSkill::UZoneyaSkill()
+UMagicZoneyaSkill::UMagicZoneyaSkill()
 {
 	SkillTag = SkillTags::MagicZoneyaSkill;
 	ControlEffectTag = EffectTags::UsingZoneya;
 	Duration = 3.0f;
 }
 
-void UZoneyaSkill::Initialize(ACharacter* Instigator)
+void UMagicZoneyaSkill::Initialize(ACharacter* Instigator)
 {
 	Super::Initialize(Instigator);
 }
 
-void UZoneyaSkill::Execute()
+void UMagicZoneyaSkill::Execute()
 {
 	check(IsValid(OwnerCharacter));
 
 	StartZoneya();
 
-	GetWorld()->GetTimerManager().SetTimer(ZoneyaTimerHandle, this, &UZoneyaSkill::EndZoneya, Duration, false);
+	GetWorld()->GetTimerManager().SetTimer(ZoneyaTimerHandle, this, &UMagicZoneyaSkill::EndZoneya, Duration, false);
 }
 
-void UZoneyaSkill::StartZoneya()
+void UMagicZoneyaSkill::StartZoneya()
 {
 	OwnerCharacter->GetMesh()->bPauseAnims = true;
 
@@ -54,7 +54,7 @@ void UZoneyaSkill::StartZoneya()
 	}
 }
 
-void UZoneyaSkill::EndZoneya()
+void UMagicZoneyaSkill::EndZoneya()
 {
 	OwnerCharacter->GetMesh()->bPauseAnims = false;
 

@@ -5,7 +5,7 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "AnimNotify_SpawnProjectile.generated.h"
 
-class UCurvedProjectileSkill;
+class UMagicCurvedProjectileSkill;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UAnimNotify_SpawnProjectile : public UAnimNotifyState
@@ -39,7 +39,7 @@ private:
 	TObjectPtr<AActor> TargetActor;
 
 	UPROPERTY()
-	TObjectPtr<UCurvedProjectileSkill> ProjectileSkill;
+	TObjectPtr<UMagicCurvedProjectileSkill> ProjectileSkill;
 
 	FGameplayTag SkillTag;
 

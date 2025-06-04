@@ -9,7 +9,7 @@
 class USphereComponent;
 class UStaticMeshComponent;
 class USkillComponent;
-class UCurvedProjectileSkill;
+class UMagicCurvedProjectileSkill;
 class USoundBase;
 //class UObjectPoolSubsystem;
 
@@ -68,7 +68,7 @@ public:
 	void SetLaunchPath(AActor* NewInstigator, AActor* NewTargetActor);
 
 	UPROPERTY()
-	UCurvedProjectileSkill* SkillOwner = nullptr;
+	UMagicCurvedProjectileSkill* SkillOwner = nullptr;
 
 	UPROPERTY()
 	FGameplayTag SkillTag;

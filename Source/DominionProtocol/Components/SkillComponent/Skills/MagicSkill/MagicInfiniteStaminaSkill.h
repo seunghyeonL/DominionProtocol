@@ -2,17 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
-#include "InfiniteStaminaSkill.generated.h"
+#include "MagicInfiniteStaminaSkill.generated.h"
 
 class UStatusComponent;
 
 UCLASS()
-class DOMINIONPROTOCOL_API UInfiniteStaminaSkill : public UBaseSkill
+class DOMINIONPROTOCOL_API UMagicInfiniteStaminaSkill : public UBaseSkill
 {
 	GENERATED_BODY()
 	
 public:
-	UInfiniteStaminaSkill();
+	UMagicInfiniteStaminaSkill();
 
 	virtual void Initialize(ACharacter* OwnerCharacter) override;
 

@@ -1,27 +1,27 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Components/SkillComponent/Skills/LaserSkill.h"
+#include "Components/SkillComponent/Skills/MagicSkill/MagicLaserSkill.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "GameFramework/Character.h"
 #include "Player/Damagable.h"
 #include "Util/GameTagList.h"
-#include "SkillObject/LaserActor.h"
+#include "Components/SkillComponent/Skills/SkillObject/LaserActor.h"
 
-ULaserSkill::ULaserSkill()
+UMagicLaserSkill::UMagicLaserSkill()
 {
 	SkillTag = SkillTags::MagicLaserSkill;
 }
 
-void ULaserSkill::Execute()
+void UMagicLaserSkill::Execute()
 {
 	Super::Execute();
 
 	check(OwnerCharacter);
 }
 
-void ULaserSkill::StartTrace(const FGameplayTagContainer& TagContainer)
+void UMagicLaserSkill::StartTrace(const FGameplayTagContainer& TagContainer)
 {
 	LaserActor = GetWorld()->SpawnActor<ALaserActor>(
 		ALaserActor::StaticClass(),
@@ -43,7 +43,7 @@ void ULaserSkill::StartTrace(const FGameplayTagContainer& TagContainer)
 	}
 }
 
-void ULaserSkill::StopTrace(const FGameplayTagContainer& TagContainer)
+void UMagicLaserSkill::StopTrace(const FGameplayTagContainer& TagContainer)
 {
 	check(LaserActor);
 
@@ -51,7 +51,7 @@ void ULaserSkill::StopTrace(const FGameplayTagContainer& TagContainer)
 	LaserActor = nullptr;
 }
 
-void ULaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
+void UMagicLaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
 	AActor* HitActor = HitResult.GetActor();
 

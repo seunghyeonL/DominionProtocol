@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
-#include "TeleportSkill.generated.h"
+#include "MagicTeleportSkill.generated.h"
 
 class APortal;
 
@@ -12,12 +12,12 @@ constexpr float MaxTeleportDistance = 1200.f;
 constexpr float MaxSlopeAngle = 45.f;
 
 UCLASS()
-class DOMINIONPROTOCOL_API UTeleportSkill : public UBaseSkill
+class DOMINIONPROTOCOL_API UMagicTeleportSkill : public UBaseSkill
 {
 	GENERATED_BODY()
 
 public:
-	UTeleportSkill();
+	UMagicTeleportSkill();
 
 	virtual void Initialize(ACharacter* OwnerCharacter) override;
 

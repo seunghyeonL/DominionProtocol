@@ -1,33 +1,33 @@
-#include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
+#include "Components/SkillComponent/Skills/MagicSkill/MagicCurvedProjectileSkill.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "Interface/PawnTagInterface.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 
-void UCurvedProjectileSkill::Initialize(ACharacter* Instigator)
+void UMagicCurvedProjectileSkill::Initialize(ACharacter* Instigator)
 {
 	Super::Initialize(Instigator);
 }
 
-void UCurvedProjectileSkill::Execute()
+void UMagicCurvedProjectileSkill::Execute()
 {
 	UpdateTarget();
 
 	Super::Execute();
 }
 
-void UCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
+void UMagicCurvedProjectileSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime) const
 {
 	// Super::ApplyAttackToHitActor(HitResult, DeltaTime);
 	// 투사체에서 처리하도록
 }
 
-bool UCurvedProjectileSkill::CheckParry(AActor* HitActor) const
+bool UMagicCurvedProjectileSkill::CheckParry(AActor* HitActor) const
 {
 	return false;
 }
 
-void UCurvedProjectileSkill::UpdateTarget()
+void UMagicCurvedProjectileSkill::UpdateTarget()
 {
 	if (!IsValid(OwnerCharacter)) return;
 
@@ -55,7 +55,7 @@ void UCurvedProjectileSkill::UpdateTarget()
 	}
 }
 
-void UCurvedProjectileSkill::SetPlayerAsTarget()
+void UMagicCurvedProjectileSkill::SetPlayerAsTarget()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	check(Player);

@@ -1,31 +1,31 @@
-#include "Components/SkillComponent/Skills/InfiniteStaminaSkill.h"
+#include "Components/SkillComponent/Skills/MagicSkill/MagicInfiniteStaminaSkill.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
 
-UInfiniteStaminaSkill::UInfiniteStaminaSkill()
+UMagicInfiniteStaminaSkill::UMagicInfiniteStaminaSkill()
 {
 	SkillTag = SkillTags::MagicInfiniteStaminaSkill;
 	Duration = 10.0f;
 }
 
-void UInfiniteStaminaSkill::Initialize(ACharacter* Instigator)
+void UMagicInfiniteStaminaSkill::Initialize(ACharacter* Instigator)
 {
 	Super::Initialize(Instigator);
 }
 
-void UInfiniteStaminaSkill::Execute()
+void UMagicInfiniteStaminaSkill::Execute()
 {
 	check(IsValid(OwnerCharacter));
 
 	Start();
 
-	GetWorld()->GetTimerManager().SetTimer(InfiniteTimerHandle, this, &UInfiniteStaminaSkill::End, Duration, false);
+	GetWorld()->GetTimerManager().SetTimer(InfiniteTimerHandle, this, &UMagicInfiniteStaminaSkill::End, Duration, false);
 }
 
-void UInfiniteStaminaSkill::Start()
+void UMagicInfiniteStaminaSkill::Start()
 {
 	StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
 	check(StatusComponent);
@@ -60,7 +60,7 @@ void UInfiniteStaminaSkill::Start()
 	SkillComponent->EndSkill();
 }
 
-void UInfiniteStaminaSkill::End()
+void UMagicInfiniteStaminaSkill::End()
 {
 	StatusComponent->SwitchInfiniteStaminaMode();
 	Debug::PrintError(TEXT("UInfiniteStaminaSkill: Infinite stamina off."));

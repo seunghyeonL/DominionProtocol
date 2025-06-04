@@ -2,15 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
-#include "ZoneyaSkill.generated.h"
+#include "MagicZoneyaSkill.generated.h"
 
 UCLASS()
-class DOMINIONPROTOCOL_API UZoneyaSkill : public UBaseSkill
+class DOMINIONPROTOCOL_API UMagicZoneyaSkill : public UBaseSkill
 {
 	GENERATED_BODY()
 	
 public:
-	UZoneyaSkill();
+	UMagicZoneyaSkill();
 
 	virtual void Initialize(ACharacter* OwnerCharacter) override;
 

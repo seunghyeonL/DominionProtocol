@@ -1,8 +1,8 @@
 #include "Components/SkillComponent/Skills/SkillObject/Portal.h"
 #include "Util/DebugHelper.h"
-#include "GameFramework/Character.h"
 #include "Components/SceneComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Components/SkillComponent/Skills/MagicSkill/MagicTeleportSkill.h"
 
 APortal::APortal()
 {

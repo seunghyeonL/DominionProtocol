@@ -1,4 +1,4 @@
-#include "Components/SkillComponent/Skills/TeleportSkill.h"
+#include "Components/SkillComponent/Skills/MagicSkill/MagicTeleportSkill.h"
 #include "Engine/EngineTypes.h" 
 #include "GameFramework/Actor.h"
 #include "CollisionQueryParams.h"  
@@ -7,7 +7,7 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/Skills/SkillObject/Portal.h"
 
-UTeleportSkill::UTeleportSkill()
+UMagicTeleportSkill::UMagicTeleportSkill()
 {
 	SkillTag = SkillTags::MagicTeleportSkill;
 	ControlEffectTag = EffectTags::UsingTeleport;
@@ -15,12 +15,12 @@ UTeleportSkill::UTeleportSkill()
 	bCanTeleport = false;
 }
 
-void UTeleportSkill::Initialize(ACharacter* Instigator)
+void UMagicTeleportSkill::Initialize(ACharacter* Instigator)
 {
 	Super::Initialize(Instigator);
 }
 
-void UTeleportSkill::Execute()
+void UMagicTeleportSkill::Execute()
 {
 	//Super::Execute();
 
@@ -46,7 +46,7 @@ void UTeleportSkill::Execute()
 	Move();
 }
 
-void UTeleportSkill::Tick(float DeltaTime)
+void UMagicTeleportSkill::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -219,7 +219,7 @@ void UTeleportSkill::Tick(float DeltaTime)
 	}
 }
 
-void UTeleportSkill::Move()
+void UMagicTeleportSkill::Move()
 {
 	if (bCanTeleport)
 	{
@@ -235,7 +235,7 @@ void UTeleportSkill::Move()
 	}
 }
 
-bool UTeleportSkill::IsValidAngle(const FVector& StartLocation, const FVector& TargetLocation)
+bool UMagicTeleportSkill::IsValidAngle(const FVector& StartLocation, const FVector& TargetLocation)
 {
 	const FVector DirectionVector = TargetLocation - StartLocation;
 	const float HorizontalDistance = FVector(DirectionVector.X, DirectionVector.Y, 0.f).Size();
@@ -245,14 +245,14 @@ bool UTeleportSkill::IsValidAngle(const FVector& StartLocation, const FVector& T
 	return SlopeAngleDegrees <= MaxSlopeAngle;
 }
 
-bool UTeleportSkill::IsValidDistance(const FVector& StartLocation)
+bool UMagicTeleportSkill::IsValidDistance(const FVector& StartLocation)
 {
 	const float TotalDistance = FVector::Dist(OwnerLocation, StartLocation);
 
 	return TotalDistance <= MaxTeleportDistance;
 }
 
-void UTeleportSkill::ActivateBlue()
+void UMagicTeleportSkill::ActivateBlue()
 {
 	Portal->GetBlueAura()->SetVisibility(true);
 	Portal->GetRedAura()->SetVisibility(false);
@@ -260,7 +260,7 @@ void UTeleportSkill::ActivateBlue()
 	bCanTeleport = true;
 }
 
-void UTeleportSkill::ActivateRed()
+void UMagicTeleportSkill::ActivateRed()
 {
 	Portal->GetBlueAura()->SetVisibility(false);
 	Portal->GetRedAura()->SetVisibility(true);

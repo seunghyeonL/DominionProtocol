@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
-#include "CurvedProjectileSkill.generated.h"
+#include "MagicCurvedProjectileSkill.generated.h"
 
 UCLASS()
-class DOMINIONPROTOCOL_API UCurvedProjectileSkill : public UBaseSkill
+class DOMINIONPROTOCOL_API UMagicCurvedProjectileSkill : public UBaseSkill
 {
 	GENERATED_BODY()
 	

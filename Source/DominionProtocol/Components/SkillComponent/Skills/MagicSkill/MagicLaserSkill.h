@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseSkill.h"
-#include "LaserSkill.generated.h"
+#include "Components/SkillComponent/Skills/BaseSkill.h"
+#include "MagicLaserSkill.generated.h"
 
 class UMnhCapsuleComponent;
 class ALaserActor;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ULaserSkill : public UBaseSkill
+class DOMINIONPROTOCOL_API UMagicLaserSkill : public UBaseSkill
 {
 	GENERATED_BODY()
 	
 public:
-	ULaserSkill();
+	UMagicLaserSkill();
 
 	virtual void Execute() override;
 

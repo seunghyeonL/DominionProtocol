@@ -3,7 +3,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/SkillComponent.h"
-#include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
+#include "Components/SkillComponent/Skills/MagicSkill/MagicCurvedProjectileSkill.h"
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Util/DebugHelper.h"
@@ -22,7 +22,7 @@ void UAnimNotify_SpawnProjectile::NotifyBegin(USkeletalMeshComponent* MeshComp,	
 	UBaseSkill* CurrentSkill = SkillComponent->GetCurrentSkill();
 	if (!IsValid(CurrentSkill)) return;
 
-	ProjectileSkill = Cast<UCurvedProjectileSkill>(CurrentSkill);
+	ProjectileSkill = Cast<UMagicCurvedProjectileSkill>(CurrentSkill);
 	if (ProjectileSkill)
 	{
 		TargetActor = ProjectileSkill->TargetActor;

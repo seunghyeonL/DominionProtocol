@@ -1,15 +1,12 @@
 #include "Components/SkillComponent/Skills/SkillObject/CurvedProjectile.h"
-#include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Player/Damagable.h"
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/SkillComponent.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "Components/SkillComponent/Skills/CurvedProjectileSkill.h"
+#include "Components/SkillComponent/Skills/MagicSkill/MagicCurvedProjectileSkill.h"
 #include "Interface/Parryable.h"
 
 ACurvedProjectile::ACurvedProjectile()

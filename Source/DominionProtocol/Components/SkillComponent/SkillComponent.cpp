@@ -11,7 +11,7 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Particles/ParticleSystemComponent.h"
-#include "Skills/TeleportSkill.h"
+#include "Skills/MagicSkill/MagicTeleportSkill.h"
 #include "Components/SkillComponent/Skills/SkillObject/Portal.h"
 
 USkillComponent::USkillComponent()
@@ -129,7 +129,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 
                     if (CurrentSkill->GetSkillTag() != Skill->GetSkillTag())
                     {
-                        if (auto TeleportSkill = Cast<UTeleportSkill>(CurrentSkill))
+                        if (auto TeleportSkill = Cast<UMagicTeleportSkill>(CurrentSkill))
                         {
                             TeleportSkill->Portal->DestroyPortal();
                         }
