@@ -75,30 +75,42 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawning")
 	TSubclassOf<ADropEssence> DropEssenceClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UAudioComponent> EnterAudioComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UAudioComponent> ExitAudioComponent;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<USoundWave> EnterSound;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<USoundWave> ExitSound;
 	
 	UPROPERTY()
-	UDomiGameInstance* GameInstance;
+	TObjectPtr<UDomiGameInstance> GameInstance;
 
 	UPROPERTY()
-	UWorldInstanceSubsystem* WorldInstanceSubsystem;
+	TObjectPtr<UWorldInstanceSubsystem> WorldInstanceSubsystem;
 
 	UPROPERTY()
-	UItemInstanceSubsystem* ItemInstanceSubsystem;
+	TObjectPtr<UItemInstanceSubsystem> ItemInstanceSubsystem;
 
 	UPROPERTY()
-	ABaseGameState* BaseGameState;
+	TObjectPtr<ABaseGameState> BaseGameState;
 	
 	UPROPERTY()
-	UWorld* World;
+	TObjectPtr<UWorld> World;
 
 	UPROPERTY()
-	ADomiCharacter* PlayerCharacter;
+	TObjectPtr<ADomiCharacter> PlayerCharacter;
 
 	UPROPERTY()
 	TObjectPtr<UStatusComponent> StatusComponent;
 	
 	UPROPERTY()
-	ACrack* RecentCrackCache;
+	TObjectPtr<ACrack> RecentCrackCache;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float RespawnDelay;

@@ -24,6 +24,8 @@
 #include "MovieScene.h"
 #include "MovieSceneSequence.h"
 #include "Engine/Engine.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundWave.h"
 
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
@@ -40,12 +42,17 @@ ABaseGameMode::ABaseGameMode()
 	{
 		DropEssenceClass = DropEssenceBPClass.Class;
 	}
+
+	EnterAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("EnterAudioComponent"));
+	EnterAudioComponent->SetSound(EnterSound);
+	ExitAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("ExitAudioComponent"));
+	ExitAudioComponent->SetSound(ExitSound);
 }
 
 void ABaseGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	checkf(GameInstance, TEXT("Get GameInstance Fail"));
 
@@ -137,6 +144,8 @@ void ABaseGameMode::StartPlay()
 		}
 	}
 
+	ExitAudioComponent->Play();
+	
 	// 페이드인
 	SetPlayerInputEnable(false);
 	PlayFade(true);
@@ -209,6 +218,8 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		StatusComponent->SetHealth(UE_BIG_NUMBER);
 		TObjectPtr<UPlayerControlComponent> PlayerControlComponent = PlayerCharacter->GetPlayerControlComponent();
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::Death);
+
+		ExitAudioComponent->Play();
 		
 		// Using InGameHUD
 		OnPlayerSpawn.Broadcast();
@@ -320,6 +331,7 @@ void ABaseGameMode::PlayFade(bool bFadeIn)
 		SequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(FFrameTime(0), EUpdatePositionMethod::Play));
 		SequencePlayer->SetPlayRate(1.f);
 		SequencePlayer->Play();
+		EnterAudioComponent->Play();
 	}
 	else
 	{
@@ -328,6 +340,7 @@ void ABaseGameMode::PlayFade(bool bFadeIn)
 		SequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(SequenceLength, EUpdatePositionMethod::Play));
 		SequencePlayer->SetPlayRate(-1.f);
 		SequencePlayer->Play();
+		ExitAudioComponent->Play();
 	}
 }
 
@@ -356,6 +369,7 @@ void ABaseGameMode::OnFadeSequenceFinished()
 		{
 			PlayerCharacter->SetActorLocationAndRotation(PendingMoveLocation, PendingMoveRotation);
 			PlayFade(true);
+			ExitAudioComponent->Play();
 		}
 		else
 		{

@@ -14,6 +14,8 @@
 #include "Player/InGameController.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "UI/UIInGame/DomiInGameHUDWidget.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 
 #include "Util/DebugHelper.h"
 
@@ -41,12 +43,20 @@ ACrack::ACrack()
 	RespawnTargetPointComp->SetupAttachment(SceneComp);
 	RespawnTargetPointComp->SetChildActorClass(ATargetPoint::StaticClass());
 	RespawnTargetPointComp->SetRelativeLocation(FVector(0.f, 0.f, 300.f));
+
+	BGMAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BGMComponent"));
+	BGMAudioComponent->SetupAttachment(SceneComp);
 }
 
 void ACrack::BeginPlay()
 {
 	Super::BeginPlay();
 
+	BGMAudioComponent->SetSound(BGMSound);
+	BGMAudioComponent->AttenuationSettings = SoundAttenuation;
+	BGMAudioComponent->bAutoActivate = true;
+	BGMAudioComponent->Play();
+	
 	DistanceCalculateRadiusSquared = ActivationDistanceCalculateRadius * ActivationDistanceCalculateRadius;
 	InteractableRadiusSquared = InteractableRadius * InteractableRadius;
 
@@ -78,19 +88,23 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 
 	// 흐름
 	// 1. 비활성화시 활성화
+	// 2. 조력자 대화 이벤트(가능한 경우)
 	// 2. 기능
 
 	// 1. 해당 균열 활성화
 	if (!bIsActivate)
 	{
+		UGameplayStatics::PlaySoundAtLocation(this, ActivateSound, GetActorLocation());
 		bIsActivate = true;
 		WorldInstanceSubsystem->SetIsActivateCrackIndex(WorldInstanceSubsystem->GetCurrentLevelName(), CrackIndex);
-		UE_LOG(LogCrackSystem, Warning, TEXT("%s 활성화"), *CrackName.ToString());
 		Debug::Print(CrackName.ToString() + TEXT(" 활성화"));
 		return;
 	}
 
-	// 2. 기능
+	// 2. 조력자 대화 이벤트(가능한 경우)
+
+	
+	// 3. 기능
 	auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (PlayerCharacter)
 	{

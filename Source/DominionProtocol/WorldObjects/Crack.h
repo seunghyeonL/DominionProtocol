@@ -64,6 +64,21 @@ protected:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	TObjectPtr<UChildActorComponent> RespawnTargetPointComp;
+
+
+	// Audio Start
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UAudioComponent> BGMAudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<USoundWave> BGMSound;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<USoundWave> ActivateSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<USoundAttenuation> SoundAttenuation;
+	// Audio End
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FText CrackName; // UI전용
