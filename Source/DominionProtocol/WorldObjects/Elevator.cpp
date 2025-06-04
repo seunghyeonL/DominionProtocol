@@ -155,6 +155,6 @@ FText AElevator::GetInteractMessage_Implementation() const
 	}
 
 	return bIsAtTop
-		? FText::FromString(TEXT("F 키를 눌러 내려가기"))
-		: FText::FromString(TEXT("F 키를 눌러 올라가기"));
+		? FText::FromString(TEXT("내려가기"))
+		: FText::FromString(TEXT("올라가기"));
 }

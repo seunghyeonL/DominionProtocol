@@ -95,5 +95,5 @@ void AZoneBarrier::Interact_Implementation(AActor* Interactor)
 
 FText AZoneBarrier::GetInteractMessage_Implementation() const
 {
-    return FText::FromString(TEXT("F 키를 눌러 보스와 전투 시작"));
+    return FText::FromString(TEXT("보스와 전투 시작"));
 }

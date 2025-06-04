@@ -80,7 +80,7 @@ void ABaseItem::InteractItem(APawn* InteractingPawn)
 //상호 작용 인터페이스
 FText ABaseItem::GetInteractMessage_Implementation() const
 {
-	return FText::FromString(TEXT("F 키를 눌러 아이템을 획득"));
+	return FText::FromString(TEXT("아이템 획득"));
 }
 
 //상호 작용 인터페이스

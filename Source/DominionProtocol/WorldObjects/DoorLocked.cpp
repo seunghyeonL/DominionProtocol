@@ -141,6 +141,6 @@ void ADoorLocked::Interact_Implementation(AActor* Interactor)
 FText ADoorLocked::GetInteractMessage_Implementation() const
 {
 	return bIsDoorClosed
-		? FText::FromString(TEXT("F 키를 눌러 문 열기"))
-		: FText::FromString(TEXT("F 키를 눌러 문 닫기"));
+		? FText::FromString(TEXT("문 열기"))
+		: FText::FromString(TEXT("문 닫기"));
 }

@@ -125,6 +125,6 @@ void ALever::Interact_Implementation(AActor* Interactor)
 FText ALever::GetInteractMessage_Implementation() const
 {
 	return bIsOn
-		? FText::FromString(TEXT("F 키를 눌러 레버 활성화"))
-		: FText::FromString(TEXT("F 키를 눌러 레버 비활성화"));
+		? FText::FromString(TEXT("레버 활성화"))
+		: FText::FromString(TEXT("레버 비활성화"));
 }
