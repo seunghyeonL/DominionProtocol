@@ -40,6 +40,8 @@ protected:
 	float Magnitude;
 
 public:
+	virtual void Initialize();
+	
 	FORCEINLINE void SetOwnerCharacter(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
 	FORCEINLINE void SetMagnitude(float InMagnitude) { Magnitude = InMagnitude; }
 	FORCEINLINE FEffectUIData GetEffectUIData() const { return {StatusEffectTag, EffectIcon, CachedDuration };}

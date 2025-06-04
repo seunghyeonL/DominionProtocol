@@ -5,6 +5,7 @@
 #include "Util/DebugHelper.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "DomiFramework/GameState/BaseGameState.h"
+#include "EnumAndStruct/EffectData/EffectInitializeData.h"
 
 UPlayerControlEffectBase::UPlayerControlEffectBase()
 {
@@ -22,7 +23,21 @@ void UPlayerControlEffectBase::Initialize()
 	{
 		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
 
-		
+		if (IsValid(BaseGameState))
+		{
+			if (FEffectInitializeData* EffectInitializeData = BaseGameState->GetEffectInitializeData(ControlEffectTag))
+			{
+				EffectIcon = EffectInitializeData->EffectIcon;
+			}
+			else
+			{
+				Debug::PrintError(TEXT("UPlayerControlEffectBase::Initialize : Invalid EffectInitializeData."));
+			}
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UPlayerControlEffectBase::Initialize : Invalid BaseGameState."));
+		}
 	}
 }
 
@@ -48,12 +63,13 @@ bool UPlayerControlEffectBase::Activate()
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
 		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
+		CachedDuration = -1.f;
 	}
 	else
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlState"));
 	}
-
+	
 	return true;
 }
 
@@ -87,6 +103,7 @@ bool UPlayerControlEffectBase::Activate(float Duration)
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
 		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
+		CachedDuration = Duration;
 		GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 			DurationTimer,
 			this,
@@ -99,7 +116,7 @@ bool UPlayerControlEffectBase::Activate(float Duration)
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlState"));
 	}
-
+	
 	return true;
 }
 

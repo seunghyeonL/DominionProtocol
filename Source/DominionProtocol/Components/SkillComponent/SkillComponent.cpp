@@ -74,15 +74,18 @@ void USkillComponent::SetSkills(const FSkillComponentInitializeData& InitializeD
         FSkillGroup SkillGroup;
         for (const auto& SkillClass : SkillGroupData)
         {
-            if (UBaseSkill* Skill = NewObject<UBaseSkill>(this, SkillClass))
+            if (IsValid(SkillClass))
             {
-                Skill->Initialize(OwnerCharacter);
-                SkillGroup.Skills.Add(Skill);
-            }
-            else
-            {
-                FString Msg = FString::Printf(TEXT("USkillComponent::InitializeSkillComponent : Create %s."), *SkillGroupTag.ToString());
-                Debug::PrintError(Msg);
+                if (UBaseSkill* Skill = NewObject<UBaseSkill>(this, SkillClass))
+                {
+                    Skill->Initialize(OwnerCharacter);
+                    SkillGroup.Skills.Add(Skill);
+                }
+                else
+                {
+                    FString Msg = FString::Printf(TEXT("USkillComponent::InitializeSkillComponent : Create %s."), *SkillGroupTag.ToString());
+                    Debug::PrintError(Msg);
+                }
             }
         }
         SkillGroupMap.Add(SkillGroupTag, SkillGroup);

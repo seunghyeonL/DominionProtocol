@@ -4,11 +4,39 @@
 #include "StatusEffectBase.h"
 
 #include "Components/StatusComponent/StatusComponent.h"
+#include "DomiFramework/GameState/BaseGameState.h"
+#include "EnumAndStruct/EffectData/EffectInitializeData.h"
 
 UStatusEffectBase::UStatusEffectBase()
 {
 	Magnitude = 0.f;
 	bIsActive = false;
+}
+
+void UStatusEffectBase::Initialize()
+{
+	UWorld* World = GetWorld();
+
+	if (IsValid(World))
+	{
+		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+
+		if (IsValid(BaseGameState))
+		{
+			if (FEffectInitializeData* EffectInitializeData = BaseGameState->GetEffectInitializeData(StatusEffectTag))
+			{
+				EffectIcon = EffectInitializeData->EffectIcon;
+			}
+			else
+			{
+				Debug::PrintError(TEXT("UStatusEffectBase::Initialize : Invalid EffectInitializeData."));
+			}
+		}
+		else
+		{
+			Debug::PrintError(TEXT("UStatusEffectBase::Initialize : Invalid BaseGameState."));
+		}
+	}
 }
 
 bool UStatusEffectBase::Activate()
@@ -26,6 +54,7 @@ bool UStatusEffectBase::Activate()
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
+	CachedDuration = -1.f;
 	return bIsActive = true;
 }
 
@@ -59,7 +88,8 @@ bool UStatusEffectBase::Activate(float Duration)
 		Duration,
 		false
 	);
-	
+
+	CachedDuration = Duration;
 	return bIsActive = true;
 }
 

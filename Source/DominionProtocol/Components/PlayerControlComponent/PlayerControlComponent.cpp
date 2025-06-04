@@ -313,7 +313,10 @@ TArray<FEffectUIData> UPlayerControlComponent::GetEffectUIDatas()
 	{
 		if (EffectTag.MatchesAny(BuffDebuffContainer))
 		{
-			EffectUIDatas.Add(ControlEffect->GetEffectUIData());
+		    if(ControlEffect->IsActive())
+		    {
+		        EffectUIDatas.Add(ControlEffect->GetEffectUIData());
+		    }
 		}
 	}
 

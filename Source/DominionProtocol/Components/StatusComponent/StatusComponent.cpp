@@ -75,7 +75,10 @@ TArray<FEffectUIData> UStatusComponent::GetEffectUIDatas()
 	{
 		if (EffectTag.MatchesAny(BuffDebuffContainer))
 		{
-			EffectUIDatas.Add(StatusEffect->GetEffectUIData());
+			if(StatusEffect->IsActive())
+			{
+				EffectUIDatas.Add(StatusEffect->GetEffectUIData());
+			}
 		}
 	}
 
@@ -275,6 +278,7 @@ void UStatusComponent::InitializeStatusComponent(const FStatusComponentInitializ
 		{
 			StatusEffectMap.Add(EffectTag, StatusEffect);
 			StatusEffect->SetOwnerCharacter(OwnerCharacter);
+			StatusEffect->Initialize();
 		}
 		else
 		{
