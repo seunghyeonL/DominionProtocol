@@ -152,6 +152,18 @@ namespace SkillTags
 
 	inline const FGameplayTag Boss2Circling = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.Circling"));
 
+	// Boss3
+	inline const FGameplayTag Boss3LevelStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.LevelStart"));
+	inline const FGameplayTag Boss3BaseAttack1first = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack1.first"));
+	inline const FGameplayTag Boss3BaseAttack1second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack1.second"));
+	inline const FGameplayTag Boss3BaseAttack2first = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack2.first"));
+	inline const FGameplayTag Boss3BaseAttack2second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack2.second"));
+	inline const FGameplayTag Boss3RushAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.RushAttack.Rush"));
+	inline const FGameplayTag Boss3SmashAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.SmashAttack.Smash"));
+	inline const FGameplayTag Boss3BackwardFall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BackwardFall.BackwardFall"));
+	inline const FGameplayTag Boss3Grab = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.Grab.Grab"));
+	inline const FGameplayTag Boss3GrabAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.Grab.GrabAttack"));
+
 	// Boss4
 	inline const FGameplayTag Boss4FlameStrike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.FlameStrike"));
 }
