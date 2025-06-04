@@ -79,34 +79,11 @@ ADomiCharacter::ADomiCharacter()
 	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 	ItemComponent = CreateDefaultSubobject<UItemComponent>(TEXT("ItemComponent"));
-	AttackTraceComponent = CreateDefaultSubobject<UMnhTracerComponent>(TEXT("AttackTraceComponent"));
 
 	// NavigationInvoker Component
 	NavigationInvokerComponent = CreateDefaultSubobject<UNavigationInvokerComponent>(TEXT("NavigationInvokerComponent"));
 
 	NavigationInvokerComponent->SetGenerationRadii(6000.f, 10000.f);
-
-	// TraceBox
-	WeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("WeaponTraceBox"));
-
-	TempWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TempWeapon"));
-	TempWeapon->SetupAttachment(GetMesh(), FName("TempWeaponSocket"));
-
-	WeaponTraceBox->SetupAttachment(TempWeapon);
-
-	FMnhTracerConfig TracerConfig;
-
-	TracerConfig.TracerTag = ItemTags::BasicWeapon;
-	TracerConfig.DrawDebugType = EDrawDebugTrace::ForDuration;
-	TracerConfig.DebugDrawTime = 2.f;
-	TracerConfig.TraceSettings.TraceChannel = ECC_Pawn;
-
-	AttackTraceComponent->TracerConfigs.Add(TracerConfig);
-
-	FGameplayTagContainer TagContainer;
-	TagContainer.AddTag(ItemTags::BasicWeapon);
-
-	AttackTraceComponent->InitializeTracers(TagContainer, WeaponTraceBox);
 
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::UsingDash);

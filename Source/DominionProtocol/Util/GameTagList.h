@@ -205,8 +205,15 @@ namespace ItemTags
 
 namespace TraceTags
 {
-	inline const FGameplayTag HandRight = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right"));
-	inline const FGameplayTag HandLeft = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Left"));
+	// Axe
+	inline const FGameplayTag HandRightAxe = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right.Axe"));
+
+	// Claw
+	inline const FGameplayTag HandLeftClaw = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Left.Claw"));
+	inline const FGameplayTag HandRightClaw = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right.Claw"));
+	
+	// Sword
+	inline const FGameplayTag HandRightSword = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right.Sword"));
 }
 
 namespace WorldActorTags
