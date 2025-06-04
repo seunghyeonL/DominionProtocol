@@ -6,6 +6,7 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "EnumAndStruct/EffectData/EffectInitializeData.h"
+#include "Interface/EffectUser.h"
 
 UPlayerControlEffectBase::UPlayerControlEffectBase()
 {
@@ -63,13 +64,17 @@ bool UPlayerControlEffectBase::Activate()
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
 		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
+		if (ControlComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+		{
+			IEffectUser::Execute_GetEffectUIDatas(ControlComponent->GetOwner());
+		}
 		CachedDuration = -1.f;
 	}
 	else
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlState"));
 	}
-	
+
 	return true;
 }
 
@@ -103,6 +108,10 @@ bool UPlayerControlEffectBase::Activate(float Duration)
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
 		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
+		if (ControlComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+		{
+			IEffectUser::Execute_GetEffectUIDatas(ControlComponent->GetOwner());
+		}
 		CachedDuration = Duration;
 		GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 			DurationTimer,
@@ -116,7 +125,7 @@ bool UPlayerControlEffectBase::Activate(float Duration)
 	{
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlState"));
 	}
-	
+
 	return true;
 }
 
@@ -159,6 +168,10 @@ void UPlayerControlEffectBase::Deactivate()
 
 	bIsActive = false;
 	ControlComponent->GetActiveControlEffectTags().RemoveTag(ControlEffectTag);
+	if (ControlComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+	{
+		IEffectUser::Execute_GetEffectUIDatas(ControlComponent->GetOwner());
+	}
 }
 
 void UPlayerControlEffectBase::Tick(float DeltaTime)

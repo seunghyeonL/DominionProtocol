@@ -525,5 +525,7 @@ TArray<FEffectUIData> ADomiCharacter::GetEffectUIDatas_Implementation() const
 	EffectUIDatas.Append(ControlComponent->GetEffectUIDatas());
 	EffectUIDatas.Append(StatusComponent->GetEffectUIDatas());
 
+	OnUpdateEffectUIDataArray.Broadcast(EffectUIDatas);
+
 	return EffectUIDatas;
 }

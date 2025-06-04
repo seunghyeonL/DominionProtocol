@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "Blueprint/UserWidget.h"
+#include "EnumAndStruct/EffectData/EffectUIData.h"
 #include "DomiStatusBarWidget.generated.h"
 
 
@@ -24,10 +24,11 @@ public:
 	UFUNCTION()
 	void UpdatePlayerMaxStaminaBar(const float NewMaxStamina);
 	UFUNCTION()
-	void UpdateStatusEffectMap();
+	void OnUpdateEffectUIDataArray(TArray<FEffectUIData> NewEffectUIDataArray);
 
-	UFUNCTION(BlueprintimplementableEvent)
-	void OnUpdateStatusEffectMap();
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateEffectUIDataArray();
+
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void AnimUpdatePlayerHPBar();
@@ -36,7 +37,7 @@ public:
 
 
 protected:
-	void SetupStatusBarWidget(const AActor* OwningActor);
+	void SetupStatusBarWidget(AActor* OwningActor);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void NativeConstruct() override;
@@ -47,10 +48,7 @@ protected:
 	TObjectPtr<class UStatusComponent> StatusComponent;
 
 	UPROPERTY(BlueprintReadOnly)
-	TMap<FGameplayTag, class UStatusEffectBase*> StatusEffectMap;
-
-	UPROPERTY(BlueprintReadWrite)
-	TArray<class UStatusEffectBase*> CurrentStatusEffectArray;
+	TArray<FEffectUIData> EffectUIDataArray;
 	
 	// HP Section
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(BindWidget))
@@ -86,7 +84,7 @@ protected:
 	float MaxStamina;
 
 	UPROPERTY(BlueprintReadOnly)
-	float PreMaxStamina;
+	float PreMaxStamina;	
 	
 	UPROPERTY(BlueprintReadWrite)
 	float AlphaForStaminaAnim;

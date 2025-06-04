@@ -6,9 +6,7 @@
 #include "../PlayerControlEffectBase.h"
 #include "PlayerStunEffect.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API UPlayerStunEffect : public UPlayerControlEffectBase
 {

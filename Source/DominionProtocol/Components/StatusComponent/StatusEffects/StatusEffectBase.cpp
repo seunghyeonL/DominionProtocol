@@ -6,6 +6,7 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "EnumAndStruct/EffectData/EffectInitializeData.h"
+#include "Interface/EffectUser.h"
 
 UStatusEffectBase::UStatusEffectBase()
 {
@@ -54,6 +55,11 @@ bool UStatusEffectBase::Activate()
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
+	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+	{
+		IEffectUser::Execute_GetEffectUIDatas(StatusComponent->GetOwner());
+	}
+	
 	CachedDuration = -1.f;
 	return bIsActive = true;
 }
@@ -81,6 +87,10 @@ bool UStatusEffectBase::Activate(float Duration)
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
+	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+	{
+		IEffectUser::Execute_GetEffectUIDatas(StatusComponent->GetOwner());
+	}
 	GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 		DurationTimer,
 		this,
@@ -110,6 +120,10 @@ void UStatusEffectBase::Deactivate()
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().RemoveTag(StatusEffectTag);
+	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+	{
+		IEffectUser::Execute_GetEffectUIDatas(StatusComponent->GetOwner());
+	}
 	bIsActive = false;
 }
 

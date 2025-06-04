@@ -6,9 +6,6 @@
 #include "../StatusEffectBase.h"
 #include "PoisonEffect.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class DOMINIONPROTOCOL_API UPoisonEffect : public UStatusEffectBase
 {

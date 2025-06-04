@@ -204,7 +204,12 @@ FGameplayTagContainer ABaseEnemy::GetAllActivateEffectDatas_Implementation() con
 TArray<FEffectUIData> ABaseEnemy::GetEffectUIDatas_Implementation() const
 {
 	check(StatusComponent);
-	return StatusComponent->GetEffectUIDatas();
+	
+	auto EffectUIDataArray = StatusComponent->GetEffectUIDatas();
+
+	// OnEffectUIDataArray.Broadcast(EffectUIDataArray);
+	
+	return EffectUIDataArray;
 }
 
 FString ABaseEnemy::GetPawnName_Implementation()

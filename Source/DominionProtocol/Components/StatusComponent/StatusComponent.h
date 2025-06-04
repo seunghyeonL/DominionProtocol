@@ -102,7 +102,7 @@ public:
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude);
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration);
 	virtual void DeactivateStatusEffect(const FGameplayTag& StatusEffectTag);
-
+	
 	//CheatManager
 	FORCEINLINE void SwitchInfiniteStaminaMode() { bIsInfiniteStaminaMode = !bIsInfiniteStaminaMode; }
 

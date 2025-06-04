@@ -33,6 +33,7 @@ class UMnhBoxComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddInteractableActor, TSet<AActor*>)
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRemoveInteractableActor, TSet<AActor*>)
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnInteractionWidgetScroll, float)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnUpdateEffectUIDataArray, TArray<FEffectUIData>);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADomiCharacter :
@@ -54,6 +55,7 @@ public:
 	FOnAddInteractableActor OnAddInteractableActor;
 	FOnRemoveInteractableActor OnRemoveInteractableActor;
 	FOnInteractionWidgetScroll OnInteractionWidgetScroll;
+	FOnUpdateEffectUIDataArray OnUpdateEffectUIDataArray;
 
 	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
 	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;

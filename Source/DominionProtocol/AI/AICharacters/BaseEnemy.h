@@ -18,6 +18,8 @@ class AEssence;
 class USkillComponent;
 class UStatusComponent;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEffectUIDataArray, TArray<FEffectUIData>&);
+
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseEnemy :
 public ACharacter,
@@ -34,6 +36,8 @@ public IEffectUser
 public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
+
+	FOnEffectUIDataArray OnEffectUIDataArray;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI|State")
 	bool bIsAttacking = true;

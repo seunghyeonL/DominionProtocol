@@ -15,9 +15,6 @@ class UEffectUser : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class DOMINIONPROTOCOL_API IEffectUser
 {
 	GENERATED_BODY()

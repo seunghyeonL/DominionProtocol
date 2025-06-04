@@ -9,13 +9,12 @@
 #include "Util/GameTagList.h"
 #include "PlayerControlEffectBase.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API UPlayerControlEffectBase : public UPlayerControlStateBase
 {
 	GENERATED_BODY()
+
 
 protected:
 	FTimerHandle DurationTimer;

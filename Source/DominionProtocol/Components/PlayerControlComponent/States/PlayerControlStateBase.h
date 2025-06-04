@@ -7,9 +7,7 @@
 #include "PlayerControlStateBase.generated.h"
 
 struct FInputActionValue;
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API UPlayerControlStateBase : public UObject
 {

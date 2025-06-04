@@ -4,6 +4,7 @@
 #include "DomiStatusBarWidget.h"
 
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Player/Characters/DomiCharacter.h"
 
 void UDomiStatusBarWidget::NativeConstruct()
 {
@@ -18,11 +19,6 @@ void UDomiStatusBarWidget::NativeConstruct()
 	if (OwningActor)
 	{
 		SetupStatusBarWidget(OwningActor);
-		StatusComponent = OwningActor->GetComponentByClass<UStatusComponent>();
-		if (StatusComponent)
-		{
-			StatusComponent->OnStatusEffectsChanged.AddUObject(this, &UDomiStatusBarWidget::UpdateStatusEffectMap);
-		}
 	}
 }
 
@@ -54,14 +50,14 @@ void UDomiStatusBarWidget::UpdatePlayerMaxStaminaBar(const float NewMaxStamina)
 	MaxStamina = NewMaxStamina;
 }
 
-void UDomiStatusBarWidget::UpdateStatusEffectMap()
+void UDomiStatusBarWidget::OnUpdateEffectUIDataArray(TArray<FEffectUIData> NewEffectUIDataArray)
 {
-	StatusEffectMap = StatusComponent->GetStatusEffectMap();
+	EffectUIDataArray = NewEffectUIDataArray;
 
-	OnUpdateStatusEffectMap();
+	UpdateEffectUIDataArray();
 }
 
-void UDomiStatusBarWidget::SetupStatusBarWidget(const AActor* OwningActor)
+void UDomiStatusBarWidget::SetupStatusBarWidget(AActor* OwningActor)
 {
 	ensure(IsValid(OwningActor));
 	
@@ -79,5 +75,11 @@ void UDomiStatusBarWidget::SetupStatusBarWidget(const AActor* OwningActor)
 		StatusComp->OnStaminaChanged.AddDynamic(this, &UDomiStatusBarWidget::UpdatePlayerStaminaBar);
 		StatusComp->OnMaxHealthChanged.AddDynamic(this, &UDomiStatusBarWidget::UpdatePlayerMaxHPBar);
 		StatusComp->OnMaxStaminaChanged.AddDynamic(this, &UDomiStatusBarWidget::UpdatePlayerMaxStaminaBar);
+	}
+	
+	auto* PlayerCharacter = Cast<ADomiCharacter>(OwningActor);
+	if (PlayerCharacter)
+	{
+		PlayerCharacter->OnUpdateEffectUIDataArray.AddUObject(this, &UDomiStatusBarWidget::OnUpdateEffectUIDataArray);
 	}
 }
