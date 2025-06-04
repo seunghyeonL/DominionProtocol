@@ -9,7 +9,7 @@
 #include "GameFramework/Character.h"
 #include "./States/PlayerControlState.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
-#include "Effects/PlayerUsingSkillEffect/BufferedInput/BaseBufferedInput.h"
+#include "Effects/BufferedInput/BaseBufferedInput.h"
 #include "Effects/PlayerConfusedEffect/PlayerConfusedEffect.h"
 #include "Effects/PlayerDeathEffect/PlayerDeathEffect.h"
 #include "Effects/PlayerLockOnEffect/PlayerLockOnEffect.h"

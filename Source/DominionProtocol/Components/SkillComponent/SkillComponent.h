@@ -11,6 +11,7 @@ class UBaseSkill;
 
 DECLARE_DELEGATE_OneParam(FOnSkillStart, FGameplayTag);
 DECLARE_DELEGATE_OneParam(FOnSkillEnd, FGameplayTag);
+DECLARE_DELEGATE_OneParam(FOnDashDirectionSet, const FVector&);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API USkillComponent : public UActorComponent
@@ -42,6 +43,7 @@ public:
 
 	FOnSkillStart OnSkillStart;
 	FOnSkillEnd OnSkillEnd;
+	FOnDashDirectionSet OnDashDirectionSet;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")

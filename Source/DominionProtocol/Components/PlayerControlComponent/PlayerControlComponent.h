@@ -12,6 +12,8 @@ class UPlayerControlStateBase;
 class UPlayerControlEffectBase;
 struct FInputActionValue;
 
+// DECLARE_DELEGATE_OneParam(FOnDashDirectionSet, const FVector&);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API UPlayerControlComponent : public UActorComponent
 {
@@ -36,8 +38,9 @@ public:
 	bool SetLockOnTargetActorInPublicSpace();
 	bool SetLockOnTargetActorInVisibility();
 	bool IsActorInViewport(const FVector& ActorLocation) const;
-	
-	
+
+	// FOnDashDirectionSet OnDashDirectionSet;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

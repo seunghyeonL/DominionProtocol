@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/PlayerControlComponent/Effects/PlayerUsingSkillEffect/BufferedInput/BaseBufferedInput.h"
+#include "Components/PlayerControlComponent/Effects/BufferedInput/BaseBufferedInput.h"
 #include "BufferedMagicSkill.generated.h"
 
 /**
