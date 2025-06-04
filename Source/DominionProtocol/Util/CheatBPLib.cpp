@@ -9,6 +9,8 @@
 #include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/ItemComponent/ItemComponent.h"
+#include "Components/ExponentialHeightFogComponent.h"
+#include "Engine/ExponentialHeightFog.h"
 
 #include "Util/DebugHelper.h"
 #include "Kismet/GameplayStatics.h"
@@ -65,5 +67,24 @@ void UCheatBPLib::AddAllItemsToPlayerInventoryMaxQuantity(UObject* WorldContextO
 	}
 	else
 	{
+	}
+}
+
+void UCheatBPLib::ToggleFog(UWorld* World)
+{
+	AExponentialHeightFog* Fog = Cast<AExponentialHeightFog>(UGameplayStatics::GetActorOfClass(World, AExponentialHeightFog::StaticClass()));
+	if (IsValid(Fog))
+	{
+		UExponentialHeightFogComponent* FogComp = Fog->GetComponent();
+		if (FogComp)
+		{
+			float CurrentOpacity = FogComp->FogMaxOpacity;
+			float NewOpacity = (CurrentOpacity > 0.f) ? 0.f : 1.f;
+			FogComp->FogMaxOpacity = NewOpacity;
+			FogComp->SetFogMaxOpacity(NewOpacity);
+			FogComp->MarkRenderStateDirty();
+			
+			Debug::Print(FString::Printf(TEXT("Fog Opacity toggled, New Opacity : %f"), NewOpacity));
+		}
 	}
 }
