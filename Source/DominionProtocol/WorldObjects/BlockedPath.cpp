@@ -25,6 +25,7 @@ ABlockedPath::ABlockedPath()
 
 void ABlockedPath::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
+	UE_LOG(LogTemp, Error, TEXT("BlockedPath::OnStoryStateUpdated_Implementation"));
 	if (NewState >= RequiredStoryState)
 	{
 		TryOpen();
@@ -63,6 +64,7 @@ void ABlockedPath::BeginPlay()
 
 void ABlockedPath::TryOpen()
 {
+	UE_LOG(LogTemp, Warning, TEXT("BlockedPath: TryOpen"));
 	if (!IsValid(CollisionBox))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("BlockedPath: CollisionBox is null"));

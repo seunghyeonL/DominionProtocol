@@ -125,11 +125,10 @@ public:
 	
 	void PlayerLevelUp(FGameplayTag StatTag);
 	
+	void SetPlayerInputEnable(bool bEnable);
 protected:
 	UFUNCTION()
 	void OnFadeSequenceFinished();
-	
-	void SetPlayerInputEnable(bool bEnable);
 	
 	UPROPERTY()
 	TObjectPtr<ULevelSequence> FadeSequence;
