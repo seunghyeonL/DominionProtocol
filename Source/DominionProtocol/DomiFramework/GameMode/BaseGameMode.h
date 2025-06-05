@@ -9,6 +9,7 @@
 #include "WorldObjects/BossRoomDoor.h"
 #include "BaseGameMode.generated.h"
 
+class UItemComponent;
 class UActorStateManageWorldSubsystem;
 class ADropEssence;
 class ALevelSequenceActor;
@@ -68,6 +69,10 @@ public:
 	//Setter
 	FORCEINLINE void SetRecentCrackCache(ACrack* NewCrack) { RecentCrackCache = NewCrack ; }
 
+protected:
+	UFUNCTION()
+	void SaveItemDataToInstance();
+	
 public:
 	// Delegate
 	FOnPlayerSpawn OnPlayerSpawn;
@@ -108,6 +113,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UStatusComponent> StatusComponent;
+
+	UPROPERTY()
+	TObjectPtr<UItemComponent> ItemComponent;
 	
 	UPROPERTY()
 	TObjectPtr<ACrack> RecentCrackCache;
@@ -138,6 +146,7 @@ public:
 	void PlayerLevelUp(FGameplayTag StatTag);
 	
 	void SetPlayerInputEnable(bool bEnable);
+	
 protected:
 	UFUNCTION()
 	void OnFadeSequenceFinished();

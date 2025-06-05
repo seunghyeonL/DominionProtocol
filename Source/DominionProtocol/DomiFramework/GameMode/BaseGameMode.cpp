@@ -15,6 +15,7 @@
 #include "WorldObjects/Crack.h"
 #include "WorldObjects/DropEssence.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/ItemComponent/ItemComponent.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "EngineUtils.h"
@@ -107,7 +108,8 @@ void ABaseGameMode::StartPlay()
 	BaseGameState->LoadCrackDataFromInstance();
 	BaseGameState->InitializeCrackDataMap();
 	RecentCrackCache = BaseGameState->FindNearestCrack();
-
+	BaseGameState->LoadItemDataFromInstance();
+	
 	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
 		Debug::Print(FString::Printf(TEXT("%s, %s"), *WorldInstanceSubsystem->GetMoveTargetLocation().ToString(), *WorldInstanceSubsystem->GetMoveTargetRotation().ToString()));
@@ -367,14 +369,28 @@ void ABaseGameMode::OnFadeSequenceFinished()
 	{
 		if (bIsSameLevelMove)
 		{
+			SaveItemDataToInstance();
 			PlayerCharacter->SetActorLocationAndRotation(PendingMoveLocation, PendingMoveRotation);
 			PlayFade(true);
 			ExitAudioComponent->Play();
 		}
 		else
 		{
+			SaveItemDataToInstance();
 			UGameplayStatics::OpenLevel(this, FName(MoveTargetLevelName));
 		}
+	}
+}
+
+void ABaseGameMode::SaveItemDataToInstance()
+{
+	if (IsValid(PlayerCharacter))
+	{
+		if (!IsValid(ItemComponent))
+		{
+			ItemComponent =  PlayerCharacter->GetItemComponent();
+		}
+		ItemComponent->UpdateItemInstanceSubsystem();
 	}
 }
 
