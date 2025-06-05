@@ -32,7 +32,14 @@ public:
 private:
 	virtual void Tick(float DeltaTime) override;
 
+	void SpawnPortalWithoutLockOn();
+	void SpawnPortalBehindTarget();
+
 	void Move();
+	void MoveBehindTarget();
+
+	void LockOnState();
+	void NotLockOnState();
 
 	bool IsValidAngle(const FVector& StartLocation, const FVector& TargetLocation);
 	bool IsValidDistance(const FVector& StartLocation);
@@ -40,7 +47,11 @@ private:
 	void ActivateBlue();
 	void ActivateRed();
 
+	UPROPERTY()
+	TObjectPtr<AActor> CurrentTarget;
+
 	FVector OwnerLocation;
+	FVector BehindLocation;
 
 	bool bReadyToTeleport;
 	bool bCanTeleport;

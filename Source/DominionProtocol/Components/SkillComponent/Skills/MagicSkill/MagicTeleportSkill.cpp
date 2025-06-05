@@ -3,9 +3,11 @@
 #include "GameFramework/Actor.h"
 #include "CollisionQueryParams.h"  
 #include "GameFramework/Character.h"
+#include "Components/CapsuleComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/Skills/SkillObject/Portal.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 
 UMagicTeleportSkill::UMagicTeleportSkill()
 {
@@ -24,32 +26,211 @@ void UMagicTeleportSkill::Execute()
 {
 	//Super::Execute();
 
+	UPlayerControlComponent* ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
+	CurrentTarget = ControlComponent ? ControlComponent->GetLockOnTargetActor() : nullptr;
+
 	if (!bReadyToTeleport)
 	{
-		bReadyToTeleport = true;
-
-		UWorld* World = GetWorld();
-		if (!World) return;
-
-		FVector SpawnLocation = OwnerCharacter->GetActorLocation();
-		FRotator SpawnRotation = OwnerCharacter->GetActorRotation();
-
-		auto SpawnedPortal = World->SpawnActor<APortal>(APortal::StaticClass(), SpawnLocation, SpawnRotation);
-		SpawnedPortal->AttachToComponent(OwnerCharacter->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
-
-		Portal = SpawnedPortal;
-		Portal->SkillOwner = this;
-
-		return;
+		if (!CurrentTarget)
+		{
+			SpawnPortalWithoutLockOn();
+		}
+		else
+		{
+			SpawnPortalBehindTarget();
+		}
 	}
-	
-	Move();
+	else
+	{
+		if (!CurrentTarget)
+		{
+			Move();
+		}
+		else
+		{
+			MoveBehindTarget();
+		}
+	}
 }
 
 void UMagicTeleportSkill::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!Portal) return;
+
+	UPlayerControlComponent* ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
+	AActor* PreviousTarget = CurrentTarget;
+	CurrentTarget = ControlComponent ? ControlComponent->GetLockOnTargetActor() : nullptr;
+
+	if (CurrentTarget)
+	{
+		LockOnState();
+	}
+	else
+	{
+		if (PreviousTarget && bReadyToTeleport)
+		{
+			// 포탈을 캐릭터 위치로 이동
+			const FVector NewLocation = OwnerCharacter->GetActorLocation() + FVector(0.f, 0.f, 500.f);
+			Portal->SetActorLocation(NewLocation);
+			Portal->AttachToComponent(OwnerCharacter->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+		}
+
+		NotLockOnState();
+	}
+}
+
+void UMagicTeleportSkill::SpawnPortalWithoutLockOn()
+{
+	bReadyToTeleport = true;
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	FVector SpawnLocation = OwnerCharacter->GetActorLocation();
+	FRotator SpawnRotation = OwnerCharacter->GetActorRotation();
+
+	auto SpawnedPortal = World->SpawnActor<APortal>(APortal::StaticClass(), SpawnLocation, SpawnRotation);
+	SpawnedPortal->AttachToComponent(OwnerCharacter->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+
+	Portal = SpawnedPortal;
+	Portal->SkillOwner = this;
+}
+
+void UMagicTeleportSkill::SpawnPortalBehindTarget()
+{
+	bReadyToTeleport = true;
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	const FVector TargetLocation = CurrentTarget->GetActorLocation();
+	const FVector DirectionToTarget = CurrentTarget->GetActorForwardVector();
+
+	FRotator SpawnRotation = OwnerCharacter->GetActorRotation();
+
+	auto SpawnedPortal = World->SpawnActor<APortal>(APortal::StaticClass(), BehindLocation, SpawnRotation);
+	SpawnedPortal->AttachToComponent(CurrentTarget->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+
+	Portal = SpawnedPortal;
+	Portal->SkillOwner = this;
+}
+
+void UMagicTeleportSkill::Move()
+{
+	if (bCanTeleport)
+	{
+		OwnerCharacter->TeleportTo(Portal->GetBlueAura()->GetComponentLocation() + FVector(0, 0, 100.0f), OwnerCharacter->GetActorRotation());
+
+		bReadyToTeleport = false;
+		bCanTeleport = false;
+
+		Portal->DestroyPortal();
+
+		USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+
+		check(SkillComponent);
+		SkillComponent->EndSkill();
+	}
+}
+
+void UMagicTeleportSkill::MoveBehindTarget()
+{
+	if (bCanTeleport)
+	{
+		const FVector TeleportLocation = BehindLocation + FVector(0.f, 0.f, 100.f);
+		const FRotator TargetRotation = CurrentTarget->GetActorRotation();
+
+		OwnerCharacter->TeleportTo(TeleportLocation, TargetRotation);
+		OwnerCharacter->GetController()->SetControlRotation(TargetRotation);
+
+		bReadyToTeleport = false;
+		bCanTeleport = false;
+
+		Portal->DestroyPortal();
+
+		USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+
+		check(SkillComponent);
+		SkillComponent->EndSkill();
+	}
+}
+
+void UMagicTeleportSkill::LockOnState()
+{
+	if (bReadyToTeleport)
+	{
+		ACharacter* CurrentCharacter = Cast<ACharacter>(CurrentTarget);
+		UCapsuleComponent* Capsule = CurrentCharacter->GetCapsuleComponent();
+
+		if (Capsule)
+		{
+			UWorld* World = GetWorld();
+			if (!World) return;
+
+			FCollisionQueryParams Params;
+
+			Params.AddIgnoredActor(OwnerCharacter);
+			Params.AddIgnoredActor(CurrentTarget);
+
+			float Radius = Capsule->GetScaledCapsuleRadius();
+			float HalfHeight = Capsule->GetScaledCapsuleHalfHeight();
+
+			FVector Start = CurrentCharacter->GetActorLocation() - FVector(0.f, 0.f, HalfHeight);
+			FVector End = Start - CurrentCharacter->GetActorForwardVector() * Capsule->GetScaledCapsuleRadius() * 2.5;
+
+			// 타겟 뒤쪽 벽 확인
+			FHitResult BackwardHitResult;
+			bool bBackwardHit = World->LineTraceSingleByChannel(
+				BackwardHitResult,
+				Start,
+				End,
+				ECC_Visibility,
+				Params
+			);
+
+			const FVector SurfaceCheckStart = End;
+			const FVector SurfaceCheckEnd = SurfaceCheckStart + FVector(0.f, 0.f, -DownTraceDistance);
+
+			// 타겟 뒤쪽 플레이어가 설 바닥 확인
+			FHitResult SurfaceHitResult;
+			bool bSurfaceHit = World->LineTraceSingleByChannel(
+				SurfaceHitResult,
+				SurfaceCheckStart,
+				SurfaceCheckEnd,
+				ECC_Visibility,
+				Params
+			);
+
+			BehindLocation = SurfaceHitResult.ImpactPoint;
+
+			if (bBackwardHit)
+			{
+				Portal->GetRedAura()->SetWorldLocation(BehindLocation);
+				ActivateRed();
+			}
+			else
+			{
+				if (bSurfaceHit)
+				{
+
+					Portal->GetBlueAura()->SetWorldLocation(BehindLocation);
+					ActivateBlue();
+				}
+				// 안전한 바닥 없음 - 텔레포트 불가 (낭떠러지 등)
+				else
+				{
+					Portal->GetRedAura()->SetWorldLocation(SurfaceHitResult.TraceEnd);
+					ActivateRed();
+				}
+			}
+		}
+	}
+}
+
+void UMagicTeleportSkill::NotLockOnState()
+{
 	OwnerLocation = OwnerCharacter->GetActorLocation();
 
 	UWorld* World = GetWorld();
@@ -216,22 +397,6 @@ void UMagicTeleportSkill::Tick(float DeltaTime)
 				ActivateRed();
 			}
 		}
-	}
-}
-
-void UMagicTeleportSkill::Move()
-{
-	if (bCanTeleport)
-	{
-		OwnerCharacter->TeleportTo(Portal->GetBlueAura()->GetComponentLocation() + FVector(0, 0, 100.0f), OwnerCharacter->GetActorRotation());
-		bReadyToTeleport = false;
-		bCanTeleport = false;
-		Portal->GetBlueAura()->SetVisibility(false);
-
-		USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
-
-		check(SkillComponent);
-		SkillComponent->EndSkill();
 	}
 }
 
