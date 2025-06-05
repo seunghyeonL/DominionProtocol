@@ -102,7 +102,7 @@ void UPlayerControlState::Dash()
 	}
 	else
 	{
-		Debug::PrintError(TEXT("UPlayerControlState::BaseAttack : Character doesn't implement ISkillComponentUser."));
+		Debug::PrintError(TEXT("UPlayerControlState::Dash : Character doesn't implement ISkillComponentUser."));
 	}
 	// if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OwnerCharacter))
 	// {
@@ -145,7 +145,7 @@ void UPlayerControlState::Parry()
 	}
 	else
 	{
-		Debug::PrintError(TEXT("UPlayerControlState::BaseAttack : Character doesn't implement ISkillComponentUser."));
+		Debug::PrintError(TEXT("UPlayerControlState::Parry : Character doesn't implement ISkillComponentUser."));
 	}
 }
 

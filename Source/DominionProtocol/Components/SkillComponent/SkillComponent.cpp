@@ -95,7 +95,6 @@ void USkillComponent::SetSkills(const FSkillComponentInitializeData& InitializeD
 
 void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
 {
-    
 	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
     check(IsValid(OwnerCharacter));
 

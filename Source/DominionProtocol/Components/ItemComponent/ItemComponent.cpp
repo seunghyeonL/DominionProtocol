@@ -60,7 +60,7 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 	{
 		if (auto WeaponData = CachedItemDataMap.Find(ItemTag))
 		{
-			FSkillComponentInitializeData InitializeData = WeaponData->WeaponSkillData;
+			FSkillComponentInitializeData InitializeData = WeaponData->SkillDatas;
 			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
 			OnPrimaryWeaponChangedForWeaponVisibility.ExecuteIfBound(ItemTag);
 		}
@@ -77,7 +77,7 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 	{
 		if (auto MagicSkillData = CachedItemDataMap.Find(ItemTag))
 		{
-			FSkillComponentInitializeData InitializeData = MagicSkillData->WeaponSkillData;
+			FSkillComponentInitializeData InitializeData = MagicSkillData->SkillDatas;
 			OnMagicSkillChanged.ExecuteIfBound(InitializeData);
 		}
 		else

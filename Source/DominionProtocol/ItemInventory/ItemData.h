@@ -46,7 +46,7 @@ public:
 
 	// Weapon Skill Data
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
-	FSkillComponentInitializeData WeaponSkillData;
+	FSkillComponentInitializeData SkillDatas;
 
 	// 아이템 클래스 (액터)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
