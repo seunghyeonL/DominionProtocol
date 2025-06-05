@@ -464,7 +464,6 @@ void ADomiCharacter::ShowControlEffectTags_Implementation()
 		Debug::Print(Tag.ToString());
 	}
 }
-
 void ADomiCharacter::ShowStatusEffectTags_Implementation()
 {
 	IEffectReceivable::ShowStatusEffectTags_Implementation();
