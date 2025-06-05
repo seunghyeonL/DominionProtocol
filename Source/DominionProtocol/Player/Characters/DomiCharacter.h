@@ -89,6 +89,9 @@ public:
 	FORCEINLINE virtual USkillComponent* GetSkillComponent() const override { return SkillComponent; }
 	virtual void InitializeSkillComponent() override;
 	virtual void ExecuteSkill(FGameplayTag SkillGroupTag) override;
+
+	// ItemComponent (Not User)
+	FORCEINLINE UItemComponent* GetItemComponent() const { return ItemComponent; }
 	
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
