@@ -31,3 +31,14 @@ AWoodEnemy::AWoodEnemy()
 
 	AttackTraceComponent->InitializeTracers(TagContainer, WeaponTraceBox);
 }
+
+void AWoodEnemy::Onewitch()
+{
+	if (AWoodEnemy* WoodEnemy = Cast<AWoodEnemy>(this))
+	{
+		FRotator CurrentRotation = GetActorRotation();
+		CurrentRotation.Pitch = 0.f;
+		CurrentRotation.Roll = 0.f;
+		WoodEnemy->SetActorRotation(CurrentRotation);
+	}
+}

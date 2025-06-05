@@ -16,6 +16,8 @@ class DOMINIONPROTOCOL_API AWoodEnemy : public ABaseEnemy
 public:
 	AWoodEnemy();
 
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void Onewitch();
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
