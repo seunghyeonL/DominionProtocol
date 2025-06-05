@@ -131,15 +131,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitSound();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void PlayDashSound();
 	
 	// WeaopnMeshChange
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangePrimaryWeapon(const FGameplayTag& WeaponTag);
-
-	// Skill
 
 protected:
 	virtual void BeginPlay() override;
