@@ -432,6 +432,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
 
 	LaunchCharacter(AttackData.LaunchVector, true, true);
+	PlayHitSound();
 
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)

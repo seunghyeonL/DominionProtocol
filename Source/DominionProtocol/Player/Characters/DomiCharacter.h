@@ -129,6 +129,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitBackAnimMontage();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitSound();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayDashSound();
+	
 	// WeaopnMeshChange
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangePrimaryWeapon(const FGameplayTag& WeaponTag);

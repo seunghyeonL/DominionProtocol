@@ -23,6 +23,13 @@ UPlayerDashSkill::UPlayerDashSkill()
 void UPlayerDashSkill::Execute()
 {
 	// Super::Execute();
+	check(OwnerCharacter);
+
+	if (Sound.IsValidIndex(0))
+	{
+		UGameplayStatics::PlaySoundAtLocation(OwnerCharacter, Sound[0], OwnerCharacter->GetActorLocation());
+	}
+	
 	auto SkillComponent = Cast<USkillComponent>(GetOuter());
 	check(SkillComponent);
 	
