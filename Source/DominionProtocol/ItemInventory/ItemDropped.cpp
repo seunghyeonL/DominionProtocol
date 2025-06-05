@@ -112,7 +112,7 @@ void AItemDropped::Interact_Implementation(AActor* Interactor)
 						ActorStateComponent->SwitchStateAndUpdateInstance(WorldActorTags::ItemDropped);
 						
 						// 지정된 서브클래스의 아이템 태그를 사용해 아이템 추가
-						InventoryComp->AddItem(Data->ItemTag, 1);
+						InventoryComp->AddItem(Data->ItemTag, QuantityToAward);
 						Destroy(); 
 					}
 					else

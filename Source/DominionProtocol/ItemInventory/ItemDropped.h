@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Data", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ABaseItem> ItemSubclassToAward;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Data", meta = (AllowPrivateAccess = "true"))
+	int32 QuantityToAward=1;
+
 	virtual void BeginPlay() override;
 
 	virtual void Interact_Implementation(AActor* Interactor) override;
