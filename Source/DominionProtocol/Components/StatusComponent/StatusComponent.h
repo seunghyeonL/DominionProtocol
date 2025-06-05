@@ -16,6 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChanged, float, MaxHealt
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, float, Stamina);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxStaminaChanged, float, MaxStamina);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttackPowerChanged, float, AttackPower);
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMaxShieldChanged, float);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnBattleMonster, FString);
@@ -58,6 +59,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
 	FOnShieldChanged OnShieldChanged;
 
+	UPROPERTY(BlueprintAssignable, Category = "Stats|Events")
+	FOnAttackPowerChanged OnAttackPowerChanged;
+
 	FOnMaxShieldChanged OnMaxShieldChanged;
 	FOnBattleMonster OnBattleMonster;
 
@@ -89,6 +93,7 @@ public:
 	void SetShield(const float NewShield);
 	void SetStamina(float NewHealth);
 	void SetMaxStamina(float NewMaxStamina);
+	void SetAttackPower(float NewAttackPower);
 	
 	bool HasEnoughStamina(float RequiredAmount) const;
 	void ConsumeStamina(float Amount);

@@ -205,6 +205,16 @@ void UStatusComponent::SetMaxStamina(float NewMaxStamina)
 	OnMaxStaminaChanged.Broadcast(NewMaxStamina);
 }
 
+void UStatusComponent::SetAttackPower(float NewAttackPower)
+{
+	ensure(StatMap.Contains(StatTags::AttackPower));
+
+	const float AttackPower = NewAttackPower;
+
+	SetStat(StatTags::AttackPower, NewAttackPower);
+	OnAttackPowerChanged.Broadcast(NewAttackPower);
+}
+
 
 bool UStatusComponent::HasEnoughStamina(const float RequiredAmount) const
 {
