@@ -32,7 +32,7 @@ void AItemDropped::BeginPlay()
 		Destroy();
 	}
 	
-	if (ItemSubclassToAward)
+	/*if (ItemSubclassToAward)
 	{
 		ABaseItem* DefaultItemObject = ItemSubclassToAward.GetDefaultObject();
 		if (DefaultItemObject)
@@ -71,7 +71,7 @@ void AItemDropped::BeginPlay()
 	else
 	{
 		Debug::Print(TEXT("ItemDropped: ItemSubclassToAward is not set!"), FColor::Red);
-	}
+	}*/
 
 	//나이아가라 이펙트 재생
 	if (AuraVFXComponent && AuraNiagaraSystem)

@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
+#include "ItemInventory/WeaponData.h"
+#include "ItemInventory/AccessoryData.h"
 #include "Engine/DataTable.h"
 #include "Engine/Texture2D.h"
 #include "Util/GameTagList.h"
@@ -53,6 +55,14 @@ public:
 	//드랍 전용
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	UStaticMesh* ItemStaticMesh;
+
+	//무기 메시 소켓 등의 데이터
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	FWeaponData WeaponData;
+
+	//악세서리 메시 소켓 등의 데이터
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	FAccessoryData AccessoryData;
 
 };
 
