@@ -369,8 +369,32 @@ void ADomiCharacter::InitializeStatusComponent()
 
 void ADomiCharacter::OnDeath()
 {
-	ControlComponent->ActivateControlEffect(EffectTags::Death);
+	check(ControlComponent);
+	check(StatusComponent);
+	
+	auto ActiveControlEffectTagArray = ControlComponent->GetActiveControlEffectTags().GetGameplayTagArray();
+	auto ActiveStatusEffectTagArray = StatusComponent->GetActiveStatusEffectTags().GetGameplayTagArray();
 
+	// Deactivate All Effects 
+	for (int32 i = 0 ; i < ActiveControlEffectTagArray.Num(); i++)
+	{
+		if (ActiveControlEffectTagArray.IsValidIndex(i))
+		{
+			ControlComponent->DeactivateControlEffect(ActiveControlEffectTagArray[i]);
+		}
+	}
+
+	for (int32 i = 0 ; i < ActiveStatusEffectTagArray.Num(); i++)
+	{
+		if (ActiveStatusEffectTagArray.IsValidIndex(i))
+		{
+			StatusComponent->DeactivateStatusEffect(ActiveStatusEffectTagArray[i]);
+		}
+	}
+
+	// Activate Death Effect
+	ControlComponent->ActivateControlEffect(EffectTags::Death);
+	
 	// 델리게이트로?
 	ABaseGameMode* GameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
 	if (IsValid(GameMode))
