@@ -2,6 +2,9 @@
 #include "Components/BoxComponent.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/Characters/DomiCharacter.h"
+#include "Components/ItemComponent/ItemComponent.h"
+#include "Util/DebugHelper.h"
 
 ABlockedPath::ABlockedPath()
 	:bIsBlocking(true)
@@ -11,8 +14,13 @@ ABlockedPath::ABlockedPath()
 
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
 	CollisionBox->SetupAttachment(RootComponent);
-	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	CollisionBox->SetCollisionResponseToAllChannels(ECR_Block);
+	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	BlockingBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BlockingBox"));
+	BlockingBox->SetupAttachment(RootComponent);
+	BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BlockingBox->SetCollisionResponseToAllChannels(ECR_Block);
 
 	PathEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PathEffect"));
 	PathEffect->SetupAttachment(RootComponent);
@@ -25,8 +33,8 @@ ABlockedPath::ABlockedPath()
 
 void ABlockedPath::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
-	UE_LOG(LogTemp, Error, TEXT("BlockedPath::OnStoryStateUpdated_Implementation"));
-	if (NewState >= RequiredStoryState)
+	UE_LOG(LogTemp, Error, TEXT("ABlockedPath::OnStoryStateUpdated_Implementation"));
+	if (NewState > RequiredStoryState)
 	{
 		TryOpen();
 	}
@@ -35,6 +43,9 @@ void ABlockedPath::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 void ABlockedPath::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABlockedPath::OnOverlapBegin);
+	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABlockedPath::OnOverlapEnd);
 
 	if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
@@ -55,37 +66,103 @@ void ABlockedPath::BeginPlay()
 
 	if (!CollisionBox || !PathEffect)
 	{
-		UE_LOG(LogTemp, Error, TEXT("BlockedPath::BeginPlay - 구성 요소가 초기화되지 않음!"));
+		UE_LOG(LogTemp, Error, TEXT("AElevator::BeginPlay - 구성 요소가 초기화되지 않음!"));
 		return;
 	}
 
-	TryOpen();
+	//TryOpen();
 }
 
 void ABlockedPath::TryOpen()
 {
-	UE_LOG(LogTemp, Warning, TEXT("BlockedPath: TryOpen"));
+	UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: TryOpen"));
 	if (!IsValid(CollisionBox))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BlockedPath: CollisionBox is null"));
+		UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: CollisionBox is null"));
 		return;
 	}
 
 	if (!IsValid(PathEffect))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BlockedPath: PathEffect is null"));
+		UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: PathEffect is null"));
 		return;
 	}
 	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (GameInstance && GameInstance->GetCurrentGameStoryState() >= RequiredStoryState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BlockedPath: 조건 충족, 열기"));
+		UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: 조건 충족, 열기"));
 		bIsBlocking = false;
+		BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		PathEffect->Deactivate();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BlockedPath: 조건 미충족, 막힘 유지"));
+		UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: 조건 미충족, 막힘 유지"));
 	}
+}
+void ABlockedPath::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Debug::Print(TEXT("ABlockedPath: Overlap"));
+
+	if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
+	{
+		Debug::Print(TEXT("Not Player"));
+		return;
+	}
+
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (!GI || GI->GetCurrentGameStoryState() != RequiredStoryState)
+	{
+		Debug::Print(TEXT("Not RequiredStoryState"));
+		return;
+	}
+
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
+	ensure(PlayerCharacter);
+	CachedCharacter = PlayerCharacter;
+
+	PlayerCharacter->AddInteractableActor(this);
+}
+
+void ABlockedPath::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (IsValid(OtherActor) && OtherActor == CachedCharacter)
+	{
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
+		ensure(PlayerCharacter);
+
+		CachedCharacter = nullptr;
+		PlayerCharacter->RemoveInteractableActor(this);
+	}
+	else
+	{
+		Debug::Print(TEXT("AElevator::OnOverlapEnd : OtherActor Is not PlayerCharacter"));
+	}
+}
+
+void ABlockedPath::Interact_Implementation(AActor* Interactor)
+{
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
+	if (!PlayerCharacter || !bIsBlocking) return;
+
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (!GI || GI->GetCurrentGameStoryState() != RequiredStoryState) return;
+
+	UItemComponent* PlayerItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
+	if (!IsValid(PlayerItemComponent) || !PlayerItemComponent->HasItem(RequiredKey, 1))
+	{
+		Debug::Print(TEXT("AElevator::Item Not Found"));
+		return;
+	}
+		
+	Debug::Print(TEXT("AElevator::Item Check"));
+	PlayerItemComponent->RemoveItem(RequiredKey, 1);
+	GI->AdvanceStoryState();
+	TryOpen();
+}
+
+FText ABlockedPath::GetInteractMessage_Implementation() const
+{
+	return FText::FromString(TEXT("확인하기"));
 }

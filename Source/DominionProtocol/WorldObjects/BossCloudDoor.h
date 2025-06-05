@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface/InteractableInterface.h"
+#include "Interface/StoryDependentInterface.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h" 
 #include "BossCloudDoor.generated.h"
@@ -11,13 +12,14 @@ class UBoxComponent;
 class ADomiCharacter;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ABossCloudDoor : public AActor, public IInteractableInterface
+class DOMINIONPROTOCOL_API ABossCloudDoor : public AActor, public IInteractableInterface, public IStoryDependentInterface
 {
 	GENERATED_BODY()
 
 public:
 	ABossCloudDoor();
 
+	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
 protected:
 	void BeginPlay() override;
 	void EnterDoor();
@@ -56,4 +58,7 @@ private:
 
 protected:
 	bool bIsMontagePlaying;
+
+	UPROPERTY(EditAnywhere, Category = "BlockedPath")
+	EGameStoryState RequiredStoryState;
 };

@@ -29,6 +29,16 @@ ABossCloudDoor::ABossCloudDoor()
 	PathEffect->SetWorldScale3D(FVector(1.f));
 }
 
+void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
+{
+	UE_LOG(LogTemp, Error, TEXT("ABlockedPath::OnStoryStateUpdated_Implementation"));
+	if (NewState > RequiredStoryState)
+	{
+		PathEffect->Deactivate();
+		BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
 void ABossCloudDoor::BeginPlay()
 {
 	Super::BeginPlay();
