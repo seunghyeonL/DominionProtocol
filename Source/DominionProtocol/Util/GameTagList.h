@@ -204,7 +204,13 @@ namespace ItemTags
 	inline const FGameplayTag SwordWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Sword"));
 	inline const FGameplayTag AxeWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Axe"));
 	inline const FGameplayTag ClawWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Claw"));
+	inline const FGameplayTag HammerWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Hammer"));
 	inline const FGameplayTag SkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill"));
+	inline const FGameplayTag RailGunSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.RailGun"));
+	inline const FGameplayTag FireBallSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.FireBall"));
+	inline const FGameplayTag TeleportSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.Teleport"));
+	inline const FGameplayTag ZoneyaSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.Zoneya"));
+	inline const FGameplayTag InfiniteStaminaSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.InfiniteStamina"));
 	inline const FGameplayTag AccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory"));
 	inline const FGameplayTag RingOfHealthAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.RingOfHealth"));
 	inline const FGameplayTag NecklaceOfStaminaAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.NecklaceOfStamina"));
