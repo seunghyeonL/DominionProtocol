@@ -15,4 +15,6 @@ class DOMINIONPROTOCOL_API UWoodHurricaneKick : public UBaseSkill
 	GENERATED_BODY()
 public:
 	UWoodHurricaneKick();
+
+	virtual void Execute() override;
 };

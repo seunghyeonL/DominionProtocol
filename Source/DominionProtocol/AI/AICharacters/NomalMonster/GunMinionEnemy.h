@@ -15,4 +15,10 @@ class DOMINIONPROTOCOL_API AGunMinionEnemy : public ABaseEnemy
 	GENERATED_BODY()
 public:
 	AGunMinionEnemy();
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void Attack();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* AttackMontage;
 };

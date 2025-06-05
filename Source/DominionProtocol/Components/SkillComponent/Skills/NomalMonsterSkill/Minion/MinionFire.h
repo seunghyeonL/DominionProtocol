@@ -15,4 +15,6 @@ class DOMINIONPROTOCOL_API UMinionFire : public UMagicCurvedProjectileSkill
 	GENERATED_BODY()
 public:
 	UMinionFire();
+
+	virtual void Execute() override;
 };

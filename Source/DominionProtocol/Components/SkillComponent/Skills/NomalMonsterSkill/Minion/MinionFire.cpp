@@ -7,3 +7,10 @@ UMinionFire::UMinionFire()
 {
 	SkillTag = SkillTags::GunMinionFire;
 }
+
+
+void UMinionFire::Execute()
+{
+	UE_LOG(LogTemp, Warning, TEXT("GunFire"));
+	Super::Execute();
+}
