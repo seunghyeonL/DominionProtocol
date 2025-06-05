@@ -46,24 +46,24 @@ void UMagicTeleportSkill::Execute()
 		if (!CurrentTarget)
 		{
 			Move();
-
-			if (Sound[0] || Sound[1])
-			{
-				int32 Index = FMath::RandRange(0, 1);
-
-				if (Sound[Index])
-				{
-					UGameplayStatics::PlaySoundAtLocation(
-						this,
-						Sound[Index],
-						OwnerLocation
-					);
-				}
-			}
 		}
 		else
 		{
 			MoveBehindTarget();
+		}
+
+		if (Sound[0] || Sound[1])
+		{
+			int32 Index = FMath::RandRange(0, 1);
+
+			if (Sound[Index])
+			{
+				UGameplayStatics::PlaySoundAtLocation(
+					this,
+					Sound[Index],
+					OwnerLocation
+				);
+			}
 		}
 	}
 }
