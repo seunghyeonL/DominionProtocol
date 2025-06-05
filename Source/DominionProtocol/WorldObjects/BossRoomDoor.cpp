@@ -84,7 +84,7 @@ void ABossRoomDoor::Interact_Implementation(AActor* Interactor)
 
             if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(GetGameInstance()))
             {
-                GI->SetCurrentGameStoryState(EGameStoryState::BattleWithBoss);
+                //GI->SetCurrentGameStoryState(EGameStoryState::BattleWithBoss);
             }
         }
         else
