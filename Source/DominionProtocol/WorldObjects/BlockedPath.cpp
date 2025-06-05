@@ -27,7 +27,7 @@ ABlockedPath::ABlockedPath()
 	PathEffect->SetAutoActivate(false); 
 
 	PathEffect->SetRelativeLocation(FVector::ZeroVector);
-	PathEffect->SetWorldLocation(GetActorLocation() + FVector(0, 0, 100.f));
+	PathEffect->SetWorldLocation(GetActorLocation() + FVector(0, 0, 0.f));
 	PathEffect->SetWorldScale3D(FVector(1.f));
 }
 
@@ -95,6 +95,7 @@ void ABlockedPath::TryOpen()
 		BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		PathEffect->Deactivate();
+		PathEffect->DestroyComponent();
 	}
 	else
 	{

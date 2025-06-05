@@ -36,6 +36,7 @@ void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState
 	{
 		PathEffect->Deactivate();
 		BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
