@@ -8,6 +8,7 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+class UItemInstanceSubsystem;
 struct FEffectInitializeData;
 struct FCrackInitializeData;
 class UWorldInstanceSubsystem;
@@ -40,6 +41,8 @@ public:
 	
 	void LoadCrackDataFromInstance();
 
+	void LoadItemDataFromInstance();
+
 	void InitializeCrackDataMap();
 
 	ACrack* FindNearestCrack();
@@ -52,6 +55,7 @@ private:
 	void InitializeGameInstance();
 	void InitializeWorldInstanceSubsystem();
 	void InitializeSoundSubsystem();
+	void InitializeItemInstanceSubsystem();
 	void InitializeZeroIndexCrackData(const FString CurrentLevelName);
 	
 
@@ -61,13 +65,16 @@ private:
 	UWorld* World;
 	
 	UPROPERTY()
-	UDomiGameInstance* GameInstance;
+	TObjectPtr<UDomiGameInstance> GameInstance;
 
 	UPROPERTY()
-	UWorldInstanceSubsystem* WorldInstanceSubsystem;
+	TObjectPtr<UWorldInstanceSubsystem> WorldInstanceSubsystem;
 	
 	UPROPERTY()
-	USoundInstanceSubsystem* SoundSubsystem;
+	TObjectPtr<USoundInstanceSubsystem> SoundSubsystem;
+
+	UPROPERTY()
+	TObjectPtr<UItemInstanceSubsystem> ItemInstanceSubsystem;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Crack", meta = (AllowPrivateAccess = "true"))
 	UDataTable* CrackInitializeDataTable;

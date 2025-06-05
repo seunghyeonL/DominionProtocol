@@ -2,15 +2,19 @@
 
 
 #include "BaseGameState.h"
+
+#include "Components/ItemComponent/ItemComponent.h"
 #include "GameFramework/Character.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/SoundInstanceSubsystem.h"
+#include "DomiFramework/GameInstance/ItemInstanceSubsystem.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "EnumAndStruct/EffectData/EffectInitializeData.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "WorldObjects/Crack.h"
+#include "Player/Characters/DomiCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "Util/DebugHelper.h"
@@ -35,18 +39,19 @@ void ABaseGameState::BeginPlay()
 	InitializeWorldInstanceSubsystem();
 	InitializeZeroIndexCrackData(WorldInstanceSubsystem->GetCurrentLevelName());
 	InitializeSoundSubsystem();
+	InitializeItemInstanceSubsystem();
 }
 
 void ABaseGameState::InitializeGameInstance()
 {
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-	check(GameInstance);
+	check(IsValid(GameInstance));
 }
 
 void ABaseGameState::InitializeWorldInstanceSubsystem()
 {
 	WorldInstanceSubsystem = GameInstance->GetSubsystem<UWorldInstanceSubsystem>();
-	check(WorldInstanceSubsystem);
+	check(IsValid(WorldInstanceSubsystem));
 
 	WorldInstanceSubsystem->SetCurrentLevelName(UGameplayStatics::GetCurrentLevelName(GetWorld(), true));
 	if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Level1"))
@@ -62,10 +67,17 @@ void ABaseGameState::InitializeWorldInstanceSubsystem()
 void ABaseGameState::InitializeSoundSubsystem()
 {
 	SoundSubsystem = GetGameInstance()->GetSubsystem<USoundInstanceSubsystem>();
-	check(SoundSubsystem);
+	check(IsValid(SoundSubsystem));
 	SoundSubsystem->SetWorldCache(World);
 	SoundSubsystem->LoadSoundClass();
 	SoundSubsystem->LoadVolumeSettings();
+}
+
+void ABaseGameState::InitializeItemInstanceSubsystem()
+{
+	ItemInstanceSubsystem = GetGameInstance()->GetSubsystem<UItemInstanceSubsystem>();
+	check(IsValid(ItemInstanceSubsystem));
+	ItemInstanceSubsystem->SetWorldCache(World);
 }
 
 FSkillData* ABaseGameState::GetSkillData(const FGameplayTag SkillTag) const
@@ -133,6 +145,35 @@ void ABaseGameState::LoadCrackDataFromInstance()
 		{
 			Crack->SetActive();
 			Crack->SetCrackName(CrackData->CrackName);
+		}
+	}
+}
+
+void ABaseGameState::LoadItemDataFromInstance()
+{
+	if (!IsValid(ItemInstanceSubsystem))
+	{
+		Debug::PrintError(TEXT("ABaseGameState::LoadItemDataFromInstance: Invalid ItemInstanceSubsystem"));
+		return;
+	}
+	
+	if (!ItemInstanceSubsystem->GetInventoryDataMap().IsEmpty() &&
+		!ItemInstanceSubsystem->GetEquipmentSlotMap().IsEmpty() &&
+		!ItemInstanceSubsystem->GetConsumableSlotMap().IsEmpty())
+	{
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(World->GetFirstPlayerController()->GetPawn());
+		if (IsValid(PlayerCharacter))
+		{
+			UItemComponent* ItemComponent = PlayerCharacter->GetItemComponent();
+			if (IsValid(ItemComponent))
+			{
+				ItemComponent->SetInventoryMap(ItemInstanceSubsystem->GetInventoryDataMap());
+				ItemComponent->SetEquipmentSlots(ItemInstanceSubsystem->GetEquipmentSlotMap());
+				ItemComponent->SetConsumableSlots(ItemInstanceSubsystem->GetConsumableSlotMap());
+				ItemComponent->SetIsPotionBoostApplied(ItemInstanceSubsystem->GetIsPotionBoostApplied());
+
+				ItemComponent->DelegateExecuter();
+			}
 		}
 	}
 }
