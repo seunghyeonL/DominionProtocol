@@ -4,6 +4,7 @@
 #include "Crack.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StatusComponent/StatusComponent.h"
 #include "Engine/TargetPoint.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
@@ -108,6 +109,11 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (PlayerCharacter)
 	{
+		UStatusComponent* StatusComponent = PlayerCharacter->GetStatusComponent();
+		if (IsValid(StatusComponent))
+		{
+			StatusComponent->SetHealth(BIG_NUMBER);
+		}
 		auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
 		if (PlayerController)
 		{
