@@ -502,6 +502,7 @@ void ADomiCharacter::OnParried_Implementation()
 void ADomiCharacter::OnParrySuccess_Implementation()
 {
 	// 패리성공시 나이아가라 보여주기
+	ShowParryWall();
 }
 
 AActor* ADomiCharacter::GetTargetEnemy_Implementation()

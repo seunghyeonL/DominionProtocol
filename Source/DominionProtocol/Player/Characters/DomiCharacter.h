@@ -138,6 +138,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangePrimaryWeapon(const FGameplayTag& WeaponTag);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowParryWall();
+
 protected:
 	virtual void BeginPlay() override;
 	
