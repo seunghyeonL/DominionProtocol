@@ -3,6 +3,8 @@
 
 #include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
 #include "BaseBossEnemy.h"
+#include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABaseBossEnemy::ABaseBossEnemy()
@@ -35,5 +37,8 @@ void ABaseBossEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void ABaseBossEnemy::OnDeath()
 {
 	Super::OnDeath();
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (!GI) return;
+	GI->AdvanceStoryState();
 	OnBossDeathDelegate.Broadcast();
 }
