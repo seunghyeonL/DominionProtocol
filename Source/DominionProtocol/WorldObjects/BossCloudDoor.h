@@ -53,4 +53,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* EnterDoorMontage;
+
+protected:
+	bool bIsMontagePlaying;
 };

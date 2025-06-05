@@ -5,6 +5,7 @@
 #include "DomiFramework/GameMode/BaseGameMode.h"
 
 ABossCloudDoor::ABossCloudDoor()
+	: bIsMontagePlaying(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -56,7 +57,6 @@ void ABossCloudDoor::EnterDoor()
 	UAnimInstance* AnimInstance = CachedCharacter->GetMesh()->GetAnimInstance();
 	if (!AnimInstance)
 		return;
-
 	float Duration = AnimInstance->Montage_Play(EnterDoorMontage);
 
 	FOnMontageEnded EndDelegate;
@@ -67,6 +67,7 @@ void ABossCloudDoor::EnterDoor()
 void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	Debug::Print(TEXT("ABossCloudDoor: OnEnterMontageEnded"));
+	bIsMontagePlaying = false;
 	if (CachedCharacter)
 	{
 		APlayerController* PC = Cast<APlayerController>(CachedCharacter->GetController());
@@ -77,11 +78,24 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 				GM->SetPlayerInputEnable(true);
 				Debug::Print(TEXT("ABossCloudDoor: SetPlayerInputEnable true"));
 			}
+			else
+			{
+				Debug::Print(TEXT("ABossCloudDoor: ABaseGameMode NotValid"));
+			}
+		}
+		else
+		{
+			Debug::Print(TEXT("ABossCloudDoor: APlayerController NotValid"));
 		}
 
 		//PathEffect->Activate();
 		BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
+	else
+	{
+		Debug::Print(TEXT("ABossCloudDoor: CachedCharacter NotValid"));
+	}
+	CachedCharacter = nullptr;
 }
 
 void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
@@ -90,6 +104,7 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 	if (!Player || !EnterDoorMontage) return;
 
 	CachedCharacter = Player;
+	bIsMontagePlaying = true;
 	APlayerController* PC = Cast<APlayerController>(CachedCharacter->GetController());
 	if (PC)
 	{
@@ -131,9 +146,12 @@ void ABossCloudDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* O
 	{
 		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
 		ensure(PlayerCharacter);
-
-		CachedCharacter = nullptr;
 		PlayerCharacter->RemoveInteractableActor(this);
+
+		if (!bIsMontagePlaying)
+		{
+			CachedCharacter = nullptr;
+		}
 	}
 	else
 	{
