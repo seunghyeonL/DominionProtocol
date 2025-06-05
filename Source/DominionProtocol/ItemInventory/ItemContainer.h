@@ -54,6 +54,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	USoundCue* DestructionSound;
 
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundCue* HitSound;
+
 	UFUNCTION()
 	void OnHealthZeroed(); // 체력이 0이 되었을 때 호출될 함수
 
@@ -67,6 +70,8 @@ protected:
 	void PlayShakeAnimation();
 
 	void PlayDestructionSound();
+
+	void PlayHitSound();
 public:
 	virtual void Tick(float DeltaTime) override;
 

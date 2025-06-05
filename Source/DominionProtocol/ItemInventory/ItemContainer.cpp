@@ -61,7 +61,10 @@ void AItemContainer::OnAttacked_Implementation(const FAttackData& AttackData)
 		{
 			CurrentHealth -= AttackData.Damage;
 			Debug::Print(FString::Printf(TEXT("컨테이너 현재 체력: %.2f"), CurrentHealth));
-
+			if (CurrentHealth > 0)
+			{
+				PlayHitSound();
+			}
 			PlayShakeAnimation();
 
 			if (CurrentHealth <= 0)
@@ -112,7 +115,19 @@ void AItemContainer::PlayDestructionSound()
 	}
 	else
 	{
-		Debug::Print(TEXT("OpenSound is null. Cannot play open sound."), FColor::Yellow);
+		Debug::Print(TEXT("DestructionSound is null. Cannot play Destruction sound."), FColor::Yellow);
+	}
+}
+
+void AItemContainer::PlayHitSound()
+{
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+	}
+	else
+	{
+		Debug::Print(TEXT("HitSound is null. Cannot play Hit sound."), FColor::Yellow);
 	}
 }
 
