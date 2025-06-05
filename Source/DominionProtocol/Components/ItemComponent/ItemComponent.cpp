@@ -535,8 +535,15 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 					// Consume 인터페이스 실행 (소비 주체 전달)
 					PlayConsumeSound();
 					IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
+					if (SlotName!=NAME_None)
+					{
+						if (!HasItem(ItemToUse, 1))
+						{
+							ConsumableSlots[SlotName] = FGameplayTag();
+						}
+					}
 					OnInventoryItemListChanged.Execute();
-
+					OnInventoryConsumableSlotItemsChanged.Execute();
 					// 소비 후 임시 액터 파괴 (Consume_Implementation에서 RemoveItem이 호출되었을 것으로 가정)
 					ConsumableActor->Destroy();
 				}
