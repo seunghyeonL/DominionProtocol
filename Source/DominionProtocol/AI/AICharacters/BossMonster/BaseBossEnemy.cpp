@@ -3,6 +3,8 @@
 
 #include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
 #include "BaseBossEnemy.h"
+
+#include "Components/WidgetComponent/DomiWidgetComponent.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -19,7 +21,7 @@ ABaseBossEnemy::ABaseBossEnemy()
 void ABaseBossEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-
+	HPWidgetComponent->SetVisibility(false);
 }
 
 // Called every frame
