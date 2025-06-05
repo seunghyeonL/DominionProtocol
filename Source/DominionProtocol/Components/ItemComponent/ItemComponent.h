@@ -167,4 +167,7 @@ private:
 	void PlayUnEquipSound();
 	void PlayConsumeSound();
 	void PlaySwapSound();
+
+	//소비 애니메이션 VFX 재생
+	void PlayConsumeVFXAndAnimation(const FItemData* ConsumedItemData);
 };

@@ -5,6 +5,7 @@
 #include "ItemInventory/BaseItem.h"
 #include "Interface/ConsumableItemInterface.h"
 #include "Interface/EquipEffectableItemInterface.h"
+#include "Player/Characters/DomiCharacter.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Sound/SoundCue.h"
@@ -535,6 +536,7 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 					// Consume 인터페이스 실행 (소비 주체 전달)
 					PlayConsumeSound();
 					IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
+					PlayConsumeVFXAndAnimation(ItemData);
 					if (SlotName!=NAME_None)
 					{
 						if (!HasItem(ItemToUse, 1))
@@ -816,5 +818,65 @@ void UItemComponent::PlaySwapSound()
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, SwapSound, OwningActor->GetActorLocation());
 		}
+	}
+}
+
+//소비아이템 사용 애니메이션 과 vfx 재생
+void UItemComponent::PlayConsumeVFXAndAnimation(const FItemData* ConsumedItemData)
+{
+	if (!ConsumedItemData)
+	{
+		Debug::PrintError(TEXT("PlayConsumeVFXAndAnimation: ConsumedItemData is null."));
+		return;
+	}
+
+	AActor* OwningActor = GetOwner();
+	if (!OwningActor)
+	{
+		Debug::PrintError(TEXT("PlayConsumeVFXAndAnimation: OwningActor is null."));
+		return;
+	}
+
+	// 캐릭터 메쉬 컴포넌트 가져오기
+	USkeletalMeshComponent* MeshComp = OwningActor->FindComponentByClass<USkeletalMeshComponent>();
+	if (!MeshComp)
+	{
+		Debug::PrintError(TEXT("PlayConsumeVFXAndAnimation: OwningActor does not have a SkeletalMeshComponent."));
+		return;
+	}
+
+	// 애니메이션 몽타주 재생
+	ADomiCharacter* CharacterOwner = Cast<ADomiCharacter>(OwningActor);
+	if (CharacterOwner && ConsumedItemData->ConsumeMontage) // ItemData에 ConsumeMontage
+	{
+		CharacterOwner->PlayAnimMontage(ConsumedItemData->ConsumeMontage);
+		Debug::Print(FString::Printf(TEXT("Playing montage: %s"), *ConsumedItemData->ConsumeMontage->GetName()));
+	}
+	else if (CharacterOwner && !ConsumedItemData->ConsumeMontage)
+	{
+		Debug::Print(TEXT("No ConsumeMontage specified in ItemData for current item."));
+	}
+	else if (!CharacterOwner)
+	{
+		Debug::Print(TEXT("OwningActor is not a Character, skipping montage playback."));
+	}
+
+	// VFX 재생
+	if (ConsumedItemData->ConsumeVFXTemplate) // ItemData에 ConsumeVFXTemplate
+	{
+		UGameplayStatics::SpawnEmitterAttached(
+			ConsumedItemData->ConsumeVFXTemplate,
+			MeshComp,
+			FName("MouthVFXSocket"), // 소켓 이름 하드코딩
+			FVector::ZeroVector,
+			FRotator::ZeroRotator,
+			EAttachLocation::SnapToTarget,
+			true
+		);
+		Debug::Print(TEXT("Playing Consume VFX at MouthVFXSocket."));
+	}
+	else
+	{
+		Debug::Print(TEXT("No ConsumeVFXTemplate specified in ItemData for current item."));
 	}
 }

@@ -64,6 +64,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	FAccessoryData AccessoryData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable Effect")
+	class UAnimMontage* ConsumeMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable Effect")
+	class UParticleSystem* ConsumeVFXTemplate;
+
 };
 
 // Item.Consume.이름
