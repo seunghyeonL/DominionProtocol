@@ -8,6 +8,7 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "DomiFramework/GameState/BaseGameState.h"
+#include "DomiFramework/GameInstance/ItemInstanceSubsystem.h"
 #include "Sound/SoundCue.h"
 
 UItemComponent::UItemComponent()
@@ -31,6 +32,8 @@ void UItemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ItemInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UItemInstanceSubsystem>();
+	
 	//데이터 테이블 할당 체크
 	if (ItemDataTable)
 	{
@@ -879,4 +882,23 @@ void UItemComponent::PlayConsumeVFXAndAnimation(const FItemData* ConsumedItemDat
 	{
 		Debug::Print(TEXT("No ConsumeVFXTemplate specified in ItemData for current item."));
 	}
+}
+
+void UItemComponent::UpdateItemInstanceSubsystem()
+{
+	if (IsValid(ItemInstanceSubsystem))
+	{
+		ItemInstanceSubsystem->SetInventoryDataMap(InventoryMap);
+		ItemInstanceSubsystem->SetEquipmentSlotMap(EquipmentSlots);
+		ItemInstanceSubsystem->SetConsumableSlotMap(ConsumableSlots);
+
+		DelegateExecuter();
+	}
+}
+
+void UItemComponent::DelegateExecuter()
+{
+	OnInventoryItemListChanged.Execute();
+	OnInventoryEquippedSlotItemsChanged.Execute();
+	OnInventoryConsumableSlotItemsChanged.Execute();
 }

@@ -9,6 +9,7 @@
 
 struct FSkillComponentInitializeData;
 class USoundCue;
+class UItemInstanceSubsystem;
 
 DECLARE_DELEGATE(FOnInventoryItemListChanged)
 DECLARE_DELEGATE(FOnInventoryEquippedSlotItemsChanged)
@@ -158,10 +159,24 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory|Cheat")
 	void AddAllItemsToInventoryMaxQuantity();
 
+	// ItemInstanceSubsystem 함수
+	FORCEINLINE void SetInventoryMap(TMap<FGameplayTag, int32>& NewMap) { InventoryMap = NewMap; }
+
+	FORCEINLINE void SetEquipmentSlots(TMap<FName, FGameplayTag>& NewMap) { EquipmentSlots = NewMap; }
+
+	FORCEINLINE void SetConsumableSlots(TMap<FName, FGameplayTag>& NewMap) { ConsumableSlots = NewMap; }
+
+	FORCEINLINE void SetIsPotionBoostApplied(bool bNewBool) { bIsPotionBoostApplied = bNewBool; }
+
+	// ItemInstanceSubsystem에 정보 전달 위한 함수
+	void UpdateItemInstanceSubsystem();
+
+	void DelegateExecuter();
+	
 private:
 	//캐싱된 ItemDataTable에서 FItemData를 로드하는 헬퍼 함수
 	const FItemData* GetItemDataFromTable(FGameplayTag ItemTag) const;
-
+	
 	//사운드 재생 함수
 	void PlayEquipSound();
 	void PlayUnEquipSound();
@@ -170,4 +185,7 @@ private:
 
 	//소비 애니메이션 VFX 재생
 	void PlayConsumeVFXAndAnimation(const FItemData* ConsumedItemData);
+
+	UPROPERTY()
+	TObjectPtr<UItemInstanceSubsystem> ItemInstanceSubsystem;
 };
