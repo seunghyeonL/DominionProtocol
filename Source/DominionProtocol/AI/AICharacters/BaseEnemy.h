@@ -61,8 +61,8 @@ public:
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 
 	// Parryable
-	virtual bool IsParryingCond() override;
-	virtual void OnParried() override;
+	virtual bool IsParryingCond_Implementation() override;
+	virtual void OnParried_Implementation() override;
 	
 	// EffectReceivable (for debug)
 	virtual void ShowControlEffectTags_Implementation() override;

@@ -233,19 +233,29 @@ bool UBaseSkill::CheckParry(AActor* HitActor) const
 	{
 		return false;
 	}
-	
-	auto ParryableTarget = Cast<IParryable>(HitActor);
-    if (!ParryableTarget || !ParryableTarget->IsParryingCond())
-    {
-	    return false;
-    }
 
-	auto ParryableOwner = Cast<IParryable>(OwnerCharacter);
-	if (!ParryableOwner)
+	if (HitActor->GetClass()->ImplementsInterface(UParryable::StaticClass()))
 	{
-		return false;
+		if (!IParryable::Execute_IsParryingCond(HitActor))
+		{
+			return false;
+		}
+
+		auto ParryableOwner = Cast<IParryable>(OwnerCharacter);
+		if (!ParryableOwner)
+		{
+			return false;
+		}
+
+		IParryable::Execute_OnParrySuccess(HitActor);
+
+		if (OwnerCharacter->GetClass()->ImplementsInterface(UParryable::StaticClass()))
+		{
+			IParryable::Execute_OnParried(OwnerCharacter);
+		}
+
+		return true;
 	}
 	
-	ParryableOwner->OnParried();
-	return true;
+	return false;
 }

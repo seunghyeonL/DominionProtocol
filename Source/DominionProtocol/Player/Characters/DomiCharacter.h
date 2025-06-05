@@ -103,8 +103,10 @@ public:
 	virtual void ActivateStatusEffect_Implementation(const FGameplayTag& EffectTag) override;
 
 	// Parryable
-	virtual bool IsParryingCond() override;
-	virtual void OnParried() override;
+	virtual bool IsParryingCond_Implementation() override;
+	virtual void OnParried_Implementation() override;
+	virtual void OnParrySuccess_Implementation() override;
+	virtual AActor* GetTargetEnemy_Implementation() override;
 
 	// EffectUser
 	virtual FGameplayTagContainer GetAllActivateEffectDatas_Implementation() const override;

@@ -113,13 +113,14 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	if (IsValid(SkillOwner))
 	{
 		AActor* HitActor = SweepResult.GetActor();
-		if (auto ParryableTarget = Cast<IParryable>(HitActor))
-		{
-			if (ParryableTarget->IsParryingCond())
-			{
-				SetLaunchPath(HitActor, InstigatorPawn);
-			}
-		}
+		//
+		// if (auto ParryableTarget = Cast<IParryable>(HitActor))
+		// {
+		// 	if (ParryableTarget->IsParryingCond())
+		// 	{
+		// 		SetLaunchPath(HitActor, InstigatorPawn);
+		// 	}
+		// }
 		
 		UBaseSkill* BaseSkill = SkillOwner;
 		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
@@ -162,25 +163,36 @@ bool ACurvedProjectile::CheckParry(const FHitResult& HitResult)
 	{
 		return false;
 	}
-	
-	auto ParryableTarget = Cast<IParryable>(HitActor);
-	if (!ParryableTarget || !ParryableTarget->IsParryingCond())
+
+	if (HitActor->GetClass()->ImplementsInterface(UParryable::StaticClass()))
 	{
-		return false;
+		if (!IParryable::Execute_IsParryingCond(HitActor))
+		{
+			return false;
+		}
+		
+		IParryable::Execute_OnParrySuccess(HitActor);
+
+		AttackData.Instigator = HitActor;
+		InstigatorPawn = Cast<APawn>(HitActor);
+		
+		TargetActor = IParryable::Execute_GetTargetEnemy(HitActor);
+		
+		bReachedTarget = true;
+		DirectionVector = IsValid(TargetActor) ?
+			(TargetActor->GetActorLocation() - HitActor->GetActorLocation()).GetSafeNormal() :
+			HitActor->GetActorForwardVector();
+		
+		SetActorRotation(DirectionVector.Rotation());
+		return true;
 	}
 
-	OnParried(HitActor);
-	return true;
+	return false;
 }
 
 void ACurvedProjectile::OnParried(AActor* ParryActor)
 {
-	AttackData.Instigator = ParryActor;
-	InstigatorPawn = Cast<APawn>(ParryActor);
-	TargetActor = InstigatorPawn;
-	bReachedTarget = true;
-	DirectionVector = ParryActor->GetActorForwardVector();
-	SetActorRotation(DirectionVector.Rotation());
+	
 }
 
 void ACurvedProjectile::MidPointCalculator()

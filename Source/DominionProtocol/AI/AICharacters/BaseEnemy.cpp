@@ -155,17 +155,17 @@ FGameplayTag ABaseEnemy::GetPawnTag_Implementation()
 	return PawnTag;
 }
 
-bool ABaseEnemy::IsParryingCond()
+bool ABaseEnemy::IsParryingCond_Implementation()
 {
-	auto ActiveStatusEffects = GetActiveStatusEffectTags();
-	if (ActiveStatusEffects.HasTag(EffectTags::UsingParry))
-	{
-		return true;
-	}
+	// auto ActiveStatusEffects = GetActiveStatusEffectTags();
+	// if (ActiveStatusEffects.HasTag(EffectTags::UsingParry))
+	// {
+	// 	return true;
+	// }
 	return false;
 }
 
-void ABaseEnemy::OnParried()
+void ABaseEnemy::OnParried_Implementation()
 {
 	StatusComponent->ActivateStatusEffect(EffectTags::Parried, 0.f, 2.f);
 }

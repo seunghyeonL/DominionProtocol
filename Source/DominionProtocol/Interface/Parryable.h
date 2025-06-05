@@ -7,7 +7,7 @@
 #include "Parryable.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE()
+UINTERFACE(BlueprintType, Blueprintable)
 class UParryable : public UInterface
 {
 	GENERATED_BODY()
@@ -22,6 +22,15 @@ class DOMINIONPROTOCOL_API IParryable
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual bool IsParryingCond() = 0;
-	virtual void OnParried() = 0;
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool IsParryingCond();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnParried();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void OnParrySuccess();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetTargetEnemy();
 };

@@ -484,7 +484,7 @@ void ADomiCharacter::ActivateStatusEffect_Implementation(const FGameplayTag& Eff
 	StatusComponent->ActivateStatusEffect(EffectTag, 0);
 }
 
-bool ADomiCharacter::IsParryingCond()
+bool ADomiCharacter::IsParryingCond_Implementation()
 {
 	auto ActiveControlEffects = GetActiveControlEffectTags();
 	if (ActiveControlEffects.HasTag(EffectTags::UsingParry))
@@ -494,9 +494,21 @@ bool ADomiCharacter::IsParryingCond()
 	return false;
 }
 
-void ADomiCharacter::OnParried()
+void ADomiCharacter::OnParried_Implementation()
 {
 	// 일단 패리당할일 없어서 비워둠
+}
+
+void ADomiCharacter::OnParrySuccess_Implementation()
+{
+	// 패리성공시 나이아가라 보여주기
+}
+
+AActor* ADomiCharacter::GetTargetEnemy_Implementation()
+{
+	check(ControlComponent);
+
+	return ControlComponent->GetLockOnTargetActor();
 }
 
 void ADomiCharacter::EventInteractionWidgetScroll(const float Value)
