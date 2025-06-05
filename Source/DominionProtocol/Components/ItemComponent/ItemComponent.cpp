@@ -73,6 +73,20 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 			OnPrimaryWeaponChangedForWeaponVisibility.ExecuteIfBound(ItemTag);
 		}
 	}
+	else if (SlotName == FName("SkillSlot"))
+	{
+		if (auto MagicSkillData = CachedItemDataMap.Find(ItemTag))
+		{
+			FSkillComponentInitializeData InitializeData = MagicSkillData->WeaponSkillData;
+			OnMagicSkillChanged.ExecuteIfBound(InitializeData);
+		}
+		else
+		{
+			FSkillComponentInitializeData InitializeData;
+			InitializeData.SkillGroupInitializeDatas.Add({SkillGroupTags::MagicSkill, {}});
+			OnMagicSkillChanged.ExecuteIfBound(InitializeData);
+		}
+	}
 
 	EquipmentSlots[SlotName] = ItemTag;
 }

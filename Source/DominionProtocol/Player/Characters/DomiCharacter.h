@@ -133,6 +133,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangePrimaryWeapon(const FGameplayTag& WeaponTag);
 
+	// Skill
+
 protected:
 	virtual void BeginPlay() override;
 	

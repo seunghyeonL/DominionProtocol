@@ -52,6 +52,7 @@ void USkillComponent::InitializeComponent()
     if (auto ItemComponent = OwnerCharacter->FindComponentByClass<UItemComponent>())
     {
         ItemComponent->OnPrimaryWeaponChanged.BindUObject(this, &USkillComponent::SetSkills);
+        ItemComponent->OnMagicSkillChanged.BindUObject(this, &USkillComponent::SetSkills);
     }
     
     if (auto SkillComponentUser = Cast<ISkillComponentUser>(GetOuter()))
