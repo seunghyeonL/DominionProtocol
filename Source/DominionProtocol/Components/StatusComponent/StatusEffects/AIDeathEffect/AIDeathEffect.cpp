@@ -30,6 +30,7 @@ bool UAIDeathEffect::Activate()
 		
 		// OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Visibility);
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionProfileName(TEXT("CameraPawnIgnore"));
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel3);
 		
 		if (auto WidgetComponent = OwnerCharacter->FindComponentByClass<UDomiWidgetComponent>())
 		{
@@ -58,8 +59,8 @@ void UAIDeathEffect::Deactivate()
 	Super::Deactivate();
 	
 	// Set Collision with Pawn
-	if (IsValid(OwnerCharacter))
-	{
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-	}
+	// if (IsValid(OwnerCharacter))
+	// {
+	// 	OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	// }
 }
