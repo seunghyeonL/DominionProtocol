@@ -34,10 +34,20 @@ void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState
 	Debug::Print(TEXT("ABlockedPath::OnStoryStateUpdated_Implementation"));
 	if (NewState >= RequiredStoryState)
 	{
-		PathEffect->Deactivate();
-		PathEffect->DestroyComponent();
-		BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		if (PathEffect)
+		{
+			PathEffect->Deactivate();
+			PathEffect->DestroyComponent();
+		}
+		if (BlockingBox)
+		{
+			BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+
+		if (CollisionBox)
+		{
+			CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
 	}
 }
 
