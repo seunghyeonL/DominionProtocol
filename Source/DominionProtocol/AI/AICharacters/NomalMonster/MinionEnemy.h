@@ -17,13 +17,4 @@ class DOMINIONPROTOCOL_API AMinionEnemy : public ABaseEnemy
 public:
 	AMinionEnemy();
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhBoxComponent> LeftWeaponTraceBox;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhBoxComponent> RightWeaponTraceBox;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhTracerComponent> AttackTraceComponent;
 };
