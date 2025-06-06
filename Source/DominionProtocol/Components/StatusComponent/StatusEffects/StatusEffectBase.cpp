@@ -12,6 +12,8 @@ UStatusEffectBase::UStatusEffectBase()
 {
 	Magnitude = 0.f;
 	bIsActive = false;
+	CachedDuration = 0.f;
+	DurationRemained = 0.f;
 }
 
 void UStatusEffectBase::Initialize()
@@ -50,7 +52,8 @@ FEffectUIData UStatusEffectBase::GetEffectUIData() const
 		StatusEffectTag,
 		 LastSegment,
 		EffectIcon,
-		CachedDuration
+		CachedDuration,
+		DurationRemained,
 	};
 }
 
@@ -70,7 +73,7 @@ bool UStatusEffectBase::Activate()
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
 	
-	CachedDuration = -1.f;
+	CachedDuration = 0.f;
 	return bIsActive = true;
 }
 
@@ -105,8 +108,9 @@ bool UStatusEffectBase::Activate(float Duration)
 		Duration,
 		false
 	);
-
+	
 	CachedDuration = Duration;
+	DurationRemained = Duration;
 	return bIsActive = true;
 }
 
@@ -136,5 +140,9 @@ void UStatusEffectBase::Deactivate()
 
 void UStatusEffectBase::Tick(float DeltaTime)
 {
+	if (DurationRemained > 0.f)
+	{
+		DurationRemained -= DeltaTime;
+	}
 }
 

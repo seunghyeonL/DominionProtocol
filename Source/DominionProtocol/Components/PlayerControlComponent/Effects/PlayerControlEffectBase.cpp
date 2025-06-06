@@ -14,6 +14,8 @@ UPlayerControlEffectBase::UPlayerControlEffectBase()
 	OwnerCharacter = nullptr;
 	InnerState = nullptr;
 	OuterState = nullptr;
+	CachedDuration = 0.f;
+	DurationRemained = 0.f;
 }
 
 void UPlayerControlEffectBase::Initialize()
@@ -65,7 +67,7 @@ bool UPlayerControlEffectBase::Activate()
 		ControlComponent->SetPlayerControlState(this);
 		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
 
-		CachedDuration = -1.f;
+		CachedDuration = 0.f;
 	}
 	else
 	{
@@ -107,6 +109,7 @@ bool UPlayerControlEffectBase::Activate(float Duration)
 		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
 
 		CachedDuration = Duration;
+		DurationRemained = Duration;
 		GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 			DurationTimer,
 			this,
@@ -171,8 +174,12 @@ void UPlayerControlEffectBase::Deactivate()
 void UPlayerControlEffectBase::Tick(float DeltaTime)
 {
 	check(IsValid(InnerState));
-
+	
 	InnerState->Tick(DeltaTime);
+	if (DurationRemained > 0.f)
+	{
+		DurationRemained -= DeltaTime;
+	}
 }
 
 void UPlayerControlEffectBase::Move(const FInputActionValue& Value)
@@ -373,6 +380,7 @@ FEffectUIData UPlayerControlEffectBase::GetEffectUIData() const
 		ControlEffectTag,
 		 LastSegment,
 		EffectIcon,
-		CachedDuration
+		CachedDuration,
+		DurationRemained
 	};
 }

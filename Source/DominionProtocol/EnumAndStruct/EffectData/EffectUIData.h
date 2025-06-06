@@ -20,4 +20,7 @@ struct FEffectUIData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DurationRemained;
 };
