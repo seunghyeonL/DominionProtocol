@@ -48,9 +48,6 @@ void ABossTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 		return;
 	}
 
-	Debug::Print(TEXT("BossTrigger: Calling SpawnBoss()"));
-	LinkedBossSpawner->SpawnBoss();
-
 	if (!bHasStoryUpdated)
 	{
 		Debug::Print(TEXT("BossTrigger: 스토리 상태 변경"));
@@ -61,5 +58,8 @@ void ABossTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			// GI->AdvanceStoryState();
 		}
 	}
+
+	Debug::Print(TEXT("BossTrigger: Calling SpawnBoss()"));
+	LinkedBossSpawner->SpawnBoss();
 
 }

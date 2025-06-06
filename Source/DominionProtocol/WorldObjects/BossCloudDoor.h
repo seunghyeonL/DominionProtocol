@@ -10,6 +10,7 @@
 
 class UBoxComponent;
 class ADomiCharacter;
+class ABossSpawner;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABossCloudDoor : public AActor, public IStoryDependentInterface, public IInteractableInterface
@@ -36,7 +37,7 @@ protected:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	FText GetInteractMessage_Implementation() const;
-	
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* CollisionBox;
@@ -53,12 +54,21 @@ private:
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;
 
-	UPROPERTY(EditAnywhere, Category = "Animation")
+	UPROPERTY(EditAnywhere)
 	UAnimMontage* EnterDoorMontage;
 
-protected:
+	UPROPERTY(EditAnywhere)
+	ABossSpawner* LinkedBossSpawner;
+
 	bool bIsMontagePlaying;
 
-	UPROPERTY(EditAnywhere, Category = "BlockedPath")
-	EGameStoryState RequiredStoryState;
+	UPROPERTY()
+	bool bHasStoryUpdated;
+
+	UPROPERTY(EditAnywhere, Category = "Story")
+	EGameStoryState ActiveFromState;
+
+	UPROPERTY(EditAnywhere, Category = "Story")
+	EGameStoryState ActiveUntilState;
+
 };

@@ -2,6 +2,7 @@
 #include "Components/BoxComponent.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Util/DebugHelper.h"
+#include "WorldObjects/BossSpawner.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
 
 ABossCloudDoor::ABossCloudDoor()
@@ -31,9 +32,19 @@ ABossCloudDoor::ABossCloudDoor()
 
 void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
-	Debug::Print(TEXT("ABlockedPath::OnStoryStateUpdated_Implementation"));
-	if (NewState >= RequiredStoryState)
+	Debug::Print(FString::Printf(TEXT("BossCloudDoor: OnStoryStateUpdated - CurrentState = %d, From = %d, Until = %d"),
+		static_cast<int32>(NewState),
+		static_cast<int32>(ActiveFromState),
+		static_cast<int32>(ActiveUntilState)));
+
+	const bool bTooEarly = (NewState < ActiveFromState);
+	const bool bValid = (NewState >= ActiveFromState && NewState <= ActiveUntilState);
+	const bool bTooLate = (NewState > ActiveUntilState);
+
+	if (bTooLate)
 	{
+		Debug::Print(TEXT("BossCloudDoor: Too late → Remove door"));
+
 		if (PathEffect)
 		{
 			PathEffect->Deactivate();
@@ -43,10 +54,38 @@ void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState
 		{
 			BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
-
 		if (CollisionBox)
 		{
 			CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
+	else
+	{
+		// 문은 존재
+		if (PathEffect && !PathEffect->IsActive())
+		{
+			PathEffect->Activate();
+		}
+		if (BlockingBox)
+		{
+			BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+
+		if (bValid)
+		{
+			Debug::Print(TEXT("BossCloudDoor: Valid → 상호작용 가능"));
+			if (CollisionBox)
+			{
+				CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			}
+		}
+		else if (bTooEarly)
+		{
+			Debug::Print(TEXT("BossCloudDoor: Too early → 상호작용 불가"));
+			if (CollisionBox)
+			{
+				CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			}
 		}
 	}
 }
@@ -117,6 +156,21 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 
 		//PathEffect->Activate();
 		BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		if (!bHasStoryUpdated)
+		{
+			bHasStoryUpdated = true;
+
+			if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
+			{
+				GI->AdvanceStoryState();
+				Debug::Print(TEXT("ABossCloudDoor: 스토리 상태 변경"));
+			}
+		}
+
+		Debug::Print(TEXT("ABossCloudDoor: Calling SpawnBoss()"));
+		LinkedBossSpawner->SpawnBoss();
+
 	}
 	else
 	{
@@ -141,9 +195,7 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 			Debug::Print(TEXT("ABossCloudDoor: SetPlayerInputEnable false"));
 		}
 	}
-	//Player->DisableInput(nullptr);
 
-	PathEffect->Deactivate();
 	BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	EnterDoor();
@@ -155,7 +207,14 @@ void ABossCloudDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 
 	if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
 	{
-		Debug::Print(TEXT("Not Player"));
+		Debug::Print(TEXT("ABossCloudDoor: Not Player"));
+		return;
+	}
+
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (!GI)
+	{
+		Debug::Print(TEXT("ABossCloudDoor: GameInstance Not Valid"));
 		return;
 	}
 

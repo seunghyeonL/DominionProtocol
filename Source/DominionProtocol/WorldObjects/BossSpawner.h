@@ -49,8 +49,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Boss")
 	TSubclassOf<AActor> BossClass;
 
-	UPROPERTY()
-	bool bHasSpawned = false;
+	//UPROPERTY()
+	//bool bHasSpawned = false;
 
 	UPROPERTY()
 	EGameStoryState CachedStoryState;

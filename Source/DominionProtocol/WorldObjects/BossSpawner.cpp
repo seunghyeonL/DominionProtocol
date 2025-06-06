@@ -27,8 +27,16 @@ void ABossSpawner::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 
 void ABossSpawner::SpawnBoss()
 {
+	/*
 	if (bHasSpawned || !BossClass || !BossTag.IsValid())
 	{
+		Debug::Print(TEXT("BossSpawner: Return - bHasSpawned || !BossClass || !BossTag.IsValid()"));
+		return;
+	}*/
+
+	if (!BossClass || !BossTag.IsValid())
+	{
+		Debug::Print(TEXT("BossSpawner: Return - !BossClass || !BossTag.IsValid()"));
 		return;
 	}
 
@@ -51,7 +59,7 @@ void ABossSpawner::SpawnBoss()
 
 	if (SpawnedBoss)
 	{
-		bHasSpawned = true;
+		//bHasSpawned = true;
 		Debug::Print(TEXT("BossSpawner: Spawned boss"));
 		OnBossSpawned.Broadcast(BossTag, RelatedBossDoor);
 		OnBossSpawnedToWidget.Broadcast(SpawnedBoss);
