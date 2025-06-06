@@ -606,7 +606,6 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 	{
 		Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %s이 비어 있습니다."), *SlotName.ToString()));
 	}
-	
 }
 
 void UItemComponent::RestorePotion()

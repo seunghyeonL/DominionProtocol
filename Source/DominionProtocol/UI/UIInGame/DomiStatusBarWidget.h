@@ -48,7 +48,10 @@ protected:
 	TObjectPtr<class UStatusComponent> StatusComponent;
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<FEffectUIData> EffectUIDataArray;
+	TArray<FEffectUIData> DebuffEffectUIDataArray;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FEffectUIData> BuffEffectUIDataArray;
 	
 	// HP Section
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(BindWidget))

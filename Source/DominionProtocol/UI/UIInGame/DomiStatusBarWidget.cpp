@@ -52,7 +52,24 @@ void UDomiStatusBarWidget::UpdatePlayerMaxStaminaBar(const float NewMaxStamina)
 
 void UDomiStatusBarWidget::OnUpdateEffectUIDataArray(TArray<FEffectUIData> NewEffectUIDataArray)
 {
-	EffectUIDataArray = NewEffectUIDataArray;
+	TArray<FEffectUIData> TempBuffArray;
+	TArray<FEffectUIData> TempDebuffArray;
+	
+	for (auto EffectData:NewEffectUIDataArray)
+	{
+		if (EffectData.EffectTag.MatchesTag(EffectTags::ControlBuff) || EffectData.EffectTag.MatchesTag(EffectTags::StatusBuff))
+		{
+			TempBuffArray.Add(EffectData);		
+		}
+
+		if (EffectData.EffectTag.MatchesTag(EffectTags::ControlDebuff) || EffectData.EffectTag.MatchesTag(EffectTags::StatusDebuff))
+		{
+			TempDebuffArray.Add(EffectData);
+		}
+	}
+
+	BuffEffectUIDataArray = TempBuffArray;
+	DebuffEffectUIDataArray = TempDebuffArray;
 
 	UpdateEffectUIDataArray();
 }
