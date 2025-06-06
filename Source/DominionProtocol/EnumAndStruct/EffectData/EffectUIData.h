@@ -11,6 +11,9 @@ struct FEffectUIData
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag EffectTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString EffectName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* EffectIcon;

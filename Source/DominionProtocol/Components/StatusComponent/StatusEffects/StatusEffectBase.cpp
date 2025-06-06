@@ -40,6 +40,20 @@ void UStatusEffectBase::Initialize()
 	}
 }
 
+FEffectUIData UStatusEffectBase::GetEffectUIData() const
+{
+	FString TagName = StatusEffectTag.GetTagName().ToString();
+	FString LastSegment;
+	TagName.Split(TEXT("."), nullptr, &LastSegment, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
+
+	return {
+		StatusEffectTag,
+		 LastSegment,
+		EffectIcon,
+		CachedDuration
+	};
+}
+
 bool UStatusEffectBase::Activate()
 {
 	if (bIsActive)

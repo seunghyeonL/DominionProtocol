@@ -64,5 +64,5 @@ public:
 	FORCEINLINE bool IsActive() const { return bIsActive; }
 	FORCEINLINE UPlayerControlStateBase* GetInnerState() const { return InnerState; }
 	FORCEINLINE void SetInnerState(UPlayerControlStateBase* NewInnerState) { InnerState = NewInnerState; }
-	FORCEINLINE FEffectUIData GetEffectUIData() const { return {ControlEffectTag, EffectIcon, CachedDuration };}
+	FEffectUIData GetEffectUIData() const;
 };

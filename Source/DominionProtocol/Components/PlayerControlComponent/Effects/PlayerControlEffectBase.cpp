@@ -368,3 +368,17 @@ void UPlayerControlEffectBase::SwapWeapon()
 		Debug::PrintError(TEXT("UPlayerControlEffectBase::Swap weapon : Invalid InnerState"));
 	}
 }
+
+FEffectUIData UPlayerControlEffectBase::GetEffectUIData() const
+{
+	FString TagName = ControlEffectTag.GetTagName().ToString();
+	FString LastSegment;
+	TagName.Split(TEXT("."), nullptr, &LastSegment, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
+
+	return {
+		ControlEffectTag,
+		 LastSegment,
+		EffectIcon,
+		CachedDuration
+	};
+}

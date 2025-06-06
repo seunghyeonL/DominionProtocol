@@ -44,7 +44,7 @@ public:
 	
 	FORCEINLINE void SetOwnerCharacter(ACharacter* InOwnerCharacter) { OwnerCharacter = InOwnerCharacter; }
 	FORCEINLINE void SetMagnitude(float InMagnitude) { Magnitude = InMagnitude; }
-	FORCEINLINE FEffectUIData GetEffectUIData() const { return {StatusEffectTag, EffectIcon, CachedDuration };}
+	FEffectUIData GetEffectUIData() const;
 
 	UFUNCTION(BlueprintCallable)
 	bool IsActive() const { return bIsActive; }
