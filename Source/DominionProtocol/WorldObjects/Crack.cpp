@@ -107,6 +107,10 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 
 	
 	// 3. 기능
+	
+	// 적 몬스터 All Destroy
+	BaseGameMode->DestroyAllNormalEnemy();
+	
 	auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (PlayerCharacter)
 	{
@@ -116,12 +120,17 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 		{
 			StatusComponent->SetHealth(BIG_NUMBER);
 		}
+		
 		//회복 포션 개수 -> Max 회복
 		UItemComponent* ItemComponent = PlayerCharacter->GetItemComponent();
 		if (IsValid(ItemComponent))
 		{
 			ItemComponent->RestorePotion();
 		}
+
+		// 적 몬스터 초기화
+		BaseGameMode->RespawnEnemies();
+		
 		auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
 		if (PlayerController)
 		{
