@@ -1,9 +1,11 @@
 #include "WorldObjects/BossTrigger.h"
 #include "Components/BoxComponent.h"
 #include "WorldObjects/BossSpawner.h"
+#include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "Util/DebugHelper.h"
 
 ABossTrigger::ABossTrigger()
+	: bHasStoryUpdated(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -48,4 +50,16 @@ void ABossTrigger::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 
 	Debug::Print(TEXT("BossTrigger: Calling SpawnBoss()"));
 	LinkedBossSpawner->SpawnBoss();
+
+	if (!bHasStoryUpdated)
+	{
+		Debug::Print(TEXT("BossTrigger: 스토리 상태 변경"));
+		bHasStoryUpdated = true;
+		if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
+		{
+			GI->SetCurrentGameStoryState(StoryStateToSet);
+			// GI->AdvanceStoryState();
+		}
+	}
+
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EnumAndStruct/EGameStoryState.h"
 #include "BossTrigger.generated.h"
 
 class UBoxComponent;
@@ -30,5 +31,12 @@ protected:
 public:
 	UPROPERTY(EditAnywhere)
 	ABossSpawner* LinkedBossSpawner;
+
+private:
+	UPROPERTY()
+	bool bHasStoryUpdated;
+
+	UPROPERTY(EditAnywhere)
+	EGameStoryState StoryStateToSet;
 
 };
