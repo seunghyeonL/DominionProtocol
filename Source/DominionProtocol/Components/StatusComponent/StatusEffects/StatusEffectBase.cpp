@@ -72,9 +72,9 @@ bool UStatusEffectBase::Activate()
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
-
 	
 	CachedDuration = 0.f;
+	DurationRemained = 0.f;
 	bIsActive = true;
 
 	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
@@ -87,6 +87,9 @@ bool UStatusEffectBase::Activate()
 
 bool UStatusEffectBase::Activate(float Duration)
 {
+	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
+	check(StatusComponent);
+	
 	if (bIsActive)
 	{
 		GetOuter()->GetWorld()->GetTimerManager().ClearTimer(DurationTimer);
@@ -100,14 +103,11 @@ bool UStatusEffectBase::Activate(float Duration)
 
 		CachedDuration = Duration;
 		DurationRemained = Duration;
+		if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+		{
+			IEffectUser::Execute_SendEffectUIDatas(StatusComponent->GetOwner());
+		}
 		
-		return false;
-	}
-
-	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
-	if (!IsValid(StatusComponent))
-	{
-		Debug::PrintError(TEXT("UStatusEffectBase::Activate : Invalid StatusComponent"));
 		return false;
 	}
 	
@@ -121,7 +121,7 @@ bool UStatusEffectBase::Activate(float Duration)
 		false
 	);
 	
-	
+	CachedDuration = Duration;
 	DurationRemained = Duration;
 	bIsActive = true;
 	
@@ -151,6 +151,8 @@ void UStatusEffectBase::Deactivate()
 	
 	StatusComponent->GetActiveStatusEffectTags().RemoveTag(StatusEffectTag);
 
+	CachedDuration = 0.f;
+	DurationRemained = 0.f;
 	bIsActive = false;
 
 	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
