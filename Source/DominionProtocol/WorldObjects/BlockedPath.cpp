@@ -44,6 +44,12 @@ void ABlockedPath::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!CollisionBox || !PathEffect)
+	{
+		Debug::Print(TEXT("ABlockedPath::BeginPlay - 구성 요소가 초기화되지 않음!"));
+		return;
+	}
+
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABlockedPath::OnOverlapBegin);
 	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABlockedPath::OnOverlapEnd);
 
@@ -64,12 +70,7 @@ void ABlockedPath::BeginPlay()
 			}
 		}, 0.1f, false);
 
-	if (!CollisionBox || !PathEffect)
-	{
-		Debug::Print(TEXT("AElevator::BeginPlay - 구성 요소가 초기화되지 않음!"));
-		return;
-	}
-
+	
 	//TryOpen();
 }
 

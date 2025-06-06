@@ -40,7 +40,9 @@ void ABaseBossEnemy::OnDeath()
 {
 	Super::OnDeath();
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (!GI) return;
-	GI->AdvanceStoryState();
+	if (GI)
+	{
+		GI->AdvanceStoryState();
+	}
 	OnBossDeathDelegate.Broadcast();
 }
