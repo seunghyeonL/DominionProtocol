@@ -66,12 +66,11 @@ bool UPlayerControlEffectBase::Activate()
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
 		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
+		CachedDuration = 0.f;
 		if (ControlComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
 		{
-			IEffectUser::Execute_GetEffectUIDatas(ControlComponent->GetOwner());
+			IEffectUser::Execute_SendEffectUIDatas(ControlComponent->GetOwner());
 		}
-
-		CachedDuration = 0.f;
 	}
 	else
 	{
@@ -115,12 +114,13 @@ bool UPlayerControlEffectBase::Activate(float Duration)
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
 		ControlComponent->GetActiveControlEffectTags().AddTag(ControlEffectTag);
-		if (ControlComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
-		{
-			IEffectUser::Execute_GetEffectUIDatas(ControlComponent->GetOwner());
-		}
 
 		CachedDuration = Duration;
+		if (ControlComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+		{
+			IEffectUser::Execute_SendEffectUIDatas(ControlComponent->GetOwner());
+		}
+		
 		DurationRemained = Duration;
 		GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 			DurationTimer,
@@ -179,7 +179,7 @@ void UPlayerControlEffectBase::Deactivate()
 	ControlComponent->GetActiveControlEffectTags().RemoveTag(ControlEffectTag);
 	if (ControlComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
 	{
-		IEffectUser::Execute_GetEffectUIDatas(ControlComponent->GetOwner());
+		IEffectUser::Execute_SendEffectUIDatas(ControlComponent->GetOwner());
 	}
 }
 

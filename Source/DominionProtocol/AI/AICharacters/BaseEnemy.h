@@ -71,7 +71,7 @@ public:
 
 	// EffectUser
 	virtual FGameplayTagContainer GetAllActivateEffectDatas_Implementation() const override;
-	virtual TArray<FEffectUIData> GetEffectUIDatas_Implementation() const override;
+	virtual void SendEffectUIDatas_Implementation() const override;
 	
 	// PawnTagInterface
 	virtual FString GetPawnName_Implementation() override;

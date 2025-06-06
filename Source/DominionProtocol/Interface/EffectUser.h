@@ -25,5 +25,5 @@ public:
 	FGameplayTagContainer GetAllActivateEffectDatas() const;
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	TArray<FEffectUIData> GetEffectUIDatas() const;
+	void SendEffectUIDatas() const;
 };

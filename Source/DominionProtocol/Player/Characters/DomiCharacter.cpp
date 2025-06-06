@@ -553,7 +553,7 @@ FGameplayTagContainer ADomiCharacter::GetAllActivateEffectDatas_Implementation()
 	return ActiveEffects;
 }
 
-TArray<FEffectUIData> ADomiCharacter::GetEffectUIDatas_Implementation() const
+void ADomiCharacter::SendEffectUIDatas_Implementation() const
 {
 	check(StatusComponent);
 	check(ControlComponent);
@@ -561,8 +561,6 @@ TArray<FEffectUIData> ADomiCharacter::GetEffectUIDatas_Implementation() const
 	TArray<FEffectUIData> EffectUIDatas;
 	EffectUIDatas.Append(ControlComponent->GetEffectUIDatas());
 	EffectUIDatas.Append(StatusComponent->GetEffectUIDatas());
-
+	
 	OnUpdateEffectUIDataArray.Broadcast(EffectUIDatas);
-
-	return EffectUIDatas;
 }

@@ -72,13 +72,17 @@ bool UStatusEffectBase::Activate()
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
-	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
-	{
-		IEffectUser::Execute_GetEffectUIDatas(StatusComponent->GetOwner());
-	}
+
 	
 	CachedDuration = 0.f;
-	return bIsActive = true;
+	bIsActive = true;
+
+	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+	{
+		IEffectUser::Execute_SendEffectUIDatas(StatusComponent->GetOwner());
+	}
+	
+	return bIsActive;
 }
 
 bool UStatusEffectBase::Activate(float Duration)
@@ -108,10 +112,6 @@ bool UStatusEffectBase::Activate(float Duration)
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().AddTag(StatusEffectTag);
-	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
-	{
-		IEffectUser::Execute_GetEffectUIDatas(StatusComponent->GetOwner());
-	}
 
 	GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 		DurationTimer,
@@ -121,9 +121,16 @@ bool UStatusEffectBase::Activate(float Duration)
 		false
 	);
 	
-	CachedDuration = Duration;
+	
 	DurationRemained = Duration;
-	return bIsActive = true;
+	bIsActive = true;
+	
+	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
+	{
+		IEffectUser::Execute_SendEffectUIDatas(StatusComponent->GetOwner());
+	}
+	
+	return bIsActive;
 }
 
 void UStatusEffectBase::Deactivate()
@@ -143,11 +150,13 @@ void UStatusEffectBase::Deactivate()
 	}
 	
 	StatusComponent->GetActiveStatusEffectTags().RemoveTag(StatusEffectTag);
+
+	bIsActive = false;
+
 	if (StatusComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
 	{
-		IEffectUser::Execute_GetEffectUIDatas(StatusComponent->GetOwner());
+		IEffectUser::Execute_SendEffectUIDatas(StatusComponent->GetOwner());
 	}
-	bIsActive = false;
 }
 
 void UStatusEffectBase::Tick(float DeltaTime)
