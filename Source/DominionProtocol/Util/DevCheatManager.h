@@ -42,6 +42,9 @@ public:
 	void AddAllItems();
 
 	UFUNCTION(Exec)
+	void EquipSword();
+
+	UFUNCTION(Exec)
 	void ActivateEffect(FName EffectTagName, float Magnitude, float Duration);
 
 	UFUNCTION(Exec)

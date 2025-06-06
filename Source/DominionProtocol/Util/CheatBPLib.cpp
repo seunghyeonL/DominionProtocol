@@ -70,6 +70,36 @@ void UCheatBPLib::AddAllItemsToPlayerInventoryMaxQuantity(UObject* WorldContextO
 	}
 }
 
+void UCheatBPLib::EquipSword(UObject* WorldContextObject)
+{
+	if (!WorldContextObject)
+	{
+		return;
+	}
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
+
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(PlayerController->GetPawn());
+	if (!IsValid(PlayerCharacter))
+	{
+		return;
+	}
+
+	UItemComponent* ItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
+	if (IsValid(ItemComponent))
+	{
+		ItemComponent->AddItem(ItemTags::SwordWeapon,1);
+		ItemComponent->EquipItem(FName("WeaponSlot_Primary"),ItemTags::SwordWeapon);
+	}
+	else
+	{
+	}
+}
+
 void UCheatBPLib::ToggleFog(UWorld* World)
 {
 	AExponentialHeightFog* Fog = Cast<AExponentialHeightFog>(UGameplayStatics::GetActorOfClass(World, AExponentialHeightFog::StaticClass()));

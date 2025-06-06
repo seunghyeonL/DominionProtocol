@@ -28,5 +28,8 @@ public:
 	static void AddAllItemsToPlayerInventoryMaxQuantity(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintCallable)
+	static void EquipSword(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable)
 	static void ToggleFog(UWorld* World);
 };

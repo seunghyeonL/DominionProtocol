@@ -61,7 +61,7 @@ void UItemComponent::BeginPlay()
 	{
 		AddItem(ItemTags::Potion, ItemData->MaxItemQuantity);
 	}
-	OnInventoryConsumableSlotItemsChanged.Execute();
+	DelegateExecuter();
 }
 
 void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
