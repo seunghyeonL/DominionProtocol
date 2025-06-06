@@ -228,6 +228,7 @@ namespace ItemTags
 	//Other Item Tags
 	inline const FGameplayTag OtherItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Other"));
 	inline const FGameplayTag Key = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.Key"));
+	inline const FGameplayTag EnergyCore = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.EnergyCore"));
 }
 
 namespace TraceTags
