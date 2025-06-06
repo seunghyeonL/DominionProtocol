@@ -89,6 +89,10 @@ bool UStatusEffectBase::Activate(float Duration)
 			Duration,
 			false
 		);
+
+		CachedDuration = Duration;
+		DurationRemained = Duration;
+		
 		return false;
 	}
 

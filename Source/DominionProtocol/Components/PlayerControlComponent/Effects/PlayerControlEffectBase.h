@@ -15,7 +15,7 @@ class DOMINIONPROTOCOL_API UPlayerControlEffectBase : public UPlayerControlState
 {
 	GENERATED_BODY()
 
-
+	
 protected:
 	FTimerHandle DurationTimer;
 
