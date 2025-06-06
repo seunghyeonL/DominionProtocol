@@ -29,7 +29,7 @@ bool UAIDeathEffect::Activate()
 		}
 		
 		// OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Visibility);
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionProfileName(TEXT("CameraPawnIgnore"));
 		
 		if (auto WidgetComponent = OwnerCharacter->FindComponentByClass<UDomiWidgetComponent>())
 		{
