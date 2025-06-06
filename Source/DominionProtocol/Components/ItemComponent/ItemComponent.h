@@ -132,6 +132,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UseConsumableItem(FName SlotName, FGameplayTag ConsumableItemTag = FGameplayTag());
 
+	// 회복 포션 회복(균열 호출)
+	UFUNCTION(BlueprintCallable)
+	void RestorePotion();
+	
 	// 모든 소비 아이템 슬롯 정보 반환
 	UFUNCTION(BlueprintPure)
 	const TMap<FName, FGameplayTag>& GetConsumableSlots() const;

@@ -577,6 +577,23 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 	
 }
 
+void UItemComponent::RestorePotion()
+{
+	const FItemData* ItemData = GetItemDataFromTable(ItemTags::Potion);
+	if (!ItemData)
+	{
+		Debug::Print(TEXT("UItemComponent::RestorePotion : ItemData is not found"));
+		return;
+	}
+	int32 MaxQuantity = ItemData->MaxItemQuantity;
+
+	if (InventoryMap.Contains(ItemTags::Potion))
+	{
+		InventoryMap[ItemTags::Potion] = MaxQuantity;
+	}
+	DelegateExecuter();
+}
+
 const TMap<FName, FGameplayTag>& UItemComponent::GetConsumableSlots() const
 {
 	return ConsumableSlots;

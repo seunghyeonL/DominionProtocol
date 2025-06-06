@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/ItemComponent/ItemComponent.h"
 #include "Engine/TargetPoint.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
@@ -109,10 +110,17 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (PlayerCharacter)
 	{
+		//체력회복
 		UStatusComponent* StatusComponent = PlayerCharacter->GetStatusComponent();
 		if (IsValid(StatusComponent))
 		{
 			StatusComponent->SetHealth(BIG_NUMBER);
+		}
+		//회복 포션 개수 -> Max 회복
+		UItemComponent* ItemComponent = PlayerCharacter->GetItemComponent();
+		if (IsValid(ItemComponent))
+		{
+			ItemComponent->RestorePotion();
 		}
 		auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
 		if (PlayerController)
