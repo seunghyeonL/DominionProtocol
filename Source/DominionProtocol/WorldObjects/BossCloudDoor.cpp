@@ -31,10 +31,11 @@ ABossCloudDoor::ABossCloudDoor()
 
 void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
-	UE_LOG(LogTemp, Error, TEXT("ABlockedPath::OnStoryStateUpdated_Implementation"));
-	if (NewState > RequiredStoryState)
+	Debug::Print(TEXT("ABlockedPath::OnStoryStateUpdated_Implementation"));
+	if (NewState >= RequiredStoryState)
 	{
 		PathEffect->Deactivate();
+		PathEffect->DestroyComponent();
 		BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
@@ -46,6 +47,11 @@ void ABossCloudDoor::BeginPlay()
 
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABossCloudDoor::OnOverlapBegin);
 	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABossCloudDoor::OnOverlapEnd);
+
+	if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		GI->OnStoryStateChanged.AddDynamic(this, &ABossCloudDoor::OnStoryStateUpdated);
+	}
 
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()

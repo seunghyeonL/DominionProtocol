@@ -12,7 +12,7 @@ class UBoxComponent;
 class ADomiCharacter;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ABossCloudDoor : public AActor, public IInteractableInterface, public IStoryDependentInterface
+class DOMINIONPROTOCOL_API ABossCloudDoor : public AActor, public IStoryDependentInterface, public IInteractableInterface
 {
 	GENERATED_BODY()
 

@@ -33,7 +33,7 @@ ABlockedPath::ABlockedPath()
 
 void ABlockedPath::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
-	UE_LOG(LogTemp, Error, TEXT("ABlockedPath::OnStoryStateUpdated_Implementation"));
+	Debug::Print(TEXT("ABlockedPath::OnStoryStateUpdated_Implementation"));
 	if (NewState > RequiredStoryState)
 	{
 		TryOpen();
@@ -66,7 +66,7 @@ void ABlockedPath::BeginPlay()
 
 	if (!CollisionBox || !PathEffect)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AElevator::BeginPlay - 구성 요소가 초기화되지 않음!"));
+		Debug::Print(TEXT("AElevator::BeginPlay - 구성 요소가 초기화되지 않음!"));
 		return;
 	}
 
@@ -75,22 +75,22 @@ void ABlockedPath::BeginPlay()
 
 void ABlockedPath::TryOpen()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: TryOpen"));
+	Debug::Print(TEXT("ABlockedPath: TryOpen"));
 	if (!IsValid(CollisionBox))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: CollisionBox is null"));
+		Debug::Print(TEXT("ABlockedPath: CollisionBox is null"));
 		return;
 	}
 
 	if (!IsValid(PathEffect))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: PathEffect is null"));
+		Debug::Print(TEXT("ABlockedPath: PathEffect is null"));
 		return;
 	}
 	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (GameInstance && GameInstance->GetCurrentGameStoryState() >= RequiredStoryState)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: 조건 충족, 열기"));
+		Debug::Print(TEXT("ABlockedPath: 조건 충족, 열기"));
 		bIsBlocking = false;
 		BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -99,7 +99,7 @@ void ABlockedPath::TryOpen()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ABlockedPath: 조건 미충족, 막힘 유지"));
+		Debug::Print(TEXT("ABlockedPath: 조건 미충족, 막힘 유지"));
 	}
 }
 void ABlockedPath::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
