@@ -13,6 +13,7 @@
 UExecutePattern::UExecutePattern()
 {
 	NodeName = TEXT("Execute Pattern");
+	bCreateNodeInstance = true;
 }
 
 EBTNodeResult::Type UExecutePattern::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)

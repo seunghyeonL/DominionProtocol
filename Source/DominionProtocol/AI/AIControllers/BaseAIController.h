@@ -60,6 +60,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	UAIStateComponent* AIStateComponent;
 
+	UPROPERTY()
 	UBTTaskNode* CachedTask;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Perception")
