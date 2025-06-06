@@ -34,6 +34,9 @@ public:
 
 	UFUNCTION(Exec)
 	void StoryState(EGameStoryState NewStoryState);
+	
+	UFUNCTION(Exec)
+	void GetCurrentStoryState();
 
 	UFUNCTION(Exec)
 	void Suicide();

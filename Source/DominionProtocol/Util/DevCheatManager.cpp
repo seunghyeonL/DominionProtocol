@@ -79,6 +79,23 @@ void UDevCheatManager::StoryState(EGameStoryState NewStoryState)
 	}
 }
 
+void UDevCheatManager::GetCurrentStoryState()
+{
+	UWorld* World = GetOuter()->GetWorld();
+	if (!IsValid(World)) return;
+
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(World->GetGameInstance());
+	if (IsValid(GI))
+	{
+		EGameStoryState CurrentStoryState = GI->GetCurrentGameStoryState();
+		const UEnum* EnumPtr = StaticEnum<EGameStoryState>();
+		if (IsValid(EnumPtr))
+		{
+			Debug::Print(EnumPtr->GetNameStringByValue(static_cast<int64>(CurrentStoryState)));
+		}
+	}
+}
+
 void UDevCheatManager::Suicide()
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
