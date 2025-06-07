@@ -101,6 +101,19 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 	EquipmentSlots[SlotName] = ItemTag;
 }
 
+void UItemComponent::SetSkillFromItemWhenLevelChanged()
+{
+	if (auto PrimarySlotItemTag = EquipmentSlots.Find(FName("WeaponSlot_Primary")))
+	{
+		SetTagToSlot(FName("WeaponSlot_Primary"), *PrimarySlotItemTag);
+	}
+
+	if (auto SkillSlotItemTag = EquipmentSlots.Find(FName("SkillSlot")))
+	{
+		SetTagToSlot(FName("SkillSlot"), *SkillSlotItemTag);
+	}
+}
+
 bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
 {
 	//수량이 0보다 작거나 같으면 리턴
