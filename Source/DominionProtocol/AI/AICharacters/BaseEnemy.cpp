@@ -35,7 +35,7 @@ ABaseEnemy::ABaseEnemy()
 		HPWidgetComponent->SetDrawSize(FVector2D(80.f, 10.f));
 		HPWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-
+	
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::Death);
 
