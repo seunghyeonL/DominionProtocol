@@ -37,7 +37,7 @@ void AStoryTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 	}
 
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (!GI || GI->GetCurrentGameStoryState() > ForcedStoryState)
+	if (!GI || GI->GetCurrentGameStoryState() >= ForcedStoryState)
 	{
 		Debug::Print(TEXT("Not RequiredStoryState"));
 		return;
@@ -74,6 +74,7 @@ void AStoryTrigger::Interact_Implementation(AActor* Interactor)
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 
 	GI->SetCurrentGameStoryState(ForcedStoryState);
+	PlayerCharacter->RemoveInteractableActor(this);
 }
 
 FText AStoryTrigger::GetInteractMessage_Implementation() const
