@@ -86,14 +86,17 @@ void ACurvedProjectile::SetLaunchPath(AActor* NewInstigator, AActor* NewTargetAc
 
 	check(GetWorld());
 	GetWorld()->GetTimerManager().ClearTimer(DestroyTimerHandle);
-	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ACurvedProjectile::DestroyProjectile, CurveSettings.LifeSpan, false);
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &ACurvedProjectile::DestroyProjectile,
+	                                       CurveSettings.LifeSpan, false);
 }
 
-void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                       const FHitResult& SweepResult)
 {
 	// 같은 클래스(자기들끼리)라면 무시
-	if (OtherActor->IsA(ACurvedProjectile::StaticClass()))	return;
-	
+	if (OtherActor->IsA(ACurvedProjectile::StaticClass())) return;
+
 	// 사용자 본인은 무시
 	if (OtherActor == InstigatorPawn)
 	{
@@ -111,7 +114,7 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	{
 		return;
 	}
-	
+
 	if (IsValid(SkillOwner))
 	{
 		AActor* HitActor = SweepResult.GetActor();
@@ -125,9 +128,9 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		// }
 
 		const auto& NiagaraParticles = SkillOwner->GetNiagaraParticles();
-		UNiagaraSystem* NiagaraParticle = NiagaraParticles[0];
-		if (NiagaraParticles.IsValidIndex(0))
+		if (!NiagaraParticles.IsEmpty() && NiagaraParticles.IsValidIndex(0))
 		{
+			UNiagaraSystem* NiagaraParticle = NiagaraParticles[0];
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 				GetWorld(),
 				NiagaraParticle,
@@ -135,7 +138,7 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 				GetActorRotation()
 			);
 		}
-		
+
 		UBaseSkill* BaseSkill = SkillOwner;
 		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
 		{
@@ -184,19 +187,19 @@ bool ACurvedProjectile::CheckParry(const FHitResult& HitResult)
 		{
 			return false;
 		}
-		
+
 		IParryable::Execute_OnParrySuccess(HitActor);
 
 		AttackData.Instigator = HitActor;
 		InstigatorPawn = Cast<APawn>(HitActor);
-		
+
 		TargetActor = IParryable::Execute_GetTargetEnemy(HitActor);
-		
+
 		bReachedTarget = true;
-		DirectionVector = IsValid(TargetActor) ?
-			(TargetActor->GetActorLocation() - HitActor->GetActorLocation()).GetSafeNormal() :
-			HitActor->GetActorForwardVector();
-		
+		DirectionVector = IsValid(TargetActor)
+			                  ? (TargetActor->GetActorLocation() - HitActor->GetActorLocation()).GetSafeNormal()
+			                  : HitActor->GetActorForwardVector();
+
 		SetActorRotation(DirectionVector.Rotation());
 		return true;
 	}
@@ -206,7 +209,6 @@ bool ACurvedProjectile::CheckParry(const FHitResult& HitResult)
 
 void ACurvedProjectile::OnParried(AActor* ParryActor)
 {
-	
 }
 
 void ACurvedProjectile::MidPointCalculator()
@@ -298,7 +300,8 @@ void ACurvedProjectile::UpdateCurveMovement(float DeltaTime)
 	// 커브 포인트 업데이트 (커브가 고정되기 전까지만)
 	if (!bCurveFixed)
 	{
-		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime, CurveSettings.ProjectileSpeed);
+		CurvePoint = UKismetMathLibrary::VInterpTo_Constant(CurvePoint, TargetPoint, DeltaTime,
+		                                                    CurveSettings.ProjectileSpeed);
 	}
 
 	FVector MoveTarget = bCurveFixed ? TargetPoint : CurvePoint;
@@ -308,9 +311,11 @@ void ACurvedProjectile::UpdateCurveMovement(float DeltaTime)
 	{
 		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), MoveTarget));
 	}
-	
+
 	// 이동
-	SetActorLocation(UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), MoveTarget, DeltaTime, CurveSettings.ProjectileSpeed));
+	SetActorLocation(
+		UKismetMathLibrary::VInterpTo_Constant(GetActorLocation(), MoveTarget, DeltaTime,
+		                                       CurveSettings.ProjectileSpeed));
 }
 
 void ACurvedProjectile::FixTargetPoint()
