@@ -67,6 +67,11 @@ void UDevCheatManager::MoveToCrack(FString TargetLevelName, int32 TargetCrackInd
 	UCheatBPLib::MoveToCrack(BaseGameMode, TargetLevelName, TargetCrackIndex);
 }
 
+void UDevCheatManager::ForceMoveToCrack(int32 TargetCrackIndex)
+{
+	UCheatBPLib::ForceMoveToCrack(GetWorld(), TargetCrackIndex, Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn()));
+}
+
 void UDevCheatManager::StoryState(EGameStoryState NewStoryState)
 {
 	UWorld* World = GetOuter()->GetWorld();

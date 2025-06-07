@@ -33,6 +33,9 @@ public:
 	void MoveToCrack(FString TargetLevelName, int32 TargetCrackIndex);
 
 	UFUNCTION(Exec)
+	void ForceMoveToCrack(int32 TargetCrackIndex);
+
+	UFUNCTION(Exec)
 	void StoryState(EGameStoryState NewStoryState);
 	
 	UFUNCTION(Exec)

@@ -42,6 +42,17 @@ void UCheatBPLib::MoveToCrack(ABaseGameMode* BaseGameMode, FString TargetLevelNa
 	BaseGameMode->MoveToTargetCrack(TargetLevelName, TargetCrackIndex);
 }
 
+void UCheatBPLib::ForceMoveToCrack(UWorld* World, int32 TargetCrackIndex, ADomiCharacter* Character)
+{
+	UWorldInstanceSubsystem* WorldInstanceSubsystem =  World->GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
+	const FCrackData* TargetCrackData = WorldInstanceSubsystem->GetCrackData(WorldInstanceSubsystem->GetCurrentLevelName(), TargetCrackIndex);
+	if (TargetCrackData)
+	{
+		Character->SetActorLocation(TargetCrackData->RespawnLocation);
+		Character->SetActorRotation(TargetCrackData->RespawnRotation);
+	}
+}
+
 void UCheatBPLib::AddAllItemsToPlayerInventoryMaxQuantity(UObject* WorldContextObject)
 {
 	if (!WorldContextObject)

@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CheatBPLib.generated.h"
 
+class ADomiCharacter;
 class UStatusComponent;
 class ABaseGameMode;
 class UItemComponent;
@@ -24,6 +25,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void MoveToCrack(ABaseGameMode* BaseGameMode, FString TargetLevelName, int32 TargetCrackIndex);
 
+	UFUNCTION(BlueprintCallable)
+	static void ForceMoveToCrack(UWorld* World, int32 TargetCrackIndex, ADomiCharacter* Character);
+	
 	UFUNCTION(BlueprintCallable)
 	static void AddAllItemsToPlayerInventoryMaxQuantity(UObject* WorldContextObject);
 
