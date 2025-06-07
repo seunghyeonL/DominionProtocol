@@ -53,8 +53,6 @@ void AElevator::Tick(float DeltaTime)
 
 void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Debug::Print(TEXT("AElevator: Overlap"));
-
 	if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
 	{
 		Debug::Print(TEXT("Not Player"));
