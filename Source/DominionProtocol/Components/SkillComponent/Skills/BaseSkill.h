@@ -6,6 +6,7 @@
 #include "Util/GameTagList.h"
 #include "BaseSkill.generated.h"
 
+class UNiagaraSystem;
 class ACurvedProjectile;
 
 UCLASS(Blueprintable)
@@ -53,13 +54,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
 	TObjectPtr<UAnimMontage> AnimMontage = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
-	TArray<USoundBase*> Sound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Asset")
+	TArray<TObjectPtr<USoundBase>> Sound;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Asset")
-	TArray<UParticleSystem*> Particle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Asset")
+	TArray<TObjectPtr<UParticleSystem>> Particle;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Asset")
+	TArray<TObjectPtr<UNiagaraSystem>> NiagaraParticle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Asset")
 	TSubclassOf<ACurvedProjectile> CurvedProjectileClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")

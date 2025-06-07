@@ -27,7 +27,7 @@ public:
 	TArray<TObjectPtr<UParticleSystem>> Particle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skill Data")
-	TArray<TObjectPtr<UNiagaraSystem>> NaiagaraParticle;
+	TArray<TObjectPtr<UNiagaraSystem>> NiagaraParticle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TArray<TObjectPtr<UMaterialInterface>> SkillMaterials;
