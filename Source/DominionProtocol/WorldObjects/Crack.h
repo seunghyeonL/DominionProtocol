@@ -24,10 +24,7 @@ class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
 	
 public:
 	ACrack();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	bool bBlockInteract;
-
+	
 	//Getter
 	FORCEINLINE const FText& GetCrackName() const { return CrackName; }
 	FORCEINLINE bool GetIsActivate() const { return bIsActivate; }
@@ -57,6 +54,10 @@ private:
 	
 	
 #pragma region Variables
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bBlockInteract;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
