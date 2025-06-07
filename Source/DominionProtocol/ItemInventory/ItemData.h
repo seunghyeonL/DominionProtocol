@@ -68,7 +68,7 @@ public:
 	class UAnimMontage* ConsumeMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable Effect")
-	class UParticleSystem* ConsumeVFXTemplate;
+	class UNiagaraSystem* ConsumeNiagaraSystem;
 
 };
 

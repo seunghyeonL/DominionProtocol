@@ -10,6 +10,7 @@
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "DomiFramework/GameInstance/ItemInstanceSubsystem.h"
 #include "Sound/SoundCue.h"
+#include "NiagaraFunctionLibrary.h" 
 
 UItemComponent::UItemComponent()
 {
@@ -926,10 +927,10 @@ void UItemComponent::PlayConsumeVFXAndAnimation(const FItemData* ConsumedItemDat
 	}
 
 	// VFX 재생
-	if (ConsumedItemData->ConsumeVFXTemplate) // ItemData에 ConsumeVFXTemplate
+	if (ConsumedItemData->ConsumeNiagaraSystem) // ItemData에 ConsumeVFXTemplate
 	{
-		UGameplayStatics::SpawnEmitterAttached(
-			ConsumedItemData->ConsumeVFXTemplate,
+		UNiagaraFunctionLibrary::SpawnSystemAttached(
+			ConsumedItemData->ConsumeNiagaraSystem,
 			MeshComp,
 			FName("MouthVFXSocket"), // 소켓 이름 하드코딩
 			FVector::ZeroVector,
