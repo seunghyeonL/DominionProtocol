@@ -45,6 +45,7 @@ public:
 	bool GetIsBossDead(FGameplayTag BossTag) const;
 	
 	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EGameStoryState GetCurrentGameStoryState() const { return CurrentGameStoryState; }
 
 protected:
@@ -70,7 +71,7 @@ private:
 
 #pragma region SeoYoung
 public:
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintReadOnly, BlueprintAssignable)
 	FOnStoryStateChanged OnStoryStateChanged;
 
 	UFUNCTION(BlueprintCallable)
