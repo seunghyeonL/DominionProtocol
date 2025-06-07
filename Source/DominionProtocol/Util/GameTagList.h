@@ -119,11 +119,15 @@ namespace SkillTags
 
 	// NomalMonster
 	inline const FGameplayTag AxeSkeletonComboAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.AxeSkeleton.ComboAttack"));
+	inline const FGameplayTag SwordSkeletonBaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.SwordSkeleton.BaseAttack"));
+	inline const FGameplayTag DualBladeSkeletonBaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.DualBladeSkeleton.BaseAttack"));
+	inline const FGameplayTag DualBladeSkeletonJumpAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.DualBladeSkeleton.JumpAttack"));
 	inline const FGameplayTag KnifeThrow = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.KnifeSkeleton.KnifeThrow"));
-	inline const FGameplayTag MinionBaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Minion.BaseAttack"));
-	inline const FGameplayTag GunMinionFire = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.GunMinion.MinionFire"));
 	inline const FGameplayTag WoodSwiping = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Wood.Swiping"));
 	inline const FGameplayTag WoodHurricaneKick = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Wood.HurricaneKick"));
+	inline const FGameplayTag MinionBaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Minion.BaseAttack"));
+	inline const FGameplayTag GunMinionFire = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.GunMinion.MinionFire"));
+	inline const FGameplayTag GolemSmash = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.EliteGolem.GolemSmash"));
 
 
 	// Boss1
@@ -188,9 +192,10 @@ namespace PawnTags
 	inline const FGameplayTag SwordSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.SwordSkeleton"));
 	inline const FGameplayTag DualBladeSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.DualBladeSkeleton"));
 	inline const FGameplayTag KnifeSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.KnifeSkeleton"));
+	inline const FGameplayTag Wood = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.Wood"));
 	inline const FGameplayTag Minion = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.Minion"));
 	inline const FGameplayTag GunMinion = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.GunMinion"));
-	inline const FGameplayTag Wood = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.Wood"));
+	inline const FGameplayTag EliteGolem = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.EliteGolem"));
 	inline const FGameplayTag Boss1 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.1"));
 	inline const FGameplayTag Boss2 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.2"));
 	inline const FGameplayTag Boss3 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.3"));
