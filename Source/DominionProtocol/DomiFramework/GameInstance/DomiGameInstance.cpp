@@ -78,3 +78,36 @@ void UDomiGameInstance::AdvanceStoryState()
 		}
 	}
 }
+
+void UDomiGameInstance::ReturnStoryState()
+{
+	switch (CurrentGameStoryState)
+	{
+	case EGameStoryState::Battle_Boss1:
+		SetCurrentGameStoryState(EGameStoryState::Find_Boss1);
+		break;
+
+	case EGameStoryState::Battle_Boss2:
+		SetCurrentGameStoryState(EGameStoryState::Find_Boss2);
+		break;
+
+	case EGameStoryState::Battle_Boss3_1:
+		SetCurrentGameStoryState(EGameStoryState::Find_Boss3_1);
+		break;
+
+	case EGameStoryState::Battle_Boss3_2:
+		SetCurrentGameStoryState(EGameStoryState::Find_Boss3_2);
+		break;
+
+	case EGameStoryState::Battle_Boss4:
+		SetCurrentGameStoryState(EGameStoryState::Find_Boss4);
+		break;
+
+	default:
+		return;
+	}
+
+	Debug::Print(FString::Printf(TEXT("GameInstance - ReturnStoryState: [%d] → [%d]"),
+		static_cast<int32>(CurrentGameStoryState),
+		static_cast<int32>(GetCurrentGameStoryState())));
+}

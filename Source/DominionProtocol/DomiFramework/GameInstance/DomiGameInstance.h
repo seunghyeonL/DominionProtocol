@@ -77,5 +77,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AdvanceStoryState();
 
+	UFUNCTION(BlueprintCallable)
+	void ReturnStoryState();
+
 #pragma endregion
 };
