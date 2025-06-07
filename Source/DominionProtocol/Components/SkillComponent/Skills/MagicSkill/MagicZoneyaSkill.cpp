@@ -43,12 +43,12 @@ void UMagicZoneyaSkill::StartZoneya()
 			GetWorld(),
 			NiagaraParticle[0],
 			SpawnLocation - FVector(0.f, 0.f, HalfHeight),
-			FRotator::ZeroRotator,     // 회전 고정
-			FVector(1.0f),             // 스케일 (크기)
-			true,                      // 자동 파괴 여부
-			true,                      // AutoActivate
-			ENCPoolMethod::None,       // 풀링 설정
-			true                       // PreCullCheck
+			FRotator::ZeroRotator,
+			FVector(1.0f),
+			true,
+			true,
+			ENCPoolMethod::None,
+			true  
 		);
 	}
 

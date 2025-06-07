@@ -2,6 +2,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Player/Damagable.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -121,6 +123,18 @@ void ACurvedProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		// 		SetLaunchPath(HitActor, InstigatorPawn);
 		// 	}
 		// }
+
+		const auto& NiagaraParticles = SkillOwner->GetNiagaraParticles();
+		UNiagaraSystem* NiagaraParticle = NiagaraParticles[0];
+		if (NiagaraParticles.IsValidIndex(0))
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				GetWorld(),
+				NiagaraParticle,
+				GetActorLocation(),
+				GetActorRotation()
+			);
+		}
 		
 		UBaseSkill* BaseSkill = SkillOwner;
 		if (IsValid(BaseSkill) && BaseSkill->GetSkillTag() == SkillTag)
@@ -261,18 +275,6 @@ void ACurvedProjectile::DestroyProjectile()
 	if (Sounds.IsValidIndex(1))
 	{
 		UGameplayStatics::PlaySoundAtLocation(World, Sounds[1], GetActorLocation());
-	}
-
-	const auto& Particles = SkillOwner->GetParticles();
-	if (Particles.IsValidIndex(0))
-	{
-		UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(),
-			Particle,
-			GetActorLocation(),
-			FRotator::ZeroRotator,
-			true
-		);
 	}
 
 	SetActorHiddenInGame(true);

@@ -10,8 +10,6 @@ class USphereComponent;
 class UStaticMeshComponent;
 class USkillComponent;
 class UMagicCurvedProjectileSkill;
-class USoundBase;
-//class UObjectPoolSubsystem;
 
 USTRUCT(BlueprintType)
 struct FProjectileCurveSettings
@@ -109,9 +107,6 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<USoundBase> Sound;
-
-	UPROPERTY()
-	TObjectPtr<UParticleSystem> Particle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings", meta = (AllowPrivateAccess = "true"))
 	FProjectileCurveSettings CurveSettings;
