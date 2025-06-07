@@ -30,6 +30,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void EquipSword(UObject* WorldContextObject);
 
-	UFUNCTION(BlueprintCallable)
-	static void ToggleFog(UWorld* World);
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
+	static void ToggleFog(UObject* WorldContextObject);
 };

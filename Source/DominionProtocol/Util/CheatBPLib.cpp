@@ -10,6 +10,7 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/ItemComponent/ItemComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
+#include "Components/SplineComponent.h"
 #include "Engine/ExponentialHeightFog.h"
 
 #include "Util/DebugHelper.h"
@@ -100,8 +101,12 @@ void UCheatBPLib::EquipSword(UObject* WorldContextObject)
 	}
 }
 
-void UCheatBPLib::ToggleFog(UWorld* World)
+void UCheatBPLib::ToggleFog(UObject* WorldContextObject)
 {
+	if (!WorldContextObject) return;
+
+	UWorld* World = WorldContextObject->GetWorld();
+	
 	AExponentialHeightFog* Fog = Cast<AExponentialHeightFog>(UGameplayStatics::GetActorOfClass(World, AExponentialHeightFog::StaticClass()));
 	if (IsValid(Fog))
 	{

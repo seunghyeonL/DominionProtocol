@@ -36,6 +36,13 @@ void AStoryTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 		return;
 	}
 
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (!GI || GI->GetCurrentGameStoryState() > ForcedStoryState)
+	{
+		Debug::Print(TEXT("Not RequiredStoryState"));
+		return;
+	}
+
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
 	ensure(PlayerCharacter);
 	CachedCharacter = PlayerCharacter;
