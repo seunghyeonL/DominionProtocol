@@ -172,6 +172,7 @@ void ABaseGameState::LoadItemDataFromInstance()
 				ItemComponent->SetConsumableSlots(ItemInstanceSubsystem->GetConsumableSlotMap());
 				ItemComponent->SetIsPotionBoostApplied(ItemInstanceSubsystem->GetIsPotionBoostApplied());
 
+				ItemComponent->SetSkillFromItemWhenLevelChanged();
 				ItemComponent->DelegateExecuter();
 			}
 		}

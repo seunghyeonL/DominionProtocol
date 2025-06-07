@@ -74,7 +74,9 @@ protected:
 	bool bIsPotionBoostApplied;
 
 	void SetTagToSlot(FName SlotName, FGameplayTag ItemTag);
-public:	
+public:
+	void SetSkillFromItemWhenLevelChanged();
+	
 	// 아이템 추가
 	UFUNCTION(BlueprintCallable)
 	bool AddItem(FGameplayTag ItemTag, int32 Quantity = 1);
