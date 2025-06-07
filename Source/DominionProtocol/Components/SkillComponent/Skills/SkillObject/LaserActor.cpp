@@ -77,10 +77,10 @@ void ALaserActor::BeginPlay()
 		{
 			if (FSkillData* SkillData = BaseGameState->GetSkillData(OwnerSkillTag))
 			{
-				if (SkillData->NiagaraParticle.Num() >= 3)
+				if (SkillData->NiagaraParticles.Num() >= 3)
 				{
 					LaserFireBallEffect = NewObject<UNiagaraComponent>(this);
-					LaserFireBallEffect->SetAsset(SkillData->NiagaraParticle[1]);
+					LaserFireBallEffect->SetAsset(SkillData->NiagaraParticles[1]);
 					LaserFireBallEffect->RegisterComponent();
 					LaserFireBallEffect->AttachToComponent(
 						RootComponent,
@@ -119,10 +119,10 @@ void ALaserActor::Initialize()
 		{
 			if (FSkillData* SkillData = BaseGameState->GetSkillData(OwnerSkillTag))
 			{
-				if (SkillData->NiagaraParticle.IsValidIndex(2))
+				if (SkillData->NiagaraParticles.IsValidIndex(2))
 				{
 					LaserBeamEffect = NewObject<UNiagaraComponent>(this);
-					LaserBeamEffect->SetAsset(SkillData->NiagaraParticle[0]);
+					LaserBeamEffect->SetAsset(SkillData->NiagaraParticles[0]);
 					LaserBeamEffect->RegisterComponent();
 					LaserBeamEffect->AttachToComponent(
 						RootComponent,
@@ -130,7 +130,7 @@ void ALaserActor::Initialize()
 					);
 
 					LaserHitEffect = NewObject<UNiagaraComponent>(this);
-					LaserHitEffect->SetAsset(SkillData->NiagaraParticle[2]);
+					LaserHitEffect->SetAsset(SkillData->NiagaraParticles[2]);
 					LaserHitEffect->RegisterComponent();
 					LaserHitEffect->AttachToComponent(
 						RootComponent,

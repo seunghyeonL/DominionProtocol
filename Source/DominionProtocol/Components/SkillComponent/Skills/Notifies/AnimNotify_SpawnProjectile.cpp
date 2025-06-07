@@ -86,7 +86,7 @@ void UAnimNotify_SpawnProjectile::ProjectileFromPool()
 	if (auto CurvedProjectile = World->SpawnActor<ACurvedProjectile>(CurrentSkill->GetCurvedProjectileClass(), SpawnLocation, SpawnRotation))
 	{
 		const auto& Sounds = CurrentSkill->GetSounds();
-		if (Sounds.IsValidIndex(0))
+		if (!Sounds.IsEmpty() && Sounds.IsValidIndex(0))
 		{
 			UGameplayStatics::PlaySoundAtLocation(World, Sounds[0], SpawnLocation);
 		}

@@ -39,9 +39,9 @@ public:
 	FORCEINLINE FGameplayTag GetControlEffectTag() const { return ControlEffectTag; }
 	FORCEINLINE TObjectPtr<ACharacter> GetOwnerCharacter() const { return OwnerCharacter; }
 	FORCEINLINE TSubclassOf<ACurvedProjectile> GetCurvedProjectileClass() const { return CurvedProjectileClass; }
-	FORCEINLINE const TArray<USoundBase*>& GetSounds() const { return Sound; }
-	FORCEINLINE const TArray<UParticleSystem*>& GetParticles() const { return Particle; }
-	FORCEINLINE const TArray<UNiagaraSystem*>& GetNiagaraParticles() const { return NiagaraParticle; }
+	FORCEINLINE const TArray<USoundBase*>& GetSounds() const { return Sounds; }
+	FORCEINLINE const TArray<UParticleSystem*>& GetParticles() const { return Particles; }
+	FORCEINLINE const TArray<UNiagaraSystem*>& GetNiagaraParticles() const { return NiagaraParticles; }
 	FORCEINLINE const TArray<FEffectData>& GetEffects() const { return Effects; }
 	FORCEINLINE float GetDamageCoefficient() const { return DamageCoefficient; }
 	float GetFinalAttackData(const float AttackPower) const;
@@ -56,13 +56,13 @@ protected:
 	TObjectPtr<UAnimMontage> AnimMontage = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Asset")
-	TArray<TObjectPtr<USoundBase>> Sound;
+	TArray<TObjectPtr<USoundBase>> Sounds;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Asset")
-	TArray<TObjectPtr<UParticleSystem>> Particle;
+	TArray<TObjectPtr<UParticleSystem>> Particles;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Asset")
-	TArray<TObjectPtr<UNiagaraSystem>> NiagaraParticle;
+	TArray<TObjectPtr<UNiagaraSystem>> NiagaraParticles;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Asset")
 	TSubclassOf<ACurvedProjectile> CurvedProjectileClass;

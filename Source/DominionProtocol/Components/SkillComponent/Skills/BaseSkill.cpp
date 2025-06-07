@@ -36,9 +36,9 @@ void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 			if (FSkillData* SkillData = BaseGameState->GetSkillData(SkillTag))
 			{
 				AnimMontage = SkillData->AnimMontage;
-				Sound = SkillData->Sound;
-				Particle = SkillData->Particle;
-				NiagaraParticle = SkillData->NiagaraParticle;
+				Sounds = SkillData->Sounds;
+				Particles = SkillData->Particles;
+				NiagaraParticles = SkillData->NiagaraParticles;
 				CurvedProjectileClass = SkillData->CurvedProjectileClass;
 				Stamina = SkillData->Stamina;
 				AttackRadius = SkillData->AttackRadius;

@@ -1,4 +1,5 @@
 #include "Components/SkillComponent/Skills/MagicSkill/MagicInfiniteStaminaSkill.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "DomiFramework/GameState/BaseGameState.h"
@@ -33,24 +34,29 @@ void UMagicInfiniteStaminaSkill::Start()
 	StatusComponent->SwitchInfiniteStaminaMode();
 
 	FVector SpawnLocation = OwnerCharacter->GetActorLocation();
+	FRotator SpawnRotation = OwnerCharacter->GetActorRotation();
 
-	if (Sound[0])
+	if (!NiagaraParticles.IsEmpty() && NiagaraParticles.IsValidIndex(0))
 	{
-		UGameplayStatics::PlaySoundAtLocation(
-			this,
-			Sound[0],
-			SpawnLocation
+		UNiagaraSystem* NiagaraSystem = NiagaraParticles[0];
+		UNiagaraFunctionLibrary::SpawnSystemAttached(
+			NiagaraSystem,
+			OwnerCharacter->GetRootComponent(),
+			NAME_None,
+			FVector(0.f, 0.f, -70.f),
+			FRotator::ZeroRotator,
+			EAttachLocation::KeepRelativeOffset,
+			true,
+			true
 		);
 	}
 
-	if (Particle[0])
+	if (!Sounds.IsEmpty() && Sounds.IsValidIndex(0))
 	{
-		UParticleSystemComponent* PSC = UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(),
-			Particle[0],
-			SpawnLocation,
-			FRotator::ZeroRotator,
-			true
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			Sounds[0],
+			SpawnLocation
 		);
 	}
 

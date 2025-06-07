@@ -1,6 +1,5 @@
 #include "Components/SkillComponent/Skills/MagicSkill/MagicZoneyaSkill.h"
 #include "Util/GameTagList.h"
-#include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
@@ -37,11 +36,11 @@ void UMagicZoneyaSkill::StartZoneya()
 	UCapsuleComponent* Capsule = OwnerCharacter->GetCapsuleComponent();
 	float HalfHeight = Capsule->GetScaledCapsuleHalfHeight();
 
-	if (NiagaraParticle[0])
+	if (!NiagaraParticles.IsEmpty() && NiagaraParticles.IsValidIndex(0))
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			GetWorld(),
-			NiagaraParticle[0],
+			NiagaraParticles[0],
 			SpawnLocation - FVector(0.f, 0.f, HalfHeight),
 			FRotator::ZeroRotator,
 			FVector(1.0f),
@@ -54,11 +53,11 @@ void UMagicZoneyaSkill::StartZoneya()
 
 	OwnerCharacter->GetMesh()->bPauseAnims = true;
 
-	if (Sound[0])
+	if (!Sounds.IsEmpty() && Sounds.IsValidIndex(0))
 	{
 		UGameplayStatics::PlaySoundAtLocation(
 			this,
-			Sound[0],
+			Sounds[0],
 			SpawnLocation
 		);
 	}

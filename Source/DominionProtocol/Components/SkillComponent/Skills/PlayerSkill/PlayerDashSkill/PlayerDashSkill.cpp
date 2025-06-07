@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerDashSkill.h"
@@ -25,9 +25,9 @@ void UPlayerDashSkill::Execute()
 	// Super::Execute();
 	check(OwnerCharacter);
 
-	if (Sound.IsValidIndex(0))
+	if (Sounds.IsValidIndex(0))
 	{
-		UGameplayStatics::PlaySoundAtLocation(OwnerCharacter, Sound[0], OwnerCharacter->GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(OwnerCharacter, Sounds[0], OwnerCharacter->GetActorLocation());
 	}
 	
 	auto SkillComponent = Cast<USkillComponent>(GetOuter());

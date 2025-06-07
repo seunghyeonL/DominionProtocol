@@ -119,7 +119,22 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                 return;
             }
             
-            if (IsValid(CurrentSkill))
+            if (!IsValid(CurrentSkill))
+            {
+                // Check to use Stamina
+                if (float CurrentStamina = StatusComponent->GetStat(StatTags::Stamina); CurrentStamina > 0.f)
+                {
+                    // Check to have enough Stamina 
+                    if (CurrentStamina < Skill->GetStamina())
+                    {
+                        return;
+                    }
+
+                    // Use Stamina
+                    StatusComponent->ConsumeStamina(Skill->GetStamina());
+                }
+            }
+            else
             {
                 if (auto ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>())
                 {
@@ -145,19 +160,6 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     Debug::PrintError(TEXT("USkillComponent::ExecuteSkill : ControlComponent is not valid."));
                     return;
                 }
-            }
-            
-            // Check to use Stamina
-            if (float CurrentStamina = StatusComponent->GetStat(StatTags::Stamina); CurrentStamina > 0.f)
-            {
-                // Check to have enough Stamina 
-                if (CurrentStamina < Skill->GetStamina())
-                {
-                    return;
-                }
-
-                // Use Stamina
-                StatusComponent->ConsumeStamina(Skill->GetStamina());
             }
 
             // 스킬 실행 전, 현재 사용할 스킬로 저장
