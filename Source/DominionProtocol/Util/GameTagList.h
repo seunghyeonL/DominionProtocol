@@ -185,6 +185,7 @@ namespace PawnTags
 	inline const FGameplayTag ProtoBoss = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.Proto"));
 	inline const FGameplayTag ArrowProto = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.ArrowProto"));
 	inline const FGameplayTag AxeSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.AxeSkeleton"));
+	inline const FGameplayTag SwordSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.SwordSkeleton"));
 	inline const FGameplayTag KnifeSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.KnifeSkeleton"));
 	inline const FGameplayTag Minion = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.Minion"));
 	inline const FGameplayTag GunMinion = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.GunMinion"));
