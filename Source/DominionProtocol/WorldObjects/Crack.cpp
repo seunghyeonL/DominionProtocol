@@ -30,7 +30,8 @@ ACrack::ACrack()
 	  InteractableRadius(150.f),
 	  ActivationDistanceCalculateRadius(1500.f),
 	  Distance(1600.f),
-	  bIsActivate(false)
+	  bIsActivate(false),
+	  bBlockInteract(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -79,6 +80,8 @@ void ACrack::BeginPlay()
 
 void ACrack::Interact_Implementation(AActor* Interactor)
 {
+	if (bBlockInteract) return;
+	
 	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	if (!GameInstance) return;
 
@@ -175,7 +178,7 @@ void ACrack::CheckPlayerInActivationRange()
 
 void ACrack::CheckPlayerInInteractionRange()
 {
-	if (IsValid(CachedCharacter))
+	if (IsValid(CachedCharacter) && !bBlockInteract)
 	{
 		Distance = FVector::DistSquared(GetActorLocation(), CachedCharacter->GetActorLocation());
 

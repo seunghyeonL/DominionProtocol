@@ -401,6 +401,11 @@ void ADomiCharacter::OnDeath()
 	{
 		GameMode->OnPlayerDeath();
 	}
+
+	if (auto GameInstance = Cast<UDomiGameInstance>(GetGameInstance()))
+	{
+		GameInstance->ReturnStoryState();
+	}
 }
 
 FString ADomiCharacter::GetPawnName_Implementation()
