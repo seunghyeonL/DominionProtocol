@@ -59,6 +59,11 @@ void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		return;
 	}
 
+	if (bIsMoving)
+	{
+		return;
+	}
+
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
 	ensure(PlayerCharacter);
 	CachedCharacter = PlayerCharacter;
@@ -75,10 +80,6 @@ void AElevator::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 
 		CachedCharacter = nullptr;
 		PlayerCharacter->RemoveInteractableActor(this);
-	}
-	else
-	{
-		Debug::Print(TEXT("AElevator::OnOverlapEnd : OtherActor Is not PlayerCharacter"));
 	}
 }
 
