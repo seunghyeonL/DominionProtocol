@@ -448,6 +448,12 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	check(ControlComponent);
 	check(SkillComponent);
 	check(StatusComponent);
+
+	//CheatManager
+	if (StatusComponent->GetIsGodMode())
+	{
+		return;
+	}
 	
 	auto& ActiveControlEffects = GetActiveControlEffectTags();
 

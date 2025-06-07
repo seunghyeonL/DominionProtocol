@@ -110,7 +110,9 @@ public:
 	
 	//CheatManager
 	FORCEINLINE void SwitchInfiniteStaminaMode() { bIsInfiniteStaminaMode = !bIsInfiniteStaminaMode; }
-
+	FORCEINLINE void SwitchGodMode() { bIsGodMode = !bIsGodMode; }
+	FORCEINLINE bool GetIsGodMode() { return bIsGodMode; }
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
@@ -140,6 +142,6 @@ protected:
 	
 	//CheatManager
 	bool bIsInfiniteStaminaMode = false;
-
+	bool bIsGodMode = false;
 
 };

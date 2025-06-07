@@ -25,7 +25,9 @@ public:
 
 	UFUNCTION(Exec)
 	void ToggleAllDebug();
-
+	
+	virtual void God() override;
+	
 	UFUNCTION(Exec)
 	void InfiniteStamina();
 

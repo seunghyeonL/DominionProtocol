@@ -51,6 +51,16 @@ void UDevCheatManager::ToggleAllDebug()
 	Debug::Print(FString::Printf(TEXT("All Debug : %s"), NewValue ? TEXT("On") : TEXT("Off")));
 }
 
+void UDevCheatManager::God()
+{
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
+	TObjectPtr<UStatusComponent> StatusComponent = PlayerCharacter->GetStatusComponent();
+	if (IsValid(StatusComponent))
+	{
+		StatusComponent->SwitchGodMode();
+	}
+}
+
 void UDevCheatManager::InfiniteStamina()
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
