@@ -109,8 +109,6 @@ bool UPlayerControlEffectBase::Activate(float Duration)
 	
 	if (UPlayerControlStateBase* PlayerControlState = ControlComponent->GetPlayerControlState())
 	{
-		
-		
 		SetInnerState(PlayerControlState);
 		PlayerControlState->SetOuterState(this);
 		ControlComponent->SetPlayerControlState(this);
