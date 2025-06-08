@@ -22,11 +22,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhBoxComponent> WeaponTraceBox;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMnhTracerComponent> AttackTraceComponent;
 public:
 	virtual void Tick(float DeltaTime) override;
 

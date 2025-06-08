@@ -41,11 +41,6 @@ bool UCheckAIStateEquals::CalculateRawConditionValue(UBehaviorTreeComponent& Own
 	const FGameplayTag& CurrentTag = AIState->GetCurrentStateTag();
 	const bool bMatch = (CurrentTag == RequiredStateTag);
 
-	UE_LOG(LogTemp, Warning, TEXT("[CheckAIStateEquals] Required: %s / Current: %s / Match: %s"),
-		*RequiredStateTag.ToString(),
-		*CurrentTag.ToString(),
-		bMatch ? TEXT("TRUE") : TEXT("FALSE"));
-
 	return bMatch;
 }
 

@@ -15,4 +15,5 @@ class DOMINIONPROTOCOL_API AAxeSkeletonEnemy : public ASkeletonEnemy
 	GENERATED_BODY()
 public:
 	AAxeSkeletonEnemy();
+
 };

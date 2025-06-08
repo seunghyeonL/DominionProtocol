@@ -2,6 +2,8 @@
 
 
 #include "AI/AICharacters/NomalMonster/AxeSkeletonEnemy.h"
+#include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
+#include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhComponents.h"
 
 AAxeSkeletonEnemy::AAxeSkeletonEnemy()
 {

@@ -12,24 +12,6 @@ ASkeletonEnemy::ASkeletonEnemy()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(GetMesh(), TEXT("hand_r"));
-
-	WeaponTraceBox = CreateDefaultSubobject<UMnhBoxComponent>(TEXT("WeaponTraceBox"));
-	WeaponTraceBox->SetupAttachment(WeaponMesh);
-
-	AttackTraceComponent = CreateDefaultSubobject<UMnhTracerComponent>(TEXT("AttackTraceComponent"));
-
-	FMnhTracerConfig TracerConfig;
-	TracerConfig.TracerTag = ItemTags::BasicWeapon;
-	TracerConfig.DrawDebugType = EDrawDebugTrace::ForDuration;
-	TracerConfig.DebugDrawTime = 1.f;
-	TracerConfig.TraceSettings.TraceChannel = ECC_Pawn;
-
-	AttackTraceComponent->TracerConfigs.Add(TracerConfig);
-
-	FGameplayTagContainer TagContainer;
-	TagContainer.AddTag(ItemTags::BasicWeapon);
-
-	AttackTraceComponent->InitializeTracers(TagContainer, WeaponTraceBox);
 }
 
 void ASkeletonEnemy::BeginPlay()
