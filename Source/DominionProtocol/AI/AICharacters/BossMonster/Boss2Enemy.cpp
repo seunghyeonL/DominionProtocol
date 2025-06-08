@@ -2,6 +2,7 @@
 
 
 #include "AI/AICharacters/BossMonster/Boss2Enemy.h"
+#include "Components/StatusComponent/StatusComponent.h"
 
 // Sets default values
 ABoss2Enemy::ABoss2Enemy()
@@ -23,6 +24,11 @@ void ABoss2Enemy::BeginPlay()
 void ABoss2Enemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABoss2Enemy::OnParried_Implementation()
+{
+	StatusComponent->ActivateStatusEffect(EffectTags::Parried, 0.f, 1.f);
 }
 
 // Called to bind functionality to input
