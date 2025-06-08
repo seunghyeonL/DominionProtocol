@@ -282,12 +282,13 @@ void USkillComponent::StopSkill()
     
     ACharacter* Character = Cast<ACharacter>(GetOwner());
     UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+    auto CurrentMontage = CurrentSkill->GetAnimMontage();
 
     // 캐릭터가 스킬 몽타주를 재생 중인지 확인
-    if (AnimInstance && AnimInstance->Montage_IsPlaying(CurrentSkill->GetAnimMontage()))
+    if (IsValid(AnimInstance) && IsValid(CurrentMontage) && AnimInstance->Montage_IsPlaying(CurrentMontage))
     {
         Debug::Print(TEXT("USkillComponent::StopSkill : Montage stop."));
-        AnimInstance->Montage_Stop(0.1f, CurrentSkill->GetAnimMontage());
+        AnimInstance->Montage_Stop(0.1f, CurrentMontage);
     }
     else
     {
