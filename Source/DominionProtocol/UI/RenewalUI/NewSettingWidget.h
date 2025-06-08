@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/RenewalUI/NewMenuWidget.h"
 #include "NewSettingWidget.generated.h"
 
 UCLASS()
-class DOMINIONPROTOCOL_API UNewSettingWidget : public UUserWidget
+class DOMINIONPROTOCOL_API UNewSettingWidget : public UNewMenuWidget
 {
 	GENERATED_BODY()
 	
@@ -28,21 +28,41 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
+	UFUNCTION(BlueprintCallable)
+	void ApplyMasterVolumeValue(float NewVolumeValue);
+	UFUNCTION(BlueprintCallable)
+	void ApplyBackgroundMusicVolumeValue(float NewVolumeValue);
+	UFUNCTION(BlueprintCallable)
+	void ApplySoundEffectsVolumeValue(float NewVolumeValue);
+	UFUNCTION(BlueprintCallable)
+	void ApplyUIEffectsVolumeValue(float NewVolumeValue);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float MasterVolumeValue;
+	float MasterVolumeValue = 1.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float BackgroundMusicVolumeValue;
+	float BackgroundMusicVolumeValue = 1.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float SoundEffectsVolumeValue;
+	float SoundEffectsVolumeValue = 1.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float UIEffectsVolumeValue;
+	float UIEffectsVolumeValue = 1.0f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float DesiredMasterVolumeValue = 1.0f;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float DesiredBackgroundMusicVolumeValue = 1.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float DesiredSoundEffectsVolumeValue = 1.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float DesiredUIEffectsVolumeValue = 1.0f;
+
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class USoundInstanceSubsystem> SoundSubsystemInstance;
 	
 };
