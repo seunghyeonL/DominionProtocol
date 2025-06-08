@@ -157,15 +157,10 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 		//PathEffect->Activate();
 		BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-		if (!bHasStoryUpdated)
+		if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
 		{
-			bHasStoryUpdated = true;
-
-			if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
-			{
-				GI->AdvanceStoryState();
-				Debug::Print(TEXT("ABossCloudDoor: 스토리 상태 변경"));
-			}
+			GI->AdvanceStoryState();
+			Debug::Print(TEXT("ABossCloudDoor: 스토리 상태 변경"));
 		}
 
 		Debug::Print(TEXT("ABossCloudDoor: Calling SpawnBoss()"));
