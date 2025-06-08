@@ -60,7 +60,7 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 	check(StatusComponenetUser);
 	if (StatusComponenetUser->GetActiveStatusEffectTags().HasTagExact(EffectTags::Death))
 	{
-		LockOnTargetActor = nullptr;
+		ControlComponent->SetLockOnTargetActor(nullptr);
 		Deactivate();
 		ControlComponent->LockOn();
 		return;
