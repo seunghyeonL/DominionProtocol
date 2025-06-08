@@ -43,9 +43,5 @@ void UBTService_SelectSkill::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp,
 		return;
 	}
 
-	// SkillTagName 출력
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-		FString::Printf(TEXT("SkillTagName: %s"), *GameplayTag.GetTagName().ToString()));
-
 	Blackboard->SetValueAsName("SkillTag", GameplayTag.GetTagName());
 }
