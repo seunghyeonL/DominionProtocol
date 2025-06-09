@@ -15,14 +15,12 @@ void ABossSpawner::BeginPlay()
 	if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
 		GI->OnStoryStateChanged.AddDynamic(this, &ABossSpawner::OnStoryStateUpdated);
-
-		CachedStoryState = GI->GetCurrentGameStoryState();
 	}
 }
 
 void ABossSpawner::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
-	CachedStoryState = NewState;
+	
 }
 
 void ABossSpawner::SpawnBoss()
@@ -33,19 +31,19 @@ void ABossSpawner::SpawnBoss()
 		Debug::Print(TEXT("BossSpawner: Return - bHasSpawned || !BossClass || !BossTag.IsValid()"));
 		return;
 	}*/
-
+	if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		if (GI->GetCurrentGameStoryState() != RequiredStoryState)
+		{
+			Debug::Print(TEXT("BossSpawner: Story state not matched. Skip spawn."));
+			return;
+		}
+	}
 	if (!BossClass || !BossTag.IsValid())
 	{
 		Debug::Print(TEXT("BossSpawner: Return - !BossClass || !BossTag.IsValid()"));
 		return;
 	}
-
-	if (CachedStoryState != RequiredStoryState)
-	{
-		Debug::Print(TEXT("BossSpawner: Story state not matched. Skip spawn."));
-		return;
-	}
-
 	if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
 		if (GI->GetIsBossDead(BossTag))

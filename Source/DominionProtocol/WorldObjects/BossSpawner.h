@@ -51,7 +51,4 @@ protected:
 
 	//UPROPERTY()
 	//bool bHasSpawned = false;
-
-	UPROPERTY()
-	EGameStoryState CachedStoryState;
 };
