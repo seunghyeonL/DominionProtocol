@@ -195,6 +195,21 @@ void UPlayerUsingSkillEffect::LockOn()
 	}
 }
 
+void UPlayerUsingSkillEffect::ConsumeItemAction_1()
+{
+	// Super::ConsumeItemAction_1();
+}
+
+void UPlayerUsingSkillEffect::ConsumeItemAction_2()
+{
+	// Super::ConsumeItemAction_2();
+}
+
+void UPlayerUsingSkillEffect::ConsumeItemAction_3()
+{
+	// Super::ConsumeItemAction_3();
+}
+
 void UPlayerUsingSkillEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

@@ -44,6 +44,9 @@ public:
 	virtual void MagicSkill() override;
 	virtual void Interact() override;
 	virtual void LockOn() override;
+	virtual void ConsumeItemAction_1() override;
+	virtual void ConsumeItemAction_2() override;
+	virtual void ConsumeItemAction_3() override;
 
 	virtual void Tick(float DeltaTime) override;
 };
