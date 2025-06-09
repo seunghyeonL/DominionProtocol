@@ -19,6 +19,7 @@
 #include "Effects/PlayerUsingSkillEffect/PlayerUsingSkillEffect.h"
 #include "InputActionValue.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
+#include "Effects/PlayerConsumingItemEffect/PlayerConsumingItemEffect.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -88,6 +89,7 @@ void UPlayerControlComponent::InitializeComponent()
 	
 	ControlEffectMap.Add(EffectTags::Death, NewObject<UPlayerDeathEffect>(this));
 	ControlEffectMap.Add(EffectTags::UsingSkill, NewObject<UPlayerUsingSkillEffect>(this));
+	ControlEffectMap.Add(EffectTags::ConsumingItem, NewObject<UPlayerConsumingItemEffect>(this));
 	ControlEffectMap.Add(EffectTags::LockOn, NewObject<UPlayerLockOnEffect>(this));
 	
 	// Effects Initialize

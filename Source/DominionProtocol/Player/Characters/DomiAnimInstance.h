@@ -20,6 +20,8 @@ class DOMINIONPROTOCOL_API UDomiAnimInstance : public UAnimInstance
 public:
 	UDomiAnimInstance();
 
+	// FOnMontageEnded OnMontageEnded;
+
 protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
@@ -55,5 +57,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
 	bool bIsFalling;
-	
+	//
+	// UFUNCTION()
+	// void MontageEnded(UAnimMontage* Montage, bool bInterrupted);
 };

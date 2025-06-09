@@ -579,6 +579,13 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 					// Consume 인터페이스 실행 (소비 주체 전달)
 					PlayConsumeSound();
 					IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
+
+					// Activate ConsumingItemEffect
+					if (auto ControlComponent = Cast<ACharacter>(GetOuter())->FindComponentByClass<UPlayerControlComponent>())
+					{
+						ControlComponent->ActivateControlEffect(EffectTags::ConsumingItem, 3.717f);
+					}
+					
 					PlayConsumeVFXAndAnimation(ItemData);
 					if (SlotName!=NAME_None)
 					{

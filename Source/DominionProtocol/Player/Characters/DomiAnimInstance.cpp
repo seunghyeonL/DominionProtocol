@@ -54,6 +54,8 @@ void UDomiAnimInstance::NativeInitializeAnimation()
 		Debug::PrintError(TEXT("UDomiAnimInstance::NativeInitializeAnimation : Character is not SkillComponentUser."));
 	}
 	
+	// OnMontageEnded.BindUObject(this, &UDomiAnimInstance::MontageEnded);
+	// Montage_SetEndDelegate(OnMontageEnded);
 }
 
 void UDomiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -118,5 +120,14 @@ void UDomiAnimInstance::SetDashAngle(const FVector& DashDirection)
 	DashAngle = (Cross.Z > 0) ? AngleDegrees : -AngleDegrees;
 	Debug::Print(FString::Printf(TEXT("DashAngle: %f"), DashAngle));
 }
+
+// void UDomiAnimInstance::MontageEnded(UAnimMontage* Montage, bool bInterrupted)
+// {
+// 	check(Character);
+// 	if (auto ControlComponent = Character->FindComponentByClass<UPlayerControlComponent>())
+// 	{
+// 		ControlComponent->DeactivateControlEffect(EffectTags::ConsumingItem);
+// 	}
+// }
 
 
