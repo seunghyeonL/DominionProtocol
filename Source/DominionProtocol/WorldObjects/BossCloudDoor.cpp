@@ -28,6 +28,9 @@ ABossCloudDoor::ABossCloudDoor()
 	PathEffect->SetRelativeLocation(FVector::ZeroVector);
 	PathEffect->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	PathEffect->SetWorldScale3D(FVector(1.f));
+
+	EntryTeleportTarget = CreateDefaultSubobject<USceneComponent>(TEXT("TeleportPoint"));
+	EntryTeleportTarget->SetupAttachment(RootComponent);
 }
 
 void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
@@ -155,7 +158,10 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 		}
 
 		//PathEffect->Activate();
-		BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+		BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
 		if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
 		{
@@ -181,6 +187,16 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 
 	CachedCharacter = Player;
 	bIsMontagePlaying = true;
+
+	if (EntryTeleportTarget)
+	{
+		FVector Target = EntryTeleportTarget->GetComponentLocation();
+		FVector CharacterL = CachedCharacter->GetActorLocation();
+		FRotator LookAtRotation = (Target - CharacterL).Rotation();
+
+		CachedCharacter->SetActorRotation(LookAtRotation);
+	}
+
 	APlayerController* PC = Cast<APlayerController>(CachedCharacter->GetController());
 	if (PC)
 	{
@@ -191,7 +207,10 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 		}
 	}
 
-	BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 
 	EnterDoor();
 }

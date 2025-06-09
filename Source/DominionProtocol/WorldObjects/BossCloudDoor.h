@@ -71,4 +71,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Story")
 	EGameStoryState ActiveUntilState;
 
+	UPROPERTY(EditAnywhere)
+	USceneComponent* EntryTeleportTarget;
+
 };
