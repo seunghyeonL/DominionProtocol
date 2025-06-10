@@ -109,6 +109,7 @@ void ABaseGameMode::StartPlay()
 	BaseGameState->InitializeCrackDataMap();
 	RecentCrackCache = BaseGameState->FindNearestCrack();
 	BaseGameState->LoadItemDataFromInstance();
+	BaseGameState->ApplyAllSaveData();
 	
 	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
