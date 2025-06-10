@@ -37,6 +37,7 @@ ABaseEnemy::ABaseEnemy()
 	}
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	
 	// InvincibilityTags Setting
 	InvincibilityTags.AddTag(EffectTags::Death);
