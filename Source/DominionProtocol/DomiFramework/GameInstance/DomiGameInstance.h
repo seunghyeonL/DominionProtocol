@@ -36,7 +36,15 @@ public:
 
 	FORCEINLINE void AddPlayerCurrentEssence(int32 AddEssenceValue) { PlayerCurrentEssence += AddEssenceValue; }
 	
-	FORCEINLINE void SubtractPlayerCurrentEssence(int32 SubtractEssenceValue) { PlayerCurrentEssence -= SubtractEssenceValue; }
+	FORCEINLINE bool SubtractPlayerCurrentEssence(int32 SubtractEssenceValue)
+	{
+		if (PlayerCurrentEssence < SubtractEssenceValue)
+		{
+			return false;
+		}
+		PlayerCurrentEssence = FMath::Max(0, PlayerCurrentEssence - SubtractEssenceValue);
+		return true;
+	}
 	
 	//Getter
 	UFUNCTION(BlueprintCallable)
