@@ -52,31 +52,6 @@ FGameplayTag ABoss2AIController::GetAttack()
 	return SkillGroupTags::Boss2BaseAttack2;
 }
 
-void ABoss2AIController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	if (!TargetActor)
-	{
-		TargetActor = Cast<AActor>(Blackboard->GetValueAsObject("TargetActor"));
-		return;
-	}
-	if (APawn* AIPawn = GetPawn())
-	{
-		if (auto StatusComponentUser = Cast<IStatusComponentUser>(AIPawn))
-		{
-			if (StatusComponentUser->GetActiveStatusEffectTags().HasTagExact(EffectTags::Death))
-			{
-				return;
-			}
-		}
-		const FVector Direction = (TargetActor->GetActorLocation() - AIPawn->GetActorLocation()).GetSafeNormal();
-		FRotator LookRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
-		LookRotation.Pitch = 0.f;
-		LookRotation.Roll = 0.f;
-		AIPawn->SetActorRotation(LookRotation);
-	}
-}
-
 void ABoss2AIController::UpdateWeights()
 {
 	CurrentBaseAttack1Weight += BaseAttack1WeightIncrement;
