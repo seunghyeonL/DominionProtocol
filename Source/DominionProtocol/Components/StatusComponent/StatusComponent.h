@@ -114,6 +114,9 @@ public:
 	virtual void ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration);
 	virtual void DeactivateStatusEffect(const FGameplayTag& StatusEffectTag);
 	
+	void AddImmuneStatusEffect(const FGameplayTag& StatusEffectTag);
+	void RemoveImmuneStatusEffect(const FGameplayTag& StatusEffectTag);
+
 	//CheatManager
 	FORCEINLINE void SwitchInfiniteStaminaMode() { bIsInfiniteStaminaMode = !bIsInfiniteStaminaMode; }
 	FORCEINLINE void SwitchGodMode() { bIsGodMode = !bIsGodMode; }
@@ -137,6 +140,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats", meta=(AllowPrivateAccess=true))
 	FGameplayTagContainer ActiveStatusEffectTags;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stats", meta = (AllowPrivateAccess = true))
+	FGameplayTagContainer ImmuneStatusEffectTags;
 	
 	UPROPERTY(EditAnywhere, Category = "Stamina")
 	float StaminaRecoveryRate = 10.f;

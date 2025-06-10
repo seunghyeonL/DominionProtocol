@@ -331,6 +331,11 @@ void UStatusComponent::RemoveActiveStatusEffect(FGameplayTag StatusEffectTag)
 
 void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude)
 {
+	if (ImmuneStatusEffectTags.HasTag(StatusEffectTag))
+	{
+		Debug::Print(FString::Printf(TEXT("UStatusComponent::ActivateStatusEffect: Character is immune to '%s'."), *StatusEffectTag.ToString()));
+		return;
+	}
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
 		(*StatusEffect)->SetMagnitude(Magnitude);
@@ -345,6 +350,11 @@ void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag,
 
 void UStatusComponent::ActivateStatusEffect(const FGameplayTag& StatusEffectTag, const float Magnitude, float Duration)
 {
+	if (ImmuneStatusEffectTags.HasTag(StatusEffectTag))
+	{
+		Debug::Print(FString::Printf(TEXT("UStatusComponent::ActivateStatusEffectWithDuration: Character is immune to '%s'."), *StatusEffectTag.ToString()));
+		return;
+	}
 	if (auto StatusEffect = StatusEffectMap.Find(StatusEffectTag))
 	{
 		(*StatusEffect)->SetMagnitude(Magnitude);
@@ -369,3 +379,22 @@ void UStatusComponent::DeactivateStatusEffect(const FGameplayTag& StatusEffectTa
 	}
 }
 
+void UStatusComponent::AddImmuneStatusEffect(const FGameplayTag& StatusEffectTag)
+{
+	ImmuneStatusEffectTags.AddTag(StatusEffectTag);
+	if (ActiveStatusEffectTags.HasTag(StatusEffectTag))
+	{
+		DeactivateStatusEffect(StatusEffectTag);
+		Debug::Print(FString::Printf(TEXT("UStatusComponent: Character gained immunity to '%s'. Deactivated active effect."), *StatusEffectTag.ToString()));
+	}
+	else
+	{
+		Debug::Print(FString::Printf(TEXT("UStatusComponent: Character gained immunity to '%s'."), *StatusEffectTag.ToString()));
+	}
+}
+
+void UStatusComponent::RemoveImmuneStatusEffect(const FGameplayTag& StatusEffectTag)
+{
+	ImmuneStatusEffectTags.RemoveTag(StatusEffectTag);
+	Debug::Print(FString::Printf(TEXT("UStatusComponent: Character lost immunity to '%s'."), *StatusEffectTag.ToString()));
+}
