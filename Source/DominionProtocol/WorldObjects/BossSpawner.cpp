@@ -1,4 +1,5 @@
 #include "WorldObjects/BossSpawner.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Util/DebugHelper.h"
 
 ABossSpawner::ABossSpawner()
@@ -24,6 +25,9 @@ void ABossSpawner::SpawnBoss()
 	if (SpawnedBoss)
 	{
 		Debug::Print(TEXT("BossSpawner: Spawned boss"));
-		OnBossSpawnedToWidget.Broadcast(SpawnedBoss);
+		if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
+		{
+			GM->StartBattle(SpawnedBoss);
+		}
 	}
 }

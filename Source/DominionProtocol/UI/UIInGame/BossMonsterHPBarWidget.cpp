@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "UI/UIInGame/BossMonsterHPBarWidget.h"
@@ -6,7 +6,7 @@
 #include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "WorldObjects/BossSpawner.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 
 
 void UBossMonsterHPBarWidget::UpdateBossMonsterMaxHP(const float NewMaxHP)
@@ -65,18 +65,10 @@ void UBossMonsterHPBarWidget::NativeConstruct()
 
 void UBossMonsterHPBarWidget::BindBossSpawnedToWidgetDelegate()
 {
-	TArray<AActor*> SpawnerActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABossSpawner::StaticClass(), SpawnerActors);
-	
-	
-	for (AActor* SpawnerActor : SpawnerActors)
+	if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
 	{
-		auto* BossSpawner = Cast<ABossSpawner>(SpawnerActor);
-		if (BossSpawner)
-		{
-			BossSpawner->OnBossSpawnedToWidget.AddUObject(this, &UBossMonsterHPBarWidget::BindSpawnedBossStatusDelegate);
-			BossSpawner->OnBossSpawnedToWidget.AddUObject(this, &UBossMonsterHPBarWidget::SpawnedBossMonster);
-		}
+		GM->OnBossSpawnedToWidget.AddUObject(this, &UBossMonsterHPBarWidget::BindSpawnedBossStatusDelegate);
+		GM->OnBossSpawnedToWidget.AddUObject(this, &UBossMonsterHPBarWidget::SpawnedBossMonster);
 	}
 }
 

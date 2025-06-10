@@ -7,8 +7,6 @@
 #include "GameplayTagContainer.h"
 #include "BossSpawner.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossSpawnedToWidget, AActor*);
-
 UCLASS()
 class DOMINIONPROTOCOL_API ABossSpawner : public AActor
 {
@@ -24,8 +22,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	FOnBossSpawnedToWidget OnBossSpawnedToWidget;
-
 	UPROPERTY(EditAnywhere)
 	FGameplayTag BossTag;
 

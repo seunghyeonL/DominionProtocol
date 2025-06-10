@@ -154,12 +154,14 @@ void ABaseGameMode::StartPlay()
 	PlayFade(true);
 }
 
-void ABaseGameMode::StartBattle()
+void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
 {
+	OnBossSpawnedToWidget.Broadcast(SpawnedBoss);
 }
 
 void ABaseGameMode::EndBattle()
 {
+	
 }
 
 void ABaseGameMode::OnPlayerDeath()
@@ -169,6 +171,14 @@ void ABaseGameMode::OnPlayerDeath()
 	Debug::Print("ABaseGameMode::OnPlayerDeath : Respawn Player");
 
 	StateWorldSubsystem->ClearActorDataMap();
+
+	if (UDomiGameInstance* GI = GetGameInstance<UDomiGameInstance>())
+	{
+		if (GI->ReturnStoryState())
+		{
+			EndBattle();
+		}
+	}
 	
 	FTimerHandle RespawnTimerHandle;
 	GetWorldTimerManager().SetTimer(
@@ -453,5 +463,7 @@ void ABaseGameMode::SetPlayerInputEnable(bool bEnable)
 
 
 #pragma region SeoYoung
+
+
 
 #pragma endregion

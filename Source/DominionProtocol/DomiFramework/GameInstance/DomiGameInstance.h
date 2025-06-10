@@ -102,7 +102,7 @@ public:
 	void AdvanceStoryState();
 
 	UFUNCTION(BlueprintCallable)
-	void ReturnStoryState();
+	bool ReturnStoryState();
 
 #pragma endregion
 };

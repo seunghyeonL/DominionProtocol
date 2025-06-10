@@ -6,6 +6,7 @@
 
 #include "Components/WidgetComponent/DomiWidgetComponent.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -44,5 +45,9 @@ void ABaseBossEnemy::OnDeath()
 	{
 		GI->AdvanceStoryState();
 	}
-	OnBossDeathDelegate.Broadcast();
+	if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
+	{
+		GM->EndBattle();
+	}
+	//OnBossDeathDelegate.Broadcast();
 }

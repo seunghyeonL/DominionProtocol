@@ -20,8 +20,6 @@ protected:
 	virtual void StartPlay() override;
 
 	UFUNCTION()
-	void StartBattle() override;
-	UFUNCTION()
 	void EndBattle() override;
 
 	virtual void OnPlayerDeath() override;

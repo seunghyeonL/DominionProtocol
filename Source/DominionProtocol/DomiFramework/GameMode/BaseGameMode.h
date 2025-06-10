@@ -34,6 +34,7 @@ struct FEnemySpawnInfo
 };
 
 DECLARE_MULTICAST_DELEGATE(FOnPlayerSpawn);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossSpawnedToWidget, AActor*);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
@@ -48,7 +49,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void StartPlay() override;
 	
-	virtual void StartBattle();
+	virtual void StartBattle(AActor* SpawnedBoss);
 	virtual void EndBattle();
 
 	virtual void OnPlayerDeath();
@@ -77,6 +78,7 @@ protected:
 public:
 	// Delegate
 	FOnPlayerSpawn OnPlayerSpawn;
+	FOnBossSpawnedToWidget OnBossSpawnedToWidget;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawning")

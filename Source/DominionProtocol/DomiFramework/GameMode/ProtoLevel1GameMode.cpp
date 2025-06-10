@@ -19,10 +19,6 @@ void AProtoLevel1GameMode::StartPlay()
 	Super::StartPlay();
 }
 
-void AProtoLevel1GameMode::StartBattle()
-{
-	Super::StartBattle();
-}
 
 void AProtoLevel1GameMode::EndBattle()
 {

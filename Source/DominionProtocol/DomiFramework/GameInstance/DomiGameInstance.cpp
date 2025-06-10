@@ -86,7 +86,7 @@ void UDomiGameInstance::AdvanceStoryState()
 	}
 }
 
-void UDomiGameInstance::ReturnStoryState()
+bool UDomiGameInstance::ReturnStoryState()
 {
 	switch (CurrentGameStoryState)
 	{
@@ -111,10 +111,12 @@ void UDomiGameInstance::ReturnStoryState()
 		break;
 
 	default:
-		return;
+		return false;
 	}
 
 	Debug::Print(FString::Printf(TEXT("GameInstance - ReturnStoryState: [%d] → [%d]"),
 		static_cast<int32>(CurrentGameStoryState),
 		static_cast<int32>(GetCurrentGameStoryState())));
+
+	return true;
 }

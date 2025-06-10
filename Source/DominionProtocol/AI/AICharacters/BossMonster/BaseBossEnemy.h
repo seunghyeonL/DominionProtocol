@@ -7,7 +7,7 @@
 #include "BaseBossEnemy.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBossDeath);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBossDeath);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseBossEnemy : public ABaseEnemy
@@ -17,8 +17,8 @@ class DOMINIONPROTOCOL_API ABaseBossEnemy : public ABaseEnemy
 public:
 	ABaseBossEnemy();
 
-	UPROPERTY(BlueprintAssignable)
-	FOnBossDeath OnBossDeathDelegate;
+	//UPROPERTY(BlueprintAssignable)
+	//FOnBossDeath OnBossDeathDelegate;
 
 protected:
 	// Called when the game starts or when spawned
