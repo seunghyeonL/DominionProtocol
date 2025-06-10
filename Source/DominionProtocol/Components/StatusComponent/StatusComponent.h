@@ -81,7 +81,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	const TMap<FGameplayTag, float>& GetStatMap() const { return StatMap; }
-
+	
+	FORCEINLINE void SetStatMap(const TMap<FGameplayTag, float>& NewStatMap) { StatMap = NewStatMap; }
+	
 	UFUNCTION()
 	const TMap<FGameplayTag, UStatusEffectBase*>& GetStatusEffectMap() const { return StatusEffectMap; }
 	
