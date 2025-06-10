@@ -22,17 +22,20 @@ struct FPlayerStatData
 	float End;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Weapon1AttackPower;
+	float PrimaryAttackPower;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Weapon2AttackPower;
+	float SubAttackPower;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MagicPower;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float SpeedCoefficient;
+	float MaxStamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float StaminaRecoveryRate; 
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// float StaminaRecoveryRate; 
 };

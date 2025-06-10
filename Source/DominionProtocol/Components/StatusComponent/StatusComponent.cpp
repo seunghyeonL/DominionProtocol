@@ -114,6 +114,32 @@ void UStatusComponent::SetStat(const FGameplayTag& StatTag, float Value)
 	// Debug::PrintError(TEXT("UStatusComponent::SetStat : Finding StatTag is not set."));
 }
 
+void UStatusComponent::UpdateStatPreviewData(FPlayerStatData& UIPlayerStatData)
+{
+	UIPlayerStatData.End = GetStat(StatTags::END);
+	UIPlayerStatData.Life = GetStat(StatTags::LIFE);
+	UIPlayerStatData.Spl = GetStat(StatTags::SPL);
+	UIPlayerStatData.Str = GetStat(StatTags::STR);
+	UIPlayerStatData.MaxHealth = GetStat(StatTags::MaxHealth);
+	UIPlayerStatData.MaxStamina = GetStat(StatTags::MaxStamina);
+	UIPlayerStatData.MagicPower = GetStat(StatTags::MagicPower);
+	UIPlayerStatData.PrimaryAttackPower = GetStat(StatTags::AttackPower);
+	UIPlayerStatData.SubAttackPower = GetStat(StatTags::SubAttackPower);
+}
+
+void UStatusComponent::DecideStatChangeFromUI(const FPlayerStatData& UIPlayerStatData)
+{
+	SetStat(StatTags::AttackPower, UIPlayerStatData.End);
+	SetStat(StatTags::LIFE, UIPlayerStatData.Life);
+	SetStat(StatTags::SPL, UIPlayerStatData.Spl);
+	SetStat(StatTags::STR, UIPlayerStatData.Str);
+	SetStat(StatTags::MaxHealth, UIPlayerStatData.MaxHealth);
+	SetStat(StatTags::MaxStamina, UIPlayerStatData.MaxStamina);
+	SetStat(StatTags::MagicPower, UIPlayerStatData.MagicPower);
+	SetStat(StatTags::AttackPower, UIPlayerStatData.PrimaryAttackPower);
+	SetStat(StatTags::SubAttackPower, UIPlayerStatData.SubAttackPower);
+}
+
 void UStatusComponent::SetHealth(float NewHealth)
 {
 	ensure(StatMap.Contains(StatTags::MaxHealth));

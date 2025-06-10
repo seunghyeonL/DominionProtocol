@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "EnumAndStruct/EffectData/EffectUIData.h"
+#include "EnumAndStruct/PlayerStatData/PlayerStatData.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
 #include "StatusComponent.generated.h"
@@ -89,6 +90,9 @@ public:
 	
 	float GetStat(const FGameplayTag& StatTag) const;
 	void SetStat(const FGameplayTag& StatTag, float Value);
+
+	void UpdateStatPreviewData(FPlayerStatData& UIPlayerStatData);
+	void DecideStatChangeFromUI(const FPlayerStatData& UIPlayerStatData);
 	
 	void SetHealth(const float NewHealth);
 	void SetMaxHealth(const float NewMaxHealth);

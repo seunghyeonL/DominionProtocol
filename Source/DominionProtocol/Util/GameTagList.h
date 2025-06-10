@@ -57,7 +57,7 @@ namespace StatTags
 	inline const FGameplayTag MaxHealth = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxHealth"));
 	inline const FGameplayTag MaxStamina = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxStamina"));
 	inline const FGameplayTag AttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.AttackPower"));
-	inline const FGameplayTag AttackPowerSub = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.AttackPowerSub"));
+	inline const FGameplayTag SubAttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.SubAttackPower"));
 	inline const FGameplayTag MagicPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MagicPower"));
 	inline const FGameplayTag StaminaRecoveryRate = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.StaminaRecoveryRate"));
 	inline const FGameplayTag SpeedCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.SpeedCoefficient"));
