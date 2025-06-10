@@ -48,15 +48,18 @@ namespace EffectTags
 namespace StatTags
 {
 	// BaseStatTags
+	inline const FGameplayTag BaseStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base"));
 	inline const FGameplayTag LIFE = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.LIFE"));
 	inline const FGameplayTag STR = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.STR"));
 	inline const FGameplayTag SPL = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.SPL"));
 	inline const FGameplayTag END = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.END"));
 
 	// BattleStatTags
+	inline const FGameplayTag BattleStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle"));
 	inline const FGameplayTag MaxHealth = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxHealth"));
 	inline const FGameplayTag MaxStamina = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxStamina"));
 	inline const FGameplayTag AttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.AttackPower"));
+	inline const FGameplayTag BaseAttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.BaseAttackPower"));
 	inline const FGameplayTag SubAttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.SubAttackPower"));
 	inline const FGameplayTag MagicPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MagicPower"));
 	inline const FGameplayTag StaminaRecoveryRate = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.StaminaRecoveryRate"));

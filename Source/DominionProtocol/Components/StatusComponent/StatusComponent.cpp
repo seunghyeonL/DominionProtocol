@@ -114,30 +114,65 @@ void UStatusComponent::SetStat(const FGameplayTag& StatTag, float Value)
 	// Debug::PrintError(TEXT("UStatusComponent::SetStat : Finding StatTag is not set."));
 }
 
-void UStatusComponent::UpdateStatPreviewData(FPlayerStatData& UIPlayerStatData)
+void UStatusComponent::GetPlayerStatData(TMap<FGameplayTag, float>& UIPlayerStatData)
 {
-	UIPlayerStatData.End = GetStat(StatTags::END);
-	UIPlayerStatData.Life = GetStat(StatTags::LIFE);
-	UIPlayerStatData.Spl = GetStat(StatTags::SPL);
-	UIPlayerStatData.Str = GetStat(StatTags::STR);
-	UIPlayerStatData.MaxHealth = GetStat(StatTags::MaxHealth);
-	UIPlayerStatData.MaxStamina = GetStat(StatTags::MaxStamina);
-	UIPlayerStatData.MagicPower = GetStat(StatTags::MagicPower);
-	UIPlayerStatData.PrimaryAttackPower = GetStat(StatTags::AttackPower);
-	UIPlayerStatData.SubAttackPower = GetStat(StatTags::SubAttackPower);
+	for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	{
+		UIStatValue = GetStat(UIStatTag);
+	}
 }
 
-void UStatusComponent::DecideStatChangeFromUI(const FPlayerStatData& UIPlayerStatData)
+void UStatusComponent::UpdateStatPreviewData(TMap<FGameplayTag, float>& UIPlayerStatData)
 {
-	SetStat(StatTags::AttackPower, UIPlayerStatData.End);
-	SetStat(StatTags::LIFE, UIPlayerStatData.Life);
-	SetStat(StatTags::SPL, UIPlayerStatData.Spl);
-	SetStat(StatTags::STR, UIPlayerStatData.Str);
-	SetStat(StatTags::MaxHealth, UIPlayerStatData.MaxHealth);
-	SetStat(StatTags::MaxStamina, UIPlayerStatData.MaxStamina);
-	SetStat(StatTags::MagicPower, UIPlayerStatData.MagicPower);
-	SetStat(StatTags::AttackPower, UIPlayerStatData.PrimaryAttackPower);
-	SetStat(StatTags::SubAttackPower, UIPlayerStatData.SubAttackPower);
+	for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	{
+		if (UIStatTag.MatchesTag(StatTags::BaseStat) && UIStatValue < GetStat(UIStatTag))
+		{
+			UIStatValue = GetStat(UIStatTag);
+		}
+	}
+
+	for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	{
+		if (UIStatTag.MatchesTag(StatTags::BattleStat))
+		{
+			UIStatValue = GetCalculatedBattleStat(UIStatTag, UIPlayerStatData);	
+		}
+	}
+}
+
+void UStatusComponent::DecideStatChangeFromUI(const TMap<FGameplayTag, float>& UIPlayerStatData)
+{
+	for (const auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	{
+		SetStat(UIStatTag, UIPlayerStatData[UIStatTag]);
+	}
+}
+
+float UStatusComponent::GetCalculatedBattleStat(const FGameplayTag& StatTag, const TMap<FGameplayTag, float>& InStatMap) const
+{
+	float result = 0.f;
+	if (StatTag.MatchesTag(StatTags::AttackPower))
+	{
+		result = GetStat(StatTags::BaseAttackPower) + 0.9f * FMath::Sqrt(InStatMap[StatTags::STR]);
+	}
+	else if (StatTag.MatchesTag(StatTags::SubAttackPower))
+	{
+		result = GetStat(StatTags::BaseAttackPower) + 0.8f * FMath::Sqrt(InStatMap[StatTags::STR]);
+	}
+	else if (StatTag.MatchesTag(StatTags::MagicPower))
+	{
+		result = 100.f + 0.9f * FMath::Sqrt(InStatMap[StatTags::SPL]);
+	}
+	else if (StatTag.MatchesTag(StatTags::MaxHealth))
+	{
+		result = 500.f + 100.f + FMath::Sqrt(InStatMap[StatTags::LIFE]);
+	}
+	else if (StatTag.MatchesTag(StatTags::MaxStamina))
+	{
+		result = 80.f + 25.f * FMath::Sqrt(InStatMap[StatTags::END]);
+	}
+	return result;
 }
 
 void UStatusComponent::SetHealth(float NewHealth)

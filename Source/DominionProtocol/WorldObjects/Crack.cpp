@@ -161,6 +161,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 			if (InGameHUDWidget)
 			{
 				InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
+				InGameHUDWidget->SwitchShowAndHideStatModifyWidget();
 			}
 
 			// 레벨업

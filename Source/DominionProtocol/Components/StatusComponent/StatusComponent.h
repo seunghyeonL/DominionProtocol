@@ -91,8 +91,12 @@ public:
 	float GetStat(const FGameplayTag& StatTag) const;
 	void SetStat(const FGameplayTag& StatTag, float Value);
 
-	void UpdateStatPreviewData(FPlayerStatData& UIPlayerStatData);
-	void DecideStatChangeFromUI(const FPlayerStatData& UIPlayerStatData);
+	// stat upgrade with ui
+	void GetPlayerStatData(TMap<FGameplayTag, float>& UIPlayerStatData);
+	void UpdateStatPreviewData(TMap<FGameplayTag, float>& UIPlayerStatData);
+	void DecideStatChangeFromUI(const TMap<FGameplayTag, float>& UIPlayerStatData);
+
+	float GetCalculatedBattleStat(const FGameplayTag& StatTag, const TMap<FGameplayTag, float>& InStatMap) const;
 	
 	void SetHealth(const float NewHealth);
 	void SetMaxHealth(const float NewMaxHealth);
@@ -125,7 +129,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats", meta=(AllowPrivateAccess=true))
 	TObjectPtr<UAIStateBase> AIState;
 	
