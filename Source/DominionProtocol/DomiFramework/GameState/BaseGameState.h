@@ -36,6 +36,8 @@ public:
 	FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
 	FEffectInitializeData* GetEffectInitializeData(const FGameplayTag EffectTag) const;
 	FORCEINLINE ACrack* GetCrackByIndex(int32 InCrackIndex) const {return AllCracksCache[InCrackIndex]; }
+
+	void ApplyAllSaveData();
 	
 	void CacheAllCracks();
 	

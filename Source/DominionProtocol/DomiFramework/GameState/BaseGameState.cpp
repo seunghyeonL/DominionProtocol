@@ -46,6 +46,7 @@ void ABaseGameState::InitializeGameInstance()
 {
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	check(IsValid(GameInstance));
+	GameInstance->SetWorldCache(World);
 }
 
 void ABaseGameState::InitializeWorldInstanceSubsystem()
@@ -106,6 +107,16 @@ FEffectInitializeData* ABaseGameState::GetEffectInitializeData(const FGameplayTa
 	check(EffectInitializeDataTable);
 
 	return EffectInitializeDataTable->FindRow<FEffectInitializeData>(EffectTag.GetTagName(), TEXT(""));
+}
+
+void ABaseGameState::ApplyAllSaveData()
+{
+	check(IsValid(GameInstance));
+	check(IsValid(WorldInstanceSubsystem));
+	check(IsValid(SoundSubsystem));
+	check(IsValid(ItemInstanceSubsystem));
+
+	GameInstance->ApplySaveData();
 }
 
 void ABaseGameState::CacheAllCracks()
