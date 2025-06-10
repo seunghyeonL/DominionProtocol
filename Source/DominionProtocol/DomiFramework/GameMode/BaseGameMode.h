@@ -52,6 +52,8 @@ public:
 	virtual void EndBattle();
 
 	virtual void OnPlayerDeath();
+
+	void RestorePlayer();
 	
 	void RespawnPlayerCharacter();
 	

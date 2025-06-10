@@ -109,7 +109,7 @@ void ABaseGameMode::StartPlay()
 	BaseGameState->InitializeCrackDataMap();
 	RecentCrackCache = BaseGameState->FindNearestCrack();
 	BaseGameState->LoadItemDataFromInstance();
-	BaseGameState->ApplyAllSaveData();
+	//BaseGameState->ApplyAllSaveData();
 	
 	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
@@ -179,6 +179,23 @@ void ABaseGameMode::OnPlayerDeath()
 		false);
 }
 
+void ABaseGameMode::RestorePlayer()
+{
+	//체력회복
+	StatusComponent = PlayerCharacter->GetStatusComponent();
+	if (IsValid(StatusComponent))
+	{
+		StatusComponent->SetHealth(BIG_NUMBER);
+	}
+		
+	//회복 포션 개수 -> Max 회복
+	ItemComponent = PlayerCharacter->GetItemComponent();
+	if (IsValid(ItemComponent))
+	{
+		ItemComponent->RestorePotion();
+	}
+}
+
 void ABaseGameMode::RespawnPlayerCharacter()
 {
 	DestroyAllNormalEnemy();
@@ -221,7 +238,8 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		StatusComponent->SetHealth(UE_BIG_NUMBER);
 		TObjectPtr<UPlayerControlComponent> PlayerControlComponent = PlayerCharacter->GetPlayerControlComponent();
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::Death);
-
+		RestorePlayer();
+		
 		ExitAudioComponent->Play();
 		
 		// Using InGameHUD

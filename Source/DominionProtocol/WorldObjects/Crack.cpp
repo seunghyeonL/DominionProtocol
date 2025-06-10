@@ -117,19 +117,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (PlayerCharacter)
 	{
-		//체력회복
-		UStatusComponent* StatusComponent = PlayerCharacter->GetStatusComponent();
-		if (IsValid(StatusComponent))
-		{
-			StatusComponent->SetHealth(BIG_NUMBER);
-		}
-		
-		//회복 포션 개수 -> Max 회복
-		UItemComponent* ItemComponent = PlayerCharacter->GetItemComponent();
-		if (IsValid(ItemComponent))
-		{
-			ItemComponent->RestorePotion();
-		}
+		BaseGameMode->RestorePlayer();
 
 		// 적 몬스터 초기화
 		BaseGameMode->RespawnEnemies();
