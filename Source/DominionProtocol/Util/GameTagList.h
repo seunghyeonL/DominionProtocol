@@ -121,6 +121,7 @@ namespace SkillTags
 	inline const FGameplayTag MagicZoneyaSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Zoneya"));
 	inline const FGameplayTag MagicInfiniteStaminaSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.InfiniteStamina"));
 	inline const FGameplayTag MagicTeleportSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Teleport"));
+	inline const FGameplayTag MagicItemScanningSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.MagicItemScanningSkill"));	
 
 	// NomalMonster
 	inline const FGameplayTag AxeSkeletonComboAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.AxeSkeleton.ComboAttack"));
