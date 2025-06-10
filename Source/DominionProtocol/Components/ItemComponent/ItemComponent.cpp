@@ -548,7 +548,7 @@ FName UItemComponent::GetRegisteredSlotName(FGameplayTag ItemTag)
 //소비아이템 사용
 void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableItemTag)
 {
-
+	
 	FGameplayTag ItemToUse;
 	
 	if (SlotName != NAME_None)
@@ -579,7 +579,7 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 					// Consume 인터페이스 실행 (소비 주체 전달)
 					PlayConsumeSound();
 					IConsumableItemInterface::Execute_Consume(ConsumableActor, GetOwner());
-
+					
 					// Activate ConsumingItemEffect
 					if (auto ControlComponent = Cast<ACharacter>(GetOuter())->FindComponentByClass<UPlayerControlComponent>())
 					{
