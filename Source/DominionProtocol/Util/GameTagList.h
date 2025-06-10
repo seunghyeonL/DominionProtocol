@@ -13,6 +13,7 @@ namespace EffectTags
 	inline const FGameplayTag UsingParry = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Parry"));
 	inline const FGameplayTag UsingZoneya = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Zoneya"));
 	inline const FGameplayTag UsingTeleport = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Teleport"));
+	inline const FGameplayTag UsingItemScanning = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.ItemScanning"));
 	inline const FGameplayTag LockOn = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.LockOn"));
 	inline const FGameplayTag Groggy = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Groggy"));
 	inline const FGameplayTag Parried = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Parried"));
@@ -121,7 +122,7 @@ namespace SkillTags
 	inline const FGameplayTag MagicZoneyaSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Zoneya"));
 	inline const FGameplayTag MagicInfiniteStaminaSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.InfiniteStamina"));
 	inline const FGameplayTag MagicTeleportSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Teleport"));
-	inline const FGameplayTag MagicItemScanningSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.MagicItemScanningSkill"));	
+	inline const FGameplayTag MagicItemScanningSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.ItemScanningSkill"));	
 
 	// NomalMonster
 	inline const FGameplayTag AxeSkeletonComboAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.AxeSkeleton.ComboAttack"));

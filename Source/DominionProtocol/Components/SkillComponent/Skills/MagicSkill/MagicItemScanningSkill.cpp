@@ -2,13 +2,17 @@
 #include "Engine/World.h"
 #include "Util/DebugHelper.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 #include "Engine/PostProcessVolume.h"
 #include "Materials/MaterialInterface.h"
+#include "Components/SkillComponent/SkillComponent.h"
 
 UMagicItemScanningSkill::UMagicItemScanningSkill()
 {
 	SkillTag = SkillTags::MagicItemScanningSkill;
+	ControlEffectTag = EffectTags::UsingItemScanning;
 	bIsBackupValid = false;
+	Duration = 5.0f;
 }
 
 void UMagicItemScanningSkill::Execute()
@@ -23,12 +27,8 @@ void UMagicItemScanningSkill::Execute()
 		BackupOriginalBlendables();
 		SwapPostProcessMaterial();
 	}
-}
 
-void UMagicItemScanningSkill::EndSkill()
-{
-	// 원본 PostProcess 설정 복원
-	RestoreOriginalPostProcess();
+	GetWorld()->GetTimerManager().SetTimer(ScanningTimerHandle, this, &UMagicItemScanningSkill::EndScannning, Duration, false);
 }
 
 void UMagicItemScanningSkill::Tick(float DeltaTime)
@@ -133,4 +133,17 @@ void UMagicItemScanningSkill::LoadScanMaterial()
 			*MaterialPath);
 		Debug::Print(Msg);
 	}
+}
+
+void UMagicItemScanningSkill::EndScannning()
+{
+	// 원본 PostProcess 설정 복원
+	RestoreOriginalPostProcess();
+
+	OwnerCharacter->GetMesh()->bPauseAnims = false;
+
+	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+
+	check(SkillComponent);
+	SkillComponent->EndSkill();
 }

@@ -16,7 +16,7 @@ public:
 
     virtual void Execute() override;
 
-    void EndSkill();  // 스킬 종료 함수 추가
+    void EndScannning();
 
 private:
     virtual void Tick(float DeltaTime) override;
@@ -55,6 +55,10 @@ private:
     // 백업이 되었는지 확인하는 플래그
     UPROPERTY()
     bool bIsBackupValid;
+
+    FTimerHandle ScanningTimerHandle;
+
+    float Duration;
 };
 
 //TObjectPtr<UMaterialParameterCollectionInstance> ScanPulseInstance;
