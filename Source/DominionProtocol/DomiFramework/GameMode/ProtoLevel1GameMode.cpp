@@ -19,9 +19,9 @@ void AProtoLevel1GameMode::StartPlay()
 	Super::StartPlay();
 }
 
-void AProtoLevel1GameMode::StartBattle(FGameplayTag BossTag, ABossRoomDoor* BossDoor)
+void AProtoLevel1GameMode::StartBattle()
 {
-	Super::StartBattle(BossTag, BossDoor);
+	Super::StartBattle();
 }
 
 void AProtoLevel1GameMode::EndBattle()

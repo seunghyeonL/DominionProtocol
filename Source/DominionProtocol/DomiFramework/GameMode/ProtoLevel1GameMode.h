@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Engine/TriggerBox.h"
-#include "WorldObjects/BossRoomDoor.h"
 #include "AI/AICharacters/BaseEnemy.h"
 #include "Engine/TargetPoint.h"
 #include "ProtoLevel1GameMode.generated.h"
@@ -21,7 +20,7 @@ protected:
 	virtual void StartPlay() override;
 
 	UFUNCTION()
-	void StartBattle(FGameplayTag BossTag, ABossRoomDoor* BossDoor) override;
+	void StartBattle() override;
 	UFUNCTION()
 	void EndBattle() override;
 

@@ -153,7 +153,7 @@ void ABaseGameMode::StartPlay()
 	PlayFade(true);
 }
 
-void ABaseGameMode::StartBattle(FGameplayTag BossTag, ABossRoomDoor* BossDoor)
+void ABaseGameMode::StartBattle()
 {
 }
 

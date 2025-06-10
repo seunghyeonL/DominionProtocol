@@ -6,7 +6,6 @@
 #include "LevelSequence.h"
 #include "GameFramework/GameMode.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
-#include "WorldObjects/BossRoomDoor.h"
 #include "BaseGameMode.generated.h"
 
 class UItemComponent;
@@ -49,7 +48,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void StartPlay() override;
 	
-	virtual void StartBattle(FGameplayTag BossTag, ABossRoomDoor* BossDoor);
+	virtual void StartBattle();
 	virtual void EndBattle();
 
 	virtual void OnPlayerDeath();
