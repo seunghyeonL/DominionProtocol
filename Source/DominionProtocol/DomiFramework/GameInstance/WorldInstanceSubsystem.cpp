@@ -22,6 +22,16 @@ void UWorldInstanceSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
+void UWorldInstanceSubsystem::LoadSaveData(const FWorldInstanceSubsystemData& SaveData)
+{
+}
+
+FWorldInstanceSubsystemData UWorldInstanceSubsystem::GetSaveData()
+{
+	FWorldInstanceSubsystemData SaveData;
+	return SaveData;
+}
+
 void UWorldInstanceSubsystem::InitializeCrackDataMap(FCrackData Level1, FCrackData Level2)
 {
 	if (!CrackDataMap.Contains(Level1.OwnerLevelName))

@@ -6,6 +6,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "EnumAndStruct/FWorldActorData.h"
+#include "EnumAndStruct/FWorldInstanceSubsystemData.h"
 #include "WorldInstanceSubsystem.generated.h"
 
 class ADropEssence;
@@ -20,6 +21,10 @@ class DOMINIONPROTOCOL_API UWorldInstanceSubsystem : public UGameInstanceSubsyst
 
 //Functions
 public:
+	//Save & Load
+	void LoadSaveData(const FWorldInstanceSubsystemData& SaveData);
+	FWorldInstanceSubsystemData GetSaveData();
+	
 	void InitializeCrackDataMap(FCrackData Level1, FCrackData Level2);
 	
 	//Setter
