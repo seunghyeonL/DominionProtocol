@@ -70,11 +70,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable Effect")
 	class UNiagaraSystem* ConsumeNiagaraSystem;
 
+	//(UI)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	TMap<FGameplayTag,float> StatChangeMap;
+
+	//(UI)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	FText ConsumableEffectText;
+
 };
-
-// Item.Consume.이름
-// Item.Equip.Weapon.이름
-// Item.Misc.이름
-
-// 무기?
-// SkillData
