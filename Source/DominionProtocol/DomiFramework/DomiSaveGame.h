@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
 #include "EnumAndStruct/FInstanceData.h"
+#include "EnumAndStruct/FItemSubsystemData.h"
 #include "EnumAndStruct/FSoundSubsystemData.h"
+#include "EnumAndStruct/FWorldInstanceSubsystemData.h"
 #include "DomiSaveGame.generated.h"
 
 UCLASS()
@@ -19,4 +21,10 @@ public:
 
 	UPROPERTY()
 	FSoundSubsystemData SoundSubsystemData;
+
+	UPROPERTY()
+	FItemSubsystemData ItemSubsystemData;
+
+	UPROPERTY()
+	FWorldInstanceSubsystemData WorldInstanceSubsystemData;
 };
