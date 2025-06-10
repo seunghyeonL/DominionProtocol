@@ -4,7 +4,9 @@
 #include "SaveManagerSubsystem.h"
 
 #include "DomiGameInstance.h"
+#include "ItemInstanceSubsystem.h"
 #include "SoundInstanceSubsystem.h"
+#include "WorldInstanceSubsystem.h"
 #include "DomiFramework/DomiSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -28,6 +30,20 @@ bool USaveManagerSubsystem::SaveGame(const FString& SlotName, int32 UserIndex)
 	if (IsValid(SoundSubsystem))
 	{
 		SaveGameInstance->SoundSubsystemData = SoundSubsystem->GetSaveData();
+	}
+
+	//ItemInstanceSubsystem 저장할 데이터 구조체(FItemInstanceSubsystem)로 Get
+	UItemInstanceSubsystem* ItemInstanceSubsystem = GameInstance->GetSubsystem<UItemInstanceSubsystem>();
+	if (IsValid(ItemInstanceSubsystem))
+	{
+		SaveGameInstance->ItemSubsystemData = ItemInstanceSubsystem->GetSaveData();
+	}
+
+	//WorldInstanceSubsystem 저장할 데이터 구조체(FWorldInstanceSubsystem)로 Get
+	UWorldInstanceSubsystem* WorldInstanceSubsystem = GameInstance->GetSubsystem<UWorldInstanceSubsystem>();
+	if (IsValid(WorldInstanceSubsystem))
+	{
+		SaveGameInstance->WorldInstanceSubsystemData = WorldInstanceSubsystem->GetSaveData();
 	}
 
 	//저장 실행
@@ -61,6 +77,20 @@ bool USaveManagerSubsystem::LoadGame(const FString& SlotName, int32 UserIndex)
 	if (IsValid(SoundSubsystem))
 	{
 		SoundSubsystem->LoadSaveData(LoadedGame->SoundSubsystemData);
+	}
+
+	//ItemInstanceSubsystem SaveData Load(FSoundSubsystemData)
+	UItemInstanceSubsystem* ItemInstanceSubsystem = GameInstance->GetSubsystem<UItemInstanceSubsystem>();
+	if (IsValid(ItemInstanceSubsystem))
+	{
+		ItemInstanceSubsystem->LoadSaveData(LoadedGame->ItemSubsystemData);
+	}
+
+	//WorldInstanceSubsystem SaveData Load(FSoundSubsystemData)
+	UWorldInstanceSubsystem* WorldInstanceSubsystem = GameInstance->GetSubsystem<UWorldInstanceSubsystem>();
+	if (IsValid(WorldInstanceSubsystem))
+	{
+		WorldInstanceSubsystem->LoadSaveData(LoadedGame->WorldInstanceSubsystemData);
 	}
 
 	Debug::Print(TEXT("Success Load All Data "));
