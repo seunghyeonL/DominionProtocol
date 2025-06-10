@@ -228,6 +228,11 @@ namespace ItemTags
 	inline const FGameplayTag AccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory"));
 	inline const FGameplayTag RingOfHealthAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.RingOfHealth"));
 	inline const FGameplayTag NecklaceOfStaminaAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.NecklaceOfStamina"));
+	inline const FGameplayTag EaringOfAttackPowerAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.EaringOfAttackPower"));
+	inline const FGameplayTag SlowImmuneAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.SlowImmuneAc"));
+	inline const FGameplayTag BurnImmuneAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.BurnImmuneAc"));
+	inline const FGameplayTag PoisonImmuneAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.PoisonImmuneAc"));
+	inline const FGameplayTag AttackDownImmuneAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.AttackDownImmuneAc"));
 
 	//Consumable Item Tags
 	inline const FGameplayTag ConsumableItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable"));
