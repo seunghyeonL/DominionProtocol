@@ -14,7 +14,7 @@
 UBaseSkill::UBaseSkill()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
-
+	bIsMagicSkill = false;
 	AnimPlayRate = 1.0f;
 }
 
@@ -186,15 +186,9 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 	}
 	
 	FAttackData AttackData;
+
+	AttackData.Damage = GetFinalAttackData();
 	
-	UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
-
-	if (IsValid(StatusComponent))
-	{
-		float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-
-		AttackData.Damage = GetFinalAttackData(AttackPower);
-	}
 	
 	AttackData.Instigator = OwnerCharacter;
 	AttackData.Effects = Effects;
@@ -218,9 +212,16 @@ void UBaseSkill::Tick(float DeltaTime)
 {
 }
 
-float UBaseSkill::GetFinalAttackData(const float AttackPower) const
+float UBaseSkill::GetFinalAttackData() const
 {
-	return AttackPower * DamageCoefficient;
+	UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
+
+	if (IsValid(StatusComponent))
+	{
+		return bIsMagicSkill ? StatusComponent->GetStat(StatTags::MagicPower) : StatusComponent->GetStat(StatTags::AttackPower);
+	}
+	
+	return 0.f;
 }
 
 bool UBaseSkill::CheckParry(AActor* HitActor) const

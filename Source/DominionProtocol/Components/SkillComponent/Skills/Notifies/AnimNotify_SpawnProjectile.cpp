@@ -98,11 +98,13 @@ void UAnimNotify_SpawnProjectile::ProjectileFromPool()
 	
 		UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
 	
-		if (IsValid(StatusComponent))
-		{
-			float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
-			AttackData.Damage = CurrentSkill->GetFinalAttackData(AttackPower);
-		}
+		// if (IsValid(StatusComponent))
+		// {
+		// 	float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+		// 	AttackData.Damage = CurrentSkill->GetFinalAttackData();
+		// }
+
+		AttackData.Damage = CurrentSkill->GetFinalAttackData();
 	
 		AttackData.Instigator = OwnerCharacter;
 		AttackData.Effects = CurrentSkill->GetEffects();

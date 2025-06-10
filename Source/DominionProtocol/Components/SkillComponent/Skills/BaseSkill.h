@@ -44,10 +44,12 @@ public:
 	FORCEINLINE const TArray<UNiagaraSystem*>& GetNiagaraParticles() const { return NiagaraParticles; }
 	FORCEINLINE const TArray<FEffectData>& GetEffects() const { return Effects; }
 	FORCEINLINE float GetDamageCoefficient() const { return DamageCoefficient; }
-	float GetFinalAttackData(const float AttackPower) const;
+	float GetFinalAttackData() const;
 
 protected:
 	virtual bool CheckParry(AActor* HitActor) const;
+
+	bool bIsMagicSkill;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner")
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;

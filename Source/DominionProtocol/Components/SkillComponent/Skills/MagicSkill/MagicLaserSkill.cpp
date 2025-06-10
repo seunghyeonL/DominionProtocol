@@ -64,25 +64,28 @@ void UMagicLaserSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const 
 
 	FAttackData AttackData;
 
-	UWorld* World = GetWorld();
+	// UWorld* World = GetWorld();
 
-	if (IsValid(World))
-	{
-		ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+	// if (IsValid(World))
+	// {
+	// 	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+	//
+	// 	if (IsValid(BaseGameState))
+	// 	{
+	// 		UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
+	//
+	// 		if (IsValid(StatusComponent))
+	// 		{
+	// 			float AttackPower = StatusComponent->GetStat(StatTags::AttackPower) * DeltaTime;
+	//
+	// 			AttackData.Damage = GetFinalAttackData();
+	// 		}
+	// 	}
+	// 	
+	// }
 
-		if (IsValid(BaseGameState))
-		{
-			UStatusComponent* StatusComponent = OwnerCharacter->FindComponentByClass<UStatusComponent>();
-
-			if (IsValid(StatusComponent))
-			{
-				float AttackPower = StatusComponent->GetStat(StatTags::AttackPower) * DeltaTime;
-
-				AttackData.Damage = GetFinalAttackData(AttackPower);
-			}
-		}
-	}
-
+	AttackData.Damage = GetFinalAttackData() * DeltaTime;
+	
 	AttackData.Instigator = OwnerCharacter;
 	AttackData.Effects = Effects;
 

@@ -16,7 +16,7 @@ struct FPlayerStatData
 	float Life;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Dex;
+	float Spl;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float End;
