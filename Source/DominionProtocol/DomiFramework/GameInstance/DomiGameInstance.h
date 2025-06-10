@@ -26,8 +26,13 @@ public:
 	//Save & Load
 	void LoadSaveData(const FInstanceData& SaveData);
 	FInstanceData GetSaveData() const;
+
+	void ApplySaveData();
 	
 	//Setter
+
+	FORCEINLINE void SetWorldCache(UWorld* NewWorld) { World = NewWorld; }
+	
 	void SetIsBossDead(FGameplayTag BossTag);
 	
 	void SetCurrentGameStoryState(EGameStoryState NewGameStoryState);
@@ -45,10 +50,14 @@ public:
 		PlayerCurrentEssence = FMath::Max(0, PlayerCurrentEssence - SubtractEssenceValue);
 		return true;
 	}
+
+	FORCEINLINE void SetStatDataMap(TMap<FGameplayTag, float> NewStatDataMap) { StatDataMap.Append(NewStatDataMap); }
 	
 	//Getter
 	UFUNCTION(BlueprintCallable)
 	int32 GetPlayerCurrentEssence() const { return PlayerCurrentEssence; }
+
+	FORCEINLINE const TMap<FGameplayTag, float>& GetStatDataMap() const { return StatDataMap; }
 	
 	bool GetIsBossDead(FGameplayTag BossTag) const;
 	
@@ -64,7 +73,14 @@ private:
 	TSet<FGameplayTag> DeadBossTags;
 
 	UPROPERTY()
+	TMap<FGameplayTag, float> StatDataMap;
+
+	UPROPERTY()
 	EGameStoryState CurrentGameStoryState;
+
+	//Not Save Data
+	UPROPERTY()
+	TObjectPtr<UWorld> World;
 
 #pragma endregion
 

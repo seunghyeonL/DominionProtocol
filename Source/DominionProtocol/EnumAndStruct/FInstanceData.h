@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Util/GameTagList.h"
 #include "FInstanceData.generated.h"
 
 USTRUCT(BlueprintType)
@@ -11,17 +12,8 @@ struct FInstanceData
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<bool> IsBossDeadArray;
+	TMap<FGameplayTag, float> StatDataMap;
 
 	UPROPERTY()
-	FString CurrentLevelName;
-
-	UPROPERTY()
-	FText CurrentLevelDisplayName;
-
-	UPROPERTY()
-	FText RecentCrackName;
-
-	UPROPERTY()
-	int32 RecentCrackIndex;
+	int32 PlayerCurrentEssence;
 };

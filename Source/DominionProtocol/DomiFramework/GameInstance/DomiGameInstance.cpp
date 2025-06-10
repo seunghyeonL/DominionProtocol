@@ -2,6 +2,9 @@
 
 
 #include "DomiGameInstance.h"
+
+#include "Components/StatusComponent/StatusComponent.h"
+#include "Player/Characters/DomiCharacter.h"
 #include "EnumAndStruct/EGameStoryState.h"
 #include "WorldObjects/Crack.h"
 #include "Util/DebugHelper.h"
@@ -16,24 +19,28 @@ void UDomiGameInstance::Init()
 
 void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)
 {
-	// DeadBossTags = SaveData.DeadBossTags;
-	// CurrentLevelName = SaveData.CurrentLevelName;
-	// CurrentLevelDisplayName = SaveData.CurrentLevelDisplayName;
-	// RecentCrackName = SaveData.RecentCrackName;
-	// RecentCrackIndex = SaveData.RecentCrackIndex;
-	// CurrentGameStoryState = SaveData.CurrentGameStoryState;
+	PlayerCurrentEssence = SaveData.PlayerCurrentEssence;
+	StatDataMap = SaveData.StatDataMap;
 }
 
 FInstanceData UDomiGameInstance::GetSaveData() const
 {
 	FInstanceData SaveData;
-	// SaveData.DeadBossTags = DeadBossTags;
-	// SaveData.CurrentLevelName = CurrentLevelName;
-	// SaveData.CurrentLevelDisplayName = CurrentLevelDisplayName;
-	// SaveData.RecentCrackName = RecentCrackName;
-	// SaveData.RecentCrackIndex = RecentCrackIndex;
-	// SaveData.CurrentGameStoryState = CurrentGameStoryState;
+	SaveData.StatDataMap = StatDataMap;
+	SaveData.PlayerCurrentEssence = PlayerCurrentEssence;
 	return SaveData;
+}
+
+void UDomiGameInstance::ApplySaveData()
+{
+	if (IsValid(World))
+	{
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(World->GetFirstPlayerController()->GetPawn());
+		if (IsValid(PlayerCharacter))
+		{
+			PlayerCharacter->GetStatusComponent()->SetStatMap(StatDataMap);
+		}
+	}
 }
 
 void UDomiGameInstance::SetIsBossDead(FGameplayTag BossTag)
