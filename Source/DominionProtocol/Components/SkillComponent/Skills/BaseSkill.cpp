@@ -218,7 +218,8 @@ float UBaseSkill::GetFinalAttackData() const
 
 	if (IsValid(StatusComponent))
 	{
-		return bIsMagicSkill ? StatusComponent->GetStat(StatTags::MagicPower) : StatusComponent->GetStat(StatTags::AttackPower);
+		float DependentStat = bIsMagicSkill ? StatusComponent->GetStat(StatTags::MagicPower) : StatusComponent->GetStat(StatTags::AttackPower);
+		return DependentStat * DamageCoefficient;
 	}
 	
 	return 0.f;
