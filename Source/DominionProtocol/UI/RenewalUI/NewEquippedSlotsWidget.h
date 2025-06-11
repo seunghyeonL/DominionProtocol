@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemInventory/ItemUISlotData.h"
 #include "Blueprint/UserWidget.h"
 #include "NewEquippedSlotsWidget.generated.h"
 
-
-struct FItemUISlotData;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UNewEquippedSlotsWidget : public UUserWidget
