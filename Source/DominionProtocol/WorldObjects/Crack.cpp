@@ -26,13 +26,14 @@ DEFINE_LOG_CATEGORY(LogCrackSystem);
 
 // Sets default values
 ACrack::ACrack()
-	:	bBlockInteract(false),
-		CrackName(FText::GetEmpty()),
-		CrackIndex(0),
-		InteractableRadius(150.f),
-		ActivationDistanceCalculateRadius(1500.f),
-		Distance(1600.f),
-		bIsActivate(false)
+	: CrackName(FText::GetEmpty()),
+	  CrackIndex(0),
+	  bIsBossRoomCrack(false),
+	  InteractableRadius(150.f),
+	  ActivationDistanceCalculateRadius(1500.f),
+	  Distance(1600.f),
+	  bIsActivate(false),
+	  bBlockInteract(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -60,16 +61,25 @@ void ACrack::BeginPlay()
 	BGMAudioComponent->AttenuationSettings = SoundAttenuation;
 	BGMAudioComponent->bAutoActivate = true;
 	BGMAudioComponent->Play();
-	
+
 	DistanceCalculateRadiusSquared = ActivationDistanceCalculateRadius * ActivationDistanceCalculateRadius;
 	InteractableRadiusSquared = InteractableRadius * InteractableRadius;
 
 	RespawnTargetPoint = Cast<ATargetPoint>(RespawnTargetPointComp->GetChildActor());
 
+	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+	check(IsValid(GameInstance));
+
 	WorldInstanceSubsystem = GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
-	check(WorldInstanceSubsystem);
+	check(IsValid(WorldInstanceSubsystem));
 
 	BaseGameMode = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this));
+	check(IsValid(BaseGameMode));
+
+	if (bIsBossRoomCrack)
+	{
+		GameInstance->OnStoryStateChanged.AddDynamic(this, &ACrack::OnStoryStateChanged);
+	}
 
 	GetWorldTimerManager().SetTimer(
 		DetectionTimerHandle,
@@ -79,12 +89,21 @@ void ACrack::BeginPlay()
 		true);
 }
 
+void ACrack::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	if (IsValid(GameInstance))
+	{
+		GameInstance->OnStoryStateChanged.RemoveDynamic(this, &ACrack::OnStoryStateChanged);
+	}
+}
+
 void ACrack::Interact_Implementation(AActor* Interactor)
 {
-	if (bBlockInteract) return;
-	
-	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-	if (!GameInstance) return;
+	if (bBlockInteract)
+	{
+		return;
+	}
 
 	//최근 균열 업데이트
 	BaseGameMode->SetRecentCrackCache(this);
@@ -121,10 +140,10 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	}
 	
 	// 3. 기능
-	
+
 	// 적 몬스터 All Destroy
 	BaseGameMode->DestroyAllNormalEnemy();
-	
+
 	auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (PlayerCharacter)
 	{
@@ -132,7 +151,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 
 		// 적 몬스터 초기화
 		BaseGameMode->RespawnEnemies();
-		
+
 		auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
 		if (PlayerController)
 		{
@@ -154,6 +173,26 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 FText ACrack::GetInteractMessage_Implementation() const
 {
 	return FText::FromString(TEXT("균열과 상호작용"));
+}
+
+void ACrack::OnStoryStateChanged(EGameStoryState NewState)
+{
+	bool bIsBossSameLinkedBossClass = false;
+
+	if (static_cast<int32>(NewState) < static_cast<int32>(RequiredRevealStoryState))
+	{
+		SetActorHiddenInGame(true);
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		BGMAudioComponent->Stop();
+		bBlockInteract = true;
+	}
+	else
+	{
+		SetActorHiddenInGame(false);
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		BGMAudioComponent->Play();
+		bBlockInteract = false;
+	}
 }
 
 void ACrack::CheckPlayerInActivationRange()

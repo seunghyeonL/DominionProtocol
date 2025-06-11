@@ -7,6 +7,9 @@
 #include "Interface/InteractableInterface.h"
 #include "Crack.generated.h"
 
+enum class EGameStoryState : uint8;
+class ABaseBossEnemy;
+class UDomiGameInstance;
 class UWorldInstanceSubsystem;
 class ABaseGameMode;
 class ATargetPoint;
@@ -40,15 +43,20 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	//Interact
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
 
+	UFUNCTION()
+	void OnStoryStateChanged(EGameStoryState NewState);
+	
 private:
 	void CheckPlayerInActivationRange();
 	void CheckPlayerInInteractionRange();
 	void SetDetailDetection(bool bEnable);
+	
 
 #pragma endregion
 
@@ -56,10 +64,6 @@ private:
 	
 #pragma region Variables
 
-public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	bool bBlockInteract;
-	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<USceneComponent> SceneComp;
@@ -91,6 +95,12 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	int32 CrackIndex;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	EGameStoryState RequiredRevealStoryState;
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	bool bIsBossRoomCrack;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float InteractableRadius;
 
@@ -104,6 +114,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<ABaseGameMode> BaseGameMode;
 
+	UPROPERTY()
+	TObjectPtr<UDomiGameInstance> GameInstance;
+	
 	UPROPERTY()
 	TObjectPtr<UWorldInstanceSubsystem> WorldInstanceSubsystem;
 
@@ -120,6 +133,8 @@ private:
 	float Distance;
 	
 	bool bIsActivate;
+
+	bool bBlockInteract;
 	
 	FTimerHandle DetectionTimerHandle;
 	FTimerHandle DetailDetectionTimerHandle;
