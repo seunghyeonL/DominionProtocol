@@ -62,8 +62,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
 	UStaticMeshComponent* DoorMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
+	UStaticMeshComponent* DoorMesh2;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UBoxComponent* BoxCollisionComp;
+
+	UPROPERTY()
+	USceneComponent* LeftDoorPivot;
+
+	UPROPERTY()
+	USceneComponent* RightDoorPivot;
 
 	FTimeline Timeline;
 	UPROPERTY(EditAnywhere)
@@ -73,7 +82,10 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float DoorRotateAngle;
- 
+
+	UPROPERTY(EditAnywhere)
+	bool bOpenOnceForBoss;
+
 private:
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;

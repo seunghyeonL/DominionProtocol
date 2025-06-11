@@ -12,9 +12,21 @@ ADoor::ADoor()
 	SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
 	SetRootComponent(SceneComp);
 
+	LeftDoorPivot = CreateDefaultSubobject<USceneComponent>(TEXT("LeftDoorPivot"));
+	LeftDoorPivot->SetupAttachment(SceneComp);
+	LeftDoorPivot->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+
+	RightDoorPivot = CreateDefaultSubobject<USceneComponent>(TEXT("RightDoorPivot"));
+	RightDoorPivot->SetupAttachment(SceneComp);
+	RightDoorPivot->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
-	DoorMesh->SetupAttachment(SceneComp);
+	DoorMesh->SetupAttachment(LeftDoorPivot);
 	DoorMesh->SetCollisionProfileName(TEXT("BlockAll"));
+
+	DoorMesh2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh2"));
+	DoorMesh2->SetupAttachment(RightDoorPivot);
+	DoorMesh2->SetCollisionProfileName(TEXT("BlockAll"));
 
 	BoxCollisionComp = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	BoxCollisionComp->SetupAttachment(SceneComp);
@@ -54,7 +66,12 @@ void ADoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 
 	if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
 	{
-		Debug::Print(TEXT("Not Player"));
+		Debug::Print(TEXT("Door: Not Player"));
+		return;
+	}
+
+	if (bOpenOnceForBoss)
+	{
 		return;
 	}
 
@@ -87,6 +104,10 @@ void ADoor::MoveDoor(float Value)
 	FRotator Rot = FRotator(0.f, DoorRotateAngle * Value, 0.f);
 
 	DoorMesh->SetRelativeRotation(Rot);
+	if (DoorMesh2)
+	{
+		DoorMesh2->SetRelativeRotation(FRotator(0.f, 180 - DoorRotateAngle * Value, 0.f));
+	}
 }
 
 void ADoor::OpenDoor()
@@ -94,6 +115,10 @@ void ADoor::OpenDoor()
 	if (!bIsDoorClosed || Timeline.IsPlaying()) return;
 
 	DoorMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	if (DoorMesh2)
+	{
+		DoorMesh2->SetCollisionProfileName(TEXT("NoCollision"));
+	}
 	Timeline.Play();
 	bIsDoorClosed = false;
 }
@@ -103,6 +128,10 @@ void ADoor::CloseDoor()
 	if (bIsDoorClosed || Timeline.IsPlaying()) return;
 
 	DoorMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	if (DoorMesh2)
+	{
+		DoorMesh2->SetCollisionProfileName(TEXT("NoCollision"));
+	}
 	Timeline.Reverse();
 	bIsDoorClosed = true;
 }
@@ -110,11 +139,39 @@ void ADoor::CloseDoor()
 void ADoor::OnTimelineFinished()
 {
 	DoorMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	if (DoorMesh2)
+	{
+		DoorMesh2->SetCollisionProfileName(TEXT("BlockAll"));
+	}
+
+	if (bOpenOnceForBoss)
+	{
+		DoorMesh->SetVisibility(false);
+		DoorMesh->SetCollisionProfileName(TEXT("NoCollision"));
+		if (DoorMesh2)
+		{
+			DoorMesh2->SetVisibility(false);
+			DoorMesh2->SetCollisionProfileName(TEXT("NoCollision"));
+		}
+		BoxCollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else
+	{
+		DoorMesh->SetCollisionProfileName(TEXT("BlockAll"));
+		if (DoorMesh2)
+		{
+			DoorMesh2->SetCollisionProfileName(TEXT("BlockAll"));
+		}
+	}
 }
 
 void ADoor::Interact_Implementation(AActor* Interactor)
 {
 	DoorMesh->SetCollisionProfileName(TEXT("NoCollision"));
+	if (DoorMesh2)
+	{
+		DoorMesh2->SetCollisionProfileName(TEXT("NoCollision"));
+	}
 	if (bIsDoorClosed)
 	{
 		OpenDoor();

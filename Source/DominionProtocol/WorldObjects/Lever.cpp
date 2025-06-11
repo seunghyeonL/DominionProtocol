@@ -94,12 +94,16 @@ void ALever::HandleLever(float Value)
 
 	//HandleMesh->SetRelativeRotation(Rot);
 
-	FRotator DeltaRotation = FRotator(LeverRotateAngle * Value, 0.f, 0.f);
+	FRotator DeltaRotation = FRotator(0.f, 0.f, LeverRotateAngle * Value);
 	FRotator NewRotation = InitialRotation + DeltaRotation;
 	HandleMesh->SetRelativeRotation(NewRotation);
 }
 void ALever::OnTimelineFinished()
 {
+	if (Door)
+	{
+		Door->OpenDoor();
+	}
 }
 
 void ALever::Interact_Implementation(AActor* Interactor)

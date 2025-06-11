@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Interface/InteractableInterface.h"
 #include "Components/TimelineComponent.h"
+#include "WorldObjects/Door.h"
 #include "Lever.generated.h"
 
 class UBoxComponent;
@@ -65,6 +66,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UCurveFloat* CurveFloat;
+
+	UPROPERTY(EditAnywhere)
+	ADoor* Door;
 
 	bool bIsOn;
 
