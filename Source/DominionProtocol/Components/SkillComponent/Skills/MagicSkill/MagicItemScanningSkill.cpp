@@ -13,6 +13,7 @@ UMagicItemScanningSkill::UMagicItemScanningSkill()
 {
 	SkillTag = SkillTags::MagicItemScanningSkill;
 	bIsBackupValid = false;
+	Duration = 10.0f;
 }
 
 void UMagicItemScanningSkill::Execute()
