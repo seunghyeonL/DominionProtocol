@@ -20,7 +20,7 @@ void UNewInventoryWidget::BindInventoryDelegates()
 		ItemComponent = PlayerCharacter->GetComponentByClass<UItemComponent>();
 		if (ItemComponent)
 		{
-			ItemComponent->OnInventoryItemListChanged.BindUObject(this, &UNewInventoryWidget::OnUpdateInventoryItemList);
+			ItemComponent->OnInventoryItemListChanged.AddUObject(this, &UNewInventoryWidget::OnUpdateInventoryItemList);
 		}
 	}
 }

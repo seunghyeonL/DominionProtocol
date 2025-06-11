@@ -139,7 +139,7 @@ bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
 		{
 			InventoryMap[ItemTag] += Quantity;
 			Debug::Print("Item Quantity Added (Within Limit)");
-			OnInventoryItemListChanged.ExecuteIfBound();
+			OnInventoryItemListChanged.Broadcast();
 			return true;
 		}
 		else
@@ -154,7 +154,7 @@ bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
 		{
 			InventoryMap.Add(ItemTag, Quantity);
 			Debug::Print("New Item Added");
-			OnInventoryItemListChanged.ExecuteIfBound();
+			OnInventoryItemListChanged.Broadcast();
 			return true;
 		}
 		else
@@ -178,7 +178,7 @@ bool UItemComponent::RemoveItem(FGameplayTag ItemTag, int32 Quantity)
 	{
 		InventoryMap[ItemTag] -= Quantity;
 		Debug::Print("Item Quantity Decreased");
-		OnInventoryItemListChanged.ExecuteIfBound();
+		OnInventoryItemListChanged.Broadcast();
 		return true;
 	}
 	//아이템수량=제거할수량이면 아이템태그 제거
@@ -193,7 +193,7 @@ bool UItemComponent::RemoveItem(FGameplayTag ItemTag, int32 Quantity)
 			InventoryMap[ItemTag] -= Quantity;
 		}
 		Debug::Print("Item Tag Removed");
-		OnInventoryItemListChanged.ExecuteIfBound();
+		OnInventoryItemListChanged.Broadcast();
 		return true;
 	}
 	//아이템수량<제거수량이면 시도불가
@@ -240,7 +240,7 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 		// EquipmentSlots[PreSlotName] = FGameplayTag();
 		SetTagToSlot(SlotName, ItemTag);
 		// EquipmentSlots[SlotName] = ItemTag;
-		OnInventoryEquippedSlotItemsChanged.ExecuteIfBound();
+		OnInventoryEquippedSlotItemsChanged.Broadcast();
 		return false;
 	}
 	
@@ -308,7 +308,7 @@ bool UItemComponent::EquipItem(FName SlotName, FGameplayTag ItemTag)
 				}
 				// EquipmentSlots[SlotName] = ItemTag;
 				Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 장착"), *SlotName.ToString(), *ItemTag.ToString()));
-				OnInventoryEquippedSlotItemsChanged.ExecuteIfBound();
+				OnInventoryEquippedSlotItemsChanged.Broadcast();
 				return true;
 			}
 			else
@@ -374,7 +374,7 @@ bool UItemComponent::UnequipItem(FName SlotName)
 		SetTagToSlot(SlotName, FGameplayTag());
 		// EquipmentSlots[SlotName] = FGameplayTag(); // 태그를 비움
 		PlayUnEquipSound();
-		OnInventoryEquippedSlotItemsChanged.ExecuteIfBound();
+		OnInventoryEquippedSlotItemsChanged.Broadcast();
 		return true;
 	}
 	return false;
@@ -393,7 +393,7 @@ void UItemComponent::SwapWeapons()
 	PlaySwapSound();
 	Debug::Print(TEXT("무기 슬롯을 스왑했습니다."));
 	// 장비 변경 알림
-	OnInventoryEquippedSlotItemsChanged.ExecuteIfBound();
+	OnInventoryEquippedSlotItemsChanged.Broadcast();
 }
 
 //슬롯에 장착된 아이템 태그 반환
@@ -443,7 +443,7 @@ bool UItemComponent::PlaceInSlotConsumableItem(FName SlotName, FGameplayTag Item
 			ConsumableSlots[PreSlotName] = FGameplayTag();
 			ConsumableSlots[SlotName] = ItemTag;
 		}
-		OnInventoryConsumableSlotItemsChanged.ExecuteIfBound();
+		OnInventoryConsumableSlotItemsChanged.Broadcast();
 		return false;
 	}
 	
@@ -488,7 +488,7 @@ bool UItemComponent::PlaceInSlotConsumableItem(FName SlotName, FGameplayTag Item
 				{
 					Debug::Print(FString::Printf(TEXT("해당 슬롯은 1번 슬롯이라 슬롯 '%s'에 '%s' 등록실패"), *SlotName.ToString(), *ItemTag.ToString()));
 				}
-				OnInventoryConsumableSlotItemsChanged.ExecuteIfBound();
+				OnInventoryConsumableSlotItemsChanged.Broadcast();
 				return true;
 			}
 			else
@@ -518,7 +518,7 @@ bool UItemComponent::RemoveFromSlotConsumableItemSlot(FName SlotName)
 		{
 			ConsumableSlots[SlotName] = FGameplayTag();
 		} // 태그를 비움
-		OnInventoryConsumableSlotItemsChanged.ExecuteIfBound();
+		OnInventoryConsumableSlotItemsChanged.Broadcast();
 		return true;
 	}
 	return false;
@@ -597,8 +597,8 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 							}
 						}
 					}
-					OnInventoryItemListChanged.ExecuteIfBound();
-					OnInventoryConsumableSlotItemsChanged.ExecuteIfBound();
+					OnInventoryItemListChanged.Broadcast();
+					OnInventoryConsumableSlotItemsChanged.Broadcast();
 					// 소비 후 임시 액터 파괴 (Consume_Implementation에서 RemoveItem이 호출되었을 것으로 가정)
 					ConsumableActor->Destroy();
 				}
@@ -620,7 +620,7 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 			{
 				ConsumableSlots[SlotName] = FGameplayTag();
 			}
-			OnInventoryConsumableSlotItemsChanged.ExecuteIfBound();
+			OnInventoryConsumableSlotItemsChanged.Broadcast();
 		}
 	}
 	else
@@ -681,7 +681,7 @@ void UItemComponent::ApplyPotionBoost()
 		}
 	}
 	InventoryMap = NewInventoryMap;
-	OnInventoryItemListChanged.ExecuteIfBound();
+	OnInventoryItemListChanged.Broadcast();
 
 	//소비슬롯 업데이트
 	for (auto& Pair: ConsumableSlots)
@@ -693,7 +693,7 @@ void UItemComponent::ApplyPotionBoost()
 		{
 			// 새로운 태그 'Item.Consumable.Potion.Health.Boosted'로 변경
 			SlotTag = ItemTags::PotionBoosted;
-			OnInventoryConsumableSlotItemsChanged.ExecuteIfBound();
+			OnInventoryConsumableSlotItemsChanged.Broadcast();
 			Debug::Print(FString::Printf(TEXT("Consumable Slot %s: Changed to %s"), *Pair.Key.ToString(), *SlotTag.ToString()));
 		}
 	}
@@ -840,7 +840,7 @@ void UItemComponent::AddAllItemsToInventoryMaxQuantity()
 	{
 		Debug::Print(FString::Printf(TEXT("Added %d unique items to inventory with max quantity."), AddedCount));
 		// 인벤토리 목록이 변경되었음을 UI에 알림
-		OnInventoryItemListChanged.ExecuteIfBound();
+		OnInventoryItemListChanged.Broadcast();
 	}
 	else
 	{
@@ -967,7 +967,7 @@ void UItemComponent::UpdateItemInstanceSubsystem()
 
 void UItemComponent::DelegateExecuter()
 {
-	OnInventoryItemListChanged.ExecuteIfBound();
-	OnInventoryEquippedSlotItemsChanged.ExecuteIfBound();
-	OnInventoryConsumableSlotItemsChanged.ExecuteIfBound();
+	OnInventoryItemListChanged.Broadcast();
+	OnInventoryEquippedSlotItemsChanged.Broadcast();
+	OnInventoryConsumableSlotItemsChanged.Broadcast();
 }

@@ -21,8 +21,8 @@ void UNewEquippedSlotsWidget::BindItemSlotsDelegate()
 		ItemComponent = PlayerCharacter->GetComponentByClass<UItemComponent>();
 		if (ItemComponent)
 		{
-			ItemComponent->OnInventoryEquippedSlotItemsChanged.BindUObject(this, &UNewEquippedSlotsWidget::OnUpdateEquippableSlotItems);
-			ItemComponent->OnInventoryConsumableSlotItemsChanged.BindUObject(this, &UNewEquippedSlotsWidget::OnUpdateConsumableSlotItems);
+			ItemComponent->OnInventoryEquippedSlotItemsChanged.AddUObject(this, &UNewEquippedSlotsWidget::OnUpdateEquippableSlotItems);
+			ItemComponent->OnInventoryConsumableSlotItemsChanged.AddUObject(this, &UNewEquippedSlotsWidget::OnUpdateConsumableSlotItems);
 		}
 	}
 }

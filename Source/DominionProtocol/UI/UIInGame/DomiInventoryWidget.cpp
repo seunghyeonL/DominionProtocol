@@ -20,7 +20,7 @@ void UDomiInventoryWidget::BindInventoryDelegates()
 		ItemComponent = PlayerCharacter->GetComponentByClass<UItemComponent>();
 		if (ItemComponent)
 		{
-			ItemComponent->OnInventoryItemListChanged.BindUObject(this, &UDomiInventoryWidget::OnUpdateInventoryItemList);
+			ItemComponent->OnInventoryItemListChanged.AddUObject(this, &UDomiInventoryWidget::OnUpdateInventoryItemList);
 		}
 	}
 }

@@ -11,9 +11,9 @@ struct FSkillComponentInitializeData;
 class USoundCue;
 class UItemInstanceSubsystem;
 
-DECLARE_DELEGATE(FOnInventoryItemListChanged)
-DECLARE_DELEGATE(FOnInventoryEquippedSlotItemsChanged)
-DECLARE_DELEGATE(FOnInventoryConsumableSlotItemsChanged)
+DECLARE_MULTICAST_DELEGATE(FOnInventoryItemListChanged)
+DECLARE_MULTICAST_DELEGATE(FOnInventoryEquippedSlotItemsChanged)
+DECLARE_MULTICAST_DELEGATE(FOnInventoryConsumableSlotItemsChanged)
 DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChanged, const FSkillComponentInitializeData&)
 DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChangedForWeaponVisibility, const FGameplayTag&)
 DECLARE_DELEGATE_OneParam(FOnMagicSkillChanged, const FSkillComponentInitializeData&)

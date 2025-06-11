@@ -20,8 +20,8 @@ void UDomiItemSlotsWidget::BindItemSlotsDelegate()
 		ItemComponent = PlayerCharacter->GetComponentByClass<UItemComponent>();
 		if (ItemComponent)
 		{
-			ItemComponent->OnInventoryEquippedSlotItemsChanged.BindUObject(this, &UDomiItemSlotsWidget::OnUpdateEquippableSlotItems);
-			ItemComponent->OnInventoryConsumableSlotItemsChanged.BindUObject(this, &UDomiItemSlotsWidget::OnUpdateConsumableSlotItems);
+			ItemComponent->OnInventoryEquippedSlotItemsChanged.AddUObject(this, &UDomiItemSlotsWidget::OnUpdateEquippableSlotItems);
+			ItemComponent->OnInventoryConsumableSlotItemsChanged.AddUObject(this, &UDomiItemSlotsWidget::OnUpdateConsumableSlotItems);
 		}
 	}
 }
