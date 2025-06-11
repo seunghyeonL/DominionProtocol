@@ -5,6 +5,7 @@
 
 class APostProcessVolume;
 class UMaterialInterface;
+class UMaterialParameterCollection;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UMagicItemScanningSkill : public UBaseSkill
@@ -18,8 +19,13 @@ public:
 
     void EndScannning();
 
+    UPROPERTY(EditDefaultsOnly, Category = "Scan")
+    TObjectPtr<UMaterialParameterCollection> ScanParameterCollection;
+
+    UPROPERTY(BlueprintReadWrite, Category = "Scan")
+    bool IsStart;
+
 private:
-    virtual void Tick(float DeltaTime) override;
 
     // 머티리얼 교체 함수
     UFUNCTION()
@@ -36,6 +42,10 @@ private:
     // 머티리얼을 로드하는 함수
     UFUNCTION()
     void LoadScanMaterial();
+
+    // MPC 로드하는 함수
+    UFUNCTION()
+    void LoadParameterCollection();
 
     // 원본 블렌더블 설정을 백업하는 함수
     UFUNCTION()
@@ -60,5 +70,3 @@ private:
 
     float Duration;
 };
-
-//TObjectPtr<UMaterialParameterCollectionInstance> ScanPulseInstance;

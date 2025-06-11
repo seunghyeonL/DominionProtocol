@@ -32,10 +32,10 @@ public:
 	virtual FText GetInteractMessage_Implementation() const override;
 
 protected:
-    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* BottomMesh; // 아이템 박스 하단
 
-    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* TopMesh; //아이템 박스 상단
 
     UPROPERTY(VisibleAnywhere, Category = "Components")

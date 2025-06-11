@@ -5,19 +5,21 @@
 #include "GameFramework/Character.h"
 #include "Engine/PostProcessVolume.h"
 #include "Materials/MaterialInterface.h"
+#include "Kismet/KismetMaterialLibrary.h"
+#include "Materials/MaterialParameterCollection.h"
 #include "Components/SkillComponent/SkillComponent.h"
 
 UMagicItemScanningSkill::UMagicItemScanningSkill()
 {
 	SkillTag = SkillTags::MagicItemScanningSkill;
 	bIsBackupValid = false;
-	Duration = 5.0f;
 }
 
 void UMagicItemScanningSkill::Execute()
-{
+{	
 	FindAndSetPostProcessVolume();
 	LoadScanMaterial();
+	LoadParameterCollection();
 
 	// 머티리얼 로드 후 즉시 적용
 	if (PostProcessVolume && ScanMaterial)
@@ -25,17 +27,11 @@ void UMagicItemScanningSkill::Execute()
 		// 원본 설정 백업
 		BackupOriginalBlendables();
 		SwapPostProcessMaterial();
+
+		Super::Execute();
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(ScanningTimerHandle, this, &UMagicItemScanningSkill::EndScannning, Duration, false);
-}
-
-void UMagicItemScanningSkill::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	
-	//void UKismetMaterialLibrary::SetScalarParameterValue(UObject * WorldContextObject, UMaterialParameterCollection * Collection, FName ParameterName, float ParameterValue)
-
 }
 
 void UMagicItemScanningSkill::FindAndSetPostProcessVolume()
@@ -79,6 +75,22 @@ void UMagicItemScanningSkill::LoadScanMaterial()
 	}
 }
 
+void UMagicItemScanningSkill::LoadParameterCollection()
+{
+	FString Path = TEXT("/Game/Blueprints/Skills/SkillObject/ItemScanning/Materials/MPC_ScanPulse.MPC_ScanPulse");
+	UMaterialParameterCollection* LoadedMPC = LoadObject<UMaterialParameterCollection>(nullptr, *Path);
+
+	if (LoadedMPC)
+	{
+		ScanParameterCollection = LoadedMPC;
+		Debug::Print(FString::Printf(TEXT("Loaded MPC: %s"), *LoadedMPC->GetName()));
+	}
+	else
+	{
+		Debug::Print(TEXT("Failed to load MPC_ScanPulse"));
+	}
+}
+
 void UMagicItemScanningSkill::BackupOriginalBlendables()
 {
 	if (!PostProcessVolume)
@@ -114,11 +126,6 @@ void UMagicItemScanningSkill::SwapPostProcessMaterial()
 	PostProcessVolume->Settings.WeightedBlendables.Array.Add(WeightedBlendable);
 
 	Debug::PrintLog(TEXT("UMagicItemScanningSkill::PostProcess material swapped successfully"));
-
-	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
-
-	check(SkillComponent);
-	SkillComponent->EndSkill();
 }
 
 void UMagicItemScanningSkill::RestoreOriginalPostProcess()
@@ -141,6 +148,10 @@ void UMagicItemScanningSkill::RestoreOriginalPostProcess()
 
 void UMagicItemScanningSkill::EndScannning()
 {
+	UKismetMaterialLibrary::SetScalarParameterValue(GetWorld(), ScanParameterCollection, FName("Radius"), 0.0f);
+
+	IsStart = false;
+
 	// 원본 PostProcess 설정 복원
 	RestoreOriginalPostProcess();
 }
