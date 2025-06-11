@@ -12,6 +12,7 @@ class ABaseGameMode;
 class ATargetPoint;
 class ADomiCharacter;
 class UCapsuleComponent;
+class UDialogueManager;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCrackSystem, Log, All);
 
@@ -105,6 +106,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UWorldInstanceSubsystem> WorldInstanceSubsystem;
+
+	UPROPERTY()
+	UDialogueManager* DialogueManager;
 	
 	UPROPERTY()
 	TObjectPtr<ATargetPoint> RespawnTargetPoint;

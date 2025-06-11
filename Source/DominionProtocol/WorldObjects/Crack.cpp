@@ -18,6 +18,7 @@
 #include "UI/UIInGame/DomiInGameHUDWidget.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
+#include "WorldObjects/DialogueManager.h"
 
 #include "Util/DebugHelper.h"
 
@@ -93,7 +94,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 
 	// 흐름
 	// 1. 비활성화시 활성화
-	// 2. 조력자 대화 이벤트(가능한 경우)
+	// 2. 조력자 대화 이벤트
 	// 2. 기능
 
 	// 1. 해당 균열 활성화
@@ -106,8 +107,18 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 		return;
 	}
 
-	// 2. 조력자 대화 이벤트(가능한 경우)
-
+	// 2. 조력자 대화 이벤트
+	DialogueManager = NewObject<UDialogueManager>(this);
+	if (DialogueManager->TryStartDialogueIfExists(GameInstance->GetCurrentGameStoryState()))
+	{
+		Debug::Print(TEXT("Crack: 조력자 이벤트 종료"));
+		GameInstance->AdvanceStoryState();
+		return;
+	}
+	else
+	{
+		Debug::Print(TEXT("Crack: 조력자 이벤트 없음"));
+	}
 	
 	// 3. 기능
 	
