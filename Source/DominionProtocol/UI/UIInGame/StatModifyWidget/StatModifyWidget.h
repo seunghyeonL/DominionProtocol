@@ -7,6 +7,7 @@
 #include "Util/GameTagList.h"
 #include "StatModifyWidget.generated.h"
 
+class UStatusComponent;
 class UTextBlock;
 class UButton;
 
@@ -21,12 +22,22 @@ class DOMINIONPROTOCOL_API UStatModifyWidget : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+	bool bCanLevelUp;
+
+	float AccumulatedRequiredEssence;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStatusComponent> PlayerStatusComponent;
+
 	TArray<FGameplayTag> PlayerStatTags;
 	TMap<FGameplayTag, float> PlayerStatPreviewData;
+	TMap<FGameplayTag, int32> StatModifiedNumMap;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TMap<FGameplayTag, UTextBlock*> TextBlockMap;
 
+	void InitializeWidgetDatas();
+	
 	UFUNCTION()
 	void UpdatePreviewStat();
 
@@ -58,7 +69,7 @@ protected:
 	UFUNCTION()
 	void OnDecideButtonClicked();
 	
-	// TextBlocks
+	// Stat TextBlocks
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> StrTextBlock;
 	
@@ -70,12 +81,6 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> EndTextBlock;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> LevelUpRequiredTextBlock;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> LevelTextBlock;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> PrimaryAttackPowerTextBlock;
@@ -91,6 +96,16 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> MaxStaminaTextBlock;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> LevelTextBlock;
+
+	// Essence TextBlocks
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> CurrentEssenceTextBlock;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> LevelUpRequiredTextBlock;
 
 	// Buttons
 	UPROPERTY(meta = (BindWidget))

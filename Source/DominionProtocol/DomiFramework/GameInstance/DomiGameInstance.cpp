@@ -14,7 +14,8 @@ void UDomiGameInstance::Init()
 	Super::Init();
 
 	CurrentGameStoryState = EGameStoryState::Tutorial;
-	PlayerCurrentEssence = 0;
+	// PlayerCurrentEssence = 0;
+	PlayerCurrentEssence = 10000;
 }
 
 void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)

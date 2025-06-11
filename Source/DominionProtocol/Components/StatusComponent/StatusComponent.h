@@ -95,10 +95,12 @@ public:
 	void GetPlayerStatData(TMap<FGameplayTag, float>& UIPlayerStatData);
 	void UpdateStatPreviewData(TMap<FGameplayTag, float>& UIPlayerStatData);
 	void DecideStatChangeFromUI(const TMap<FGameplayTag, float>& UIPlayerStatData);
+	float GetLevelUpRequiredEssence(const float InLevel) const;
 
 	float GetCalculatedBattleStat(const FGameplayTag& StatTag, const TMap<FGameplayTag, float>& InStatMap) const;
 	float GetMaxVariableStat(const FGameplayTag& StatTag) const;
-	
+
+	// Getter/Setter with Delegate
 	void SetHealth(const float NewHealth);
 	void SetMaxHealth(const float NewMaxHealth);
 	void SetShield(const float NewShield);

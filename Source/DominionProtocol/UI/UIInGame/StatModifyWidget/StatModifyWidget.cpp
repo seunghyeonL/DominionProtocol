@@ -8,13 +8,15 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "DomiFramework/GameInstance/DomiGameInstance.h"
 
 void UStatModifyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	SetVisibility(ESlateVisibility::Collapsed);
 	AActor* OwningActor = GetOwningPlayerPawn();
+	PlayerStatusComponent = OwningActor->GetComponentByClass<UStatusComponent>();
+	check(PlayerStatusComponent);
 
 	StrUpButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnStrUpButtonClicked);
 	StrDownButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnStrDownButtonClicked);
@@ -35,6 +37,7 @@ void UStatModifyWidget::NativeConstruct()
 	PlayerStatTags.Add(StatTags::MagicPower);
 	PlayerStatTags.Add(StatTags::MaxHealth);
 	PlayerStatTags.Add(StatTags::MaxStamina);
+	PlayerStatTags.Add(StatTags::Level);
 
 	TextBlockMap.Add(StatTags::STR, StrTextBlock);
 	TextBlockMap.Add(StatTags::LIFE, LifeTextBlock);
@@ -45,28 +48,65 @@ void UStatModifyWidget::NativeConstruct()
 	TextBlockMap.Add(StatTags::MagicPower, MagicPowerTextBlock);
 	TextBlockMap.Add(StatTags::MaxHealth, MaxHealthTextBlock);
 	TextBlockMap.Add(StatTags::MaxStamina, MaxStaminaTextBlock);
+	TextBlockMap.Add(StatTags::Level, LevelTextBlock);
+
+	StatModifiedNumMap.Add(StatTags::STR, 0);
+	StatModifiedNumMap.Add(StatTags::LIFE, 0);
+	StatModifiedNumMap.Add(StatTags::SPL, 0);
+	StatModifiedNumMap.Add(StatTags::END, 0);
+	StatModifiedNumMap.Add(StatTags::AttackPower, 0);
+	StatModifiedNumMap.Add(StatTags::SubAttackPower, 0);
+	StatModifiedNumMap.Add(StatTags::MagicPower, 0);
+	StatModifiedNumMap.Add(StatTags::MaxHealth, 0);
+	StatModifiedNumMap.Add(StatTags::MaxStamina, 0);
+	StatModifiedNumMap.Add(StatTags::Level, 0);
 
 	for (auto PlayerStatTag : PlayerStatTags)
 	{
 		PlayerStatPreviewData.Add(PlayerStatTag, 0.f);
 	}
 	
-	auto* StatusComp = OwningActor->GetComponentByClass<UStatusComponent>();
-	if (StatusComp)
-	{
-		StatusComp->GetPlayerStatData(PlayerStatPreviewData);
-	}
+	SetVisibility(ESlateVisibility::Collapsed);
+
+	InitializeWidgetDatas();
 
 	UpdatePreviewStat();
 }
 
+void UStatModifyWidget::InitializeWidgetDatas()
+{
+	AccumulatedRequiredEssence = 0.f;
+	bCanLevelUp = false;
+	
+	for (auto PlayerStatTag : PlayerStatTags)
+	{
+		StatModifiedNumMap[PlayerStatTag] = 0.f;
+	}
+	
+	PlayerStatusComponent->GetPlayerStatData(PlayerStatPreviewData);
+}
+
 void UStatModifyWidget::UpdatePreviewStat()
 {
-	AActor* OwningActor = GetOwningPlayerPawn();
-	auto* StatusComp = OwningActor->GetComponentByClass<UStatusComponent>();
+	// 레벨업 필요 재화
+	auto DomiGI = Cast<UDomiGameInstance>(GetGameInstance());
+	check(DomiGI);
+
+	CurrentEssenceTextBlock->SetText(FText::AsNumber(DomiGI->GetPlayerCurrentEssence() - AccumulatedRequiredEssence));
+	LevelUpRequiredTextBlock->SetText(FText::AsNumber(PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level])));
+	
+	if (DomiGI->HasEnoughEssence(AccumulatedRequiredEssence + PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level])))
+	{
+		LevelUpRequiredTextBlock->SetColorAndOpacity(FSlateColor(FLinearColor::White));
+		bCanLevelUp = true;
+	}
+	else {
+		LevelUpRequiredTextBlock->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
+		bCanLevelUp = false;
+	}
 
 	// 스탯 프리뷰 데이터 갱신
-	StatusComp->UpdateStatPreviewData(PlayerStatPreviewData);
+	PlayerStatusComponent->UpdateStatPreviewData(PlayerStatPreviewData);
 
 	// 현재 스탯 받아오기
 	TMap<FGameplayTag, float> CurrentStatData;
@@ -75,16 +115,14 @@ void UStatModifyWidget::UpdatePreviewStat()
 	{
 		CurrentStatData.Add(PlayerStatTag, 0.f);
 	}
-
 	
-	StatusComp->GetPlayerStatData(CurrentStatData);
+	PlayerStatusComponent->GetPlayerStatData(CurrentStatData);
 
 	// 바꿔진 스탯은 색깔 변경
 	for (auto PlayerStatTag : PlayerStatTags)
 	{
 		if (PlayerStatPreviewData[PlayerStatTag] > CurrentStatData[PlayerStatTag])
 		{
-			Debug::Print(FString::Printf(TEXT("Preview, Real : %f, %f"), PlayerStatPreviewData[PlayerStatTag], CurrentStatData[PlayerStatTag]));
 			TextBlockMap[PlayerStatTag]->SetColorAndOpacity(FSlateColor(FLinearColor::Green));
 		}
 		else
@@ -102,58 +140,117 @@ void UStatModifyWidget::UpdatePreviewStat()
 
 void UStatModifyWidget::OnDecideButtonClicked()
 {
-	AActor* OwningActor = GetOwningPlayerPawn();
-	auto* StatusComp = OwningActor->GetComponentByClass<UStatusComponent>();
-	StatusComp->DecideStatChangeFromUI(PlayerStatPreviewData);
-	UpdatePreviewStat();
+	auto DomiGI = Cast<UDomiGameInstance>(GetGameInstance());
+	check(DomiGI);
+	
+	DomiGI->SubtractPlayerCurrentEssence(AccumulatedRequiredEssence);
+	PlayerStatusComponent->DecideStatChangeFromUI(PlayerStatPreviewData);
+	
 	SetVisibility(ESlateVisibility::Collapsed);
+	InitializeWidgetDatas();
+	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnStrUpButtonClicked()
 {
+	if (!bCanLevelUp) return;
+
 	PlayerStatPreviewData[StatTags::STR]++;
+	StatModifiedNumMap[StatTags::STR]++;
+	
+	AccumulatedRequiredEssence += PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	PlayerStatPreviewData[StatTags::Level]++;
+	
 	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnStrDownButtonClicked()
 {
+	if (StatModifiedNumMap[StatTags::STR] == 0) return;
+	
 	PlayerStatPreviewData[StatTags::STR]--;
+	StatModifiedNumMap[StatTags::STR]--;
+	
+	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	PlayerStatPreviewData[StatTags::Level]--;
+	
 	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnLifeUpButtonClicked()
 {
+	if (!bCanLevelUp) return;
 	PlayerStatPreviewData[StatTags::LIFE]++;
+	StatModifiedNumMap[StatTags::LIFE]++;
+	
+	AccumulatedRequiredEssence += PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	PlayerStatPreviewData[StatTags::Level]++;
+	
 	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnLifeDownButtonClicked()
 {
+	if (StatModifiedNumMap[StatTags::LIFE] == 0) return;
+	
 	PlayerStatPreviewData[StatTags::LIFE]--;
+	StatModifiedNumMap[StatTags::LIFE]--;
+	
+	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	PlayerStatPreviewData[StatTags::Level]--;
+	
 	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnSplUpButtonClicked()
 {
+	if (!bCanLevelUp) return;
+	
 	PlayerStatPreviewData[StatTags::SPL]++;
+	StatModifiedNumMap[StatTags::SPL]++;
+	
+	AccumulatedRequiredEssence += PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	PlayerStatPreviewData[StatTags::Level]++;
+	
 	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnSplDownButtonClicked()
 {
+	if (StatModifiedNumMap[StatTags::SPL] == 0) return;
+	
 	PlayerStatPreviewData[StatTags::SPL]--;
+	StatModifiedNumMap[StatTags::SPL]--;
+	
+	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	PlayerStatPreviewData[StatTags::Level]--;
+	
 	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnEndUpButtonClicked()
 {
+	if (!bCanLevelUp) return;
+
 	PlayerStatPreviewData[StatTags::END]++;
+	StatModifiedNumMap[StatTags::END]++;
+	
+	AccumulatedRequiredEssence += PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	PlayerStatPreviewData[StatTags::Level]++;
+	
 	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnEndDownButtonClicked()
 {
+	if (StatModifiedNumMap[StatTags::END] == 0) return;
+	
 	PlayerStatPreviewData[StatTags::END]--;
+	StatModifiedNumMap[StatTags::END]--;
+	
+	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	PlayerStatPreviewData[StatTags::Level]--;
+	
 	UpdatePreviewStat();
 }
 

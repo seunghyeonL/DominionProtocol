@@ -125,13 +125,13 @@ void UStatusComponent::GetPlayerStatData(TMap<FGameplayTag, float>& UIPlayerStat
 
 void UStatusComponent::UpdateStatPreviewData(TMap<FGameplayTag, float>& UIPlayerStatData)
 {
-	for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
-	{
-		if (UIStatTag.MatchesTag(StatTags::BaseStat) && UIStatValue < GetStat(UIStatTag))
-		{
-			UIStatValue = GetStat(UIStatTag);
-		}
-	}
+	// for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	// {
+	// 	if (UIStatTag.MatchesTag(StatTags::BaseStat) && UIStatValue < GetStat(UIStatTag))
+	// 	{
+	// 		UIStatValue = GetStat(UIStatTag);
+	// 	}
+	// }
 
 	for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
 	{
@@ -148,6 +148,15 @@ void UStatusComponent::DecideStatChangeFromUI(const TMap<FGameplayTag, float>& U
 	{
 		SetStat(UIStatTag, UIPlayerStatData[UIStatTag]);
 	}
+}
+
+float UStatusComponent::GetLevelUpRequiredEssence(const float InLevel) const
+{
+	return (
+		StatMap[StatTags::LevelUpCoefficientB] * InLevel * InLevel
+		+ StatMap[StatTags::LevelUpCoefficientC] * InLevel
+		+ StatMap[StatTags::LevelUpCoefficientD]
+	);
 }
 
 float UStatusComponent::GetCalculatedBattleStat(const FGameplayTag& StatTag, const TMap<FGameplayTag, float>& InStatMap) const

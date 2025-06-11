@@ -26,6 +26,8 @@ public:
 	//Save & Load
 	void LoadSaveData(const FInstanceData& SaveData);
 	FInstanceData GetSaveData() const;
+
+	FORCEINLINE bool HasEnoughEssence(const float InEssence) const { return InEssence <= PlayerCurrentEssence; }
 	
 	//Setter
 
@@ -39,14 +41,13 @@ public:
 
 	FORCEINLINE void AddPlayerCurrentEssence(int32 AddEssenceValue) { PlayerCurrentEssence += AddEssenceValue; }
 	
-	FORCEINLINE bool SubtractPlayerCurrentEssence(int32 SubtractEssenceValue)
+	FORCEINLINE void SubtractPlayerCurrentEssence(int32 SubtractEssenceValue)
 	{
 		if (PlayerCurrentEssence < SubtractEssenceValue)
 		{
-			return false;
+			return;
 		}
 		PlayerCurrentEssence = FMath::Max(0, PlayerCurrentEssence - SubtractEssenceValue);
-		return true;
 	}
 
 	FORCEINLINE void SetStatDataMap(TMap<FGameplayTag, float> NewStatDataMap) { StatDataMap.Append(NewStatDataMap); }

@@ -49,6 +49,7 @@ namespace StatTags
 {
 	// BaseStatTags
 	inline const FGameplayTag BaseStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base"));
+	inline const FGameplayTag Level = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.Level"));
 	inline const FGameplayTag LIFE = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.LIFE"));
 	inline const FGameplayTag STR = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.STR"));
 	inline const FGameplayTag SPL = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.SPL"));
@@ -60,10 +61,13 @@ namespace StatTags
 
 	// Base -> Battle Coefficients
 	inline const FGameplayTag StatCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient"));
-	inline const FGameplayTag AttackPowerCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.AttackPowerCoefficient"));
-	inline const FGameplayTag MagicPowerCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MagicPowerCoefficient"));
-	inline const FGameplayTag MaxHealthCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MaxHealthCoefficient"));
-	inline const FGameplayTag MaxStaminaCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MaxStaminaCoefficient"));
+	inline const FGameplayTag AttackPowerCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.AttackPower"));
+	inline const FGameplayTag MagicPowerCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MagicPower"));
+	inline const FGameplayTag MaxHealthCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MaxHealth"));
+	inline const FGameplayTag MaxStaminaCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MaxStamina"));
+	inline const FGameplayTag LevelUpCoefficientB = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.LevelUpB"));
+	inline const FGameplayTag LevelUpCoefficientC = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.LevelUpC"));
+	inline const FGameplayTag LevelUpCoefficientD = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.LevelUpD"));
 	
 	// BattleStatTags
 	inline const FGameplayTag BattleStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle"));
