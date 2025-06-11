@@ -11,6 +11,7 @@
 #include "Engine/ExponentialHeightFog.h"
 #include "Kismet/GameplayStatics.h"
 
+#include "Util/GameTagList.h"
 #include "Util/CheatBPLib.h"
 #include "Util/DebugHelper.h"
 
@@ -191,6 +192,17 @@ void UDevCheatManager::ShowMeTheMoney()
 	if (IsValid(GameInstance))
 	{
 		GameInstance->AddPlayerCurrentEssence(100000);
+	}
+}
+
+void UDevCheatManager::ShowSTRStat()
+{
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
+	if (IsValid(PlayerCharacter))
+	{
+		UStatusComponent* StatusComponent = PlayerCharacter->GetStatusComponent();
+		float Strength = StatusComponent->GetStat(StatTags::STR);
+		Debug::Print(FString::Printf(TEXT("%f"), Strength));
 	}
 }
 

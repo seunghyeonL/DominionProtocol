@@ -60,4 +60,7 @@ public:
 
 	UFUNCTION(Exec)
 	void ShowMeTheMoney();
+
+	UFUNCTION(Exec)
+	void ShowSTRStat();
 };
