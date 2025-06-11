@@ -8,6 +8,7 @@
 #include "SoundInstanceSubsystem.h"
 #include "WorldInstanceSubsystem.h"
 #include "DomiFramework/DomiSaveGame.h"
+#include "DomiFramework/DomiSaveSettings.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "Util/DebugHelper.h"
@@ -16,20 +17,13 @@ bool USaveManagerSubsystem::SaveGame(const FString& SlotName, int32 UserIndex)
 {
 	//저장 인스턴스 생성
 	UDomiSaveGame* SaveGameInstance = Cast<UDomiSaveGame>(UGameplayStatics::CreateSaveGameObject(UDomiSaveGame::StaticClass()));
-	check(SaveGameInstance);
+	check(IsValid(SaveGameInstance));
 
 	//DomiGameInstance 저장할 데이터 구조체(FInstanceData)로 Get
 	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	if (IsValid(GameInstance))
 	{
 		SaveGameInstance->InstanceData = GameInstance->GetSaveData();
-	}
-
-	//SoundInstanceSubsystem 저장할 데이터 구조체(FSoundSubsystem)로 Get
-	USoundInstanceSubsystem* SoundSubsystem = GameInstance->GetSubsystem<USoundInstanceSubsystem>();
-	if (IsValid(SoundSubsystem))
-	{
-		SaveGameInstance->SoundSubsystemData = SoundSubsystem->GetSaveData();
 	}
 
 	//ItemInstanceSubsystem 저장할 데이터 구조체(FItemInstanceSubsystem)로 Get
@@ -72,13 +66,6 @@ bool USaveManagerSubsystem::LoadGame(const FString& SlotName, int32 UserIndex)
 		GameInstance->LoadSaveData(LoadedGame->InstanceData);
 	}
 
-	//SoundInstanceSubsystem SaveData Load(FSoundSubsystemData)
-	USoundInstanceSubsystem* SoundSubsystem = GameInstance->GetSubsystem<USoundInstanceSubsystem>();
-	if (IsValid(SoundSubsystem))
-	{
-		SoundSubsystem->LoadSaveData(LoadedGame->SoundSubsystemData);
-	}
-
 	//ItemInstanceSubsystem SaveData Load(FSoundSubsystemData)
 	UItemInstanceSubsystem* ItemInstanceSubsystem = GameInstance->GetSubsystem<UItemInstanceSubsystem>();
 	if (IsValid(ItemInstanceSubsystem))
@@ -94,5 +81,53 @@ bool USaveManagerSubsystem::LoadGame(const FString& SlotName, int32 UserIndex)
 	}
 
 	Debug::Print(TEXT("Success Load All Data "));
+	return true;
+}
+
+bool USaveManagerSubsystem::SaveSettings()
+{
+	//저장 인스턴스 생성
+	UDomiSaveSettings* SaveSettingsInstance = Cast<UDomiSaveSettings>(UGameplayStatics::CreateSaveGameObject(UDomiSaveSettings::StaticClass()));
+	check(IsValid(SaveSettingsInstance));
+
+	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+	check(IsValid(GameInstance));
+	
+	//SoundInstanceSubsystem 저장할 데이터 구조체(FSoundSubsystem)로 Get
+	USoundInstanceSubsystem* SoundSubsystem = GameInstance->GetSubsystem<USoundInstanceSubsystem>();
+	if (IsValid(SoundSubsystem))
+	{
+		SaveSettingsInstance->SoundSubsystemData = SoundSubsystem->GetSaveData();
+	}
+	
+	return UGameplayStatics::SaveGameToSlot(SaveSettingsInstance, FString::Printf(TEXT("UserSettings")), 0);
+}
+
+bool USaveManagerSubsystem::LoadSettings()
+{
+	if (!UGameplayStatics::DoesSaveGameExist(FString::Printf(TEXT("UserSettings")), 0))
+	{
+		Debug::PrintError(TEXT("Invalid SaveSlot"));
+		return false;
+	}
+
+	UDomiSaveSettings* LoadedGame = Cast<UDomiSaveSettings>(UGameplayStatics::LoadGameFromSlot(FString::Printf(TEXT("UserSettings")), 0));
+	if (!IsValid(LoadedGame))
+	{
+		Debug::PrintError(TEXT("Load GameData Failed"));
+		return false;
+	}
+
+	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+	check(IsValid(GameInstance));
+	
+	//SoundInstanceSubsystem SaveData Load(FSoundSubsystemData)
+	USoundInstanceSubsystem* SoundSubsystem = GameInstance->GetSubsystem<USoundInstanceSubsystem>();
+	if (IsValid(SoundSubsystem))
+	{
+		SoundSubsystem->LoadSaveData(LoadedGame->SoundSubsystemData);
+	}
+
+	Debug::Print(TEXT("Success Load All User Setting Data "));
 	return true;
 }

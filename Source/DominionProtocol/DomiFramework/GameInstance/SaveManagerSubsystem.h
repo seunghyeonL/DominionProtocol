@@ -14,4 +14,7 @@ class DOMINIONPROTOCOL_API USaveManagerSubsystem : public UGameInstanceSubsystem
 public:
 	bool SaveGame(const FString& SlotName, int32 UserIndex = 0);
 	bool LoadGame(const FString& SlotName, int32 UserIndex = 0);
+
+	bool SaveSettings();
+	bool LoadSettings();
 };
