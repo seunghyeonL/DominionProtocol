@@ -11,9 +11,7 @@ class UStatusComponent;
 class UTextBlock;
 class UButton;
 
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API UStatModifyWidget : public UUserWidget
 {

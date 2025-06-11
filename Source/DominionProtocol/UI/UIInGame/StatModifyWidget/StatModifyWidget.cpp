@@ -6,7 +6,6 @@
 #include "Components/Button.h"
 #include "Util/GameTagList.h"
 #include "Components/TextBlock.h"
-#include "Components/Button.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 
