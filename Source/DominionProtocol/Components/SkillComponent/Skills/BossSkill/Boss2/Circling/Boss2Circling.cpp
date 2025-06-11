@@ -4,6 +4,7 @@
 #include "Boss2Circling.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "GameFramework/Character.h"
+#include "Slate/SGameLayerManager.h"
 #include "Util/DebugHelper.h"
 
 UBoss2Circling::UBoss2Circling()
@@ -50,6 +51,16 @@ void UBoss2Circling::Tick(float DeltaTime)
 {
 	if (bIsCircling)
 	{
+		// 캐릭터 바라보게 회전
+		if (const AActor* TargetActor = UGameplayStatics::GetPlayerPawn(GetWorld(), 0))
+		{
+			const FVector Direction = (TargetActor->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+			FRotator LookRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+			LookRotation.Pitch = 0.f;
+			LookRotation.Roll = 0.f;
+			OwnerCharacter->SetActorRotation(LookRotation);
+		}
+		
 		Circling();
 	}
 }
