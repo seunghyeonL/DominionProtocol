@@ -25,13 +25,13 @@ DEFINE_LOG_CATEGORY(LogCrackSystem);
 
 // Sets default values
 ACrack::ACrack()
-	: CrackName(FText::GetEmpty()),
-	  CrackIndex(0),
-	  InteractableRadius(150.f),
-	  ActivationDistanceCalculateRadius(1500.f),
-	  Distance(1600.f),
-	  bBlockInteract(false),
-	  bIsActivate(false)
+	:	bBlockInteract(false),
+		CrackName(FText::GetEmpty()),
+		CrackIndex(0),
+		InteractableRadius(150.f),
+		ActivationDistanceCalculateRadius(1500.f),
+		Distance(1600.f),
+		bIsActivate(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
