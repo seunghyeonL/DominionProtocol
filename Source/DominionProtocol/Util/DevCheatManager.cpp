@@ -185,3 +185,12 @@ void UDevCheatManager::ToggleFog()
 	UCheatBPLib::ToggleFog(World);
 }
 
+void UDevCheatManager::ShowMeTheMoney()
+{
+	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetWorld()->GetGameInstance());
+	if (IsValid(GameInstance))
+	{
+		GameInstance->AddPlayerCurrentEssence(100000);
+	}
+}
+

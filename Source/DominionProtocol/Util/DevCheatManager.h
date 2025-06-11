@@ -57,4 +57,7 @@ public:
 
 	UFUNCTION(Exec)
 	void ToggleFog();
+
+	UFUNCTION(Exec)
+	void ShowMeTheMoney();
 };
