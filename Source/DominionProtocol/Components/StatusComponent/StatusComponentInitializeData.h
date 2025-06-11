@@ -37,8 +37,5 @@ struct FStatusComponentInitializeData : public FTableRowBase
 	TArray<FTagFloatPair> StatDatas;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FTagFloatPair> StatMultiplierDatas; 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTagEffectClassPair> EffectClassDatas;
 };

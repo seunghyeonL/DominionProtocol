@@ -84,6 +84,7 @@ void UStatModifyWidget::UpdatePreviewStat()
 	{
 		if (PlayerStatPreviewData[PlayerStatTag] > CurrentStatData[PlayerStatTag])
 		{
+			Debug::Print(FString::Printf(TEXT("Preview, Real : %f, %f"), PlayerStatPreviewData[PlayerStatTag], CurrentStatData[PlayerStatTag]));
 			TextBlockMap[PlayerStatTag]->SetColorAndOpacity(FSlateColor(FLinearColor::Green));
 		}
 		else

@@ -53,13 +53,24 @@ namespace StatTags
 	inline const FGameplayTag STR = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.STR"));
 	inline const FGameplayTag SPL = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.SPL"));
 	inline const FGameplayTag END = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.END"));
+	inline const FGameplayTag BaseAttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.BaseAttackPower"));
+	inline const FGameplayTag BaseMagicPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.BaseMagicPower"));
+	inline const FGameplayTag BaseMaxHealth = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.BaseMaxHealth"));
+	inline const FGameplayTag BaseMaxStamina = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.BaseMaxStamina"));
 
+	// Base -> Battle Coefficients
+	inline const FGameplayTag StatCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient"));
+	inline const FGameplayTag AttackPowerCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.AttackPowerCoefficient"));
+	inline const FGameplayTag MagicPowerCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MagicPowerCoefficient"));
+	inline const FGameplayTag MaxHealthCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MaxHealthCoefficient"));
+	inline const FGameplayTag MaxStaminaCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MaxStaminaCoefficient"));
+	
 	// BattleStatTags
 	inline const FGameplayTag BattleStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle"));
 	inline const FGameplayTag MaxHealth = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxHealth"));
 	inline const FGameplayTag MaxStamina = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxStamina"));
 	inline const FGameplayTag AttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.AttackPower"));
-	inline const FGameplayTag BaseAttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.BaseAttackPower"));
+	
 	inline const FGameplayTag SubAttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.SubAttackPower"));
 	inline const FGameplayTag MagicPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MagicPower"));
 	inline const FGameplayTag StaminaRecoveryRate = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.StaminaRecoveryRate"));
@@ -70,9 +81,9 @@ namespace StatTags
 	inline const FGameplayTag MaxGroggyGauge = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxGroggyGauge"));
 	
 	// VariableStatTags
+	inline const FGameplayTag VariableStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable"));
 	inline const FGameplayTag Health = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.Health"));
 	inline const FGameplayTag Stamina = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.Stamina"));
-	
 	inline const FGameplayTag Shield = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.Shield"));
 	inline const FGameplayTag GroggyGauge = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.GroggyGauge"));
 }

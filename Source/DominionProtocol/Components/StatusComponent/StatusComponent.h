@@ -97,6 +97,7 @@ public:
 	void DecideStatChangeFromUI(const TMap<FGameplayTag, float>& UIPlayerStatData);
 
 	float GetCalculatedBattleStat(const FGameplayTag& StatTag, const TMap<FGameplayTag, float>& InStatMap) const;
+	float GetMaxVariableStat(const FGameplayTag& StatTag) const;
 	
 	void SetHealth(const float NewHealth);
 	void SetMaxHealth(const float NewMaxHealth);
