@@ -30,8 +30,8 @@ ACrack::ACrack()
 	  InteractableRadius(150.f),
 	  ActivationDistanceCalculateRadius(1500.f),
 	  Distance(1600.f),
-	  bIsActivate(false),
-	  bBlockInteract(false)
+	  bBlockInteract(false),
+	  bIsActivate(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
