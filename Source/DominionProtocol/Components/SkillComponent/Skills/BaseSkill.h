@@ -23,7 +23,7 @@ public:
 	virtual void Execute();
 
 	virtual void AttackTrace() const;
-
+	virtual void AttackTrace_Cylinder(FVector Offset, float Radius, float HalfHeight) const;
 	virtual void StartTrace(const FGameplayTagContainer& TagContainer);
 	virtual void StopTrace(const FGameplayTagContainer& TagContainer);
 	

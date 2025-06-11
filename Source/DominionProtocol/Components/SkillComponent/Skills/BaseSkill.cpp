@@ -126,6 +126,42 @@ void UBaseSkill::AttackTrace() const
 	}
 }
 
+void UBaseSkill::AttackTrace_Cylinder(FVector Offset, float Radius, float HalfHeight) const
+{
+	check(OwnerCharacter);
+
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	// 기준 위치 계산 (캐릭터 기준 Offset)
+	const FVector Start = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorRotation().RotateVector(Offset);
+	const FVector End = Start;
+
+	TArray<FHitResult> HitResults;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(OwnerCharacter);
+
+	const bool bHit = World->SweepMultiByChannel(
+		HitResults,
+		Start,
+		End,
+		FQuat::Identity,
+		ECollisionChannel::ECC_Pawn,
+		FCollisionShape::MakeCapsule(Radius, HalfHeight),
+		QueryParams
+	);
+
+	if (!bHit) return;
+
+	for (const FHitResult& Hit : HitResults)
+	{
+		if (AActor* HitActor = Hit.GetActor())
+		{
+			ApplyAttackToHitActor(Hit, 0.f);
+		}
+	}
+}
+
 void UBaseSkill::StartTrace(const FGameplayTagContainer& TagContainer)
 {
 	check(OwnerCharacter);

@@ -65,89 +65,86 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (AIStateComponent)
 	{
 		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
-		Debug::PrintError(TEXT("Skeleton IdleIdleIdleIdleIdleIdleIdleIdle.."));
 	}
 }
 
-//void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
-//{
-//	EvaluateTargetPriority();
-//
-//	if (!AIStateComponent) return;
-//
-//	if (Stimulus.WasSuccessfullySensed() && IsValid(Actor))
-//	{
-//		if (GetWorld()->GetTimerManager().IsTimerActive(LoseTargetTimerHandle))
-//		{
-//			GetWorld()->GetTimerManager().ClearTimer(LoseTargetTimerHandle);
-//		}
-//		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
-//		UE_LOG(LogTemp, Warning, TEXT("CombatState Activated"));
-//	}
-//	else
-//	{
-//		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
-//
-//		Debug::PrintError(TEXT("Skeleton TargetIdleTargetIdleTargetIdleTargetIdleTargetIdle"));
-//		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);	
-//	}
-//	UE_LOG(LogTemp, Warning, TEXT("[%s] BB_ID: %d | TargetActor: %s"),
-//		*GetPawn()->GetName(),
-//		GetBlackboardComponent()->GetUniqueID(),
-//		*GetNameSafe(Cast<AActor>(GetBlackboardComponent()->GetValueAsObject("TargetActor"))));
-//}
-
 void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (!Actor || !Actor->IsA<ADomiCharacter>()) return;
-	if (!AIStateComponent || !GetBlackboardComponent()) return;
+	EvaluateTargetPriority();
 
-	EvaluateTargetPriority(); // 타겟 갱신
+	if (!AIStateComponent) return;
 
-	if (Stimulus.WasSuccessfullySensed())
+	if (Stimulus.WasSuccessfullySensed() && IsValid(Actor))
 	{
-		GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), Actor);
-
 		if (GetWorld()->GetTimerManager().IsTimerActive(LoseTargetTimerHandle))
 		{
 			GetWorld()->GetTimerManager().ClearTimer(LoseTargetTimerHandle);
-			UE_LOG(LogTemp, Warning, TEXT("[%s] LoseTargetTimerHandle cleared"), *GetPawn()->GetName());
 		}
-
 		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
-		UE_LOG(LogTemp, Warning, TEXT("[%s] CombatState Activated | Target: %s"), *GetPawn()->GetName(), *Actor->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("CombatState Activated"));
 	}
 	else
 	{
-		AActor* CurrentTarget = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")));
+		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
 
-		if (!IsValid(CurrentTarget))
-		{
-			AIStateComponent->SetAIStateByTag(EffectTags::Idle);
-			UE_LOG(LogTemp, Warning, TEXT("[%s] TargetActor 없음 → Idle 전환"), *GetPawn()->GetName());
-		}
-		else
-		{
-			if (!GetWorld()->GetTimerManager().IsTimerActive(LoseTargetTimerHandle))
-			{
-				GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 2.0f, false);
-				UE_LOG(LogTemp, Warning, TEXT("[%s] 감지 끊김 → LoseTargetTimer 시작"), *GetPawn()->GetName());
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[%s] 감지 끊김 → 타이머 이미 작동 중"), *GetPawn()->GetName());
-			}
-		}
+		Debug::PrintError(TEXT("Skeleton TargetIdleTargetIdleTargetIdleTargetIdleTargetIdle"));
+		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);	
 	}
-
-	// 디버깅 로그
 	UE_LOG(LogTemp, Warning, TEXT("[%s] BB_ID: %d | TargetActor: %s"),
 		*GetPawn()->GetName(),
 		GetBlackboardComponent()->GetUniqueID(),
 		*GetNameSafe(Cast<AActor>(GetBlackboardComponent()->GetValueAsObject("TargetActor"))));
 }
 
-
+//void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+//{
+//	if (!Actor || !Actor->IsA<ADomiCharacter>()) return;
+//	if (!AIStateComponent || !GetBlackboardComponent()) return;
+//
+//	EvaluateTargetPriority(); // 타겟 갱신
+//
+//	if (Stimulus.WasSuccessfullySensed())
+//	{
+//		GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), Actor);
+//
+//		if (GetWorld()->GetTimerManager().IsTimerActive(LoseTargetTimerHandle))
+//		{
+//			GetWorld()->GetTimerManager().ClearTimer(LoseTargetTimerHandle);
+//			UE_LOG(LogTemp, Warning, TEXT("[%s] LoseTargetTimerHandle cleared"), *GetPawn()->GetName());
+//		}
+//
+//		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
+//		UE_LOG(LogTemp, Warning, TEXT("[%s] CombatState Activated | Target: %s"), *GetPawn()->GetName(), *Actor->GetName());
+//	}
+//	else
+//	{
+//		AActor* CurrentTarget = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")));
+//
+//		if (!IsValid(CurrentTarget))
+//		{
+//			AIStateComponent->SetAIStateByTag(EffectTags::Idle);
+//			UE_LOG(LogTemp, Warning, TEXT("[%s] TargetActor 없음 → Idle 전환"), *GetPawn()->GetName());
+//		}
+//		else
+//		{
+//			if (!GetWorld()->GetTimerManager().IsTimerActive(LoseTargetTimerHandle))
+//			{
+//				GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 2.0f, false);
+//				UE_LOG(LogTemp, Warning, TEXT("[%s] 감지 끊김 → LoseTargetTimer 시작"), *GetPawn()->GetName());
+//			}
+//			else
+//			{
+//				UE_LOG(LogTemp, Warning, TEXT("[%s] 감지 끊김 → 타이머 이미 작동 중"), *GetPawn()->GetName());
+//			}
+//		}
+//	}
+//
+//	// 디버깅 로그
+//	UE_LOG(LogTemp, Warning, TEXT("[%s] BB_ID: %d | TargetActor: %s"),
+//		*GetPawn()->GetName(),
+//		GetBlackboardComponent()->GetUniqueID(),
+//		*GetNameSafe(Cast<AActor>(GetBlackboardComponent()->GetValueAsObject("TargetActor"))));
+//}
 
 void ABaseAIController::EvaluateTargetPriority()
 {
@@ -186,7 +183,7 @@ void ABaseAIController::EvaluateTargetPriority()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] EvaluateTargetPriority → 감지된 타겟 없음, 하지만 Clear 안함"), *GetPawn()->GetName());
+		GetBlackboardComponent()->SetValueAsObject(TEXT("TargetActor"), BestTarget);
 	}
 }
 
@@ -216,29 +213,13 @@ void ABaseAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-//void ABaseAIController::HandleTargetLost()
-//{
-//	if (!AIStateComponent) return;
-//
-//	if (!GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")))
-//	{
-//		AIStateComponent->SetAIStateByTag(EffectTags::Return);
-//		UE_LOG(LogTemp, Warning, TEXT("ReturnState Activated"));
-//	}
-//}
-
 void ABaseAIController::HandleTargetLost()
 {
-	if (!AIStateComponent || !GetBlackboardComponent()) return;
+	if (!AIStateComponent) return;
 
-	UObject* TargetObj = GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor"));
-	if (!IsValid(TargetObj))
+	if (!GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")))
 	{
 		AIStateComponent->SetAIStateByTag(EffectTags::Return);
-		UE_LOG(LogTemp, Warning, TEXT("[%s] HandleTargetLost → 상태: Return"), *GetPawn()->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[%s] HandleTargetLost → Target 여전히 존재함: %s"), *GetPawn()->GetName(), *TargetObj->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("ReturnState Activated"));
 	}
 }

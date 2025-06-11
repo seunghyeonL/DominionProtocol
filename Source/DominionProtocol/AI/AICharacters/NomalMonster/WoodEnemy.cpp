@@ -20,7 +20,7 @@ AWoodEnemy::AWoodEnemy()
 
 	FMnhTracerConfig TracerConfig;
 	TracerConfig.TracerTag = ItemTags::BasicWeapon;
-	TracerConfig.DrawDebugType = EDrawDebugTrace::ForDuration;
+	TracerConfig.DrawDebugType = EDrawDebugTrace::None;
 	TracerConfig.DebugDrawTime = 1.f;
 	TracerConfig.TraceSettings.TraceChannel = ECC_Pawn;
 
