@@ -31,18 +31,6 @@ FInstanceData UDomiGameInstance::GetSaveData() const
 	return SaveData;
 }
 
-void UDomiGameInstance::ApplySaveData()
-{
-	if (IsValid(World))
-	{
-		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(World->GetFirstPlayerController()->GetPawn());
-		if (IsValid(PlayerCharacter))
-		{
-			PlayerCharacter->GetStatusComponent()->SetStatMap(StatDataMap);
-		}
-	}
-}
-
 void UDomiGameInstance::SetIsBossDead(FGameplayTag BossTag)
 {
 	if (BossTag.IsValid())

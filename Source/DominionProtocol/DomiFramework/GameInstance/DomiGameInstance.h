@@ -26,8 +26,6 @@ public:
 	//Save & Load
 	void LoadSaveData(const FInstanceData& SaveData);
 	FInstanceData GetSaveData() const;
-
-	void ApplySaveData();
 	
 	//Setter
 
