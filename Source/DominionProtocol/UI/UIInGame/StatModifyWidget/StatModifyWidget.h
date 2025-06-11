@@ -107,6 +107,9 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> LevelUpRequiredTextBlock;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> AccumulatedEssenceTextBlock;
+
 	// Buttons
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> StrUpButton;

@@ -94,6 +94,7 @@ void UStatModifyWidget::UpdatePreviewStat()
 
 	CurrentEssenceTextBlock->SetText(FText::AsNumber(DomiGI->GetPlayerCurrentEssence() - AccumulatedRequiredEssence));
 	LevelUpRequiredTextBlock->SetText(FText::AsNumber(PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level])));
+	AccumulatedEssenceTextBlock->SetText(FText::AsNumber(AccumulatedRequiredEssence));
 	
 	if (DomiGI->HasEnoughEssence(AccumulatedRequiredEssence + PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level])))
 	{
