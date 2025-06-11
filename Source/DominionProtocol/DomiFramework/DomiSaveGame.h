@@ -20,9 +20,6 @@ public:
 	FInstanceData InstanceData;
 
 	UPROPERTY()
-	FSoundSubsystemData SoundSubsystemData;
-
-	UPROPERTY()
 	FItemSubsystemData ItemSubsystemData;
 
 	UPROPERTY()
