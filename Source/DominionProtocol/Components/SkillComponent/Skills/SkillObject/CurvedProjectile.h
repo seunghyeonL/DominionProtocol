@@ -63,6 +63,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
 	void SetLaunchPath(AActor* NewInstigator, AActor* NewTargetActor);
 
 	UPROPERTY()
@@ -114,7 +115,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<APawn> InstigatorPawn;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<AActor> TargetActor;
 
 	// 투사체 생성 지점
