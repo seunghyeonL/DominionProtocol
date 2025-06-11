@@ -29,6 +29,10 @@ ALever::ALever()
 	InitialRotation = HandleMesh->GetRelativeRotation();
 }
 
+void ALever::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
+{
+}
+
 void ALever::BeginPlay()
 {
 	Super::BeginPlay();
@@ -100,6 +104,11 @@ void ALever::HandleLever(float Value)
 }
 void ALever::OnTimelineFinished()
 {
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (GI->GetCurrentGameStoryState() != RequiredStoryState)
+	{
+		return;
+	}
 	if (Door)
 	{
 		Door->OpenDoor();

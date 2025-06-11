@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface/InteractableInterface.h"
+#include "Interface/StoryDependentInterface.h"
 #include "Components/TimelineComponent.h"
 #include "WorldObjects/Door.h"
 #include "Lever.generated.h"
@@ -13,12 +14,14 @@ class UBoxComponent;
 class ADomiCharacter;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ALever : public AActor, public IInteractableInterface
+class DOMINIONPROTOCOL_API ALever : public AActor, public IInteractableInterface, public IStoryDependentInterface
 {
 	GENERATED_BODY()
 	
 public:	
 	ALever();
+
+	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -74,6 +77,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float LeverRotateAngle;
+
+	UPROPERTY(EditAnywhere)
+	EGameStoryState RequiredStoryState = EGameStoryState::Tutorial;
 
 private:
 	UPROPERTY()
