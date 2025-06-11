@@ -104,12 +104,7 @@ void ABaseGameMode::StartPlay()
 	
 	BaseGameState = Cast<ABaseGameState>(World->GetGameState());
 	check(GameState);
-	BaseGameState->CacheAllCracks();
-	BaseGameState->LoadCrackDataFromInstance();
-	BaseGameState->InitializeCrackDataMap();
-	RecentCrackCache = BaseGameState->FindNearestCrack();
-	BaseGameState->LoadItemDataFromInstance();
-	//BaseGameState->ApplyAllSaveData();
+	BaseGameState->InitializeGame();
 	
 	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
@@ -228,6 +223,7 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		WorldInstanceSubsystem->SetIsDropEssenceExist(true);
 		WorldInstanceSubsystem->SetDropEssenceAmount(GameInstance->GetPlayerCurrentEssence());
 		WorldInstanceSubsystem->SetDropEssenceLocation(PlayerCharacter->GetActorLocation());
+		WorldInstanceSubsystem->SetDropEssenceLocationLevel(WorldInstanceSubsystem->GetCurrentLevelName());
 		GameInstance->SetPlayerCurrentEssence(0);
 	}
 

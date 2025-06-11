@@ -5,12 +5,14 @@
 
 #include "Components/ItemComponent/ItemComponent.h"
 #include "GameFramework/Character.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/SoundInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/ItemInstanceSubsystem.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
+#include "Components/StatusComponent/StatusComponent.h"
 #include "EnumAndStruct/EffectData/EffectInitializeData.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "WorldObjects/Crack.h"
@@ -109,14 +111,66 @@ FEffectInitializeData* ABaseGameState::GetEffectInitializeData(const FGameplayTa
 	return EffectInitializeDataTable->FindRow<FEffectInitializeData>(EffectTag.GetTagName(), TEXT(""));
 }
 
-void ABaseGameState::ApplyAllSaveData()
+void ABaseGameState::InitializeGame()
 {
 	check(IsValid(GameInstance));
 	check(IsValid(WorldInstanceSubsystem));
 	check(IsValid(SoundSubsystem));
 	check(IsValid(ItemInstanceSubsystem));
+	
+	CacheAllCracks();
+	LoadCrackDataFromInstance();
+	InitializeCrackDataMap();
+	BaseGameMode = Cast<ABaseGameMode>(World->GetAuthGameMode());
+	if (IsValid(BaseGameMode))
+	{
+		BaseGameMode->SetRecentCrackCache(FindNearestCrack());
+	}
+	LoadItemDataFromInstance();
 
-	GameInstance->ApplySaveData();
+	// 캐릭터 스탯값 적용
+	if (IsValid(World))
+	{
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(World->GetFirstPlayerController()->GetPawn());
+		if (IsValid(PlayerCharacter))
+		{
+			UStatusComponent* StatusComponent = PlayerCharacter->GetStatusComponent();
+			if (IsValid(StatusComponent))
+			{
+				if (!GameInstance->GetStatDataMap().IsEmpty())
+				{
+					StatusComponent->SetStatMap(GameInstance->GetStatDataMap());
+				}
+			}
+		}
+	}
+
+	// DropEssence 인스턴스 상 존재 하면 레벨에 적용
+	if (WorldInstanceSubsystem->GetIsDropEssenceExist() && WorldInstanceSubsystem->GetDropEssenceLocationLevel() == WorldInstanceSubsystem->GetCurrentLevelName())
+	{
+		TSubclassOf<ADropEssence> DropEssenceClass;
+		static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
+		if (DropEssenceBPClass.Succeeded())
+		{
+			DropEssenceClass = DropEssenceBPClass.Class;
+		}
+		
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(World->GetFirstPlayerController()->GetPawn());
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		ADropEssence* NewDropEssence = World->SpawnActor<ADropEssence>(DropEssenceClass, WorldInstanceSubsystem->GetDropEssenceLocation(), FRotator::ZeroRotator, SpawnParams);
+	}
+	else
+	{
+		if (WorldInstanceSubsystem->GetIsDropEssenceExist())
+		{
+			WorldInstanceSubsystem->SetDropEssenceCache(nullptr);
+			WorldInstanceSubsystem->SetIsDropEssenceExist(false);
+			WorldInstanceSubsystem->SetDropEssenceAmount(0);
+			WorldInstanceSubsystem->SetDropEssenceLocation(FVector::ZeroVector);
+			WorldInstanceSubsystem->SetDropEssenceLocationLevel("");
+		}
+	}
 }
 
 void ABaseGameState::CacheAllCracks()
@@ -193,7 +247,7 @@ void ABaseGameState::LoadItemDataFromInstance()
 void ABaseGameState::InitializeCrackDataMap()
 {
 	// 불러오지 않은 새 게임일 경우에만 실행
-	if (!bIsNewGame)
+	if (!WorldInstanceSubsystem->GetIsNewGame())
 	{
 		return;
 	}
@@ -255,6 +309,11 @@ void ABaseGameState::InitializeZeroIndexCrackData(const FString CurrentLevelName
 			return;
 		}
 	}
+
+	if (!WorldInstanceSubsystem->GetIsNewGame())
+	{
+		return;
+	}
 	
 	FCrackInitializeData* Level1Row = CrackInitializeDataTable->FindRow<FCrackInitializeData>(FName(CurrentLevelName), TEXT(""));
 	FCrackInitializeData* Level2Row = CrackInitializeDataTable->FindRow<FCrackInitializeData>(FName(Level1Row->ZeroIndexCrackData.LinkedLevelName), TEXT(""));
@@ -263,7 +322,7 @@ void ABaseGameState::InitializeZeroIndexCrackData(const FString CurrentLevelName
 
 	if (IsValid(WorldInstanceSubsystem))
 	{
-		WorldInstanceSubsystem->InitializeCrackDataMap(Level1, Level2);
+		WorldInstanceSubsystem->InitializeCrackAndNewGameDataMap(Level1, Level2);
 	}
 }
 

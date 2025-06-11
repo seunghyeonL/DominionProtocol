@@ -8,6 +8,7 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+class ABaseGameMode;
 class UItemInstanceSubsystem;
 struct FEffectInitializeData;
 struct FCrackInitializeData;
@@ -37,8 +38,18 @@ public:
 	FEffectInitializeData* GetEffectInitializeData(const FGameplayTag EffectTag) const;
 	FORCEINLINE ACrack* GetCrackByIndex(int32 InCrackIndex) const {return AllCracksCache[InCrackIndex]; }
 
-	void ApplyAllSaveData();
+	void InitializeGame();
 	
+protected:
+	virtual void BeginPlay() override;
+
+	//Initialize Instances
+	void InitializeGameInstance();
+	void InitializeWorldInstanceSubsystem();
+	void InitializeSoundSubsystem();
+	void InitializeItemInstanceSubsystem();
+	void InitializeZeroIndexCrackData(const FString CurrentLevelName);
+
 	void CacheAllCracks();
 	
 	void LoadCrackDataFromInstance();
@@ -49,22 +60,14 @@ public:
 
 	ACrack* FindNearestCrack();
 	
-protected:
-	virtual void BeginPlay() override;
-
-private:
-	//Initialize Instances
-	void InitializeGameInstance();
-	void InitializeWorldInstanceSubsystem();
-	void InitializeSoundSubsystem();
-	void InitializeItemInstanceSubsystem();
-	void InitializeZeroIndexCrackData(const FString CurrentLevelName);
-	
 
 //Variables
-private:
+protected:
 	UPROPERTY()
 	UWorld* World;
+
+	UPROPERTY()
+	TObjectPtr<ABaseGameMode> BaseGameMode;
 	
 	UPROPERTY()
 	TObjectPtr<UDomiGameInstance> GameInstance;
@@ -95,8 +98,6 @@ private:
 	
 	UPROPERTY()
 	TArray<ACrack*> AllCracksCache;
-
-	bool bIsNewGame = true;
 
 #pragma endregion
 
