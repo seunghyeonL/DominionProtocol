@@ -111,6 +111,15 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	WorldInstanceSubsystem->SetRecentCrackName(CrackName);
 	WorldInstanceSubsystem->SetRecentCrackIndex(CrackIndex);
 
+	if (!IsValid(CachedCharacter))
+	{
+		CachedCharacter = Cast<ADomiCharacter>(Interactor);
+	}
+	check(IsValid(CachedCharacter));
+
+	AInGameController* PlayerController = Cast<AInGameController>(CachedCharacter->GetController());
+	check(IsValid(PlayerController));
+
 	// 흐름
 	// 1. 비활성화시 활성화
 	// 2. 조력자 대화 이벤트
@@ -138,37 +147,30 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	{
 		Debug::Print(TEXT("Crack: 조력자 이벤트 없음"));
 	}
-	
+
 	// 3. 기능
 
 	// 적 몬스터 All Destroy
 	BaseGameMode->DestroyAllNormalEnemy();
+	// 플레이어 체력 및 포션 개수 회복
+	BaseGameMode->RestorePlayer();
+	// 플레이어 스탯 저장
+	GameInstance->SetStatDataMap(CachedCharacter->GetStatusComponent()->GetStatMap());
+	// 적 몬스터 초기화
+	BaseGameMode->RespawnEnemies();
 
-	auto* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
-	if (PlayerCharacter)
+	UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
+
+	// 균열 이동
+	if (InGameHUDWidget)
 	{
-		BaseGameMode->RestorePlayer();
-
-		// 적 몬스터 초기화
-		BaseGameMode->RespawnEnemies();
-
-		auto* PlayerController = Cast<AInGameController>(PlayerCharacter->GetController());
-		if (PlayerController)
-		{
-			UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
-
-			// 균열 이동
-			if (InGameHUDWidget)
-			{
-				InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
-				InGameHUDWidget->SwitchShowAndHideStatModifyWidget();
-			}
-
-			// 레벨업
-
-			// 회복포션 업그레이트
-		}
+		InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
+		InGameHUDWidget->SwitchShowAndHideStatModifyWidget();
 	}
+
+	// 레벨업
+
+	// 회복포션 업그레이트
 }
 
 FText ACrack::GetInteractMessage_Implementation() const
