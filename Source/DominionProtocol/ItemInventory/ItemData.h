@@ -60,6 +60,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	FWeaponData WeaponData;
 
+	//무기 계수
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	float WeaponStatMultiplier;
+
 	//악세서리 메시 소켓 등의 데이터
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	FAccessoryData AccessoryData;
