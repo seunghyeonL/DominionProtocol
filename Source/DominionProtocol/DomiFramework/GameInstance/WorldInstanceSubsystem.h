@@ -25,9 +25,11 @@ public:
 	void LoadSaveData(const FWorldInstanceSubsystemData& SaveData);
 	FWorldInstanceSubsystemData GetSaveData();
 	
-	void InitializeCrackDataMap(FCrackData Level1, FCrackData Level2);
+	void InitializeCrackAndNewGameDataMap(FCrackData Level1, FCrackData Level2);
 	
 	//Setter
+	FORCEINLINE void SetIsNewGame(FString LevelName, bool bNewBool) { IsNewGameDataMap[LevelName] = bNewBool; }
+	
 	void SetCrackDataMap(TMap<FString, FCrackDataArrayStruct> InCrackDataMap) { CrackDataMap = InCrackDataMap; }
 
 	FORCEINLINE void SetCurrentLevelName(const FString& NewCurrentLevelName) { CurrentLevelName = NewCurrentLevelName; }
@@ -56,6 +58,8 @@ public:
 
 	FORCEINLINE void SetDropEssenceLocation(const FVector& NewDropEssenceLocation) { DropEssenceLocation = NewDropEssenceLocation; }
 
+	FORCEINLINE void SetDropEssenceLocationLevel(const FString& NewDropEssenceLocationLevel) { DropEssenceLocationLevel = NewDropEssenceLocationLevel; }
+	
 	FORCEINLINE void SetWorldActorDataMap(TMap<FGuid, FWorldActorData>& NewWorldActorDataMap) { WorldActorDataMap.Append(NewWorldActorDataMap); }
 
 	FORCEINLINE void AddWorldActorData(FGuid ID, FWorldActorData NewWorldActorData)
@@ -64,6 +68,15 @@ public:
 	}
 
 	//Getter
+	FORCEINLINE bool GetIsNewGame() const
+	{
+		if (IsNewGameDataMap.Contains(CurrentLevelName))
+		{
+			return IsNewGameDataMap[CurrentLevelName];
+		}
+		return true;
+	}
+	
 	UFUNCTION(BlueprintPure)
 	TMap<FString, FCrackDataArrayStruct> GetCrackDataMapForBlueprint() { return CrackDataMap; }
 	
@@ -99,6 +112,8 @@ public:
 
 	FORCEINLINE const FVector& GetDropEssenceLocation() const { return DropEssenceLocation; }
 
+	FORCEINLINE const FString& GetDropEssenceLocationLevel() const { return DropEssenceLocationLevel; }
+	
 	FORCEINLINE bool GetIsWorldActorDataExist(FGuid ActorID) const
 	{
 		if (WorldActorDataMap.Contains(ActorID))
@@ -129,6 +144,9 @@ public:
 //SaveData
 private:
 	UPROPERTY()
+	TMap<FString, bool> IsNewGameDataMap;
+	
+	UPROPERTY()
 	FString CurrentLevelName;
 
 	UPROPERTY()
@@ -148,9 +166,6 @@ private:
 
 	UPROPERTY()
 	TMap<FGuid, FWorldActorData> WorldActorDataMap;
-
-	UPROPERTY()
-	TObjectPtr<ADropEssence> DropEssenceCache;
 	
 	UPROPERTY()
 	bool bIsDropEssenceExist;
@@ -161,8 +176,14 @@ private:
 	UPROPERTY()
 	FVector DropEssenceLocation;
 
+	UPROPERTY()
+	FString DropEssenceLocationLevel;
+
 //Not Save Variables
 private:
+	UPROPERTY()
+	TObjectPtr<ADropEssence> DropEssenceCache;
+	
 	FVector MoveTargetLocation = FVector::ZeroVector;
 
 	FRotator MoveTargetRotation = FRotator::ZeroRotator;

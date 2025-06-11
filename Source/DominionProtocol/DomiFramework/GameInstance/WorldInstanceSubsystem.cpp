@@ -24,15 +24,41 @@ void UWorldInstanceSubsystem::Deinitialize()
 
 void UWorldInstanceSubsystem::LoadSaveData(const FWorldInstanceSubsystemData& SaveData)
 {
+	IsNewGameDataMap = SaveData.IsNewGameDataMap;
+	CurrentLevelName = SaveData.CurrentLevelName;
+	CurrentLevelDisplayName = SaveData.CurrentLevelDisplayName;
+	RecentCrackName = SaveData.RecentCrackName;
+	RecentCrackIndex = SaveData.RecentCrackIndex;
+	MaxCrackIndex = SaveData.MaxCrackIndex;
+	CrackDataMap = SaveData.CrackDataMap;
+	WorldActorDataMap = SaveData.WorldActorDataMap;
+	bIsDropEssenceExist = SaveData.bIsDropEssenceExist;
+	DropEssenceAmount = SaveData.DropEssenceAmount;
+	DropEssenceLocation = SaveData.DropEssenceLocation;
+	DropEssenceLocationLevel = SaveData.DropEssenceLocationLevel;
 }
 
 FWorldInstanceSubsystemData UWorldInstanceSubsystem::GetSaveData()
 {
 	FWorldInstanceSubsystemData SaveData;
+
+	SaveData.IsNewGameDataMap = IsNewGameDataMap;
+	SaveData.CurrentLevelName = CurrentLevelName;
+	SaveData.CurrentLevelDisplayName = CurrentLevelDisplayName;
+	SaveData.RecentCrackName = RecentCrackName;
+	SaveData.RecentCrackIndex = RecentCrackIndex;
+	SaveData.MaxCrackIndex = MaxCrackIndex;
+	SaveData.CrackDataMap = CrackDataMap;
+	SaveData.WorldActorDataMap = WorldActorDataMap;
+	SaveData.bIsDropEssenceExist = bIsDropEssenceExist;
+	SaveData.DropEssenceAmount = DropEssenceAmount;
+	SaveData.DropEssenceLocation = DropEssenceLocation;
+	SaveData.DropEssenceLocationLevel = DropEssenceLocationLevel;
+	
 	return SaveData;
 }
 
-void UWorldInstanceSubsystem::InitializeCrackDataMap(FCrackData Level1, FCrackData Level2)
+void UWorldInstanceSubsystem::InitializeCrackAndNewGameDataMap(FCrackData Level1, FCrackData Level2)
 {
 	if (!CrackDataMap.Contains(Level1.OwnerLevelName))
 	{
@@ -46,6 +72,16 @@ void UWorldInstanceSubsystem::InitializeCrackDataMap(FCrackData Level1, FCrackDa
 		FCrackDataArrayStruct Level2CrackArray;
 		Level2CrackArray.CrackDataArray.Add(Level2);
 		CrackDataMap.Add(Level2.OwnerLevelName, Level2CrackArray);
+	}
+
+	if (!IsNewGameDataMap.Contains(Level1.OwnerLevelName))
+	{
+		IsNewGameDataMap.Add(Level1.OwnerLevelName, true);
+	}
+
+	if (!IsNewGameDataMap.Contains(Level2.OwnerLevelName))
+	{
+		IsNewGameDataMap.Add(Level2.OwnerLevelName, true);
 	}
 }
 
