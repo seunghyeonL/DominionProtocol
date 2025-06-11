@@ -24,9 +24,11 @@
 #include "MovieSceneSequencePlaybackSettings.h"
 #include "MovieScene.h"
 #include "MovieSceneSequence.h"
+#include "Camera/CameraComponent.h"
 #include "Engine/Engine.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundWave.h"
+#include "GameFramework/SpringArmComponent.h"
 
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
@@ -113,6 +115,9 @@ void ABaseGameMode::StartPlay()
 		WorldInstanceSubsystem->SwitchIsLevelChanged();
 		WorldInstanceSubsystem->SetMoveTargetLocation(FVector::ZeroVector);
 		WorldInstanceSubsystem->SetMoveTargetRotator(FRotator::ZeroRotator);
+		AController* PlayerController = PlayerCharacter->GetController();
+		FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
+		PlayerController->SetControlRotation(NewRotation);
 	}
 	
 	//=====Enemy 위치정보 캐싱=====
@@ -396,6 +401,9 @@ void ABaseGameMode::OnFadeSequenceFinished()
 		{
 			SaveItemDataToInstance();
 			PlayerCharacter->SetActorLocationAndRotation(PendingMoveLocation, PendingMoveRotation);
+			AController* PlayerController = PlayerCharacter->GetController();
+			FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
+			PlayerController->SetControlRotation(NewRotation);
 			PlayFade(true);
 			ExitAudioComponent->Play();
 		}
