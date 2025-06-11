@@ -46,6 +46,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SwitchShowAndHideInventoryWidget();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void SwitchShowAndHideStatModifyWidget();
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder);
 
@@ -87,6 +90,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UBossMonsterHPBarWidget> BossMonsterHPBar;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UStatModifyWidget> StatModifyWidget;
 	
 #pragma endregion
 };

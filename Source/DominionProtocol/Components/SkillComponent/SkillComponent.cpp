@@ -30,6 +30,9 @@ void USkillComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
     {
         CurrentSkill->Tick(DeltaTime);
     }
+    // -> 
+    // 가지고 있는 모든 스킬의 Tick을 (특정조건인 스킬만) 돌린다.
+    // BaseSkill 에 특정 조건을 표현하는 bool변수를 둔다.
 }
 
 void USkillComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

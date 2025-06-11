@@ -6,6 +6,7 @@
 #include "StatusEffects/StatusEffectBase.h"
 #include "GameFramework/Character.h"
 #include "Interface/PawnTagInterface.h"
+#include "Player/Characters/DomiCharacter.h"
 
 UStatusComponent::UStatusComponent()
 {
@@ -114,30 +115,111 @@ void UStatusComponent::SetStat(const FGameplayTag& StatTag, float Value)
 	// Debug::PrintError(TEXT("UStatusComponent::SetStat : Finding StatTag is not set."));
 }
 
-void UStatusComponent::UpdateStatPreviewData(FPlayerStatData& UIPlayerStatData)
+void UStatusComponent::GetPlayerStatData(TMap<FGameplayTag, float>& UIPlayerStatData)
 {
-	UIPlayerStatData.End = GetStat(StatTags::END);
-	UIPlayerStatData.Life = GetStat(StatTags::LIFE);
-	UIPlayerStatData.Spl = GetStat(StatTags::SPL);
-	UIPlayerStatData.Str = GetStat(StatTags::STR);
-	UIPlayerStatData.MaxHealth = GetStat(StatTags::MaxHealth);
-	UIPlayerStatData.MaxStamina = GetStat(StatTags::MaxStamina);
-	UIPlayerStatData.MagicPower = GetStat(StatTags::MagicPower);
-	UIPlayerStatData.PrimaryAttackPower = GetStat(StatTags::AttackPower);
-	UIPlayerStatData.SubAttackPower = GetStat(StatTags::SubAttackPower);
+	for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	{
+		UIStatValue = GetStat(UIStatTag);
+	}
 }
 
-void UStatusComponent::DecideStatChangeFromUI(const FPlayerStatData& UIPlayerStatData)
+void UStatusComponent::UpdateStatPreviewData(TMap<FGameplayTag, float>& UIPlayerStatData)
 {
-	SetStat(StatTags::AttackPower, UIPlayerStatData.End);
-	SetStat(StatTags::LIFE, UIPlayerStatData.Life);
-	SetStat(StatTags::SPL, UIPlayerStatData.Spl);
-	SetStat(StatTags::STR, UIPlayerStatData.Str);
-	SetStat(StatTags::MaxHealth, UIPlayerStatData.MaxHealth);
-	SetStat(StatTags::MaxStamina, UIPlayerStatData.MaxStamina);
-	SetStat(StatTags::MagicPower, UIPlayerStatData.MagicPower);
-	SetStat(StatTags::AttackPower, UIPlayerStatData.PrimaryAttackPower);
-	SetStat(StatTags::SubAttackPower, UIPlayerStatData.SubAttackPower);
+	// for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	// {
+	// 	if (UIStatTag.MatchesTag(StatTags::BaseStat) && UIStatValue < GetStat(UIStatTag))
+	// 	{
+	// 		UIStatValue = GetStat(UIStatTag);
+	// 	}
+	// }
+
+	for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	{
+		if (UIStatTag.MatchesTag(StatTags::BattleStat))
+		{
+			UIStatValue = GetCalculatedBattleStat(UIStatTag, UIPlayerStatData);	
+		}
+	}
+}
+
+void UStatusComponent::DecideStatChangeFromUI(const TMap<FGameplayTag, float>& UIPlayerStatData)
+{
+	for (const auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
+	{
+		SetStat(UIStatTag, UIPlayerStatData[UIStatTag]);
+	}
+}
+
+float UStatusComponent::GetLevelUpRequiredEssence(const float InLevel) const
+{
+	return (
+		StatMap[StatTags::LevelUpCoefficientB] * InLevel * InLevel
+		+ StatMap[StatTags::LevelUpCoefficientC] * InLevel
+		+ StatMap[StatTags::LevelUpCoefficientD]
+	);
+}
+
+float UStatusComponent::GetCalculatedBattleStat(const FGameplayTag& StatTag, const TMap<FGameplayTag, float>& InStatMap) const
+{
+	if (!StatTag.IsValid())
+	{
+		Debug::PrintError(TEXT("UStatusComponent::GetCalculatedBattleStat : Invalid StatTag."));
+		return -1.f;
+	}
+		
+	float result = 0.f;
+	if (StatTag.MatchesTag(StatTags::AttackPower))
+	{
+		// 무기계수로 바꿔야함
+		result = GetStat(StatTags::BaseAttackPower) + 0.9f * FMath::Sqrt(InStatMap[StatTags::STR]);
+	}
+	else if (StatTag.MatchesTag(StatTags::SubAttackPower))
+	{
+		// 무기계수로 바꿔야함
+		result = GetStat(StatTags::BaseAttackPower) + 0.8f * FMath::Sqrt(InStatMap[StatTags::STR]);
+	}
+	else if (StatTag.MatchesTag(StatTags::MagicPower))
+	{
+		result = GetStat(StatTags::BaseMagicPower) + GetStat(StatTags::MagicPowerCoefficient) * FMath::Sqrt(InStatMap[StatTags::SPL]);
+	}
+	else if (StatTag.MatchesTag(StatTags::MaxHealth))
+	{
+		result = GetStat(StatTags::BaseMaxHealth) + GetStat(StatTags::MaxHealthCoefficient) * FMath::Sqrt(InStatMap[StatTags::LIFE]);
+	}
+	else if (StatTag.MatchesTag(StatTags::MaxStamina))
+	{
+		result = GetStat(StatTags::BaseMaxStamina) + GetStat(StatTags::MaxStaminaCoefficient) * FMath::Sqrt(InStatMap[StatTags::END]);
+	}
+	return result;
+}
+
+float UStatusComponent::GetMaxVariableStat(const FGameplayTag& StatTag) const
+{
+	if (!StatTag.IsValid())
+	{
+		Debug::PrintError(TEXT("UStatusComponent::GetMaxVariableStat : Invalid StatTag."));
+		return -1.f;
+	}
+	
+	float result = 0.f;
+
+	if (StatTag.MatchesTag(StatTags::Health))
+	{
+		result = GetStat(StatTags::MaxHealth);
+	}
+	else if (StatTag.MatchesTag(StatTags::Stamina))
+	{
+		result = GetStat(StatTags::MaxStamina);
+	}
+	else if (StatTag.MatchesTag(StatTags::GroggyGauge))
+	{
+		result = GetStat(StatTags::MaxGroggyGauge);
+	}
+	else if (StatTag.MatchesTag(StatTags::Shield))
+	{
+		result = GetStat(StatTags::MaxShield);
+	}
+	return result;
 }
 
 void UStatusComponent::SetHealth(float NewHealth)
@@ -296,20 +378,57 @@ void UStatusComponent::InitializeStatusComponent(const FStatusComponentInitializ
 		return;
 	}
 
-	const auto& [StatDatas, StatMultiplierDatas, EffectClassDatas] = InitializeData;
+	const auto& [StatDatas, EffectClassDatas] = InitializeData;
 
 	for (auto [StatTag, StatValue] : StatDatas)
 	{
-		StatMap.Add(StatTag, StatValue);
+		if (!StatTag.IsValid())
+		{
+			Debug::PrintError(FString::Printf(TEXT("UStatusComponent::InitializeStatusComponent : Invalid StatTag. %s"), *StatTag.ToString()));
+			continue;
+		}
+		
+		if (!StatTag.MatchesTag(StatTags::BattleStat) && !StatTag.MatchesTag(StatTags::VariableStat))
+		{
+			StatMap.Add(StatTag, StatValue);
+		}
 	}
 
-	for (auto [StatTag, StatMultiplierValue] : StatMultiplierDatas)
+	for (auto [StatTag, StatValue] : StatDatas)
 	{
-		StatMultiplierMap.Add(StatTag, StatMultiplierValue);
+		if (StatTag.MatchesTag(StatTags::BattleStat))
+		{
+			if (!StatTag.IsValid())
+			{
+				Debug::PrintError(FString::Printf(TEXT("UStatusComponent::InitializeStatusComponent : Invalid StatTag. %s"), *StatTag.ToString()));
+				continue;
+			}
+
+			// 플레이어 일때만 계산해서 넣기  
+			if (OwnerCharacter->IsA(ADomiCharacter::StaticClass()))
+			{
+				StatMap.Add(StatTag, GetCalculatedBattleStat(StatTag, StatMap));
+			}
+			else
+			{
+				StatMap.Add(StatTag, StatValue);
+			}
+		}
+
+		if (StatTag.MatchesTag(StatTags::VariableStat))
+		{
+			StatMap.Add(StatTag, GetMaxVariableStat(StatTag));
+		}
 	}
 
 	for (auto [EffectTag, EffectClass] : EffectClassDatas)
 	{
+		if (!EffectTag.IsValid())
+		{
+			Debug::PrintError(FString::Printf(TEXT("UStatusComponent::InitializeStatusComponent : Invalid EffectTag. %s"), *EffectTag.ToString()));
+			continue;
+		}
+			
 		if (UStatusEffectBase* StatusEffect = NewObject<UStatusEffectBase>(this, EffectClass))
 		{
 			StatusEffectMap.Add(EffectTag, StatusEffect);
