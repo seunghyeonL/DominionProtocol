@@ -41,7 +41,7 @@ protected:
 	
 
 protected:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class UItemComponent> ItemComponent;
 
 	UPROPERTY(BlueprintReadOnly)

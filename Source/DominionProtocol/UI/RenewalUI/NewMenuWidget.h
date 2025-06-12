@@ -17,4 +17,5 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<class UUserWidget> OwnerWidget;
+	
 };
