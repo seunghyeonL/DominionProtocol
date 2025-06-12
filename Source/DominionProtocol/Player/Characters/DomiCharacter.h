@@ -63,7 +63,7 @@ public:
 	//Getter
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AActor* GetCurrentInteractableActor() const;
-	 
+	
 	//Setter
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetCurrentInteractableActor(AActor* NewActor) { InteractableActor = NewActor; }
@@ -96,7 +96,7 @@ public:
 	// Damagable
 	virtual void OnAttacked_Implementation(const FAttackData& AttackData) override;
 
-	// awnTagInterface
+	// PawnTagInterface
 	virtual FGameplayTag GetPawnTag_Implementation() override;
 	virtual FString GetPawnName_Implementation() override;
 

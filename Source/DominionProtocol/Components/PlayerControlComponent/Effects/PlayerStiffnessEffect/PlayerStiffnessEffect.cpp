@@ -13,17 +13,14 @@ UPlayerStiffnessEffect::UPlayerStiffnessEffect()
 
 bool UPlayerStiffnessEffect::Activate()
 {
-	if (!Super::Activate())
-	{
-		return false;
-	}
+	// if (!Super::Activate())
+	// {
+	// 	return false;
+	// }
 
-	if (auto SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
-	{
-		Debug::Print(TEXT("UPlayerStiffnessEffect::Activate : StopSkill."));
-		SkillComponent->StopSkill();
-	}
-
+	// 피격 몽타주 길이만큼 Stiffness Effect
+	Activate(0.8333f);
+	
 	return true;
 }
 
@@ -39,7 +36,7 @@ bool UPlayerStiffnessEffect::Activate(float Duration)
 		Debug::Print(TEXT("UPlayerStiffnessEffect::Activate : StopSkill."));
 		SkillComponent->StopSkill();
 	}
-
+	
 	return true;
 }
 

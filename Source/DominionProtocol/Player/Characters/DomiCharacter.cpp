@@ -471,6 +471,49 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 
 		if (EffectTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Control"))))
 		{
+			// 경직이 있을 경우 피격 방향 체크
+			if (EffectTag.MatchesTag(EffectTags::Stiffness))
+			{
+				if (IsValid(AttackData.Instigator))
+				{
+					
+					FVector ForwardVector = GetActorForwardVector();
+					FVector HitDirection = (AttackData.Instigator->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	
+					float Dot = FVector::DotProduct(ForwardVector, HitDirection);
+					float AngleDegrees = FMath::RadiansToDegrees(FMath::Acos(Dot));
+
+					FVector Cross = FVector::CrossProduct(ForwardVector, HitDirection);
+
+					float HitAngle = Cross.Z > 0 ? AngleDegrees : -AngleDegrees;
+
+					if (HitAngle > -45.0f && HitAngle <= 45.0f) // 정면 피격
+					{
+						PlayHitFrontAnimMontage();
+					}
+					else if (HitAngle > 45.0f && HitAngle <= 135.0f) // 우측 피격
+					{
+						PlayHitRightAnimMontage();
+					}
+					else if (HitAngle > -135.0f && HitAngle <= -45.0f) // 좌측 피격
+					{
+						PlayHitLeftAnimMontage();
+					}
+					else
+					{
+						PlayHitBackAnimMontage();
+						
+					}
+					
+					ControlComponent->ActivateControlEffect(EffectTags::Stiffness);
+				}
+				else
+				{
+					Debug::PrintError(TEXT("OnAttacked_Implementation : Invalid stiffness Instigator."));
+				}
+			}
+
+			
 			ControlComponent->ActivateControlEffect(EffectTag, Duration);
 		}
 		else

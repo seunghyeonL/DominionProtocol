@@ -357,6 +357,12 @@ void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlE
 
 void UPlayerControlComponent::ActivateControlEffect(const FGameplayTag& ControlEffectTag, float Duration)
 {
+	if (FMath::IsNearlyZero(Duration))
+	{
+		ActivateControlEffect(ControlEffectTag);
+		return;
+	}
+	
 	if (ControlEffectTag.MatchesTag(EffectTags::UsingSkill))
 	{
 		if (auto ControlEffect = ControlEffectMap.Find(EffectTags::UsingSkill))
