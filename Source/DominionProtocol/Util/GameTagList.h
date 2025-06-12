@@ -118,6 +118,8 @@ namespace SkillGroupTags
 	inline const FGameplayTag Boss4InfernoSpike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.InfernoSpike"));
 	inline const FGameplayTag Boss4HellfireFall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.HellfireFall"));
 	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
+	inline const FGameplayTag Boss4BackDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BackDash"));
+	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
 }
 
 namespace SkillTags
@@ -228,6 +230,8 @@ namespace SkillTags
 	inline const FGameplayTag Boss4InfernoSpike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.InfernoSpike"));
 	inline const FGameplayTag Boss4HellfireFall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.HellfireFall"));
 	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
+	inline const FGameplayTag Boss4BackDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BackDash"));
+	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
 }
 
 namespace PawnTags
