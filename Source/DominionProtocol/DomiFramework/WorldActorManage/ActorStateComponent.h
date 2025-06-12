@@ -8,9 +8,7 @@
 #include "Util/GameTagList.h"
 #include "ActorStateComponent.generated.h"
 
-
 class UWorldInstanceSubsystem;
-class UActorStateManageWorldSubsystem;
 class UActorStateData;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -46,7 +44,4 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UWorldInstanceSubsystem> WorldInstanceSubsystem;
-
-	UPROPERTY()
-	TObjectPtr<UActorStateManageWorldSubsystem> StateWorldSubsystem;
 };

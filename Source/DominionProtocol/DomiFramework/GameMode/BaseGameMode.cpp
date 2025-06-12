@@ -9,7 +9,6 @@
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameInstance/ItemInstanceSubsystem.h"
-#include "DomiFramework/WorldActorManage/ActorStateManageWorldSubsystem.h"
 #include "Interface/StoryDependentInterface.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "WorldObjects/Crack.h"
@@ -65,8 +64,6 @@ void ABaseGameMode::BeginPlay()
 
 	ItemInstanceSubsystem = GameInstance->GetSubsystem<UItemInstanceSubsystem>();
 	check(ItemInstanceSubsystem);
-
-	StateWorldSubsystem = GetWorld()->GetSubsystem<UActorStateManageWorldSubsystem>();
 
 	World = GetWorld();
 	check(IsValid(World));
@@ -199,8 +196,6 @@ void ABaseGameMode::OnPlayerDeath()
 	
 	Debug::Print("ABaseGameMode::OnPlayerDeath : Respawn Player");
 
-	StateWorldSubsystem->ClearActorDataMap();
-
 	if (UDomiGameInstance* GI = GetGameInstance<UDomiGameInstance>())
 	{
 		if (GI->ReturnStoryState())
@@ -296,14 +291,6 @@ void ABaseGameMode::MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCr
 		Debug::Print(TEXT("Crack is not Activate"));
 		return;
 	}
-
-	if (!IsValid(StateWorldSubsystem))
-	{
-		Debug::PrintError(TEXT("ABaseGameMode::MoveToTargetCrack : ActorStateManageWorldSubsystem cache is invalid"));
-		return;
-	}
-	
-	StateWorldSubsystem->UpdateWorldInstanceActorDataMap();
 	
 	const FString& CurrentLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
 	const FCrackData* TargetCrackData = WorldInstanceSubsystem->GetCrackData(InOwningCrackLevelName, InCrackIndex);

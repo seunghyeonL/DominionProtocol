@@ -62,7 +62,7 @@ public:
 	
 	FORCEINLINE void SetWorldActorDataMap(TMap<FGuid, FWorldActorData>& NewWorldActorDataMap) { WorldActorDataMap.Append(NewWorldActorDataMap); }
 
-	FORCEINLINE void AddWorldActorData(FGuid ID, FWorldActorData NewWorldActorData)
+	FORCEINLINE void SetWorldActorData(FGuid ID, FWorldActorData NewWorldActorData)
 	{
 		WorldActorDataMap.Add(ID, NewWorldActorData);
 	}

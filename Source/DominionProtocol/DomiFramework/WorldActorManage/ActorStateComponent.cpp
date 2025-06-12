@@ -4,7 +4,6 @@
 #include "ActorStateComponent.h"
 #include "Util/GameTagList.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
-#include "DomiFramework/WorldActorManage/ActorStateManageWorldSubsystem.h"
 
 UActorStateComponent::UActorStateComponent()
 {
@@ -33,10 +32,7 @@ void UActorStateComponent::SwitchStateAndUpdateInstance(FGameplayTag Tag, int32 
 		ActorData.bIsItemCollected = true;
 	}
 
-	if (IsValid(StateWorldSubsystem))
-	{
-		StateWorldSubsystem->UpdateActorDataMap(UniqueActorID, ActorData);
-	}
+	WorldInstanceSubsystem->SetWorldActorData(UniqueActorID, ActorData);
 }
 
 void UActorStateComponent::BeginPlay()
@@ -45,8 +41,6 @@ void UActorStateComponent::BeginPlay()
 
 	WorldInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
 	check(IsValid(WorldInstanceSubsystem));
-	StateWorldSubsystem = GetWorld()->GetSubsystem<UActorStateManageWorldSubsystem>();
-	check(IsValid(StateWorldSubsystem));
 
 	// 이미 인스턴스 상에 데이터 존재하면 불러오기
 	if (WorldInstanceSubsystem->GetIsWorldActorDataExist(UniqueActorID))
@@ -55,7 +49,6 @@ void UActorStateComponent::BeginPlay()
 		if (ActorData.UniqueActorID == UniqueActorID)
 		{
 			UniqueActorID = ActorData.UniqueActorID;
-			StateWorldSubsystem->AddActorData(UniqueActorID, ActorData);
 		}
 	}
 	// 인스턴스 상에 존재하지 않으면 데이터 초기화
@@ -63,8 +56,7 @@ void UActorStateComponent::BeginPlay()
 	{
 		ActorData.UniqueActorID = UniqueActorID;
 
-		WorldInstanceSubsystem->AddWorldActorData(UniqueActorID, ActorData);
-		StateWorldSubsystem->AddActorData(UniqueActorID, ActorData);
+		WorldInstanceSubsystem->SetWorldActorData(UniqueActorID, ActorData);
 	}
 }
 

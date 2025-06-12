@@ -10,7 +10,6 @@
 #include "BaseGameMode.generated.h"
 
 class UItemComponent;
-class UActorStateManageWorldSubsystem;
 class ADropEssence;
 class ALevelSequenceActor;
 class ULevelSequencePlayer;
@@ -175,9 +174,6 @@ protected:
 
 	UPROPERTY()
 	bool bIsFadeIn;
-
-	UPROPERTY()
-	TObjectPtr<UActorStateManageWorldSubsystem> StateWorldSubsystem;
 	
 #pragma endregion
 
