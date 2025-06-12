@@ -48,6 +48,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	FSkillComponentInitializeData SkillDatas;
 
+	//Weapon Skill Name
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	FText WeaponSkillName;
+
+	//Magic Skill Name
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	FText MagicSkillName;
+
 	// 아이템 클래스 (액터)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	TSubclassOf<class ABaseItem> ItemClass;
