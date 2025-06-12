@@ -476,7 +476,6 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 			{
 				if (IsValid(AttackData.Instigator))
 				{
-					
 					FVector ForwardVector = GetActorForwardVector();
 					FVector HitDirection = (AttackData.Instigator->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	
@@ -506,13 +505,28 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					}
 					
 					ControlComponent->ActivateControlEffect(EffectTags::Stiffness);
+					return;
 				}
 				else
 				{
 					Debug::PrintError(TEXT("OnAttacked_Implementation : Invalid stiffness Instigator."));
 				}
 			}
+			else if (EffectTag.MatchesTag(EffectTags::Flew))
+			{
+				if (IsValid(AttackData.Instigator))
+				{
+					FVector HitDirection = (AttackData.Instigator->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+					SetActorRotation(HitDirection.Rotation());
 
+					ControlComponent->ActivateControlEffect(EffectTags::Flew);
+					return;
+				}
+				else
+				{
+					Debug::PrintError(TEXT("OnAttacked_Implementation : Invalid flew Instigator."));
+				}
+			}
 			
 			ControlComponent->ActivateControlEffect(EffectTag, Duration);
 		}
