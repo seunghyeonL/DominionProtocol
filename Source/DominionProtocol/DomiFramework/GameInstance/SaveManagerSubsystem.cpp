@@ -13,6 +13,57 @@
 
 #include "Util/DebugHelper.h"
 
+void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	SaveSlotArray.AddDefaulted(3);
+
+	for (int32 i = 0; i < 3; i++)
+	{
+		SaveSlotArray[i].SaveSlotName = FString::Printf(TEXT("SaveSlot%d"), i + 1);
+		SaveSlotArray[i].SaveSlotIndex = i + 1;
+	}
+}
+
+void USaveManagerSubsystem::Deinitialize()
+{
+	Super::Deinitialize();
+}
+
+void USaveManagerSubsystem::StartNewGame(int32 SlotIndex)
+{
+	if (SaveSlotArray.IsValidIndex(SlotIndex))
+	{
+		SaveSlotArray[SlotIndex].SaveSlotExist = true;
+		UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
+		if (IsValid(GameInstance))
+		{
+			GameInstance->SetSaveSlotName(SaveSlotArray[SlotIndex].SaveSlotName);
+			GameInstance->SetSaveSlotIndex(SaveSlotArray[SlotIndex].SaveSlotIndex);
+		}
+		UGameplayStatics::OpenLevel(World, FName(TEXT("PresentLevel")));
+	}
+}
+
+void USaveManagerSubsystem::LoadSaveDataAndOpenLevel(int32 SlotIndex)
+{
+	if (SaveSlotArray.IsValidIndex(SlotIndex))
+	{
+		if (SaveSlotArray[SlotIndex].SaveSlotExist)
+		{
+			LoadGame(SaveSlotArray[SlotIndex].SaveSlotName, SlotIndex);
+			UGameplayStatics::OpenLevel(World, FName(SaveSlotArray[SlotIndex].PlayingLevelName));
+		}
+	}
+}
+
+void USaveManagerSubsystem::DeleteSaveSlot(int32 SlotIndex)
+{
+	UGameplayStatics::DeleteGameInSlot(SaveSlotArray[SlotIndex].SaveSlotName, SaveSlotArray[SlotIndex].SaveSlotIndex);
+	SaveSlotArray[SlotIndex] = FSaveSlotMetaData();
+}
+
 bool USaveManagerSubsystem::SaveGame(const FString& SlotName, int32 UserIndex)
 {
 	//저장 인스턴스 생성
@@ -92,6 +143,8 @@ bool USaveManagerSubsystem::SaveSettings()
 
 	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	check(IsValid(GameInstance));
+
+	SaveSettingsInstance->SaveSlotMetaDataArray = SaveSlotArray;
 	
 	//SoundInstanceSubsystem 저장할 데이터 구조체(FSoundSubsystem)로 Get
 	USoundInstanceSubsystem* SoundSubsystem = GameInstance->GetSubsystem<USoundInstanceSubsystem>();
@@ -120,6 +173,8 @@ bool USaveManagerSubsystem::LoadSettings()
 
 	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	check(IsValid(GameInstance));
+
+	SaveSlotArray = LoadedGame->SaveSlotMetaDataArray;
 	
 	//SoundInstanceSubsystem SaveData Load(FSoundSubsystemData)
 	USoundInstanceSubsystem* SoundSubsystem = GameInstance->GetSubsystem<USoundInstanceSubsystem>();
@@ -129,5 +184,19 @@ bool USaveManagerSubsystem::LoadSettings()
 	}
 
 	Debug::Print(TEXT("Success Load All User Setting Data "));
+	return true;
+}
+
+bool USaveManagerSubsystem::SaveSlotMetaData()
+{
+	//저장 인스턴스 생성
+	UDomiSaveSettings* SaveSettingsInstance = Cast<UDomiSaveSettings>(UGameplayStatics::CreateSaveGameObject(UDomiSaveSettings::StaticClass()));
+	check(IsValid(SaveSettingsInstance));
+
+	return true;
+}
+
+bool USaveManagerSubsystem::LoadSlotMetaData()
+{
 	return true;
 }
