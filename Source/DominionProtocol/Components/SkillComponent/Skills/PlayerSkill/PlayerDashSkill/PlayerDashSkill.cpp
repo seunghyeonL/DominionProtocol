@@ -17,7 +17,7 @@ UPlayerDashSkill::UPlayerDashSkill()
 	ControlEffectTag = EffectTags::UsingDash;
 	DashMoveDirection = { 0.f, 0.f, 0.f };
 	DashSpeed = 1000.f;
-	DashDuration = 0.5f;
+	DashDuration = 0.4f;
 }
 
 void UPlayerDashSkill::Execute()
