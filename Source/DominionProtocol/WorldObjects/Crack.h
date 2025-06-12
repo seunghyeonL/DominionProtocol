@@ -16,6 +16,7 @@ class ATargetPoint;
 class ADomiCharacter;
 class UCapsuleComponent;
 class UDialogueManager;
+class AHelper;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCrackSystem, Log, All);
 
@@ -122,6 +123,9 @@ private:
 
 	UPROPERTY()
 	UDialogueManager* DialogueManager;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AHelper> HelperClass;
 	
 	UPROPERTY()
 	TObjectPtr<ATargetPoint> RespawnTargetPoint;

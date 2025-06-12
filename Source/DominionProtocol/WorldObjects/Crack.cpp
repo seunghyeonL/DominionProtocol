@@ -19,6 +19,7 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
 #include "WorldObjects/DialogueManager.h"
+#include "WorldObjects/Helper.h"
 
 #include "Util/DebugHelper.h"
 
@@ -137,7 +138,9 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 
 	// 2. 조력자 대화 이벤트
 	DialogueManager = NewObject<UDialogueManager>(this);
-	if (DialogueManager->TryStartDialogueIfExists(GameInstance->GetCurrentGameStoryState()))
+	DialogueManager->HelperClass = HelperClass;
+	FVector CrackLocation = GetActorLocation();
+	if (DialogueManager->TryStartDialogueIfExists(GameInstance->GetCurrentGameStoryState(), CrackLocation))
 	{
 		Debug::Print(TEXT("Crack: 조력자 이벤트 종료"));
 		GameInstance->AdvanceStoryState();
