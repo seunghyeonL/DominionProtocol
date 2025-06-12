@@ -69,9 +69,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	USoundCue* SwapSound;
 
-	// 포션 부스트가 적용되었는지 추적하는 변수
+	// 포션 부스트가 몇번 적용되었는지 추적하는 변수
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Consumable|Potion")
-	bool bIsPotionBoostApplied;
+	int32 PotionBoostLevel=0;
 
 	void SetTagToSlot(FName SlotName, FGameplayTag ItemTag);
 public:
@@ -159,7 +159,10 @@ public:
 
 	// 포션 태그를 부스트된 태그로 변경
 	UFUNCTION(BlueprintCallable, Category = "Consumable|Potion")
-	void ApplyPotionBoost();
+	void ApplyPotionBoost(int32 BoostAmount=1);
+
+	UFUNCTION(BlueprintCallable, Category = "Consumable|Potion")
+	FGameplayTag GetPotionTagByLevel(int32 Level)const;
 
 	//치트 매니저에서 사용할 함수
 	UFUNCTION(BlueprintCallable, Category = "Inventory|Cheat")
@@ -172,7 +175,7 @@ public:
 
 	FORCEINLINE void SetConsumableSlots(TMap<FName, FGameplayTag>& NewMap) { ConsumableSlots = NewMap; }
 
-	FORCEINLINE void SetIsPotionBoostApplied(bool bNewBool) { bIsPotionBoostApplied = bNewBool; }
+	FORCEINLINE void SetPotionBoostLevel(int32 NewInt) { PotionBoostLevel = NewInt; }
 
 	// ItemInstanceSubsystem에 정보 전달 위한 함수
 	void UpdateItemInstanceSubsystem();

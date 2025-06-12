@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -31,12 +31,16 @@ public:
 
 	FORCEINLINE void SetConsumableSlotMap(const TMap<FName, FGameplayTag>& NewConsumableMap) { ConsumableSlotMap = NewConsumableMap; }
 	
+	FORCEINLINE void SetPotionBoostLevel(int32 NewInt) { PotionBoostLevel = NewInt; }
+
 	// Getter
 	TMap<FGameplayTag, int32>& GetInventoryDataMap() { return InventoryDataMap; }
 
 	TMap<FName, FGameplayTag>& GetEquipmentSlotMap() { return EquipmentSlotMap; }
 
 	TMap<FName, FGameplayTag>& GetConsumableSlotMap() {	return ConsumableSlotMap; }
+
+	bool GetIsPotionBoostApplied() { return bIsPotionBoostApplied; }
 	
 protected:
 	virtual auto Initialize(FSubsystemCollectionBase& Collection) -> void override;
@@ -51,6 +55,9 @@ private:
 
 	UPROPERTY()
 	TMap<FName, FGameplayTag> ConsumableSlotMap;
+
+	UPROPERTY()
+	int32 PotionBoostLevel;
 
 	//Not Save
 	UPROPERTY()

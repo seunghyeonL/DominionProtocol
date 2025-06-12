@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BaseGameState.h"
@@ -244,6 +244,7 @@ void ABaseGameState::LoadItemDataFromInstance()
 				ItemComponent->SetInventoryMap(ItemInstanceSubsystem->GetInventoryDataMap());
 				ItemComponent->SetEquipmentSlots(ItemInstanceSubsystem->GetEquipmentSlotMap());
 				ItemComponent->SetConsumableSlots(ItemInstanceSubsystem->GetConsumableSlotMap());
+				ItemComponent->SetPotionBoostLevel(ItemInstanceSubsystem->GetPotionBoostLevel());
 
 				ItemComponent->SetSkillFromItemWhenLevelChanged();
 				ItemComponent->DelegateExecuter();

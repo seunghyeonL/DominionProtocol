@@ -288,6 +288,11 @@ namespace ItemTags
 	inline const FGameplayTag ConsumableItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable"));
 	inline const FGameplayTag Potion = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion"));
 	inline const FGameplayTag PotionBoosted = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted"));
+	inline const FGameplayTag PotionBoosted1 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.1"));
+	inline const FGameplayTag PotionBoosted2 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.2"));
+	inline const FGameplayTag PotionBoosted3 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.3"));
+	inline const FGameplayTag PotionBoosted4 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.4"));
+	inline const FGameplayTag PotionBoosted5 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.5"));
 	inline const FGameplayTag AddMaxPotion = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.AddMaxPotion"));
 	inline const FGameplayTag StaminaPotion = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.StaminaPotion"));
 	inline const FGameplayTag Elixir = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Elixir"));

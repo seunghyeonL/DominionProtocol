@@ -184,7 +184,7 @@ bool UItemComponent::RemoveItem(FGameplayTag ItemTag, int32 Quantity)
 	//아이템수량=제거할수량이면 아이템태그 제거
 	else if (InventoryMap[ItemTag] == Quantity)
 	{
-		if (ItemTag != ItemTags::Potion)
+		if (!ItemTag.MatchesTag(ItemTags::Potion))
 		{
 			InventoryMap.Remove(ItemTag);
 		}
@@ -478,8 +478,8 @@ bool UItemComponent::PlaceInSlotConsumableItem(FName SlotName, FGameplayTag Item
 					Debug::Print(FString::Printf(TEXT("슬롯 '%s'의 '%s' 등록 해제"), *SlotName.ToString(), *CurrentTag.ToString()));
 				}
 
-				// 새로운 태그 장착
-				if (ConsumableSlots[SlotName] != ItemTags::Potion)
+				// 새로운 태그 장착!ItemTag.MatchesTag(ItemTags::Potion)
+				if (!ConsumableSlots[SlotName].MatchesTag(ItemTags::Potion))
 				{
 					ConsumableSlots[SlotName] = ItemTag;
 					Debug::Print(FString::Printf(TEXT("슬롯 '%s'에 '%s' 등록"), *SlotName.ToString(), *ItemTag.ToString()));
@@ -514,7 +514,7 @@ bool UItemComponent::RemoveFromSlotConsumableItemSlot(FName SlotName)
 {
 	if (ConsumableSlots.Contains(SlotName))
 	{
-		if (ConsumableSlots[SlotName] != ItemTags::Potion)
+		if (!ConsumableSlots[SlotName].MatchesTag(ItemTags::Potion))
 		{
 			ConsumableSlots[SlotName] = FGameplayTag();
 		} // 태그를 비움
@@ -591,7 +591,7 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 					{
 						if (!HasItem(ItemToUse, 1))
 						{
-							if (ItemToUse != ItemTags::Potion)
+							if (!ItemToUse.MatchesTag(ItemTags::Potion))
 							{
 								ConsumableSlots[SlotName] = FGameplayTag();
 							}
@@ -616,7 +616,7 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 		{
 			Debug::Print(FString::Printf(TEXT("소비 아이템 슬롯 %s의 '%s'을 사용하려 했으나 인벤토리에 부족합니다."), *SlotName.ToString(), *ItemToUse.ToString()));
 			// 인벤토리에 없으므로 슬롯을 다시 비움
-			if (ItemToUse!=ItemTags::Potion)
+			if (!ItemToUse.MatchesTag(ItemTags::Potion))
 			{
 				ConsumableSlots[SlotName] = FGameplayTag();
 			}
@@ -631,7 +631,8 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 
 void UItemComponent::RestorePotion()
 {
-	const FItemData* ItemData = GetItemDataFromTable(ItemTags::Potion);
+	FGameplayTag PotionTag = GetPotionTagByLevel(PotionBoostLevel);
+	const FItemData* ItemData = GetItemDataFromTable(PotionTag);
 	if (!ItemData)
 	{
 		Debug::Print(TEXT("UItemComponent::RestorePotion : ItemData is not found"));
@@ -639,9 +640,9 @@ void UItemComponent::RestorePotion()
 	}
 	int32 MaxQuantity = ItemData->MaxItemQuantity;
 
-	if (InventoryMap.Contains(ItemTags::Potion))
+	if (InventoryMap.Contains(PotionTag))
 	{
-		InventoryMap[ItemTags::Potion] = MaxQuantity;
+		InventoryMap[PotionTag] = MaxQuantity;
 	}
 	DelegateExecuter();
 }
@@ -652,14 +653,18 @@ const TMap<FName, FGameplayTag>& UItemComponent::GetConsumableSlots() const
 }
 
 //포션 부스트 적용
-void UItemComponent::ApplyPotionBoost()
+void UItemComponent::ApplyPotionBoost(int32 BoostAmount)
 {
-	if (bIsPotionBoostApplied)
+	if (PotionBoostLevel>=5)
 	{
-		Debug::Print(TEXT("이미 강화됨"));
+		Debug::Print(TEXT("이미 최대로 강화됨"));
 		return;
 	}
-	
+	PotionBoostLevel += BoostAmount;
+	if (PotionBoostLevel >= 5)
+	{
+		PotionBoostLevel = 5;
+	}
 	TMap<FGameplayTag, int32> NewInventoryMap;
 	//인벤토리 업데이트
 	for (const auto& Pair : InventoryMap)
@@ -668,10 +673,10 @@ void UItemComponent::ApplyPotionBoost()
 		const int32 Quantity = Pair.Value;
 
 		// 만약 현재 태그가 'Item.Consumable.Potion
-		if (CurrentTag == ItemTags::Potion)
+		if (CurrentTag.MatchesTag(ItemTags::Potion))
 		{
 			// 새로운 태그 'Item.Consumable.Potion.Boosted'로 수량을 옮김
-			NewInventoryMap.Add(ItemTags::PotionBoosted, Quantity);
+			NewInventoryMap.Add(GetPotionTagByLevel(PotionBoostLevel), Quantity);
 			Debug::Print(TEXT("Inventory Changed"));
 		}
 		else
@@ -688,17 +693,45 @@ void UItemComponent::ApplyPotionBoost()
 	{
 		FGameplayTag& SlotTag = Pair.Value; // 참조로 가져와서 직접 수정
 
-		// 만약 현재 슬롯 태그가 'Item.Consumable.Potion.Health'라면
-		if (SlotTag == ItemTags::Potion)
+		if (SlotTag.MatchesTag(ItemTags::Potion))
 		{
-			// 새로운 태그 'Item.Consumable.Potion.Health.Boosted'로 변경
-			SlotTag = ItemTags::PotionBoosted;
+			// 새로운 태그 'Item.Consumable.Potion.Health.Boosted(count)'로 변경
+			SlotTag = GetPotionTagByLevel(PotionBoostLevel);
 			OnInventoryConsumableSlotItemsChanged.Broadcast();
 			Debug::Print(FString::Printf(TEXT("Consumable Slot %s: Changed to %s"), *Pair.Key.ToString(), *SlotTag.ToString()));
 		}
 	}
 	Debug::Print(TEXT("Potion boost applied! All applicable potions have been upgraded."));
+}
 
+//레벨에 맞는 포션태그 반환
+FGameplayTag UItemComponent::GetPotionTagByLevel(int32 Level) const
+{
+	if (Level == 0)
+	{
+		return ItemTags::Potion;
+	}
+	else if (Level == 1)
+	{
+		return ItemTags::PotionBoosted1;
+	}
+	else if (Level == 2)
+	{
+		return ItemTags::PotionBoosted2;
+	}
+	else if (Level == 3)
+	{
+		return ItemTags::PotionBoosted3;
+	}
+	else if (Level == 4)
+	{
+		return ItemTags::PotionBoosted4;
+	}
+	else if (Level == 5)
+	{
+		return ItemTags::PotionBoosted5;
+	}
+	return ItemTags::Potion;
 }
 
 //UI용 함수
@@ -826,13 +859,16 @@ void UItemComponent::AddAllItemsToInventoryMaxQuantity()
 		const FItemData& ItemData = Pair.Value;
 
 		// 아이템의 최대 수량만큼 추가 (AddItem 함수가 내부적으로 수량을 관리)
-		if (AddItem(ItemTag, ItemData.MaxItemQuantity))
+		if (!ItemTag.MatchesTag(ItemTags::Potion))
 		{
-			AddedCount++;
-		}
-		else
-		{
-			Debug::Print(FString::Printf(TEXT("Failed to add %s to inventory with max quantity."), *ItemTag.ToString()));
+			if (AddItem(ItemTag, ItemData.MaxItemQuantity))
+			{
+				AddedCount++;
+			}
+			else
+			{
+				Debug::Print(FString::Printf(TEXT("Failed to add %s to inventory with max quantity."), *ItemTag.ToString()));
+			}
 		}
 	}
 
@@ -971,3 +1007,4 @@ void UItemComponent::DelegateExecuter()
 	OnInventoryEquippedSlotItemsChanged.Broadcast();
 	OnInventoryConsumableSlotItemsChanged.Broadcast();
 }
+

@@ -16,7 +16,7 @@ void AAddMaxPotionConsumable::Consume_Implementation(AActor* ConsumedActor)
 		if (ItemComp)
 		{
 			// UItemComponent의 ApplyPotionBoost 함수 호출
-			ItemComp->ApplyPotionBoost();
+			ItemComp->ApplyPotionBoost(1);
 
 			// 이 MaxPotionBoostConsumable 아이템을 인벤토리에서 제거
 			ItemComp->RemoveItem(GetItemGameplayTag(), 1);
