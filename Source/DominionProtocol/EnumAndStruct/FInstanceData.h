@@ -12,6 +12,12 @@ struct FInstanceData
 	GENERATED_BODY()
 
 	UPROPERTY()
+	FString SaveSlotName;
+
+	UPROPERTY()
+	int32 SaveSlotIndex;
+	
+	UPROPERTY()
 	TMap<FGameplayTag, float> StatDataMap;
 
 	UPROPERTY()
