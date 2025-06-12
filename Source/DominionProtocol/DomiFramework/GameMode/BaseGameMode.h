@@ -56,6 +56,8 @@ public:
 
 	UFUNCTION()
 	void SaveItemDataToInstance();
+
+	void UpdateInstanceData();
 	
 	void Save();
 	

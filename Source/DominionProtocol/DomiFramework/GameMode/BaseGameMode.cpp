@@ -219,7 +219,7 @@ void ABaseGameMode::RestorePlayer()
 	StatusComponent = PlayerCharacter->GetStatusComponent();
 	if (IsValid(StatusComponent))
 	{
-		StatusComponent->SetHealth(BIG_NUMBER);
+		StatusComponent->SetHealth(UE_BIG_NUMBER);
 	}
 		
 	//회복 포션 개수 -> Max 회복
@@ -280,6 +280,7 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		// Using InGameHUD
 		OnPlayerSpawn.Broadcast();
 
+		UpdateInstanceData();
 		RespawnEnemies();
 	}
 }
@@ -439,6 +440,16 @@ void ABaseGameMode::SaveItemDataToInstance()
 		}
 		ItemComponent->UpdateItemInstanceSubsystem();
 	}
+}
+
+void ABaseGameMode::UpdateInstanceData()
+{
+	// 플레이어 스탯 인스턴스 전달
+	GameInstance->SetStatDataMap(PlayerCharacter->GetStatusComponent()->GetStatMap());
+	// 플레이어 인벤토리 인스턴스 전달
+	SaveItemDataToInstance();
+	// 플레이타임 인스턴스 전달
+	GameInstance->AddPlayTime(GetPlayTime());
 }
 
 void ABaseGameMode::PlayTimeAdder()

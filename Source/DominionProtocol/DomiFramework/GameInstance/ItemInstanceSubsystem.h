@@ -34,13 +34,13 @@ public:
 	FORCEINLINE void SetPotionBoostLevel(int32 NewInt) { PotionBoostLevel = NewInt; }
 
 	// Getter
-	TMap<FGameplayTag, int32>& GetInventoryDataMap() { return InventoryDataMap; }
+	FORCEINLINE TMap<FGameplayTag, int32>& GetInventoryDataMap() { return InventoryDataMap; }
 
-	TMap<FName, FGameplayTag>& GetEquipmentSlotMap() { return EquipmentSlotMap; }
+	FORCEINLINE TMap<FName, FGameplayTag>& GetEquipmentSlotMap() { return EquipmentSlotMap; }
 
-	TMap<FName, FGameplayTag>& GetConsumableSlotMap() {	return ConsumableSlotMap; }
+	FORCEINLINE TMap<FName, FGameplayTag>& GetConsumableSlotMap() {	return ConsumableSlotMap; }
 
-	int32 GetPotionBoostLevel() { return PotionBoostLevel; }
+	FORCEINLINE int32 GetPotionBoostLevel() { return PotionBoostLevel; }
 	
 protected:
 	virtual auto Initialize(FSubsystemCollectionBase& Collection) -> void override;
