@@ -26,6 +26,6 @@ public:
 	virtual void Execute() override;
 	virtual void Tick(float DeltaTime) override;
 	// 심리전하는 최소 최대 시간
-	float MinTime = 1.f;
-	float MaxTime = 4.f;
+	float MinTime = 0.5f;
+	float MaxTime = 1.5f;
 };
