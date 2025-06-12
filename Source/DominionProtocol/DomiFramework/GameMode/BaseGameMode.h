@@ -54,6 +54,9 @@ public:
 	virtual void EndBattle();
 
 	virtual void OnPlayerDeath();
+
+	UFUNCTION()
+	void SaveItemDataToInstance();
 	
 	void Save();
 	
@@ -76,9 +79,6 @@ public:
 	FORCEINLINE void SetRecentCrackCache(ACrack* NewCrack) { RecentCrackCache = NewCrack ; }
 
 protected:
-	UFUNCTION()
-	void SaveItemDataToInstance();
-
 	void PlayTimeAdder();
 	
 public:

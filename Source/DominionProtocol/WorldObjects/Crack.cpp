@@ -161,8 +161,10 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	BaseGameMode->RespawnEnemies();
 
 	// 저장
-	// 플레이어 스탯 저장
+	// 플레이어 스탯 인스턴스 전달
 	GameInstance->SetStatDataMap(CachedCharacter->GetStatusComponent()->GetStatMap());
+	// 플레이어 인벤토리 인스턴스 전달
+	BaseGameMode->SaveItemDataToInstance();
 	// 플레이타임 인스턴스 전달
 	GameInstance->AddPlayTime(BaseGameMode->GetPlayTime());
 

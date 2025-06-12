@@ -428,7 +428,6 @@ void ABaseGameMode::OnFadeSequenceFinished()
 	{
 		if (bIsSameLevelMove)
 		{
-			SaveItemDataToInstance();
 			PlayerCharacter->SetActorLocationAndRotation(PendingMoveLocation, PendingMoveRotation);
 			AController* PlayerController = PlayerCharacter->GetController();
 			FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
@@ -438,7 +437,6 @@ void ABaseGameMode::OnFadeSequenceFinished()
 		}
 		else
 		{
-			SaveItemDataToInstance();
 			UGameplayStatics::OpenLevel(this, FName(MoveTargetLevelName));
 		}
 	}
