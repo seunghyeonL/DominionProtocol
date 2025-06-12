@@ -36,14 +36,12 @@ void ABoss3Enemy::Attack3()
 		AnimInstance->Montage_Play(AttackMontage3);
 	}
 
-	// 이전 돌 제거
 	if (SpawnedStoneMeshComp)
 	{
 		SpawnedStoneMeshComp->DestroyComponent();
 		SpawnedStoneMeshComp = nullptr;
 	}
 
-	// ⏱️ 0.5초 후에 SpawnStone() 실행
 	GetWorld()->GetTimerManager().SetTimer(
 		StoneSpawnDelayHandle,
 		this,
@@ -84,7 +82,7 @@ void ABoss3Enemy::SpawnStone()
 					SpawnedStoneMeshComp = nullptr;
 				}
 			},
-			1.0f,
+			1.1f,
 			false
 		);
 	}
