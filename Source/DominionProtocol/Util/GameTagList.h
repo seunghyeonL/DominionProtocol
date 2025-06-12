@@ -205,6 +205,7 @@ namespace SkillTags
 	inline const FGameplayTag Boss2DashAttackBSecond = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.DashAttackB.second"));
 	inline const FGameplayTag Boss2EvadeAttackFirst = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.EvadeAttack.first"));
 	inline const FGameplayTag Boss2EvadeAttackSecond = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.EvadeAttack.second"));
+	inline const FGameplayTag Boss2Dash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.Dash"));
 
 	// Boss3
 	inline const FGameplayTag Boss3LevelStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.LevelStart"));
