@@ -40,7 +40,7 @@ public:
 
 	TMap<FName, FGameplayTag>& GetConsumableSlotMap() {	return ConsumableSlotMap; }
 
-	bool GetIsPotionBoostApplied() { return bIsPotionBoostApplied; }
+	int32 GetPotionBoostLevel() { return PotionBoostLevel; }
 	
 protected:
 	virtual auto Initialize(FSubsystemCollectionBase& Collection) -> void override;
