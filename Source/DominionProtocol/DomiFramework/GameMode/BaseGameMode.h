@@ -6,6 +6,7 @@
 #include "LevelSequence.h"
 #include "GameFramework/GameMode.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
 #include "BaseGameMode.generated.h"
 
 class UItemComponent;
@@ -53,7 +54,9 @@ public:
 	virtual void EndBattle();
 
 	virtual void OnPlayerDeath();
-
+	
+	void Save();
+	
 	void RestorePlayer();
 	
 	void RespawnPlayerCharacter();

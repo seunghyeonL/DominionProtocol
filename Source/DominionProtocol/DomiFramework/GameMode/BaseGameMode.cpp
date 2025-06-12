@@ -38,8 +38,8 @@ ABaseGameMode::ABaseGameMode()
 		PlayerCharacter(nullptr),
 		RecentCrackCache(nullptr),
 		RespawnDelay(2.f),
-		bIsFadeIn(true),
-		PlayTime(0)
+		PlayTime(0),
+		bIsFadeIn(true)
 {
 	static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
 	if (DropEssenceBPClass.Succeeded())
@@ -170,6 +170,27 @@ void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
 void ABaseGameMode::EndBattle()
 {
 	
+}
+
+void ABaseGameMode::Save()
+{
+	USaveManagerSubsystem* SaveManagerSubsystem = GameInstance->GetSubsystem<USaveManagerSubsystem>();
+	check(IsValid(SaveManagerSubsystem));
+	
+	FSaveSlotMetaData NewSaveSlotMetaData;
+	NewSaveSlotMetaData.SaveSlotName = GameInstance->GetSaveSlotName();
+	NewSaveSlotMetaData.SaveSlotIndex = GameInstance->GetSaveSlotIndex();
+	NewSaveSlotMetaData.SaveDateTime = FDateTime::Now();
+	NewSaveSlotMetaData.PlayTime = PlayTime;
+	NewSaveSlotMetaData.PlayingLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
+	NewSaveSlotMetaData.PlayingLevelDisplayName = WorldInstanceSubsystem->GetCurrentLevelDisplayName();
+	NewSaveSlotMetaData.RecentCrackName = RecentCrackCache->GetCrackName();
+	NewSaveSlotMetaData.PlayerLevel = static_cast<int32>(PlayerCharacter->GetStatusComponent()->GetStat(StatTags::Level));
+
+	SaveManagerSubsystem->SaveGame(GameInstance->GetSaveSlotName(), GameInstance->GetSaveSlotIndex());
+	
+	SaveManagerSubsystem->SetSaveSlotData(NewSaveSlotMetaData.SaveSlotIndex, NewSaveSlotMetaData);
+	SaveManagerSubsystem->SaveSettings();
 }
 
 void ABaseGameMode::OnPlayerDeath()
