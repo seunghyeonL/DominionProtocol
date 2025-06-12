@@ -118,7 +118,7 @@ void UDevCheatManager::Suicide()
 
 	if (PlayerCharacter->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 	{
-		IDamagable::Execute_OnAttacked(PlayerCharacter, { nullptr, 100, FVector::ZeroVector, {}});
+		IDamagable::Execute_OnAttacked(PlayerCharacter, { nullptr, UE_BIG_NUMBER, FVector::ZeroVector, {}});
 	}
 }
 
