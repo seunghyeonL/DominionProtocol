@@ -16,7 +16,13 @@ UCLASS()
 class DOMINIONPROTOCOL_API UStatModifyWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintCallable)
+	void UpdatePreviewStat();
 
+	UFUNCTION(BlueprintCallable)
+	void InitializeWidgetDatas();
+	
 protected:
 	virtual void NativeConstruct() override;
 
@@ -34,10 +40,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TMap<FGameplayTag, UTextBlock*> TextBlockMap;
 
-	void InitializeWidgetDatas();
 	
-	UFUNCTION()
-	void UpdatePreviewStat();
 
 	// ButtonBindingFunctions
 	UFUNCTION()

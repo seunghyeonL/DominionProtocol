@@ -147,8 +147,8 @@ void UStatModifyWidget::OnDecideButtonClicked()
 	PlayerStatusComponent->DecideStatChangeFromUI(PlayerStatPreviewData);
 	
 	SetVisibility(ESlateVisibility::Collapsed);
-	InitializeWidgetDatas();
-	UpdatePreviewStat();
+	// InitializeWidgetDatas();
+	// UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnStrUpButtonClicked()
