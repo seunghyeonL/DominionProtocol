@@ -102,5 +102,5 @@ void UPlayerStiffnessEffect::Interact()
 
 void UPlayerStiffnessEffect::LockOn()
 {
-	// Super::LockOn();
+	Super::LockOn();
 }

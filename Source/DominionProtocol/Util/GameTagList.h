@@ -21,6 +21,8 @@ namespace EffectTags
 	inline const FGameplayTag ControlBuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Buff"));
 
 	inline const FGameplayTag Stiffness = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Stiffness"));
+	inline const FGameplayTag Flew = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Flew"));
+	inline const FGameplayTag Lying = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Lying"));
 	inline const FGameplayTag Stun = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Stun"));
 	inline const FGameplayTag Silence = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Silence"));
 	inline const FGameplayTag Confused = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Confused"));

@@ -105,5 +105,5 @@ void UPlayerStunEffect::Interact()
 
 void UPlayerStunEffect::LockOn()
 {
-	// Super::LockOn();
+	Super::LockOn();
 }

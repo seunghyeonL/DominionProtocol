@@ -4,6 +4,7 @@
 #include "PlayerDeathEffect.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Util/DebugHelper.h"
 
@@ -64,6 +65,12 @@ void UPlayerDeathEffect::Deactivate()
 	{
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	}
+
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
+
+	// 일어나는 애니메이션 시간만큼 이펙트 실행
+	ControlComponent->ActivateControlEffect(EffectTags::Lying, 2.183f);
 }
 
 void UPlayerDeathEffect::Move(const FInputActionValue& Value)
@@ -83,7 +90,7 @@ void UPlayerDeathEffect::Dash()
 
 void UPlayerDeathEffect::SprintStart()
 {
-	// Super::SprintStart();
+	Super::SprintStart();
 }
 
 void UPlayerDeathEffect::SprintEnd()
@@ -118,5 +125,5 @@ void UPlayerDeathEffect::Interact()
 
 void UPlayerDeathEffect::LockOn()
 {
-	// Super::LockOn();
+	Super::LockOn();
 }
