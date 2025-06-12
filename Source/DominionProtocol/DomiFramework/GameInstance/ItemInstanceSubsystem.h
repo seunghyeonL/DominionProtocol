@@ -40,7 +40,7 @@ public:
 
 	FORCEINLINE TMap<FName, FGameplayTag>& GetConsumableSlotMap() {	return ConsumableSlotMap; }
 
-	FORCEINLINE int32 GetPotionBoostLevel() { return PotionBoostLevel; }
+	FORCEINLINE int32 GetPotionBoostLevel() const { return PotionBoostLevel; }
 	
 protected:
 	virtual auto Initialize(FSubsystemCollectionBase& Collection) -> void override;
