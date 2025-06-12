@@ -18,7 +18,7 @@ class DOMINIONPROTOCOL_API UDialogueManager : public UObject
 public:
 
 	void LoadDialogueDataTable();
-	bool TryStartDialogueIfExists(EGameStoryState InState);
+	bool TryStartDialogueIfExists(EGameStoryState InState, FVector CrackLocation);
 	void AdvanceDialogue();
 
 private:
@@ -28,12 +28,12 @@ private:
 	void OnHelperAppearFinished();
 	void OnHelperDisappearFinished();
 
+public:
+	UPROPERTY()
+	TSubclassOf<AHelper> HelperClass;
 private:
 	UPROPERTY(EditAnywhere)
 	UDataTable* DialogueDataTable;
-
-	UPROPERTY()
-	TSubclassOf<AHelper> HelperClass;
 
 	UPROPERTY()
 	AHelper* CurrentHelper;
@@ -42,4 +42,6 @@ private:
 
 	int32 CurrentLineIndex = 0;
 	EGameStoryState CurrentStoryState;
+
+	FVector CachedHelperSpawnLocation;
 };

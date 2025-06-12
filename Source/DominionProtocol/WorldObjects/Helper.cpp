@@ -17,10 +17,11 @@ void AHelper::Appear(const FVector& SpawnLocation)
 	SetActorLocation(SpawnLocation);
 	SetActorHiddenInGame(false);
 	SetActorEnableCollision(true);
+	UE_LOG(LogTemp, Display, TEXT("조력자 등장"));
 
 	if (AppearMontage)
 	{
-		/* // 등장 종료 후 dialogueManager가 종료 상태를 알기 위한 바인딩
+		 // 등장 종료 후 dialogueManager가 종료 상태를 알기 위한 바인딩
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance)
 		{
@@ -28,7 +29,7 @@ void AHelper::Appear(const FVector& SpawnLocation)
 			EndDelegate.BindUObject(this, &AHelper::OnAppearMontageEnded);
 			AnimInstance->Montage_SetEndDelegate(EndDelegate, AppearMontage);
 		}
-		*/
+		
 		PlayAnimMontage(AppearMontage);
 	}
 }
@@ -55,12 +56,12 @@ void AHelper::Disappear()
 
 void AHelper::OnDisappearMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	// DialogueManager->NotifyHelperDisppeared();
+	// DialogueManager->OnHelperDisappearFinished();
 	Destroy();
 }
 
 void AHelper::OnAppearMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	// 등장 완료 후 다음 대사 진행을 DialogueManager에 알림
-	// DialogueManager->NotifyHelperAppeared();
+	//DialogueManager->OnHelperAppearFinished()
 }

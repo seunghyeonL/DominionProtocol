@@ -23,8 +23,9 @@ void UDialogueManager::LoadDialogueDataTable()
 	}
 }
 
-bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState)
+bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, FVector CrackLocation)
 {
+	CachedHelperSpawnLocation = CrackLocation;
 	LoadDialogueDataTable();
 
 	Debug::Print(TEXT("UDialogueSubsystem::TryStartDialogueIfExists()"));
@@ -94,12 +95,12 @@ void UDialogueManager::ExecuteDialogueLine()
 		AdvanceDialogue();
 		break;
 	case EDialogueEventType::SpawnHelper:
-		AdvanceDialogue();
-		//TriggerHelperAppear();
+		//AdvanceDialogue();
+		TriggerHelperAppear();
 		return;
 	case EDialogueEventType::DespawnHelper:
-		AdvanceDialogue();
-		//TriggerHelperDisappear();
+		//AdvanceDialogue();
+		TriggerHelperDisappear();
 		return;
 	default:
 		break;
@@ -110,11 +111,11 @@ void UDialogueManager::TriggerHelperAppear()
 {
 	if (!HelperClass) return;
 
-	FVector SpawnLocation = FVector::ZeroVector; // Crack에서 위치 받아서 설정
-	CurrentHelper = GetWorld()->SpawnActor<AHelper>(HelperClass, SpawnLocation, FRotator::ZeroRotator);
+	//FVector SpawnLocation = FVector::ZeroVector; // Crack에서 위치 받아서 설정
+	CurrentHelper = GetWorld()->SpawnActor<AHelper>(HelperClass, CachedHelperSpawnLocation, FRotator::ZeroRotator);
 	if (CurrentHelper)
 	{
-		CurrentHelper->Appear(SpawnLocation);
+		CurrentHelper->Appear(CachedHelperSpawnLocation);
 		OnHelperAppearFinished();
 	}
 }
@@ -135,5 +136,6 @@ void UDialogueManager::OnHelperAppearFinished()
 
 void UDialogueManager::OnHelperDisappearFinished()
 {
+	CurrentHelper->Destroy();
 	AdvanceDialogue();
 }
