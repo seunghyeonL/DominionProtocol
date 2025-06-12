@@ -166,6 +166,8 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	// 플레이타임 인스턴스 전달
 	GameInstance->AddPlayTime(BaseGameMode->GetPlayTime());
 
+	//BaseGameMode->Save();
+
 	UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
 
 	// 균열 이동
