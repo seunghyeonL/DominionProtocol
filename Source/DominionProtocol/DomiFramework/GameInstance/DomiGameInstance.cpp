@@ -20,6 +20,8 @@ void UDomiGameInstance::Init()
 
 void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)
 {
+	SaveSlotName = SaveData.SaveSlotName;
+	SaveSlotIndex = SaveData.SaveSlotIndex;
 	PlayerCurrentEssence = SaveData.PlayerCurrentEssence;
 	StatDataMap = SaveData.StatDataMap;
 	PlayTime = SaveData.PlayTime;
@@ -28,6 +30,9 @@ void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)
 FInstanceData UDomiGameInstance::GetSaveData() const
 {
 	FInstanceData SaveData;
+
+	SaveData.SaveSlotName = SaveSlotName;
+	SaveData.SaveSlotIndex = SaveSlotIndex;
 	SaveData.StatDataMap = StatDataMap;
 	SaveData.PlayerCurrentEssence = PlayerCurrentEssence;
 	SaveData.PlayTime = PlayTime;

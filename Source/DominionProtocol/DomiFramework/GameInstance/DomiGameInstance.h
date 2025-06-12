@@ -30,8 +30,11 @@ public:
 	FORCEINLINE bool HasEnoughEssence(const float InEssence) const { return InEssence <= PlayerCurrentEssence; }
 	
 	//Setter
-
 	FORCEINLINE void SetWorldCache(UWorld* NewWorld) { World = NewWorld; }
+
+	FORCEINLINE void SetSaveSlotName(const FString& SlotName) { SaveSlotName = SlotName; }
+
+	FORCEINLINE void SetSaveSlotIndex(int32 SlotIndex) { SaveSlotIndex = SlotIndex; }
 	
 	void SetIsBossDead(FGameplayTag BossTag);
 	
@@ -55,6 +58,10 @@ public:
 	FORCEINLINE void AddPlayTime(int32 NewPlayTime) { PlayTime += NewPlayTime; }
 	
 	//Getter
+	FORCEINLINE const FString& GetSaveSlotName() const { return SaveSlotName; }
+
+	FORCEINLINE int32 GetSaveSlotIndex() const { return SaveSlotIndex; }
+	
 	UFUNCTION(BlueprintCallable)
 	int32 GetPlayerCurrentEssence() const { return PlayerCurrentEssence; }
 
@@ -72,6 +79,12 @@ protected:
 	
 	
 private:
+	UPROPERTY()
+	FString SaveSlotName;
+
+	UPROPERTY()
+	int32 SaveSlotIndex;
+	
 	UPROPERTY()
 	TSet<FGameplayTag> DeadBossTags;
 
