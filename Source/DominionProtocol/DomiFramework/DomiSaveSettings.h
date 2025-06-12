@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnumAndStruct/FSaveSlotMetaData.h"
 #include "EnumAndStruct/FSoundSubsystemData.h"
 #include "GameFramework/SaveGame.h"
 #include "DomiSaveSettings.generated.h"
@@ -15,4 +16,7 @@ class DOMINIONPROTOCOL_API UDomiSaveSettings : public USaveGame
 public:
 	UPROPERTY()
 	FSoundSubsystemData SoundSubsystemData;
+
+	UPROPERTY()
+	TArray<FSaveSlotMetaData> SaveSlotMetaDataArray;
 };
