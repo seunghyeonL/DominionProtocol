@@ -39,14 +39,6 @@ FInstanceData UDomiGameInstance::GetSaveData() const
 	return SaveData;
 }
 
-void UDomiGameInstance::SetIsBossDead(FGameplayTag BossTag)
-{
-	if (BossTag.IsValid())
-	{
-		DeadBossTags.Add(BossTag);
-	}
-}
-
 void UDomiGameInstance::SetCurrentGameStoryState(EGameStoryState NewGameStoryState)
 {
 	if (CurrentGameStoryState != NewGameStoryState)
@@ -55,11 +47,6 @@ void UDomiGameInstance::SetCurrentGameStoryState(EGameStoryState NewGameStorySta
 		CurrentGameStoryState = NewGameStoryState;
 		OnStoryStateChanged.Broadcast(NewGameStoryState);
 	}
-}
-
-bool UDomiGameInstance::GetIsBossDead(FGameplayTag BossTag) const
-{
-	return DeadBossTags.Contains(BossTag);
 }
 
 void UDomiGameInstance::AdvanceStoryState()

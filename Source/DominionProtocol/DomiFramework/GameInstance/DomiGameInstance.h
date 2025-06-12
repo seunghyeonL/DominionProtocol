@@ -84,9 +84,6 @@ private:
 
 	UPROPERTY()
 	int32 SaveSlotIndex;
-	
-	UPROPERTY()
-	TSet<FGameplayTag> DeadBossTags;
 
 	UPROPERTY()
 	TMap<FGameplayTag, float> StatDataMap;
