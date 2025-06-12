@@ -38,6 +38,7 @@ void ABaseGameState::BeginPlay()
 	World = GetWorld();
 	check(World);
 	InitializeGameInstance();
+	InitializeSaveManagerInstanceSubsystem();
 	InitializeWorldInstanceSubsystem();
 	InitializeZeroIndexCrackData(WorldInstanceSubsystem->GetCurrentLevelName());
 	InitializeSoundSubsystem();
@@ -49,6 +50,13 @@ void ABaseGameState::InitializeGameInstance()
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	check(IsValid(GameInstance));
 	GameInstance->SetWorldCache(World);
+}
+
+void ABaseGameState::InitializeSaveManagerInstanceSubsystem()
+{
+	SaveManagerSubsystem = GameInstance->GetSubsystem<USaveManagerSubsystem>();
+	check(IsValid(SaveManagerSubsystem));
+	SaveManagerSubsystem->SetWorldCache(World);
 }
 
 void ABaseGameState::InitializeWorldInstanceSubsystem()
@@ -117,6 +125,7 @@ void ABaseGameState::InitializeGame()
 	check(IsValid(WorldInstanceSubsystem));
 	check(IsValid(SoundSubsystem));
 	check(IsValid(ItemInstanceSubsystem));
+	check(IsValid(SaveManagerSubsystem));
 	
 	CacheAllCracks();
 	LoadCrackDataFromInstance();

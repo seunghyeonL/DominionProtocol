@@ -8,6 +8,7 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+class USaveManagerSubsystem;
 class ABaseGameMode;
 class UItemInstanceSubsystem;
 struct FEffectInitializeData;
@@ -45,6 +46,7 @@ protected:
 
 	//Initialize Instances
 	void InitializeGameInstance();
+	void InitializeSaveManagerInstanceSubsystem();
 	void InitializeWorldInstanceSubsystem();
 	void InitializeSoundSubsystem();
 	void InitializeItemInstanceSubsystem();
@@ -71,6 +73,9 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<UDomiGameInstance> GameInstance;
+
+	UPROPERTY()
+	TObjectPtr<USaveManagerSubsystem> SaveManagerSubsystem;
 
 	UPROPERTY()
 	TObjectPtr<UWorldInstanceSubsystem> WorldInstanceSubsystem;
