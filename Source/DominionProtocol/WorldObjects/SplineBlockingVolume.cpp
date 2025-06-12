@@ -94,6 +94,8 @@ void ASplineBlockingVolume::CreateBox()
 		NewBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 		NewBox->RegisterComponent();
 
+		NewBox->SetCollisionObjectType(ECC_WorldStatic);
+		
 		NewBox->SetBoxExtent(CollisionBoxExtent);
 		NewBox->SetWorldLocation(Location);
 		NewBox->SetWorldRotation(Rotation);
