@@ -30,8 +30,6 @@ public:
 	FORCEINLINE void SetEquipmentSlotMap(const TMap<FName, FGameplayTag>& NewEquipMap) { EquipmentSlotMap = NewEquipMap; }
 
 	FORCEINLINE void SetConsumableSlotMap(const TMap<FName, FGameplayTag>& NewConsumableMap) { ConsumableSlotMap = NewConsumableMap; }
-
-	FORCEINLINE void SetIsPotionBoostApplied(bool bNewbool) { bIsPotionBoostApplied = bNewbool; }
 	
 	// Getter
 	TMap<FGameplayTag, int32>& GetInventoryDataMap() { return InventoryDataMap; }
@@ -39,8 +37,6 @@ public:
 	TMap<FName, FGameplayTag>& GetEquipmentSlotMap() { return EquipmentSlotMap; }
 
 	TMap<FName, FGameplayTag>& GetConsumableSlotMap() {	return ConsumableSlotMap; }
-
-	bool GetIsPotionBoostApplied() { return bIsPotionBoostApplied; }
 	
 protected:
 	virtual auto Initialize(FSubsystemCollectionBase& Collection) -> void override;
@@ -55,9 +51,6 @@ private:
 
 	UPROPERTY()
 	TMap<FName, FGameplayTag> ConsumableSlotMap;
-
-	UPROPERTY()
-	bool bIsPotionBoostApplied;
 
 	//Not Save
 	UPROPERTY()

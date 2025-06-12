@@ -12,7 +12,6 @@ struct FItemSubsystemData
 	GENERATED_BODY()
 
 	FItemSubsystemData()
-		:	bIsPotionBoostApplied(false)
 	{}
 	
 	UPROPERTY()
@@ -23,7 +22,4 @@ struct FItemSubsystemData
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Consumable")
 	TMap<FName, FGameplayTag> ConsumableSlots;
-
-	UPROPERTY()
-	bool bIsPotionBoostApplied;
 };

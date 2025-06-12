@@ -244,7 +244,6 @@ void ABaseGameState::LoadItemDataFromInstance()
 				ItemComponent->SetInventoryMap(ItemInstanceSubsystem->GetInventoryDataMap());
 				ItemComponent->SetEquipmentSlots(ItemInstanceSubsystem->GetEquipmentSlotMap());
 				ItemComponent->SetConsumableSlots(ItemInstanceSubsystem->GetConsumableSlotMap());
-				ItemComponent->SetIsPotionBoostApplied(ItemInstanceSubsystem->GetIsPotionBoostApplied());
 
 				ItemComponent->SetSkillFromItemWhenLevelChanged();
 				ItemComponent->DelegateExecuter();

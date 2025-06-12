@@ -12,7 +12,6 @@ void UItemInstanceSubsystem::LoadSaveData(const FItemSubsystemData& SaveData)
 	InventoryDataMap = SaveData.InventoryMap;
 	EquipmentSlotMap = SaveData.EquipmentSlots;
 	ConsumableSlotMap = SaveData.ConsumableSlots;
-	bIsPotionBoostApplied = SaveData.bIsPotionBoostApplied;
 }
 
 FItemSubsystemData UItemInstanceSubsystem::GetSaveData() const
@@ -22,7 +21,6 @@ FItemSubsystemData UItemInstanceSubsystem::GetSaveData() const
 	SaveData.InventoryMap = InventoryDataMap;
 	SaveData.EquipmentSlots = EquipmentSlotMap;
 	SaveData.ConsumableSlots = ConsumableSlotMap;
-	SaveData.bIsPotionBoostApplied = bIsPotionBoostApplied;
 	
 	return SaveData;
 }
