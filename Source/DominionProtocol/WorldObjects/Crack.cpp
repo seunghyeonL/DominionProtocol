@@ -157,10 +157,14 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	BaseGameMode->DestroyAllNormalEnemy();
 	// 플레이어 체력 및 포션 개수 회복
 	BaseGameMode->RestorePlayer();
-	// 플레이어 스탯 저장
-	GameInstance->SetStatDataMap(CachedCharacter->GetStatusComponent()->GetStatMap());
 	// 적 몬스터 초기화
 	BaseGameMode->RespawnEnemies();
+
+	// 저장
+	// 플레이어 스탯 저장
+	GameInstance->SetStatDataMap(CachedCharacter->GetStatusComponent()->GetStatMap());
+	// 플레이타임 인스턴스 전달
+	GameInstance->AddPlayTime(BaseGameMode->GetPlayTime());
 
 	UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
 

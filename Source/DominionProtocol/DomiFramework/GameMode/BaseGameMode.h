@@ -67,6 +67,7 @@ public:
 	void RespawnEnemies();	// 적 기존 위치에 리스폰
 
 	//Getter
+	FORCEINLINE int32 GetPlayTime() { return PlayTime; }
 	
 	//Setter
 	FORCEINLINE void SetRecentCrackCache(ACrack* NewCrack) { RecentCrackCache = NewCrack ; }
@@ -74,6 +75,8 @@ public:
 protected:
 	UFUNCTION()
 	void SaveItemDataToInstance();
+
+	void PlayTimeAdder();
 	
 public:
 	// Delegate
@@ -136,6 +139,10 @@ protected:
 	FVector PendingMoveLocation;
 	
 	FRotator PendingMoveRotation;
+
+	int32 PlayTime;
+
+	FTimerHandle PlayTimer;
 
 #pragma endregion
 

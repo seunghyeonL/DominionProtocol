@@ -51,6 +51,8 @@ public:
 	}
 
 	FORCEINLINE void SetStatDataMap(TMap<FGameplayTag, float> NewStatDataMap) { StatDataMap.Append(NewStatDataMap); }
+
+	FORCEINLINE void AddPlayTime(int32 NewPlayTime) { PlayTime += NewPlayTime; }
 	
 	//Getter
 	UFUNCTION(BlueprintCallable)
@@ -59,6 +61,8 @@ public:
 	FORCEINLINE const TMap<FGameplayTag, float>& GetStatDataMap() const { return StatDataMap; }
 	
 	bool GetIsBossDead(FGameplayTag BossTag) const;
+
+	FORCEINLINE int32 GetPlayTime() const { return PlayTime; }
 	
 	// UI에서 각 균열 활성화/비활성화 정보 담는 배열(각 레벨별로) 반환
 	UFUNCTION(BlueprintCallable)
@@ -76,6 +80,9 @@ private:
 
 	UPROPERTY()
 	EGameStoryState CurrentGameStoryState;
+
+	UPROPERTY()
+	int32 PlayTime;
 
 	//Not Save Data
 	UPROPERTY()

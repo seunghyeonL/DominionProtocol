@@ -14,14 +14,15 @@ void UDomiGameInstance::Init()
 	Super::Init();
 
 	CurrentGameStoryState = EGameStoryState::Tutorial;
-	// PlayerCurrentEssence = 0;
-	PlayerCurrentEssence = 10000;
+	PlayerCurrentEssence = 0;
+	PlayTime = 0;
 }
 
 void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)
 {
 	PlayerCurrentEssence = SaveData.PlayerCurrentEssence;
 	StatDataMap = SaveData.StatDataMap;
+	PlayTime = SaveData.PlayTime;
 }
 
 FInstanceData UDomiGameInstance::GetSaveData() const
@@ -29,6 +30,7 @@ FInstanceData UDomiGameInstance::GetSaveData() const
 	FInstanceData SaveData;
 	SaveData.StatDataMap = StatDataMap;
 	SaveData.PlayerCurrentEssence = PlayerCurrentEssence;
+	SaveData.PlayTime = PlayTime;
 	return SaveData;
 }
 

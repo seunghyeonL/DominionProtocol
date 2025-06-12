@@ -16,4 +16,7 @@ struct FInstanceData
 
 	UPROPERTY()
 	int32 PlayerCurrentEssence;
+
+	UPROPERTY()
+	int32 PlayTime;
 };

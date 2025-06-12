@@ -38,7 +38,8 @@ ABaseGameMode::ABaseGameMode()
 		PlayerCharacter(nullptr),
 		RecentCrackCache(nullptr),
 		RespawnDelay(2.f),
-		bIsFadeIn(true)
+		bIsFadeIn(true),
+		PlayTime(0)
 {
 	static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
 	if (DropEssenceBPClass.Succeeded())
@@ -68,7 +69,7 @@ void ABaseGameMode::BeginPlay()
 	StateWorldSubsystem = GetWorld()->GetSubsystem<UActorStateManageWorldSubsystem>();
 
 	World = GetWorld();
-	check(World);
+	check(IsValid(World));
 	
 	if (!IsValid(FadeSequence))
 	{
@@ -148,6 +149,13 @@ void ABaseGameMode::StartPlay()
 	}
 
 	ExitAudioComponent->Play();
+
+	World->GetTimerManager().SetTimer(
+		PlayTimer,
+		this,
+		&ABaseGameMode::PlayTimeAdder,
+		60.f,
+		true);
 	
 	// 페이드인
 	SetPlayerInputEnable(false);
@@ -425,6 +433,11 @@ void ABaseGameMode::SaveItemDataToInstance()
 		}
 		ItemComponent->UpdateItemInstanceSubsystem();
 	}
+}
+
+void ABaseGameMode::PlayTimeAdder()
+{
+	PlayTime++;
 }
 
 void ABaseGameMode::SetPlayerInputEnable(bool bEnable)
