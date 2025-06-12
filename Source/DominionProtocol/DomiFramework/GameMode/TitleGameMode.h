@@ -13,4 +13,6 @@ class DOMINIONPROTOCOL_API ATitleGameMode : public AGameModeBase
 
 public:
 	ATitleGameMode();
+
+	virtual void BeginPlay() override;
 };
