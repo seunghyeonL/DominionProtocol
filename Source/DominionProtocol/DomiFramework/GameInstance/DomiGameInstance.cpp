@@ -2,11 +2,8 @@
 
 
 #include "DomiGameInstance.h"
-
-#include "Components/StatusComponent/StatusComponent.h"
-#include "Player/Characters/DomiCharacter.h"
 #include "EnumAndStruct/EGameStoryState.h"
-#include "WorldObjects/Crack.h"
+
 #include "Util/DebugHelper.h"
 
 void UDomiGameInstance::Init()
@@ -22,9 +19,10 @@ void UDomiGameInstance::LoadSaveData(const FInstanceData& SaveData)
 {
 	SaveSlotName = SaveData.SaveSlotName;
 	SaveSlotIndex = SaveData.SaveSlotIndex;
-	PlayerCurrentEssence = SaveData.PlayerCurrentEssence;
 	StatDataMap = SaveData.StatDataMap;
+	CurrentGameStoryState = SaveData.CurrentGameStoryState;
 	PlayTime = SaveData.PlayTime;
+	PlayerCurrentEssence = SaveData.PlayerCurrentEssence;
 }
 
 FInstanceData UDomiGameInstance::GetSaveData() const
@@ -34,8 +32,9 @@ FInstanceData UDomiGameInstance::GetSaveData() const
 	SaveData.SaveSlotName = SaveSlotName;
 	SaveData.SaveSlotIndex = SaveSlotIndex;
 	SaveData.StatDataMap = StatDataMap;
-	SaveData.PlayerCurrentEssence = PlayerCurrentEssence;
+	SaveData.CurrentGameStoryState = CurrentGameStoryState;
 	SaveData.PlayTime = PlayTime;
+	SaveData.PlayerCurrentEssence = PlayerCurrentEssence;
 	return SaveData;
 }
 

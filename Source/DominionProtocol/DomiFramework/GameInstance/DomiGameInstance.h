@@ -104,6 +104,7 @@ private:
 #pragma region KyuHyeok
 
 private:
+	UPROPERTY()
 	int32 PlayerCurrentEssence;
 	
 #pragma endregion

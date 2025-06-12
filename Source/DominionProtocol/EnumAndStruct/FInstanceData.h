@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnumAndStruct/EGameStoryState.h"
 #include "Util/GameTagList.h"
 #include "FInstanceData.generated.h"
 
@@ -21,8 +22,11 @@ struct FInstanceData
 	TMap<FGameplayTag, float> StatDataMap;
 
 	UPROPERTY()
-	int32 PlayerCurrentEssence;
+	EGameStoryState CurrentGameStoryState;
 
 	UPROPERTY()
 	int32 PlayTime;
+
+	UPROPERTY()
+	int32 PlayerCurrentEssence;
 };
