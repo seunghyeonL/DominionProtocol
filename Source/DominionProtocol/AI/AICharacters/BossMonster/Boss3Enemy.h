@@ -48,4 +48,7 @@ public:
 	FTimerHandle StoneDestroyHandle;
 
 	void SpawnStone();
+
+	UPROPERTY()
+	ACharacter* CapturedTarget;
 };
