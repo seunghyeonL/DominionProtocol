@@ -996,6 +996,7 @@ void UItemComponent::UpdateItemInstanceSubsystem()
 		ItemInstanceSubsystem->SetInventoryDataMap(InventoryMap);
 		ItemInstanceSubsystem->SetEquipmentSlotMap(EquipmentSlots);
 		ItemInstanceSubsystem->SetConsumableSlotMap(ConsumableSlots);
+		ItemInstanceSubsystem->SetPotionBoostLevel(PotionBoostLevel);
 
 		DelegateExecuter();
 	}
