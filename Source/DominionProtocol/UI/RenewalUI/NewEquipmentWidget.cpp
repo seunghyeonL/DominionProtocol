@@ -10,15 +10,30 @@ void UNewEquipmentWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	auto* PlayerStatusComponent = GetOwningPlayerPawn()->FindComponentByClass(UStatusComponent::StaticClass());
+	auto* PlayerStatusComponent = GetOwningPlayerPawn()->FindComponentByClass<UStatusComponent>();
 	if (PlayerStatusComponent)
 	{
-		StatusComponent = Cast<UStatusComponent>(PlayerStatusComponent);
+		StatusComponent = PlayerStatusComponent;
 	}
 
-	auto* PlayerItemComponent = GetOwningPlayerPawn()->FindComponentByClass(UItemComponent::StaticClass());
+	auto* PlayerItemComponent = GetOwningPlayerPawn()->FindComponentByClass<UItemComponent>();
 	if (PlayerItemComponent)
 	{
-		ItemComponent = Cast<UItemComponent>(PlayerItemComponent);
+		ItemComponent = PlayerItemComponent;
+		BindEquippedSlotsDelegates();
 	}
+}
+
+void UNewEquipmentWidget::BindEquippedSlotsDelegates()
+{
+	if (ItemComponent)
+	{
+		ItemComponent->OnInventoryEquippedSlotItemsChanged.AddUObject(this, &UNewEquipmentWidget::OnUpdateEquippedSlots);
+		ItemComponent->OnInventoryConsumableSlotItemsChanged.AddUObject(this, &UNewEquipmentWidget::OnUpdateEquippedSlots);
+	}
+}
+
+void UNewEquipmentWidget::OnUpdateEquippedSlots()
+{
+	UpdateEquippedSlots();
 }

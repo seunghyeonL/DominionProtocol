@@ -15,8 +15,14 @@ class DOMINIONPROTOCOL_API UNewEquipmentWidget : public UNewMenuWidget
 
 protected:
 	virtual void NativeConstruct() override;
+	void BindEquippedSlotsDelegates();
 
+	UFUNCTION()
+	void OnUpdateEquippedSlots();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateEquippedSlots();
+	
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class UItemComponent> ItemComponent;
