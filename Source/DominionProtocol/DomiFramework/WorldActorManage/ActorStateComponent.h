@@ -29,7 +29,6 @@ public:
 
 	// Setter
 	void SetGameplayTag(FGameplayTag Tag) { ActorData.Tag = Tag; }
-	// void SetActorDataAndUpdateInstance(FWorldActorData NewActorData);
 	
 protected:
 	virtual void BeginPlay() override;
