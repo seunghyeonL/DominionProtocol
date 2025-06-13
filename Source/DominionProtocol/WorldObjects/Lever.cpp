@@ -94,10 +94,6 @@ void ALever::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
 
 void ALever::HandleLever(float Value)
 {
-	//FRotator Rot = FRotator(0.f, LeverRotateAngle * Value, 0.f);
-
-	//HandleMesh->SetRelativeRotation(Rot);
-
 	FRotator DeltaRotation = FRotator(0.f, 0.f, LeverRotateAngle * Value);
 	FRotator NewRotation = InitialRotation + DeltaRotation;
 	HandleMesh->SetRelativeRotation(NewRotation);
@@ -126,11 +122,6 @@ void ALever::Interact_Implementation(AActor* Interactor)
 	{
 		Timeline.Play();
 		Debug::Print(TEXT("Lever On"));
-		if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(GetGameInstance()))
-		{
-			//GI->SetCurrentGameStoryState(EGameStoryState::OperateLever); 
-			//Debug::Print(TEXT("스토리 상태 → OperateLever 으로 변경"));
-		}
 	}
 	bIsOn = !bIsOn;
 }

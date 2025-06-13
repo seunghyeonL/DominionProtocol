@@ -143,26 +143,6 @@ void ADoor::OnTimelineFinished()
 	{
 		DoorMesh2->SetCollisionProfileName(TEXT("BlockAll"));
 	}
-
-	if (bOpenOnceForBoss)
-	{
-		DoorMesh->SetVisibility(false);
-		DoorMesh->SetCollisionProfileName(TEXT("NoCollision"));
-		if (DoorMesh2)
-		{
-			DoorMesh2->SetVisibility(false);
-			DoorMesh2->SetCollisionProfileName(TEXT("NoCollision"));
-		}
-		BoxCollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-	else
-	{
-		DoorMesh->SetCollisionProfileName(TEXT("BlockAll"));
-		if (DoorMesh2)
-		{
-			DoorMesh2->SetCollisionProfileName(TEXT("BlockAll"));
-		}
-	}
 }
 
 void ADoor::Interact_Implementation(AActor* Interactor)
