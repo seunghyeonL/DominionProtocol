@@ -45,6 +45,8 @@ void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 				AttackForwardOffset = SkillData->AttackForwardOffset;
 				DamageCoefficient = SkillData->DamageCoefficient;
 				Effects = SkillData->Effects;
+				LaunchGroundSpeed = SkillData->LaunchGroundSpeed;
+				LaunchZSpeed = SkillData->LaunchZSpeed;
 			}
 			else
 			{
@@ -231,9 +233,8 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 
 	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 	{
-		AttackData.LaunchVector = HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation();
-
-		AttackData.LaunchVector.Normalize();
+		FVector GroundLaunchVector = (HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal() * LaunchGroundSpeed;
+		AttackData.LaunchVector = {GroundLaunchVector.X, GroundLaunchVector.Y, LaunchZSpeed};
 		
 		IDamagable::Execute_OnAttacked(HitActor, AttackData);
 	}

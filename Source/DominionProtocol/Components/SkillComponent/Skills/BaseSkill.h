@@ -45,6 +45,8 @@ public:
 	FORCEINLINE const TArray<FEffectData>& GetEffects() const { return Effects; }
 	FORCEINLINE float GetDamageCoefficient() const { return DamageCoefficient; }
 	float GetFinalAttackData() const;
+	FORCEINLINE float GetLaunchGroundSpeed() const { return LaunchGroundSpeed; }
+	FORCEINLINE float GetLaunchZSpeed() const { return LaunchZSpeed; }
 
 protected:
 	virtual bool CheckParry(AActor* HitActor) const;
@@ -77,7 +79,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag")
 	FGameplayTag ControlEffectTag;
-
+	
 	float Stamina;
 
 	float AttackRadius;
@@ -87,4 +89,8 @@ protected:
 	float DamageCoefficient;
 
 	float AnimPlayRate;
+
+	float LaunchGroundSpeed;
+
+	float LaunchZSpeed;
 };

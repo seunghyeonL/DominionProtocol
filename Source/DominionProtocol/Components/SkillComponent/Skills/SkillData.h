@@ -50,6 +50,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	float DamageCoefficient;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	float LaunchGroundSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	float LaunchZSpeed;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Data")
 	FGameplayTag SkillTag;
 };
