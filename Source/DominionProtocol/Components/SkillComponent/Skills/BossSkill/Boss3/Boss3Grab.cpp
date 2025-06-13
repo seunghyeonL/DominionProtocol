@@ -15,7 +15,6 @@ UBoss3Grab::UBoss3Grab()
 
 void UBoss3Grab::AttackTrace() const
 {
-	Super::AttackTrace();
 	check(OwnerCharacter);
 
 	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();

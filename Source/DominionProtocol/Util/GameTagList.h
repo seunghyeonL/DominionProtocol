@@ -319,6 +319,9 @@ namespace TraceTags
 	
 	// Sword
 	inline const FGameplayTag HandRightSword = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right.Sword"));
+
+	//Boss3
+	inline const FGameplayTag Body = FGameplayTag::RequestGameplayTag(TEXT("Trace.Body"));
 }
 
 namespace WorldActorTags
