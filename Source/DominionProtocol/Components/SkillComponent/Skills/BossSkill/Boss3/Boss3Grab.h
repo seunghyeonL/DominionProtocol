@@ -17,4 +17,6 @@ public:
 	UBoss3Grab();
 
 	virtual void AttackTrace() const override;
+
+	void SpawnHandMesh(const FHitResult& Hit) const;
 };

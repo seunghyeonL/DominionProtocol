@@ -3,6 +3,13 @@
 
 #include "AI/AICharacters/BossMonster/Boss3Enemy.h"
 #include "Engine/StaticMeshActor.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+
+ABoss3Enemy::ABoss3Enemy()
+{
+	PawnTag = PawnTags::Boss3;
+}
 
 void ABoss3Enemy::Attack()
 {
@@ -51,6 +58,16 @@ void ABoss3Enemy::Attack3()
 	);
 }
 
+void ABoss3Enemy::SpawnStoneReady()
+{
+	GetWorld()->GetTimerManager().SetTimer(
+		StoneSpawnDelayHandle,
+		this,
+		&ABoss3Enemy::SpawnStone,
+		0.5f,
+		false
+	);
+}
 
 void ABoss3Enemy::SpawnStone()
 {
@@ -71,7 +88,6 @@ void ABoss3Enemy::SpawnStone()
 			TEXT("ThrowSocket")
 		);
 
-		// 3초 후 제거
 		GetWorld()->GetTimerManager().SetTimer(
 			StoneDestroyHandle,
 			[this]()
@@ -97,4 +113,36 @@ void ABoss3Enemy::Attack4()
 	{
 		AnimInstance->Montage_Play(AttackMontage4);
 	}
+}
+
+void ABoss3Enemy::ThrowCapturedTarget()
+{
+	if (!IsValid(CapturedTarget)) return;
+
+	// 부착 해제
+	CapturedTarget->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+	if (UCharacterMovementComponent* MoveComp = CapturedTarget->GetCharacterMovement())
+	{
+		MoveComp->GravityScale = 1.0f;
+	}
+	if (UCapsuleComponent* Capsule = CapturedTarget->GetCapsuleComponent())
+	{
+		Capsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
+
+	if (USkeletalMeshComponent* TargetMesh = CapturedTarget->GetMesh())
+	{
+		TargetMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		TargetMesh->SetSimulatePhysics(false);
+	}
+
+	// 던지는 방향: 골렘 앞쪽 + 위로
+	FVector LaunchDirection = GetActorForwardVector() + FVector(0.f, 0.f, 0.5f);
+	LaunchDirection.Normalize();
+
+	CapturedTarget->LaunchCharacter(LaunchDirection * 1500.f, true, true);
+
+	// 상태 초기화
+	CapturedTarget = nullptr;
 }

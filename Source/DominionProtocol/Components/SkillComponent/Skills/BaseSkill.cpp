@@ -131,27 +131,45 @@ void UBaseSkill::AttackTrace() const
 void UBaseSkill::AttackTrace_Cylinder(FVector Offset, float Radius, float HalfHeight) const
 {
 	check(OwnerCharacter);
-
 	UWorld* World = GetWorld();
 	if (!World) return;
 
-	// 기준 위치 계산 (캐릭터 기준 Offset)
-	const FVector Start = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorRotation().RotateVector(Offset);
-	const FVector End = Start;
+	// 위치 계산
+	FVector Start = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorRotation().RotateVector(Offset);
+	FVector End = Start;
 
+	// 회전: Forward 방향으로 눕힌 실린더
+	FVector CapsuleDirection = OwnerCharacter->GetActorForwardVector();
+	FQuat CapsuleRotation = FRotationMatrix::MakeFromZ(CapsuleDirection).ToQuat();
+
+	// 트레이스
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(OwnerCharacter);
 
-	const bool bHit = World->SweepMultiByChannel(
+	bool bHit = World->SweepMultiByChannel(
 		HitResults,
 		Start,
 		End,
-		FQuat::Identity,
-		ECollisionChannel::ECC_Pawn,
+		CapsuleRotation,
+		ECC_Pawn,
 		FCollisionShape::MakeCapsule(Radius, HalfHeight),
 		QueryParams
 	);
+
+	// 디버그
+#if WITH_EDITOR
+	DrawDebugCapsule(
+		World,
+		Start,
+		HalfHeight,
+		Radius,
+		CapsuleRotation,
+		FColor::Green,
+		false,
+		2.0f
+	);
+#endif
 
 	if (!bHit) return;
 
@@ -163,6 +181,7 @@ void UBaseSkill::AttackTrace_Cylinder(FVector Offset, float Radius, float HalfHe
 		}
 	}
 }
+
 
 void UBaseSkill::StartTrace(const FGameplayTagContainer& TagContainer)
 {

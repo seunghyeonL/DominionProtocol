@@ -10,34 +10,12 @@
 
 void UAnimNotify_CylinderTrace::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	if (bShowDebug)
-	{
-		UWorld* World = GetWorld();
-		if (!World) return;
-
-		FVector Start = FVector::ZeroVector;
-		if (MeshComp && MeshComp->GetOwner())
-		{
-			Start = MeshComp->GetOwner()->GetActorLocation() + TraceOffset;
-		}
-
-		DrawDebugCapsule(
-			World,
-			Start,
-			HalfHeight,
-			Radius,
-			FQuat::Identity,
-			FColor::Green,
-			false, // true로 바꾸면 영구 표시
-			2.0f   // 2초간 표시
-		);
-	}
 	if (!IsValid(MeshComp)) return;
 
-	ACharacter* OwnerCharacter = Cast<ACharacter>(MeshComp->GetOwner());
-	if (!IsValid(OwnerCharacter)) return;
+	AActor* Owner = MeshComp->GetOwner();
+	if (!IsValid(Owner)) return;
 
-	if (USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>())
+	if (USkillComponent* SkillComponent = Owner->FindComponentByClass<USkillComponent>())
 	{
 		if (UBaseSkill* Skill = SkillComponent->GetCurrentSkill())
 		{

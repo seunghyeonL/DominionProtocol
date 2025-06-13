@@ -15,4 +15,6 @@ class DOMINIONPROTOCOL_API UBoss3GrabAttack : public UBaseSkill
 	GENERATED_BODY()
 public:
 	UBoss3GrabAttack();
+
+	virtual void AttackTrace() const override;
 };

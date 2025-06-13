@@ -14,6 +14,8 @@ class DOMINIONPROTOCOL_API ABoss3Enemy : public ABaseBossEnemy
 {
 	GENERATED_BODY()
 public:
+	ABoss3Enemy();
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
@@ -46,9 +48,10 @@ public:
 
 	FTimerHandle StoneSpawnDelayHandle;
 	FTimerHandle StoneDestroyHandle;
-
+	void SpawnStoneReady();
 	void SpawnStone();
 
 	UPROPERTY()
 	ACharacter* CapturedTarget;
+	void ThrowCapturedTarget();
 };

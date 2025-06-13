@@ -17,6 +17,6 @@ void UBoss3RockThrow::Execute()
 
 	if (ABoss3Enemy* Boss = Cast<ABoss3Enemy>(OwnerCharacter))
 	{
-		Boss->SpawnStone();
+		Boss->SpawnStoneReady();
 	}
 }
