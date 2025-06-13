@@ -52,11 +52,7 @@ bool UPlayerControlEffectBase::Activate()
 	}
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
-	if (!IsValid(ControlComponent))
-	{
-		Debug::PrintError(TEXT("UPlayerControlEffectBase::Activate : Invalid ControlComponent"));
-		return false;
-	}
+	check(ControlComponent);
 	
 	if (UPlayerControlStateBase* PlayerControlState = ControlComponent->GetPlayerControlState())
 	{

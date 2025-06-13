@@ -21,6 +21,7 @@
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Effects/PlayerConsumingItemEffect/PlayerConsumingItemEffect.h"
 #include "Effects/PlayerFlewEffect/PlayerFlewEffect.h"
+#include "Effects/PlayerPreStunEffect/PlayerPreStunEffect.h"
 #include "Effects/PlayerStandingUpEffect/PlayerStandingUpEffect.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -85,6 +86,7 @@ void UPlayerControlComponent::InitializeComponent()
 
 	// Add ControlEffects to ControlEffectMapper 
 	ControlEffectMap.Add(EffectTags::Stun, NewObject<UPlayerStunEffect>(this));
+	ControlEffectMap.Add(EffectTags::PreStun, NewObject<UPlayerPreStunEffect>(this));
 	ControlEffectMap.Add(EffectTags::Stiffness, NewObject<UPlayerStiffnessEffect>(this));
 	ControlEffectMap.Add(EffectTags::Flew, NewObject<UPlayerFlewEffect>(this));
 	ControlEffectMap.Add(EffectTags::StandingUp, NewObject<UPlayerStandingUpEffect>(this));
