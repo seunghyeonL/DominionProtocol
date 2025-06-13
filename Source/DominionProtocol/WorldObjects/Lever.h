@@ -12,6 +12,7 @@
 
 class UBoxComponent;
 class ADomiCharacter;
+class AElevator;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ALever : public AActor, public IInteractableInterface, public IStoryDependentInterface
@@ -80,6 +81,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	EGameStoryState RequiredStoryState = EGameStoryState::Tutorial;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
+	AElevator* Elevator;
 
 private:
 	UPROPERTY()

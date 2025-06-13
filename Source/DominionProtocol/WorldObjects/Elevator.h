@@ -75,10 +75,10 @@ protected:
 	bool bIsMoving;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
-	AElevatorCaller* TopCaller;
+	AActor* TopCaller;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Elevator")
-	AElevatorCaller* BottomCaller;
+	AActor* BottomCaller;
 
 
 private:

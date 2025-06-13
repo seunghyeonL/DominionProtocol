@@ -3,6 +3,7 @@
 #include "Components/BoxComponent.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "WorldObjects/Elevator.h"
 
 ALever::ALever()
 	:bIsOn(false),
@@ -124,6 +125,18 @@ void ALever::Interact_Implementation(AActor* Interactor)
 		Debug::Print(TEXT("Lever On"));
 	}
 	bIsOn = !bIsOn;
+
+	if (!IsValid(Elevator))
+	{
+		Debug::Print(TEXT("Elevator not set"));
+		return;
+	}
+	if (Elevator->IsMoving())
+	{
+		Debug::Print(TEXT("Elevator is Moving"));
+		return;
+	}
+	Elevator->MoveElevatorTo(GetActorLocation().Z);
 }
 
 FText ALever::GetInteractMessage_Implementation() const
