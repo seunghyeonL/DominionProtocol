@@ -40,12 +40,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SwitchShowAndHideCrackWarpWidget();
 
-	UFUNCTION()
-	void OnSwitchShowAndHideInventoryWidget();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void SwitchShowAndHideInventoryWidget();
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void SwitchShowAndHideStatModifyWidget();
 
@@ -77,16 +71,10 @@ protected:
 #pragma region UI On/Off
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UDomiInGameMenuWidget> InGameMenuWidget;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UUserWidget> InteractionWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UUserWidget> CrackWrapWidget;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UDomiInventoryWidget> InventoryWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UBossMonsterHPBarWidget> BossMonsterHPBar;

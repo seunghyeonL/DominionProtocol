@@ -29,12 +29,6 @@ void UDomiInGameHUDWidget::OnSwitchShowAndHideCrackWarpWidget()
 	SwitchShowAndHideCrackWarpWidget();
 }
 
-void UDomiInGameHUDWidget::OnSwitchShowAndHideInventoryWidget()
-{
-	SwitchShowAndHideInventoryWidget();
-}
-
-
 void UDomiInGameHUDWidget::ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder)
 {
 	if (!IsValid(TargetWidget))
@@ -56,7 +50,6 @@ void UDomiInGameHUDWidget::NativeConstruct()
 
 	ensure(StatusBarWidget);
 	ensure(ItemSlotsWidget);
-	ensure(InGameMenuWidget);
 	ensure(InteractionWidget);
 	ensure(CrackWrapWidget);
 

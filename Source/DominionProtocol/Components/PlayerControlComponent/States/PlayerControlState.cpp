@@ -348,14 +348,3 @@ void UPlayerControlState::InteractionScroll(const FInputActionValue& Value)
 	}
 
 }
-
-void UPlayerControlState::SwitchShowAndHideInventory()
-{
-	Super::SwitchShowAndHideInventory();
-
-	auto* InGameController = Cast<AInGameController>(OwnerCharacter->GetController());
-	if (InGameController)
-	{
-		InGameController->GetInGameHUDWidget()->OnSwitchShowAndHideInventoryWidget();
-	}
-}

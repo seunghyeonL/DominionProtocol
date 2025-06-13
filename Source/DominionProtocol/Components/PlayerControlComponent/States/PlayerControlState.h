@@ -33,7 +33,6 @@ public:
 	virtual void ConsumeItemAction_3()override;
 	virtual void SwapWeapon()override;
 	virtual void InteractionScroll(const FInputActionValue& Value) override;
-	virtual void SwitchShowAndHideInventory()override;
 
 	virtual void Tick(float DeltaTime) override;
 	// virtual bool IsTickable() const override{return bDashTickActive;}
