@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GameplayTagContainer.h"
 
@@ -238,6 +238,9 @@ namespace SkillTags
 	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
 	inline const FGameplayTag Boss4BackDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BackDash"));
 	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
+
+	//Boss5
+	inline const FGameplayTag Boss5PeckingAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.PeckingAttack"));
 }
 
 namespace PawnTags
@@ -260,6 +263,8 @@ namespace PawnTags
 	inline const FGameplayTag Boss3 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.3"));
 	inline const FGameplayTag Boss4 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.4"));
 	inline const FGameplayTag Boss4Clone = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.4.Clone"));
+	inline const FGameplayTag Boss5 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.5"));
+
 }
 
 namespace ItemTags
