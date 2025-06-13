@@ -5,6 +5,7 @@
 #include "Util/DebugHelper.h"
 #include "EnumAndStruct/FDialogueData.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void UDialogueManager::LoadDialogueDataTable()
 {
@@ -63,6 +64,7 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, FVector
 	return true;
 }
 
+// 다음으로 넘어가는 함수
 void UDialogueManager::AdvanceDialogue()
 {
 	++CurrentLineIndex;
@@ -88,7 +90,7 @@ void UDialogueManager::ExecuteDialogueLine()
 		Debug::Print(TEXT("====================="));
 		if (!Line->DialogueText.IsEmpty())
 		{
-			Debug::Print(Line->DialogueText.ToString());
+			Debug::Print(Line->DialogueText.ToString()); // 대사
 			UE_LOG(LogTemp, Display, TEXT("%s"), *Line->DialogueText.ToString());
 		}
 		Debug::Print(TEXT("====================="));
@@ -111,12 +113,22 @@ void UDialogueManager::TriggerHelperAppear()
 {
 	if (!HelperClass) return;
 
-	//FVector SpawnLocation = FVector::ZeroVector; // Crack에서 위치 받아서 설정
-	CurrentHelper = GetWorld()->SpawnActor<AHelper>(HelperClass, CachedHelperSpawnLocation, FRotator::ZeroRotator);
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	CurrentHelper = GetWorld()->SpawnActor<AHelper>(
+		HelperClass,
+		CachedHelperSpawnLocation,
+		FRotator::ZeroRotator,
+		SpawnParams
+	);
 	if (CurrentHelper)
 	{
+		CurrentHelper->OnAppearFinishedCallback.BindUObject(this, &UDialogueManager::OnHelperAppearFinished);
+
+		CurrentHelper->SetDialogueManager(this);
+		CurrentHelper->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 		CurrentHelper->Appear(CachedHelperSpawnLocation);
-		OnHelperAppearFinished();
 	}
 }
 
@@ -125,7 +137,6 @@ void UDialogueManager::TriggerHelperDisappear()
 	if (CurrentHelper)
 	{
 		CurrentHelper->Disappear();
-		OnHelperDisappearFinished();
 	}
 }
 
@@ -136,6 +147,5 @@ void UDialogueManager::OnHelperAppearFinished()
 
 void UDialogueManager::OnHelperDisappearFinished()
 {
-	CurrentHelper->Destroy();
 	AdvanceDialogue();
 }

@@ -20,13 +20,13 @@ public:
 	void LoadDialogueDataTable();
 	bool TryStartDialogueIfExists(EGameStoryState InState, FVector CrackLocation);
 	void AdvanceDialogue();
+	void OnHelperAppearFinished();
+	void OnHelperDisappearFinished();
 
 private:
 	void ExecuteDialogueLine();
 	void TriggerHelperAppear();
 	void TriggerHelperDisappear();
-	void OnHelperAppearFinished();
-	void OnHelperDisappearFinished();
 
 public:
 	UPROPERTY()

@@ -6,6 +6,9 @@
 #include "Helper.generated.h"
 
 class UAnimMontage;
+class UDialogueManager;
+
+DECLARE_DELEGATE(FOnHelperAppearFinished);
 
 UCLASS()
 class DOMINIONPROTOCOL_API AHelper : public ACharacter
@@ -15,8 +18,12 @@ class DOMINIONPROTOCOL_API AHelper : public ACharacter
 public:	
 	AHelper();
 
+	virtual void Tick(float DeltaTime) override;
+
 	void Appear(const FVector& SpawnLocation);
 	void Disappear();
+
+	void SetDialogueManager(UDialogueManager* InManager);
 protected:
 	virtual void BeginPlay() override;
 
@@ -25,11 +32,24 @@ protected:
 	UFUNCTION()
 	void OnAppearMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
+public:
+	FOnHelperAppearFinished OnAppearFinishedCallback;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* AppearMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DisappearMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	UNiagaraSystem* AppearEffect;
+
+	UPROPERTY()
+	UDialogueManager* DialogueManager;
+
+	UPROPERTY(EditDefaultsOnly)
+	USkeletalMeshComponent* Hair;
+
 
 };
