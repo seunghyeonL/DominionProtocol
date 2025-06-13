@@ -114,7 +114,9 @@ namespace SkillGroupTags
 	inline const FGameplayTag Boss2BaseAttack1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1"));
 	inline const FGameplayTag Boss2BaseAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2"));
 	inline const FGameplayTag Boss2Circling = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.Circling"));
-
+	inline const FGameplayTag Boss2DashAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.DashAttack"));
+	inline const FGameplayTag Boss2EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.EvadeAttack"));
+	inline const FGameplayTag Boss2TeleportAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.TeleportAttack"));
 
 	// Boss4
 	inline const FGameplayTag Boss4FlameStrike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.FlameStrike"));
