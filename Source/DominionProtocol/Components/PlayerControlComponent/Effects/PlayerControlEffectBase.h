@@ -59,7 +59,6 @@ public:
 	virtual void Interact() override;
 	virtual void LockOn() override;
 
-	virtual void SwitchShowAndHideInventory()override;
 	virtual void ConsumeItemAction_1()override;
 	virtual void ConsumeItemAction_2()override;
 	virtual void ConsumeItemAction_3()override;

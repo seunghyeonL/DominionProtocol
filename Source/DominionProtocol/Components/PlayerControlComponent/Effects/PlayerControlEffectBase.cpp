@@ -333,19 +333,6 @@ void UPlayerControlEffectBase::LockOn()
 	}
 }
 
-void UPlayerControlEffectBase::SwitchShowAndHideInventory()
-{
-	Super::SwitchShowAndHideInventory();
-
-	if (IsValid(InnerState))
-	{
-		InnerState->SwitchShowAndHideInventory();
-	}
-	else
-	{
-		Debug::PrintError(TEXT("UPlayerControlEffectBase::SwitchShowAndHideInventory : Invalid InnerState"));
-	}
-}
 
 void UPlayerControlEffectBase::ConsumeItemAction_1()
 {

@@ -617,17 +617,3 @@ void UPlayerControlComponent::InteractionScroll(const FInputActionValue& Value)
 		Debug::PrintError(TEXT("UPlayerControlComponent::Interaction : Invalid ControlState."));
 	}
 }
-
-void UPlayerControlComponent::SwitchShowAndHideInventory()
-{
-	if (IsValid(PlayerControlState))
-	{
-		PlayerControlState->SwitchShowAndHideInventory();
-	}
-	else
-	{
-		Debug::PrintError(TEXT("UPlayerControlComponent::SwitchShowAndHideInventory : Invalid ControlState."));
-	}
-}
-
-
