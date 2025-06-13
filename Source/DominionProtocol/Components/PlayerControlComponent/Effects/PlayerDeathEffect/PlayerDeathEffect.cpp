@@ -70,7 +70,7 @@ void UPlayerDeathEffect::Deactivate()
 	check(ControlComponent);
 
 	// 일어나는 애니메이션 시간만큼 이펙트 실행
-	ControlComponent->ActivateControlEffect(EffectTags::Lying, 2.183f);
+	ControlComponent->ActivateControlEffect(EffectTags::StandingUp, 2.183f);
 }
 
 void UPlayerDeathEffect::Move(const FInputActionValue& Value)

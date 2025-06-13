@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Components/PlayerControlComponent/Effects/PlayerControlEffectBase.h"
-#include "PlayerLyingEffect.generated.h"
+#include "PlayerStandingUpEffect.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UPlayerLyingEffect : public UPlayerControlEffectBase
+class DOMINIONPROTOCOL_API UPlayerStandingUpEffect : public UPlayerControlEffectBase
 {
 	GENERATED_BODY()
 
 public:
-	UPlayerLyingEffect();
+	UPlayerStandingUpEffect();
 	
 	virtual bool Activate() override;
 	virtual bool Activate(float Duration) override;

@@ -15,7 +15,8 @@ UPlayerFlewEffect::UPlayerFlewEffect()
 bool UPlayerFlewEffect::Activate()
 {
 	// return Super::Activate();
-	// 날아가는 애니메이션 시간으로 처리
+	// 날아가는 애니메이션 시간 + 누워있는 시간으로 처리
+	// 2.2s + 눕는시간
 	Activate(2.2f);
 	
 	return true;
@@ -50,7 +51,7 @@ void UPlayerFlewEffect::Deactivate()
 	check(ControlComponent);
 
 	// 일어나는 애니메이션 시간만큼 이펙트 실행
-	ControlComponent->ActivateControlEffect(EffectTags::Lying, 2.183f);
+	ControlComponent->ActivateControlEffect(EffectTags::StandingUp, 2.183f);
 }
 
 void UPlayerFlewEffect::Move(const FInputActionValue& Value)

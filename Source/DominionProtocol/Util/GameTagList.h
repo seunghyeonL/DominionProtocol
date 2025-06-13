@@ -17,12 +17,12 @@ namespace EffectTags
 	inline const FGameplayTag Groggy = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Groggy"));
 	inline const FGameplayTag Parried = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Parried"));
 
+	inline const FGameplayTag Stiffness = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Stiffness"));
+	inline const FGameplayTag Flew = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Flew"));
+	inline const FGameplayTag StandingUp = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.StandingUp"));
+
 	inline const FGameplayTag ControlDebuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff"));
 	inline const FGameplayTag ControlBuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Buff"));
-
-	inline const FGameplayTag Stiffness = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Stiffness"));
-	inline const FGameplayTag Flew = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Flew"));
-	inline const FGameplayTag Lying = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Lying"));
 	inline const FGameplayTag Stun = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Stun"));
 	inline const FGameplayTag Silence = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Silence"));
 	inline const FGameplayTag Confused = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Confused"));

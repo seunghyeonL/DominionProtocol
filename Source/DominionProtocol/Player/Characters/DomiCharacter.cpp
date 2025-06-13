@@ -89,6 +89,7 @@ ADomiCharacter::ADomiCharacter()
 	InvincibilityTags.AddTag(EffectTags::UsingDash);
 	InvincibilityTags.AddTag(EffectTags::Death);
 	InvincibilityTags.AddTag(EffectTags::UsingZoneya);
+	InvincibilityTags.AddTag(EffectTags::StandingUp);
 	
 	// Set PawnTag
 	PawnTag = PawnTags::Player;
@@ -472,7 +473,8 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 		if (EffectTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("Effect.Control"))))
 		{
 			// 경직이 있을 경우 피격 방향 체크
-			if (EffectTag.MatchesTag(EffectTags::Stiffness))
+			// 날아가는 중이거나 죽었을때는 안함
+			if (EffectTag.MatchesTag(EffectTags::Stiffness) && !ActiveControlEffects.HasTag(EffectTags::Flew))
 			{
 				if (IsValid(AttackData.Instigator))
 				{

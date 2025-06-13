@@ -21,7 +21,7 @@
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Effects/PlayerConsumingItemEffect/PlayerConsumingItemEffect.h"
 #include "Effects/PlayerFlewEffect/PlayerFlewEffect.h"
-#include "Effects/PlayerLyingEffect/PlayerLyingEffect.h"
+#include "Effects/PlayerStandingUpEffect/PlayerStandingUpEffect.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -87,7 +87,7 @@ void UPlayerControlComponent::InitializeComponent()
 	ControlEffectMap.Add(EffectTags::Stun, NewObject<UPlayerStunEffect>(this));
 	ControlEffectMap.Add(EffectTags::Stiffness, NewObject<UPlayerStiffnessEffect>(this));
 	ControlEffectMap.Add(EffectTags::Flew, NewObject<UPlayerFlewEffect>(this));
-	ControlEffectMap.Add(EffectTags::Lying, NewObject<UPlayerLyingEffect>(this));
+	ControlEffectMap.Add(EffectTags::StandingUp, NewObject<UPlayerStandingUpEffect>(this));
 	ControlEffectMap.Add(EffectTags::Silence, NewObject<UPlayerSilenceEffect>(this));     
 	ControlEffectMap.Add(EffectTags::Confused, NewObject<UPlayerConfusedEffect>(this));  
 	
