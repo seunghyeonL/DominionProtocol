@@ -11,7 +11,6 @@ class UStatusComponent;
 class UTextBlock;
 class UButton;
 
-
 UCLASS()
 class DOMINIONPROTOCOL_API UStatModifyWidget : public UUserWidget
 {
@@ -22,25 +21,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void InitializeWidgetDatas();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateStatModifyData();
 	
 protected:
 	virtual void NativeConstruct() override;
-
-	bool bCanLevelUp;
-
-	float AccumulatedRequiredEssence;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UStatusComponent> PlayerStatusComponent;
-
-	TArray<FGameplayTag> PlayerStatTags;
-	TMap<FGameplayTag, float> PlayerStatPreviewData;
-	TMap<FGameplayTag, int32> StatModifiedNumMap;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TMap<FGameplayTag, UTextBlock*> TextBlockMap;
-
-	
 
 	// ButtonBindingFunctions
 	UFUNCTION()
@@ -69,47 +55,75 @@ protected:
 	
 	UFUNCTION()
 	void OnDecideButtonClicked();
+
+protected:
+	bool bCanLevelUp;
+
+	float AccumulatedRequiredEssence;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStatusComponent> PlayerStatusComponent;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FGameplayTag> PlayerStatTags;
+
+	UPROPERTY(BlueprintReadOnly)
+	TMap<FGameplayTag, float> PlayerStatPreviewData;
+	
+	TMap<FGameplayTag, int32> StatModifiedNumMap;
+
+	UPROPERTY(BlueprintReadOnly)
+	TMap<FGameplayTag, FString> StatModifiedStringMap;
+	
+	UPROPERTY(BlueprintReadOnly)
+	TMap<FGameplayTag, FSlateColor> ActivatedStatModifyMap;
 	
 	// Stat TextBlocks
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> StrTextBlock;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> LifeTextBlock;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> SplTextBlock;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> EndTextBlock;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> PrimaryAttackPowerTextBlock;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> SubAttackPowerTextBlock;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> MagicPowerTextBlock;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> MaxHealthTextBlock;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> MaxStaminaTextBlock;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> LevelTextBlock;
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> StrTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> LifeTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> SplTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> EndTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> PrimaryAttackPowerTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> SubAttackPowerTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> MagicPowerTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> MaxHealthTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> MaxStaminaTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> LevelTextBlock;
 
 	// Essence TextBlocks
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> CurrentEssenceTextBlock;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> LevelUpRequiredTextBlock;
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> CurrentEssenceTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> LevelUpRequiredTextBlock;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UTextBlock> AccumulatedEssenceTextBlock;
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> AccumulatedEssenceTextBlock;
+	UPROPERTY(BlueprintReadOnly)
+	float CurrentEssenceValue;
+
+	UPROPERTY(BlueprintReadOnly)
+	float LevelUpRequiredEssence;
 
 	// Buttons
 	UPROPERTY(meta = (BindWidget))

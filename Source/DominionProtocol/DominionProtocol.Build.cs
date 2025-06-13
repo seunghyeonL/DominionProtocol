@@ -24,7 +24,9 @@ public class DominionProtocol : ModuleRules
             "LevelSequence",
             "MovieScene",
             "MovieSceneTools",
-            "MovieSceneTracks"
+            "MovieSceneTracks",
+            "SlateCore",
+            "Slate"
         });
 		
 		PrivateIncludePaths.Add("DominionProtocol");
