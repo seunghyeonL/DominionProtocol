@@ -8,7 +8,6 @@
 
 
 
-
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiInGameHUDWidget : public UUserWidget
 {
@@ -35,13 +34,10 @@ public:
 	void SwitchShowAndHideOnInGameMenuWidget();
 
 	UFUNCTION(BlueprintCallable)
-	void OnSwitchShowAndHideCrackWarpWidget();
+	void OnSwitchShowAndHideCrackMenuWidget();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void SwitchShowAndHideCrackWarpWidget();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void SwitchShowAndHideStatModifyWidget();
+	void SwitchShowAndHideCrackMenuWidget();
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder);
@@ -54,9 +50,6 @@ protected:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AInGameController> OwningController;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool bShowCrackWarpWidget = false;
 
 #pragma region UI Alway
 	
@@ -74,13 +67,10 @@ protected:
 	TObjectPtr<class UUserWidget> InteractionWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UUserWidget> CrackWrapWidget;
+	TObjectPtr<class UUserWidget> CrackMenuWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UBossMonsterHPBarWidget> BossMonsterHPBar;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UStatModifyWidget> StatModifyWidget;
 	
 #pragma endregion
 };

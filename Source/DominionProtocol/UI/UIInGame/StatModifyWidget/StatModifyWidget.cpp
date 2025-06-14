@@ -17,16 +17,6 @@ void UStatModifyWidget::NativeConstruct()
 	PlayerStatusComponent = OwningActor->GetComponentByClass<UStatusComponent>();
 	check(PlayerStatusComponent);
 
-	StrUpButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnStrUpButtonClicked);
-	StrDownButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnStrDownButtonClicked);
-	LifeUpButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnLifeUpButtonClicked);
-	LifeDownButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnLifeDownButtonClicked);
-	SplUpButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnSplUpButtonClicked);
-	SplDownButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnSplDownButtonClicked);
-	EndUpButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnEndUpButtonClicked);
-	EndDownButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnEndDownButtonClicked);
-	DecideButton->OnClicked.AddDynamic(this, &UStatModifyWidget::OnDecideButtonClicked);
-
 	PlayerStatTags.Add(StatTags::STR);
 	PlayerStatTags.Add(StatTags::LIFE);
 	PlayerStatTags.Add(StatTags::SPL);
@@ -59,7 +49,7 @@ void UStatModifyWidget::NativeConstruct()
 	StatModifiedNumMap.Add(StatTags::MaxHealth, 0);
 	StatModifiedNumMap.Add(StatTags::MaxStamina, 0);
 	StatModifiedNumMap.Add(StatTags::Level, 0);
-
+	
 	StatModifiedStringMap.Add(StatTags::STR, TEXT(""));
 	StatModifiedStringMap.Add(StatTags::LIFE, TEXT(""));
 	StatModifiedStringMap.Add(StatTags::SPL, TEXT(""));
@@ -81,6 +71,7 @@ void UStatModifyWidget::NativeConstruct()
 	InitializeWidgetDatas();
 
 	UpdatePreviewStat();
+	
 }
 
 void UStatModifyWidget::InitializeWidgetDatas()
@@ -94,6 +85,12 @@ void UStatModifyWidget::InitializeWidgetDatas()
 	}
 	
 	PlayerStatusComponent->GetPlayerStatData(PlayerStatPreviewData);
+
+	
+	for (auto PlayerStatTag : PlayerStatTags)
+	{
+		StatModifiedStringMap[PlayerStatTag] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[PlayerStatTag]));
+	}
 }
 
 void UStatModifyWidget::UpdatePreviewStat()
@@ -107,12 +104,12 @@ void UStatModifyWidget::UpdatePreviewStat()
 	
 	if (DomiGI->HasEnoughEssence(AccumulatedRequiredEssence + PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level])))
 	{
-		// LevelUpRequiredTextBlock->SetColorAndOpacity(FSlateColor(FLinearColor::White));
+		ActivatedLevelUpRequiredTextColor = FSlateColor(FLinearColor::Green);
 		bCanLevelUp = true;
 	}
 	else
 	{
-		// LevelUpRequiredTextBlock->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
+		ActivatedLevelUpRequiredTextColor = FSlateColor(FLinearColor::Red);
 		bCanLevelUp = false;
 	}
 
@@ -142,12 +139,6 @@ void UStatModifyWidget::UpdatePreviewStat()
 		}
 	}
 
-	// 프리뷰 스탯 수치 텍스트블록에 보여주기
-	// for (auto PlayerStatTag : PlayerStatTags)
-	// {
-	// 	TextBlockMap[PlayerStatTag]->SetText(FText::AsNumber(PlayerStatPreviewData[PlayerStatTag]));
-	// }
-
 	UpdateStatModifyData();
 }
 
@@ -158,10 +149,7 @@ void UStatModifyWidget::OnDecideButtonClicked()
 	
 	DomiGI->SubtractPlayerCurrentEssence(AccumulatedRequiredEssence);
 	PlayerStatusComponent->DecideStatChangeFromUI(PlayerStatPreviewData);
-	
-	SetVisibility(ESlateVisibility::Collapsed);
-	// InitializeWidgetDatas();
-	// UpdatePreviewStat();
+
 }
 
 void UStatModifyWidget::OnStrUpButtonClicked()

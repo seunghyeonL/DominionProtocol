@@ -24,9 +24,9 @@ void UDomiInGameHUDWidget::OnSwitchShowAndHideOnInGameMenuWidget()
 	SwitchShowAndHideOnInGameMenuWidget();
 }
 
-void UDomiInGameHUDWidget::OnSwitchShowAndHideCrackWarpWidget()
+void UDomiInGameHUDWidget::OnSwitchShowAndHideCrackMenuWidget()
 {
-	SwitchShowAndHideCrackWarpWidget();
+	SwitchShowAndHideCrackMenuWidget();
 }
 
 void UDomiInGameHUDWidget::ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder)
@@ -51,7 +51,7 @@ void UDomiInGameHUDWidget::NativeConstruct()
 	ensure(StatusBarWidget);
 	ensure(ItemSlotsWidget);
 	ensure(InteractionWidget);
-	ensure(CrackWrapWidget);
+	ensure(CrackMenuWidget);
 
 	AActor* OwningActor = GetOwningPlayerPawn();
 	if (OwningActor)

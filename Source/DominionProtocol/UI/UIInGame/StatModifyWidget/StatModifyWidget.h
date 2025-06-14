@@ -28,32 +28,32 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
-	// ButtonBindingFunctions
-	UFUNCTION()
+	// ButtonActionFunctions
+	UFUNCTION(BlueprintCallable)
 	void OnStrUpButtonClicked();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnStrDownButtonClicked();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnLifeUpButtonClicked();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnLifeDownButtonClicked();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnSplUpButtonClicked();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnSplDownButtonClicked();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnEndUpButtonClicked();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnEndDownButtonClicked();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnDecideButtonClicked();
 
 protected:
@@ -77,80 +77,14 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	TMap<FGameplayTag, FSlateColor> ActivatedStatModifyMap;
+
+	UPROPERTY(BlueprintReadOnly)
+	FSlateColor ActivatedLevelUpRequiredTextColor;
 	
-	// Stat TextBlocks
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> StrTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> LifeTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> SplTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> EndTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> PrimaryAttackPowerTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> SubAttackPowerTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> MagicPowerTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> MaxHealthTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> MaxStaminaTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> LevelTextBlock;
-
-	// Essence TextBlocks
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> CurrentEssenceTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> LevelUpRequiredTextBlock;
-	//
-	// UPROPERTY(meta = (BindWidget))
-	// TObjectPtr<UTextBlock> AccumulatedEssenceTextBlock;
-
 	UPROPERTY(BlueprintReadOnly)
 	float CurrentEssenceValue;
 
 	UPROPERTY(BlueprintReadOnly)
 	float LevelUpRequiredEssence;
 
-	// Buttons
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> StrUpButton;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> StrDownButton;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> LifeUpButton;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> LifeDownButton;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> SplUpButton;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> SplDownButton;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> EndUpButton;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> EndDownButton;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> DecideButton;
-	
 };

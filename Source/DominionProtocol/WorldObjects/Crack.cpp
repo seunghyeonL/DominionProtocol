@@ -170,8 +170,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	// 균열 이동
 	if (InGameHUDWidget)
 	{
-		InGameHUDWidget->OnSwitchShowAndHideCrackWarpWidget();
-		InGameHUDWidget->SwitchShowAndHideStatModifyWidget();
+		InGameHUDWidget->OnSwitchShowAndHideCrackMenuWidget();
 	}
 
 	// 레벨업
