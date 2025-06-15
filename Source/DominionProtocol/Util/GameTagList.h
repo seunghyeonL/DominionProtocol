@@ -9,6 +9,7 @@ namespace EffectTags
 	inline const FGameplayTag ConsumingItem = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.ConsumingItem"));
 	inline const FGameplayTag Death = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Death"));
 	inline const FGameplayTag Dash = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Dash"));
+	inline const FGameplayTag Parry = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Parry"));
 	inline const FGameplayTag UsingDash = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Dash"));
 	inline const FGameplayTag UsingParry = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Parry"));
 	inline const FGameplayTag UsingZoneya = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Zoneya"));

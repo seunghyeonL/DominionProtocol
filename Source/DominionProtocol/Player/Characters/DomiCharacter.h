@@ -144,6 +144,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowParryWall();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void HideParryWall();
+
 protected:
 	virtual void BeginPlay() override;
 	

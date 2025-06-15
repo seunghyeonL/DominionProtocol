@@ -572,7 +572,7 @@ void ADomiCharacter::ActivateStatusEffect_Implementation(const FGameplayTag& Eff
 bool ADomiCharacter::IsParryingCond_Implementation()
 {
 	auto ActiveControlEffects = GetActiveControlEffectTags();
-	if (ActiveControlEffects.HasTag(EffectTags::UsingParry))
+	if (ActiveControlEffects.HasTag(EffectTags::Parry))
 	{
 		return true;
 	}
