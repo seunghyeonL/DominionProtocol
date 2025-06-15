@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/SkillComponent/Skills/BaseSkill.h"
 #include "PlayerDashSkill.generated.h"
 
@@ -13,6 +14,10 @@ UCLASS()
 class DOMINIONPROTOCOL_API UPlayerDashSkill : public UBaseSkill
 {
 	GENERATED_BODY()
+
+// protected:
+// 	UPROPERTY(VisibleAnywhere)
+// 	TObjectPtr<UPlayerControlComponent> ControlComponent;
 
 public:
 	UPlayerDashSkill();
@@ -28,12 +33,14 @@ public:
 	FTimerHandle DurationTimer;
 	
 	// === Dash 수치 설정값 ===
-	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashSpeed;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash")
 	float DashDuration;
-	
+	float DashMoveDuration;
+	float DashMoveDurationRemain;
+
+	float DashInvincibleStart;
+	float DashInvincibleEnd;
+	float DashInvincibleDurationRemain;
 };
 
 

@@ -86,10 +86,10 @@ ADomiCharacter::ADomiCharacter()
 	NavigationInvokerComponent->SetGenerationRadii(6000.f, 10000.f);
 
 	// InvincibilityTags Setting
-	InvincibilityTags.AddTag(EffectTags::UsingDash);
 	InvincibilityTags.AddTag(EffectTags::Death);
 	InvincibilityTags.AddTag(EffectTags::UsingZoneya);
 	InvincibilityTags.AddTag(EffectTags::StandingUp);
+	InvincibilityTags.AddTag(EffectTags::DashInvincible);
 	
 	// Set PawnTag
 	PawnTag = PawnTags::Player;
@@ -459,8 +459,6 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	{
 		LaunchCharacter(AttackData.LaunchVector, true, true);
 	}
-	
-	PlayHitSound();
 
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)
@@ -504,6 +502,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					}
 					
 					ControlComponent->ActivateControlEffect(EffectTags::Stiffness);
+					PlayHitSound();
 					return;
 				}
 				else
@@ -519,6 +518,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					SetActorRotation(HitDirection.Rotation());
 
 					ControlComponent->ActivateControlEffect(EffectTags::Flew);
+					PlayHitSound();
 					return;
 				}
 				else

@@ -16,15 +16,18 @@ UPlayerDashSkill::UPlayerDashSkill()
 	SkillTag = SkillTags::PlayerDash; 
 	ControlEffectTag = EffectTags::UsingDash;
 	DashMoveDirection = { 0.f, 0.f, 0.f };
-	DashSpeed = 1000.f;
-	DashDuration = 0.4f;
+	DashSpeed = 800.f;
+	DashDuration = 0.6f;
+	DashMoveDuration = 0.5f;
+	DashMoveDurationRemain = 0.f;
 }
 
 void UPlayerDashSkill::Execute()
 {
 	// Super::Execute();
 	check(OwnerCharacter);
-
+	DashMoveDurationRemain = DashMoveDuration;
+	
 	if (Sounds.IsValidIndex(0))
 	{
 		UGameplayStatics::PlaySoundAtLocation(OwnerCharacter, Sounds[0], OwnerCharacter->GetActorLocation());
@@ -69,6 +72,12 @@ void UPlayerDashSkill::SetDashDirection()
 void UPlayerDashSkill::Tick(float DeltaTime)
 {
 	check(OwnerCharacter);
+	if (DashMoveDurationRemain <= 0.f)
+	{
+		return;
+	}
+
+	DashMoveDurationRemain -= DeltaTime;
 	auto MovementComponent = OwnerCharacter->GetCharacterMovement();
 	
 	FVector Step = DashMoveDirection * DashSpeed * DeltaTime;

@@ -106,7 +106,7 @@ void UPlayerControlComponent::InitializeComponent()
 		ControlEffect->SetOwnerCharacter(OwnerCharacter);
 		ControlEffect->Initialize();
 	}
-
+	
 	// Notify Component Ready
 	// if (OnComponentReady.IsBound())
 	// {

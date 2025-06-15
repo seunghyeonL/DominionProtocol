@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "Components/PlayerControlComponent/Effects/PlayerControlEffectBase.h"
 #include "PlayerUsingSkillEffect.generated.h"
 
@@ -19,14 +20,21 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TArray<UBaseBufferedInput*> BufferedInputArray;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPlayerControlComponent> ControlComponent;
+	
 	FGameplayTagContainer DoubleExecuteSkillEffectTags;
+
+	float DashInvincibleDuration;
+	float DashInvincibleDurationRemain;
 
 public:
 	UPlayerUsingSkillEffect();
 
-	FORCEINLINE void SetControlEffectTag(FGameplayTag InControlEffectTag) { ControlEffectTag = InControlEffectTag; }
+	virtual void Initialize() override;
 
+	FORCEINLINE void SetControlEffectTag(FGameplayTag InControlEffectTag) { ControlEffectTag = InControlEffectTag; }
+	FORCEINLINE void SetControlComponent(UPlayerControlComponent* InControlComponent) { ControlComponent = InControlComponent; }
 	FORCEINLINE bool IsDoubleExecuteSkillEffect() const { return DoubleExecuteSkillEffectTags.HasTagExact(ControlEffectTag); }
 	
 	virtual bool Activate() override;

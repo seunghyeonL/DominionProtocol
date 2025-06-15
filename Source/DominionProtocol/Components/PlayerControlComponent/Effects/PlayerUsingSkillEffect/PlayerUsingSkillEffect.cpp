@@ -15,6 +15,15 @@ UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 	ControlEffectTag = EffectTags::UsingSkill;
 	BufferedInputArray.Reserve(10);
 	DoubleExecuteSkillEffectTags.AddTag(EffectTags::UsingTeleport);
+	DashInvincibleDuration = 0.5f;
+	DashInvincibleDurationRemain = 0.f;
+}
+
+void UPlayerUsingSkillEffect::Initialize()
+{
+	Super::Initialize();
+	ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
 }
 
 bool UPlayerUsingSkillEffect::Activate()
@@ -23,19 +32,20 @@ bool UPlayerUsingSkillEffect::Activate()
 	{
 		return false;
 	}
-
-	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	
 	check(ControlComponent);
 	check(OwnerCharacter);
-	
-	// Cashed Movement Vector
-	const FVector& CurrentMovementVector = ControlComponent->GetCurrentMovementVector();
 
 	if (ControlEffectTag == EffectTags::UsingDash)
 	{
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel1);
-		// ControlComponent->OnDashDirectionSet.ExecuteIfBound(CurrentMovementVector);
+		auto& ActiveControlEffectTags = ControlComponent->GetActiveControlEffectTags();
+		ActiveControlEffectTags.AddTag(EffectTags::DashInvincible);
+		DashInvincibleDurationRemain = DashInvincibleDuration;
 	}
+	
+	// Cashed Movement Vector
+	const FVector& CurrentMovementVector = ControlComponent->GetCurrentMovementVector();
 	
 	if (!CurrentMovementVector.IsNearlyZero() && !ControlComponent->GetActiveControlEffectTags().HasTag(EffectTags::LockOn))
 	{
@@ -48,25 +58,17 @@ bool UPlayerUsingSkillEffect::Activate()
 
 bool UPlayerUsingSkillEffect::Activate(float Duration)
 {
-	if (!Super::Activate(Duration))
-	{
-		return false;
-	}
-	
+	// Duration으로 사용하지 않음
+	Activate();
 	return true;
 }
 
 void UPlayerUsingSkillEffect::Deactivate()
 {
 	Super::Deactivate();
-	if (ControlEffectTag == EffectTags::UsingDash)
-	{
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
-	}
 	
 	SetControlEffectTag(EffectTags::UsingSkill);
-
-	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	
 	check(ControlComponent);
 	
 	for (int32 i = 0; i < BufferedInputArray.Num(); i++)
@@ -90,8 +92,6 @@ void UPlayerUsingSkillEffect::Move(const FInputActionValue& Value)
 	}
 	
 	check(OwnerCharacter);
-
-	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
 	check(ControlComponent);
 	
 	if (auto Controller = OwnerCharacter->GetController())
@@ -155,12 +155,11 @@ void UPlayerUsingSkillEffect::BaseAttack()
 		return;
 	}
 
-	if (auto ControlComponent = GetOuter())
-	{
-		auto BufferedBaseAttack = NewObject<UBufferedBaseAttack>(ControlComponent);
-		BufferedBaseAttack->SetTimer();
-		BufferedInputArray.Add(BufferedBaseAttack);
-	}
+	check(ControlComponent);
+
+	auto BufferedBaseAttack = NewObject<UBufferedBaseAttack>(ControlComponent);
+	BufferedBaseAttack->SetTimer();
+	BufferedInputArray.Add(BufferedBaseAttack);
 }
 
 void UPlayerUsingSkillEffect::WeaponSkill()
@@ -213,37 +212,19 @@ void UPlayerUsingSkillEffect::ConsumeItemAction_3()
 void UPlayerUsingSkillEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// Debug::Print(TEXT("DashTick!"));
-
-	// auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
-	// check(ControlComponent);
-	//
-	// AActor* LockOnTargetActor = ControlComponent->GetLockOnTargetActor();
-	//
-	// if (!IsValid(LockOnTargetActor))
-	// {
-	// 	return;
-	// }
-
-	// if (ControlEffectTag == EffectTags::UsingDash)
-	// {
-	// 	FVector LockOnTargetActorLocation = LockOnTargetActor->GetActorLocation();
-	//
-	// 	// 타겟방향의 벡터 계산
-	// 	const FVector LockOnTargetActorEyeLocation = FVector(LockOnTargetActorLocation.X,LockOnTargetActorLocation.Y,150);
-	// 	float ControllerLockOnHeight = 200;
-	// 	const FRotator NewControllerRotator = (LockOnTargetActorEyeLocation - OwnerCharacter->GetActorLocation() - ControllerLockOnHeight * FVector::UpVector).Rotation();
-	// 	const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
-	// 	const FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
-	// 	if (!OwnerCharacter) return;
-	//
-	// 	// 타겟을 바라보도록 회전 변경
-	// 	OwnerCharacter->SetActorRotation(NewCharacterRotator);
-	// 	OwnerCharacter->GetController()->SetControlRotation(FMath::RInterpTo(CurrentControlRotation, NewControllerRotator, DeltaTime, 10.0f));
-	// }
-	// else
-	// {
-		// Super::Tick(DeltaTime);
-	// }
+	if (ControlEffectTag.MatchesTag(EffectTags::UsingDash))
+	{
+		if (DashInvincibleDurationRemain > 0.f)
+		{
+			DashInvincibleDurationRemain -= DeltaTime;
+			
+			if (DashInvincibleDurationRemain <= 0.f)
+			{
+				auto& ActiveControlEffectTags = ControlComponent->GetActiveControlEffectTags();
+				ActiveControlEffectTags.RemoveTag(EffectTags::DashInvincible);
+				OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+			}
+		}
+	}
 }
 
