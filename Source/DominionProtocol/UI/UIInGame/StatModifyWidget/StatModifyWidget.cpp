@@ -9,6 +9,22 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 
+void UStatModifyWidget::UpdatePreAttackAbilityStat()
+{
+	// 위젯이 Visible 일 때 실행 할 것
+	ensure(PlayerStatPreviewData[StatTags::AttackPower]);
+	ensure(PlayerStatPreviewData[StatTags::SubAttackPower]);
+	ensure(PlayerStatPreviewData[StatTags::MagicPower]);
+	ensure(PlayerStatPreviewData[StatTags::MaxHealth]);
+	ensure(PlayerStatPreviewData[StatTags::MaxStamina]);	
+	
+	PreAttackPower = PlayerStatPreviewData[StatTags::AttackPower];
+	PreSubAttackPower = PlayerStatPreviewData[StatTags::SubAttackPower];
+	PreMagicPower = PlayerStatPreviewData[StatTags::MagicPower];
+	PreMaxHealth = PlayerStatPreviewData[StatTags::MaxHealth];
+	PreMaxStamina = PlayerStatPreviewData[StatTags::MaxStamina];	
+}
+
 void UStatModifyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -89,8 +105,9 @@ void UStatModifyWidget::InitializeWidgetDatas()
 	
 	for (auto PlayerStatTag : PlayerStatTags)
 	{
-		StatModifiedStringMap[PlayerStatTag] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[PlayerStatTag]));
+		StatModifiedStringMap[PlayerStatTag] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[PlayerStatTag]));
 	}
+	
 }
 
 void UStatModifyWidget::UpdatePreviewStat()
@@ -138,8 +155,6 @@ void UStatModifyWidget::UpdatePreviewStat()
 			ActivatedStatModifyMap[PlayerStatTag] = FSlateColor(FLinearColor::White);
 		}
 	}
-
-	UpdateStatModifyData();
 }
 
 void UStatModifyWidget::OnDecideButtonClicked()
@@ -155,20 +170,25 @@ void UStatModifyWidget::OnDecideButtonClicked()
 void UStatModifyWidget::OnStrUpButtonClicked()
 {
 	if (!bCanLevelUp) return;
-
+	
 	PlayerStatPreviewData[StatTags::STR]++;
 	StatModifiedNumMap[StatTags::STR]++;
-	StatModifiedStringMap[StatTags::STR] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::STR]), StatModifiedNumMap[StatTags::STR]);
-	StatModifiedStringMap[StatTags::AttackPower] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::AttackPower]), StatModifiedNumMap[StatTags::AttackPower]);
-	StatModifiedStringMap[StatTags::SubAttackPower] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::SubAttackPower]), StatModifiedNumMap[StatTags::SubAttackPower]);
-	
+	StatModifiedStringMap[StatTags::STR] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::STR]), StatModifiedNumMap[StatTags::STR]);
 	
 	AccumulatedRequiredEssence += PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
 	PlayerStatPreviewData[StatTags::Level]++;
 	StatModifiedNumMap[StatTags::Level]++;
-	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+	
+	StatModifiedNumMap[StatTags::AttackPower] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::AttackPower, PlayerStatPreviewData) - PreAttackPower);
+	StatModifiedNumMap[StatTags::SubAttackPower] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::SubAttackPower, PlayerStatPreviewData) - PreSubAttackPower);
+	
+	StatModifiedStringMap[StatTags::AttackPower] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::AttackPower]), StatModifiedNumMap[StatTags::AttackPower]);
+	StatModifiedStringMap[StatTags::SubAttackPower] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::SubAttackPower]), StatModifiedNumMap[StatTags::SubAttackPower]);
 	
 	UpdatePreviewStat();
+
+	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+	
 }
 
 void UStatModifyWidget::OnStrDownButtonClicked()
@@ -177,28 +197,31 @@ void UStatModifyWidget::OnStrDownButtonClicked()
 	
 	PlayerStatPreviewData[StatTags::STR]--;
 	StatModifiedNumMap[StatTags::STR]--;
+	
+	PlayerStatPreviewData[StatTags::Level]--;
+	StatModifiedNumMap[StatTags::Level]--;
+
+	StatModifiedNumMap[StatTags::AttackPower] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::AttackPower, PlayerStatPreviewData) - PreAttackPower);
+	StatModifiedNumMap[StatTags::SubAttackPower] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::SubAttackPower, PlayerStatPreviewData) - PreSubAttackPower);
+
+	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	
 	if (StatModifiedNumMap[StatTags::STR] == 0)
 	{
-		StatModifiedStringMap[StatTags::STR] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::STR]));
-		StatModifiedStringMap[StatTags::AttackPower] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::AttackPower]));
-		StatModifiedStringMap[StatTags::SubAttackPower] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::SubAttackPower]));
-	
+		StatModifiedStringMap[StatTags::STR] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::STR]));
+		StatModifiedStringMap[StatTags::AttackPower] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::AttackPower]));
+		StatModifiedStringMap[StatTags::SubAttackPower] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::SubAttackPower]));
+		UpdatePreviewStat();
+		StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]));
 	}
 	else
 	{
-		StatModifiedStringMap[StatTags::STR] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::STR]), StatModifiedNumMap[StatTags::STR]);
-		StatModifiedStringMap[StatTags::AttackPower] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::AttackPower]), StatModifiedNumMap[StatTags::AttackPower]);
-		StatModifiedStringMap[StatTags::SubAttackPower] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::SubAttackPower]), StatModifiedNumMap[StatTags::SubAttackPower]);
-	
+		StatModifiedStringMap[StatTags::STR] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::STR]), StatModifiedNumMap[StatTags::STR]);
+		StatModifiedStringMap[StatTags::AttackPower] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::AttackPower]), StatModifiedNumMap[StatTags::AttackPower]);
+		StatModifiedStringMap[StatTags::SubAttackPower] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::SubAttackPower]), StatModifiedNumMap[StatTags::SubAttackPower]);
+		UpdatePreviewStat();
+		StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
 	}
-	
-	
-	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
-	PlayerStatPreviewData[StatTags::Level]--;
-	StatModifiedNumMap[StatTags::Level]--;
-	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
-	
-	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnLifeUpButtonClicked()
@@ -206,14 +229,16 @@ void UStatModifyWidget::OnLifeUpButtonClicked()
 	if (!bCanLevelUp) return;
 	PlayerStatPreviewData[StatTags::LIFE]++;
 	StatModifiedNumMap[StatTags::LIFE]++;
-	StatModifiedStringMap[StatTags::LIFE] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::LIFE]), StatModifiedNumMap[StatTags::LIFE]);
-	StatModifiedStringMap[StatTags::MaxHealth] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MaxHealth]), StatModifiedNumMap[StatTags::MaxHealth]);
-	
+	StatModifiedStringMap[StatTags::LIFE] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::LIFE]), StatModifiedNumMap[StatTags::LIFE]);
 	
 	AccumulatedRequiredEssence += PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
 	PlayerStatPreviewData[StatTags::Level]++;
 	StatModifiedNumMap[StatTags::Level]++;
-	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+
+	StatModifiedNumMap[StatTags::MaxHealth] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::MaxHealth, PlayerStatPreviewData) - PreMaxHealth);
+	
+	StatModifiedStringMap[StatTags::MaxHealth] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MaxHealth]), StatModifiedNumMap[StatTags::MaxHealth]);
+	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
 	
 	UpdatePreviewStat();
 }
@@ -224,23 +249,28 @@ void UStatModifyWidget::OnLifeDownButtonClicked()
 	
 	PlayerStatPreviewData[StatTags::LIFE]--;
 	StatModifiedNumMap[StatTags::LIFE]--;
+	
+	PlayerStatPreviewData[StatTags::Level]--;
+	StatModifiedNumMap[StatTags::Level]--;
+
+	StatModifiedNumMap[StatTags::MaxHealth] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::MaxHealth, PlayerStatPreviewData) - PreMaxHealth);
+
+	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	
 	if (StatModifiedNumMap[StatTags::LIFE] == 0)
 	{
-		StatModifiedStringMap[StatTags::LIFE] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::LIFE]));
-		StatModifiedStringMap[StatTags::MaxHealth] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MaxHealth]));
+		StatModifiedStringMap[StatTags::LIFE] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::LIFE]));
+		StatModifiedStringMap[StatTags::MaxHealth] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MaxHealth]));
+		StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]));
+		UpdatePreviewStat();
 	}
 	else
 	{
-		StatModifiedStringMap[StatTags::LIFE] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::LIFE]), StatModifiedNumMap[StatTags::LIFE]);
-		StatModifiedStringMap[StatTags::MaxHealth] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MaxHealth]), StatModifiedNumMap[StatTags::MaxHealth]);
+		StatModifiedStringMap[StatTags::LIFE] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::LIFE]), StatModifiedNumMap[StatTags::LIFE]);
+		StatModifiedStringMap[StatTags::MaxHealth] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MaxHealth]),StatModifiedNumMap[StatTags::MaxHealth]);
+		StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+		UpdatePreviewStat();
 	}
-	
-	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
-	PlayerStatPreviewData[StatTags::Level]--;
-	StatModifiedNumMap[StatTags::Level]--;
-	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
-	
-	UpdatePreviewStat();
 }
 
 void UStatModifyWidget::OnSplUpButtonClicked()
@@ -249,13 +279,15 @@ void UStatModifyWidget::OnSplUpButtonClicked()
 	
 	PlayerStatPreviewData[StatTags::SPL]++;
 	StatModifiedNumMap[StatTags::SPL]++;
-	StatModifiedStringMap[StatTags::SPL] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::SPL]), StatModifiedNumMap[StatTags::SPL]);
-	StatModifiedStringMap[StatTags::MagicPower] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MagicPower]), StatModifiedNumMap[StatTags::MagicPower]);
+	StatModifiedStringMap[StatTags::SPL] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::SPL]), StatModifiedNumMap[StatTags::SPL]);
 	
 	AccumulatedRequiredEssence += PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
 	PlayerStatPreviewData[StatTags::Level]++;
 	StatModifiedNumMap[StatTags::Level]++;
-	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+	StatModifiedNumMap[StatTags::MagicPower] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::MagicPower, PlayerStatPreviewData) - PreMagicPower);
+	
+	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+	StatModifiedStringMap[StatTags::MagicPower] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MagicPower]), StatModifiedNumMap[StatTags::MagicPower]);
 	
 	UpdatePreviewStat();
 }
@@ -266,23 +298,29 @@ void UStatModifyWidget::OnSplDownButtonClicked()
 	
 	PlayerStatPreviewData[StatTags::SPL]--;
 	StatModifiedNumMap[StatTags::SPL]--;
+	
+	PlayerStatPreviewData[StatTags::Level]--;
+	StatModifiedNumMap[StatTags::Level]--;
+
+	StatModifiedNumMap[StatTags::MagicPower] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::MagicPower, PlayerStatPreviewData) - PreMagicPower);
+
+	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	
 	if (StatModifiedNumMap[StatTags::SPL] == 0)
 	{
-		StatModifiedStringMap[StatTags::SPL] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::SPL]));
-		StatModifiedStringMap[StatTags::MagicPower] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MagicPower]));
+		StatModifiedStringMap[StatTags::SPL] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::SPL]));
+		StatModifiedStringMap[StatTags::MagicPower] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MagicPower]));
+		StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]));
+		UpdatePreviewStat();
 	}
 	else
 	{
-		StatModifiedStringMap[StatTags::SPL] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::SPL]), StatModifiedNumMap[StatTags::SPL]);
-		StatModifiedStringMap[StatTags::MagicPower] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MagicPower]), StatModifiedNumMap[StatTags::MagicPower]);
+		StatModifiedStringMap[StatTags::SPL] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::SPL]), StatModifiedNumMap[StatTags::SPL]);
+		StatModifiedStringMap[StatTags::MagicPower] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MagicPower]), StatModifiedNumMap[StatTags::MagicPower]);
+		StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+		UpdatePreviewStat();
 	}
-	
-	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
-	PlayerStatPreviewData[StatTags::Level]--;
-	StatModifiedNumMap[StatTags::Level]--;
-	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
-	
-	UpdatePreviewStat();
+
 }
 
 void UStatModifyWidget::OnEndUpButtonClicked()
@@ -291,13 +329,16 @@ void UStatModifyWidget::OnEndUpButtonClicked()
 
 	PlayerStatPreviewData[StatTags::END]++;
 	StatModifiedNumMap[StatTags::END]++;
-	StatModifiedStringMap[StatTags::END] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::END]), StatModifiedNumMap[StatTags::END]);
-	StatModifiedStringMap[StatTags::MaxStamina] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MaxStamina]), StatModifiedNumMap[StatTags::MaxStamina]);
+	StatModifiedStringMap[StatTags::END] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::END]), StatModifiedNumMap[StatTags::END]);
 	
 	AccumulatedRequiredEssence += PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
 	PlayerStatPreviewData[StatTags::Level]++;
 	StatModifiedNumMap[StatTags::Level]++;
-	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+
+	StatModifiedNumMap[StatTags::MaxStamina] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::MaxStamina, PlayerStatPreviewData) - PreMaxStamina);
+	
+	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+	StatModifiedStringMap[StatTags::MaxStamina] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MaxStamina]), StatModifiedNumMap[StatTags::MaxStamina]);
 	
 	UpdatePreviewStat();
 }
@@ -308,23 +349,28 @@ void UStatModifyWidget::OnEndDownButtonClicked()
 	
 	PlayerStatPreviewData[StatTags::END]--;
 	StatModifiedNumMap[StatTags::END]--;
+	
+	PlayerStatPreviewData[StatTags::Level]--;
+	StatModifiedNumMap[StatTags::Level]--;
+
+	StatModifiedNumMap[StatTags::MaxStamina] = FMath::RoundToInt(PlayerStatusComponent->GetCalculatedBattleStat(StatTags::MaxStamina, PlayerStatPreviewData) - PreMaxStamina);
+
+	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
+	
 	if (StatModifiedNumMap[StatTags::END] == 0)
 	{
-		StatModifiedStringMap[StatTags::END] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::END]));
-		StatModifiedStringMap[StatTags::MaxStamina] = FString::Printf(TEXT("%d"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MaxStamina]));
+		StatModifiedStringMap[StatTags::END] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::END]));
+		StatModifiedStringMap[StatTags::MaxStamina] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MaxStamina]));
+		StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]));
+		UpdatePreviewStat();
 	}
 	else
 	{
-		StatModifiedStringMap[StatTags::END] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::END]), StatModifiedNumMap[StatTags::END]);
-		StatModifiedStringMap[StatTags::MaxStamina] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::MaxStamina]), StatModifiedNumMap[StatTags::MaxStamina]);
+		StatModifiedStringMap[StatTags::END] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::END]), StatModifiedNumMap[StatTags::END]);
+		StatModifiedStringMap[StatTags::MaxStamina] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::MaxStamina]), StatModifiedNumMap[StatTags::MaxStamina]);
+		StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::RoundToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
+		UpdatePreviewStat();
 	}
-	
-	AccumulatedRequiredEssence -= PlayerStatusComponent->GetLevelUpRequiredEssence(PlayerStatPreviewData[StatTags::Level]);
-	PlayerStatPreviewData[StatTags::Level]--;
-	StatModifiedNumMap[StatTags::Level]--;
-	StatModifiedStringMap[StatTags::Level] = FString::Printf(TEXT("%d (+%d)"), FMath::FloorToInt(PlayerStatPreviewData[StatTags::Level]), StatModifiedNumMap[StatTags::Level]);
-	
-	UpdatePreviewStat();
 }
 
 

@@ -22,8 +22,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitializeWidgetDatas();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateStatModifyData();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdatePreAttackAbilityStat();
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -86,5 +89,15 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	float LevelUpRequiredEssence;
+
+	float PreAttackPower = 0.f;
+
+	float PreSubAttackPower = 0.f;
+
+	float PreMagicPower = 0.f;
+
+	float PreMaxHealth = 0.f;
+
+	float PreMaxStamina = 0.f;
 
 };
