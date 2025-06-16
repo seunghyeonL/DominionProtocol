@@ -70,7 +70,7 @@ void ADropEssence::Interact_Implementation(AActor* Interactor)
 
 FText ADropEssence::GetInteractMessage_Implementation() const
 {
-	return IInteractableInterface::GetInteractMessage_Implementation();
+	return FText::FromString(TEXT("균열 정수 회복"));
 }
 
 void ADropEssence::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
