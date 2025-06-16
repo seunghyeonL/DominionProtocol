@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "GameplayTagContainer.h"
 
@@ -244,6 +244,8 @@ namespace SkillTags
 
 	//Boss5
 	inline const FGameplayTag Boss5PeckingAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.PeckingAttack"));
+	inline const FGameplayTag Boss5ZoneyaAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.ZoneyaAttack"));
+
 }
 
 namespace PawnTags
