@@ -8,6 +8,7 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+class ADropEssence;
 class USaveManagerSubsystem;
 class ABaseGameMode;
 class UItemInstanceSubsystem;
@@ -65,6 +66,24 @@ protected:
 
 //Variables
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawning")
+	TSubclassOf<ADropEssence> DropEssenceClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Crack", meta = (AllowPrivateAccess = "true"))
+	UDataTable* CrackInitializeDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Skill", meta = (AllowPrivateAccess = "true"))
+	UDataTable* SkillDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Skill|Initialize", meta = (AllowPrivateAccess = "true"))
+	UDataTable* SkillInitializeDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
+	UDataTable* StatusInitializeDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
+	UDataTable* EffectInitializeDataTable;
+
 	UPROPERTY()
 	UWorld* World;
 
@@ -85,21 +104,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UItemInstanceSubsystem> ItemInstanceSubsystem;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Crack", meta = (AllowPrivateAccess = "true"))
-	UDataTable* CrackInitializeDataTable;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Skill", meta = (AllowPrivateAccess = "true"))
-	UDataTable* SkillDataTable;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Skill|Initialize", meta = (AllowPrivateAccess = "true"))
-	UDataTable* SkillInitializeDataTable;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
-	UDataTable* StatusInitializeDataTable;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
-	UDataTable* EffectInitializeDataTable;
 	
 	UPROPERTY()
 	TArray<ACrack*> AllCracksCache;

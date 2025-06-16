@@ -57,6 +57,7 @@ void ABaseGameState::InitializeSaveManagerInstanceSubsystem()
 	SaveManagerSubsystem = GameInstance->GetSubsystem<USaveManagerSubsystem>();
 	check(IsValid(SaveManagerSubsystem));
 	SaveManagerSubsystem->SetWorldCache(World);
+	SaveManagerSubsystem->LoadSettings();
 }
 
 void ABaseGameState::InitializeWorldInstanceSubsystem()
@@ -157,11 +158,9 @@ void ABaseGameState::InitializeGame()
 	// DropEssence 인스턴스 상 존재 하면 레벨에 적용
 	if (WorldInstanceSubsystem->GetIsDropEssenceExist() && WorldInstanceSubsystem->GetDropEssenceLocationLevel() == WorldInstanceSubsystem->GetCurrentLevelName())
 	{
-		TSubclassOf<ADropEssence> DropEssenceClass;
-		static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
-		if (DropEssenceBPClass.Succeeded())
+		if (!IsValid(DropEssenceClass))
 		{
-			DropEssenceClass = DropEssenceBPClass.Class;
+			return;
 		}
 		
 		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(World->GetFirstPlayerController()->GetPawn());
