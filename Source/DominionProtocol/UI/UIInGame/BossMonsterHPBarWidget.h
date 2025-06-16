@@ -33,18 +33,24 @@ public:
 	void OnUpdateBossMonsterName();
 
 	UFUNCTION()
-	void SpawnedBossMonster(AActor* NewMonster);
+	void StartBattleBossMonster(AActor* NewMonster);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnSpawnedBossMonster();
+	void OnStartBattleBossMonster();
+
+	UFUNCTION()
+	void EndBattleBossMonster();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEndBattleBossMonster();
 
 protected:
 	virtual void NativeConstruct() override;
 	
-	void BindBossSpawnedToWidgetDelegate();
+	void BindStartAndEndBattleDelegate();
 
 	UFUNCTION()
-	void BindSpawnedBossStatusDelegate(AActor* SpawnedBoss);
+	void InitializeAndBindBossStatus(AActor* SpawnedBoss);
 
 protected:
 	UPROPERTY(BlueprintReadOnly)

@@ -161,12 +161,12 @@ void ABaseGameMode::StartPlay()
 
 void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
 {
-	OnBossSpawnedToWidget.Broadcast(SpawnedBoss);
+	OnStartBattle.Broadcast(SpawnedBoss);
 }
 
 void ABaseGameMode::EndBattle()
 {
-	
+	OnEndBattle.Broadcast();
 }
 
 void ABaseGameMode::Save()

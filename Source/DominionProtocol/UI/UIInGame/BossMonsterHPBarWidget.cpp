@@ -41,7 +41,7 @@ void UBossMonsterHPBarWidget::UpdateBossMonsterName(const FString NewBossMonster
 }
 
 
-void UBossMonsterHPBarWidget::SpawnedBossMonster(AActor* NewMonster)
+void UBossMonsterHPBarWidget::StartBattleBossMonster(AActor* NewMonster)
 {
 	if (BossMonsterName.IsEmpty())
 	{
@@ -52,27 +52,36 @@ void UBossMonsterHPBarWidget::SpawnedBossMonster(AActor* NewMonster)
 		}
 	}
 	
-	OnSpawnedBossMonster();
+	OnStartBattleBossMonster();
+}
+
+void UBossMonsterHPBarWidget::EndBattleBossMonster()
+{
+	OnEndBattleBossMonster();
 }
 
 void UBossMonsterHPBarWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	BindBossSpawnedToWidgetDelegate();
+	BindStartAndEndBattleDelegate();
 }
 
 
-void UBossMonsterHPBarWidget::BindBossSpawnedToWidgetDelegate()
+void UBossMonsterHPBarWidget::BindStartAndEndBattleDelegate()
 {
 	if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
 	{
-		GM->OnBossSpawnedToWidget.AddUObject(this, &UBossMonsterHPBarWidget::BindSpawnedBossStatusDelegate);
-		GM->OnBossSpawnedToWidget.AddUObject(this, &UBossMonsterHPBarWidget::SpawnedBossMonster);
+		// Status Bind
+		GM->OnStartBattle.AddUObject(this, &UBossMonsterHPBarWidget::InitializeAndBindBossStatus);
+		// Status Bar Visible
+		GM->OnStartBattle.AddUObject(this, &UBossMonsterHPBarWidget::StartBattleBossMonster);
+		// Status Bar Collapse
+		GM->OnEndBattle.AddUObject(this, &UBossMonsterHPBarWidget::EndBattleBossMonster);
 	}
 }
 
-void UBossMonsterHPBarWidget::BindSpawnedBossStatusDelegate(AActor* SpawnedBoss)
+void UBossMonsterHPBarWidget::InitializeAndBindBossStatus(AActor* SpawnedBoss)
 {
 	auto* BossEnemy = Cast<ABaseBossEnemy>(SpawnedBoss);
 	if (BossEnemy)
