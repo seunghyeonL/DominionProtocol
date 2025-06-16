@@ -10,23 +10,53 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/ItemComponent/ItemComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
-#include "Components/SplineComponent.h"
 #include "Engine/ExponentialHeightFog.h"
 
 #include "Util/DebugHelper.h"
 #include "Kismet/GameplayStatics.h"
 
-void UCheatBPLib::Save(const UWorld* World)
+void UCheatBPLib::Save(const UWorld* World, int32 SlotIndex)
 {
 	USaveManagerSubsystem* SaveSubsystem = World->GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
-	if (SaveSubsystem->SaveGame("SaveGame1", 0))
+	if (IsValid(SaveSubsystem))
 	{
-		Debug::Print("Save Game Success");
+		bool bSaveSuccess = SaveSubsystem->SaveGame(FString::Printf(TEXT("SaveGame%d"), SlotIndex + 1), SlotIndex);
+		if (bSaveSuccess)
+		{
+			Debug::Print("Save Game Success");
+		}
 	}
+}
 
-	UWorldInstanceSubsystem* WorldInstanceSubsystem = World->GetGameInstance()->GetSubsystem<UWorldInstanceSubsystem>();
-	Debug::Print(TEXT("Save Game in SaveGame1"));
-	Debug::Print(FString::Printf(TEXT("SaveData[CurrentLevelName] : %s"), *WorldInstanceSubsystem->GetCurrentLevelName()));
+void UCheatBPLib::Load(const UWorld* World, int32 SlotIndex)
+{
+	USaveManagerSubsystem* SaveSubsystem = World->GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	if (IsValid(SaveSubsystem))
+	{
+		bool bLoadSuccess = SaveSubsystem->LoadGame(FString::Printf(TEXT("SaveGame%d"), SlotIndex + 1), SlotIndex);
+		if (bLoadSuccess)
+		{
+			Debug::Print(TEXT("Load Game Success"));
+		}
+	}
+}
+
+void UCheatBPLib::StartGameNewSlot(const UWorld* World, int32 SlotIndex)
+{
+	USaveManagerSubsystem* SaveSubsystem = World->GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	if (IsValid(SaveSubsystem))
+	{
+		SaveSubsystem->StartNewGame(SlotIndex);
+	}
+}
+
+void UCheatBPLib::SaveSlotLoadAndStartGame(const UWorld* World, int32 SlotIndex)
+{
+	USaveManagerSubsystem* SaveSubsystem = World->GetGameInstance()->GetSubsystem<USaveManagerSubsystem>();
+	if (IsValid(SaveSubsystem))
+	{
+		SaveSubsystem->LoadSaveDataAndOpenLevel(SlotIndex);
+	}
 }
 
 void UCheatBPLib::InfiniteStamina(const TObjectPtr<UStatusComponent> StatusComponent)

@@ -18,8 +18,17 @@ class DOMINIONPROTOCOL_API UCheatBPLib : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable)
-	static void Save(const UWorld* World);
+	static void Save(const UWorld* World, int32 SlotIndex);
 
+	UFUNCTION(BlueprintCallable)
+	static void Load(const UWorld* World, int32 SlotIndex);
+
+	UFUNCTION(BlueprintCallable)
+	static void StartGameNewSlot(const UWorld* World, int32 SlotIndex);
+
+	UFUNCTION(BlueprintCallable)
+	static void SaveSlotLoadAndStartGame(const UWorld* World, int32 SlotIndex);
+	
 	static void InfiniteStamina(const TObjectPtr<UStatusComponent> StatusComponent);
 
 	UFUNCTION(BlueprintCallable)

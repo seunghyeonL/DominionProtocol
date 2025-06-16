@@ -15,12 +15,39 @@
 #include "Util/CheatBPLib.h"
 #include "Util/DebugHelper.h"
 
-void UDevCheatManager::Save()
+void UDevCheatManager::Save(int32 SlotIndex)
 {
 	UWorld* World = GetWorld();
 	if (IsValid(World))
 	{
-		UCheatBPLib::Save(World);
+		UCheatBPLib::Save(World, SlotIndex);
+	}
+}
+
+void UDevCheatManager::Load(int32 SlotIndex)
+{
+	UWorld* World = GetWorld();
+	if (IsValid(World))
+	{
+		UCheatBPLib::Load(World, SlotIndex);
+	}
+}
+
+void UDevCheatManager::StartGameNewSlot(int32 SlotIndex)
+{
+	UWorld* World = GetWorld();
+	if (IsValid(World))
+	{
+		UCheatBPLib::StartGameNewSlot(World, SlotIndex);
+	}
+}
+
+void UDevCheatManager::SaveSlotLoadAndStartGame(int32 SlotIndex)
+{
+	UWorld* World = GetWorld();
+	if (IsValid(World))
+	{
+		UCheatBPLib::SaveSlotLoadAndStartGame(World, SlotIndex);
 	}
 }
 

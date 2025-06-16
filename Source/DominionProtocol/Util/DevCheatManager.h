@@ -15,7 +15,16 @@ class DOMINIONPROTOCOL_API UDevCheatManager : public UCheatManager
 
 public:
 	UFUNCTION(Exec)
-	void Save();
+	void Save(int32 SlotIndex);
+
+	UFUNCTION(Exec)
+	void Load(int32 SlotIndex);
+
+	UFUNCTION(Exec)
+	void StartGameNewSlot(int32 SlotIndex);
+
+	UFUNCTION(Exec)
+	void SaveSlotLoadAndStartGame(int32 SlotIndex);
 
 	UFUNCTION(Exec)
 	void ToggleDebugLines();
