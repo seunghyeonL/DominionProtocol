@@ -2,15 +2,16 @@
 
 
 #include "DomiFramework/GameMode/TitleGameMode.h"
-
 #include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
+
+#include "Util/DevCheatManager.h"
 
 ATitleGameMode::ATitleGameMode()
 {
 	static ConstructorHelpers::FClassFinder<APlayerController> TitleControllerClassRef(TEXT("/Script/DominionProtocol.TitleController"));
 	if (TitleControllerClassRef.Class)
 	{
-		PlayerControllerClass = TitleControllerClassRef.Class;	
+		PlayerControllerClass = TitleControllerClassRef.Class;
 	}
 }
 

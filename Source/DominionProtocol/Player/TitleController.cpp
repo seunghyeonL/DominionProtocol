@@ -3,6 +3,7 @@
 
 #include "TitleController.h"
 #include "UI/UITitle/DomiTitleHUDWidget.h"
+#include "Util/DevCheatManager.h"
 
 ATitleController::ATitleController()
 {
@@ -11,6 +12,8 @@ ATitleController::ATitleController()
 	{
 		TitleHUDWidgetClass = TitleHUDWidgetRef.Class;
 	}
+
+	CheatClass = UDevCheatManager::StaticClass();
 }
 
 void ATitleController::HandleSetupTitleHUD()
