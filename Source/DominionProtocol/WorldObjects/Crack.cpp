@@ -163,7 +163,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	// 저장
 	BaseGameMode->UpdateInstanceData();
 
-	//BaseGameMode->Save();
+	BaseGameMode->Save();
 
 	UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
 
