@@ -11,4 +11,6 @@ class DOMINIONPROTOCOL_API UBoss5ZoneyaAttack : public UBaseSkill
 	
 public:
 	UBoss5ZoneyaAttack();
+
+	virtual void Execute() override;
 };
