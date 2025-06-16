@@ -17,8 +17,13 @@ public:
 	virtual void Deinitialize() override;
 
 	//======UI 에서 호출할 함수======
+	UFUNCTION(BlueprintCallable)
 	void StartNewGame(int32 SlotIndex);
+
+	UFUNCTION(BlueprintCallable)
 	void LoadSaveDataAndOpenLevel(int32 SlotIndex);
+
+	UFUNCTION(BlueprintCallable)
 	void DeleteSaveSlot(int32 SlotIndex);
 	//============================
 	
