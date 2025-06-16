@@ -30,10 +30,11 @@ bool UPlayerPreStunEffect::Activate()
 		GetOuter()->GetWorld()->GetTimerManager().ClearTimer(DurationTimer);
 		DurationRemained += DurationPerAttack;
 
-		// 게이지 100 넘으면 해제하고 스턴으로
+		// 게이지 100 넘으면 해제하고 스턴걸기
 		if (DurationRemained > CachedDuration)
 		{
 			Deactivate();
+			ControlComponent->ActivateControlEffect(EffectTags::Stun, 3.0f);
 			return false;
 		}
 		
@@ -101,11 +102,7 @@ void UPlayerPreStunEffect::Deactivate()
 	}
 	
 	Super::Deactivate();
-	
-	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
-	check(ControlComponent);
 
 	CachedDuration = 100.f;
 	DurationRemained = 0.f;
-	ControlComponent->ActivateControlEffect(EffectTags::Stun, 3.0f);
 }

@@ -21,7 +21,7 @@ UPlayerDashSkill::UPlayerDashSkill()
 	
 	DashMoveDirection = { 0.f, 0.f, 0.f };
 	
-	DashSpeed = 1000.f;
+	DashSpeed = 900.f;
 	DashDuration = 0.5f;
 	
 	DashMoveStart = 0.05f;
