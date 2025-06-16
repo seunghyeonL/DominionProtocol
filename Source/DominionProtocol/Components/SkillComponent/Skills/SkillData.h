@@ -19,6 +19,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	bool bIsMagicSkill;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	float CoolDownTime;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TObjectPtr<UAnimMontage> AnimMontage;

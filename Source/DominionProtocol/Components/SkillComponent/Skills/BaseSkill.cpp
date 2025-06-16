@@ -15,6 +15,7 @@ UBaseSkill::UBaseSkill()
 {
 	ControlEffectTag = EffectTags::UsingSkill;
 	bIsMagicSkill = false;
+	bIsCoolDowning = false;
 	AnimPlayRate = 1.0f;
 }
 
@@ -48,6 +49,7 @@ void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 				LaunchGroundSpeed = SkillData->LaunchGroundSpeed;
 				LaunchZSpeed = SkillData->LaunchZSpeed;
 				bIsMagicSkill = SkillData->bIsMagicSkill;
+				CoolDownTime = SkillData->CoolDownTime;
 			}
 			else
 			{
@@ -267,6 +269,31 @@ float UBaseSkill::GetStamina() const
 
 void UBaseSkill::Tick(float DeltaTime)
 {
+}
+
+void UBaseSkill::CoolDownStart()
+{
+	check(OwnerCharacter);
+
+	// CoolDownTime이 0초면 쿨타임을 주지 않음.
+	if (FMath::IsNearlyZero(CoolDownTime))
+	{
+		return;
+	}
+	
+	bIsCoolDowning = true;
+	OwnerCharacter->GetWorldTimerManager().SetTimer(
+		CoolDownTimer,
+		this,
+		&UBaseSkill::CoolDownEnd,
+		CoolDownTime,
+		false
+    );
+}
+
+void UBaseSkill::CoolDownEnd()
+{
+	bIsCoolDowning = false;
 }
 
 float UBaseSkill::GetFinalAttackData() const

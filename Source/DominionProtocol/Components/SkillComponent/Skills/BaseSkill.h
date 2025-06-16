@@ -34,6 +34,8 @@ public:
 
 	virtual void Tick(float DeltaTime);
 
+	void CoolDownStart();
+
 	FORCEINLINE UAnimMontage* GetAnimMontage() const { return AnimMontage; }
 	FORCEINLINE FGameplayTag GetSkillTag() const { return SkillTag; }
 	FORCEINLINE FGameplayTag GetControlEffectTag() const { return ControlEffectTag; }
@@ -48,11 +50,18 @@ public:
 	FORCEINLINE float GetLaunchGroundSpeed() const { return LaunchGroundSpeed; }
 	FORCEINLINE float GetLaunchZSpeed() const { return LaunchZSpeed; }
 	FORCEINLINE float IsMagicSkill() const { return bIsMagicSkill; }
+	FORCEINLINE float IsCoolDowning() const { return bIsCoolDowning; }
+	
 
 protected:
 	virtual bool CheckParry(AActor* HitActor) const;
 
 	bool bIsMagicSkill;
+	bool bIsCoolDowning;
+	
+	FTimerHandle CoolDownTimer;
+
+	void CoolDownEnd();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Owner")
 	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
@@ -94,4 +103,6 @@ protected:
 	float LaunchGroundSpeed;
 
 	float LaunchZSpeed;
+
+	float CoolDownTime;
 };

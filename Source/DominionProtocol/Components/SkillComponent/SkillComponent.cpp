@@ -121,6 +121,12 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
             {
                 return;
             }
+
+            // 쿨타임이면 실행 안하기
+            if (Skill->IsCoolDowning())
+            {
+                return;
+            }
             
             if (!IsValid(CurrentSkill))
             {
@@ -139,6 +145,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
             }
             else
             {
+                // DoubleExecuteSkill case
                 if (auto ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>())
                 {
                     if (!ControlComponent->IsUsingDoubleExecuteSkill())
@@ -164,7 +171,7 @@ void USkillComponent::ExecuteSkill(const FGameplayTag& SkillGroupTag)
                     return;
                 }
             }
-
+            
             // 스킬 실행 전, 현재 사용할 스킬로 저장
             SetCurrentSkill(Skill);
             
@@ -256,6 +263,8 @@ void USkillComponent::EndSkill()
         false
     );
 
+    CurrentSkill->CoolDownStart();
+    
     // CurrentSkill을 null로 바꾸는 로직을 먼저하기
     // 안그러면 스킬 실행 후 CurrentSkill이 nullptr로 바뀐다. 
     auto CurrentSkillControlEffectTag = CurrentSkill->GetControlEffectTag();
