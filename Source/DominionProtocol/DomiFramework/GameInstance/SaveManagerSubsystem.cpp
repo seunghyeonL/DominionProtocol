@@ -22,7 +22,7 @@ void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	for (int32 i = 0; i < 3; i++)
 	{
 		SaveSlotArray[i].SaveSlotName = FString::Printf(TEXT("SaveSlot%d"), i + 1);
-		SaveSlotArray[i].SaveSlotIndex = i + 1;
+		SaveSlotArray[i].SaveSlotIndex = i;
 	}
 }
 
@@ -42,6 +42,9 @@ void USaveManagerSubsystem::StartNewGame(int32 SlotIndex)
 			GameInstance->SetSaveSlotName(SaveSlotArray[SlotIndex].SaveSlotName);
 			GameInstance->SetSaveSlotIndex(SaveSlotArray[SlotIndex].SaveSlotIndex);
 		}
+		SaveGame(SaveSlotArray[SlotIndex].SaveSlotName, SaveSlotArray[SlotIndex].SaveSlotIndex);
+		SaveSettings();
+		Debug::Print(TEXT("Start New Game"));
 		UGameplayStatics::OpenLevel(World, FName(TEXT("PresentLevel")));
 	}
 }
@@ -52,7 +55,7 @@ void USaveManagerSubsystem::LoadSaveDataAndOpenLevel(int32 SlotIndex)
 	{
 		if (SaveSlotArray[SlotIndex].SaveSlotExist)
 		{
-			LoadGame(SaveSlotArray[SlotIndex].SaveSlotName, SlotIndex);
+			LoadGame(SaveSlotArray[SlotIndex].SaveSlotName, SaveSlotArray[SlotIndex].SaveSlotIndex);
 			UGameplayStatics::OpenLevel(World, FName(SaveSlotArray[SlotIndex].PlayingLevelName));
 		}
 	}
@@ -184,19 +187,5 @@ bool USaveManagerSubsystem::LoadSettings()
 	}
 
 	Debug::Print(TEXT("Success Load All User Setting Data "));
-	return true;
-}
-
-bool USaveManagerSubsystem::SaveSlotMetaData()
-{
-	//저장 인스턴스 생성
-	UDomiSaveSettings* SaveSettingsInstance = Cast<UDomiSaveSettings>(UGameplayStatics::CreateSaveGameObject(UDomiSaveSettings::StaticClass()));
-	check(IsValid(SaveSettingsInstance));
-
-	return true;
-}
-
-bool USaveManagerSubsystem::LoadSlotMetaData()
-{
 	return true;
 }

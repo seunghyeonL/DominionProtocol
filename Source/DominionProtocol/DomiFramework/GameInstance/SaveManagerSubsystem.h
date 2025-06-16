@@ -28,9 +28,6 @@ public:
 	bool SaveSettings();
 	bool LoadSettings();
 
-	bool SaveSlotMetaData();
-	bool LoadSlotMetaData();
-
 	// Setter
 	FORCEINLINE void SetWorldCache(UWorld* InWorld) { World = InWorld;}
 	FORCEINLINE void SetSaveSlotData(int32 SlotIndex, const FSaveSlotMetaData& Data) { SaveSlotArray[SlotIndex] = Data; }
