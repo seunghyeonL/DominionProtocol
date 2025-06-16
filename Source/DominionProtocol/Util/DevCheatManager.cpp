@@ -233,3 +233,25 @@ void UDevCheatManager::ShowSTRStat()
 	}
 }
 
+void UDevCheatManager::ShowAttackPowerStat()
+{
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
+	if (IsValid(PlayerCharacter))
+	{
+		UStatusComponent* StatusComponent = PlayerCharacter->GetStatusComponent();
+		float AttackPower = StatusComponent->GetStat(StatTags::AttackPower);
+		Debug::Print(FString::Printf(TEXT("%f"), AttackPower));
+	}
+}
+
+void UDevCheatManager::ShowSubAttackPowerStat()
+{
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());
+	if (IsValid(PlayerCharacter))
+	{
+		UStatusComponent* StatusComponent = PlayerCharacter->GetStatusComponent();
+		float SubAttackPower = StatusComponent->GetStat(StatTags::SubAttackPower);
+		Debug::Print(FString::Printf(TEXT("%f"), SubAttackPower));
+	}
+}
+

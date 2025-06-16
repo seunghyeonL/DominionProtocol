@@ -11,6 +11,7 @@
 #include "DomiFramework/GameInstance/ItemInstanceSubsystem.h"
 #include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h" 
+#include "Components/StatusComponent/StatusComponent.h"
 
 UItemComponent::UItemComponent()
 {
@@ -67,22 +68,30 @@ void UItemComponent::BeginPlay()
 
 void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 {
+	EquipmentSlots[SlotName] = ItemTag;
+	
 	if (SlotName == FName("WeaponSlot_Primary"))
 	{
 		if (auto WeaponData = CachedItemDataMap.Find(ItemTag))
 		{
 			FSkillComponentInitializeData InitializeData = WeaponData->SkillDatas;
-			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
+			OnPrimaryWeaponChangedForSkillSet.ExecuteIfBound(InitializeData);
 			OnPrimaryWeaponChangedForWeaponVisibility.ExecuteIfBound(ItemTag);
+			OnPrimaryWeaponChangedForAttackPowerSet.ExecuteIfBound();
 		}
 		else
 		{
 			FSkillComponentInitializeData InitializeData;
 			InitializeData.SkillGroupInitializeDatas.Add({SkillGroupTags::WeaponSkill, {}});
 			InitializeData.SkillGroupInitializeDatas.Add({SkillGroupTags::BaseAttack, {}});
-			OnPrimaryWeaponChanged.ExecuteIfBound(InitializeData);
+			OnPrimaryWeaponChangedForSkillSet.ExecuteIfBound(InitializeData);
 			OnPrimaryWeaponChangedForWeaponVisibility.ExecuteIfBound(ItemTag);
+			OnPrimaryWeaponChangedForAttackPowerSet.ExecuteIfBound();
 		}
+	}
+	else if (SlotName == FName("WeaponSlot_Secondary"))
+	{
+		OnSecondaryWeaponChangedForSubAttackPowerSet.ExecuteIfBound();
 	}
 	else if (SlotName == FName("SkillSlot"))
 	{
@@ -98,8 +107,6 @@ void UItemComponent::SetTagToSlot(FName SlotName, FGameplayTag ItemTag)
 			OnMagicSkillChanged.ExecuteIfBound(InitializeData);
 		}
 	}
-
-	EquipmentSlots[SlotName] = ItemTag;
 }
 
 void UItemComponent::SetSkillFromItemWhenLevelChanged()
@@ -419,6 +426,19 @@ FName UItemComponent::GetEquippedItemSlotName(FGameplayTag ItemTag)
 const TMap<FName, FGameplayTag>& UItemComponent::GetEquipmentSlots() const
 {
 	return EquipmentSlots;
+}
+
+float UItemComponent::GetPrimaryWeaponCoefficient()
+{
+	auto PrimaryWeaponTag = EquipmentSlots.FindRef(FName("WeaponSlot_Primary"));
+	Debug::Print(FString::Printf(TEXT("UItemComponent::GetPrimaryWeaponCoefficient called, Weapon: %s"), *PrimaryWeaponTag.ToString()));
+	return PrimaryWeaponTag.IsValid() ? GetItemDataFromTable(PrimaryWeaponTag)->WeaponStatMultiplier : 1.0f;
+}
+
+float UItemComponent::GetSecondaryWeaponCoefficient()
+{
+	auto SecondaryWeaponTag = EquipmentSlots.FindRef(FName("WeaponSlot_Secondary"));
+	return SecondaryWeaponTag.IsValid() ? GetItemDataFromTable(SecondaryWeaponTag)->WeaponStatMultiplier : 1.0f;
 }
 
 bool UItemComponent::PlaceInSlotConsumableItem(FName SlotName, FGameplayTag ItemTag)

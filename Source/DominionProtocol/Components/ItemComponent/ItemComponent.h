@@ -14,8 +14,10 @@ class UItemInstanceSubsystem;
 DECLARE_MULTICAST_DELEGATE(FOnInventoryItemListChanged)
 DECLARE_MULTICAST_DELEGATE(FOnInventoryEquippedSlotItemsChanged)
 DECLARE_MULTICAST_DELEGATE(FOnInventoryConsumableSlotItemsChanged)
-DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChanged, const FSkillComponentInitializeData&)
+DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChangedForSkillSet, const FSkillComponentInitializeData&)
 DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChangedForWeaponVisibility, const FGameplayTag&)
+DECLARE_DELEGATE(FOnPrimaryWeaponChangedForAttackPowerSet)
+DECLARE_DELEGATE(FOnSecondaryWeaponChangedForSubAttackPowerSet)
 DECLARE_DELEGATE_OneParam(FOnMagicSkillChanged, const FSkillComponentInitializeData&)
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -29,8 +31,10 @@ public:
 	FOnInventoryItemListChanged OnInventoryItemListChanged;
 	FOnInventoryEquippedSlotItemsChanged OnInventoryEquippedSlotItemsChanged;
 	FOnInventoryConsumableSlotItemsChanged OnInventoryConsumableSlotItemsChanged;
-	FOnPrimaryWeaponChanged OnPrimaryWeaponChanged;
+	FOnPrimaryWeaponChangedForSkillSet OnPrimaryWeaponChangedForSkillSet;
 	FOnPrimaryWeaponChangedForWeaponVisibility OnPrimaryWeaponChangedForWeaponVisibility;
+	FOnPrimaryWeaponChangedForAttackPowerSet OnPrimaryWeaponChangedForAttackPowerSet;
+	FOnSecondaryWeaponChangedForSubAttackPowerSet OnSecondaryWeaponChangedForSubAttackPowerSet;
 	FOnMagicSkillChanged OnMagicSkillChanged;
 
 protected:
@@ -119,6 +123,10 @@ public:
 	// 장비 슬롯 정보 반환 (위젯에 전달)
 	UFUNCTION(BlueprintPure)
 	const TMap<FName, FGameplayTag>& GetEquipmentSlots() const;
+
+	// 장착된 무기 계수 반환 (공격력 계산)
+	float GetPrimaryWeaponCoefficient();
+	float GetSecondaryWeaponCoefficient();
 
 	//소비아이템 등록
 	UFUNCTION(BlueprintCallable)

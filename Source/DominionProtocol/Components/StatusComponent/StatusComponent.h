@@ -91,6 +91,10 @@ public:
 	float GetStat(const FGameplayTag& StatTag) const;
 	void SetStat(const FGameplayTag& StatTag, float Value);
 
+	// Delegate Handler
+	void OnPrimaryWeaponChanged();
+	void OnSecondaryWeaponChanged();
+	
 	// stat upgrade with ui
 	void GetPlayerStatData(TMap<FGameplayTag, float>& UIPlayerStatData);
 	void UpdateStatPreviewData(TMap<FGameplayTag, float>& UIPlayerStatData);

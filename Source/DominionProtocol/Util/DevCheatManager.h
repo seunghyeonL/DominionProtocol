@@ -72,4 +72,10 @@ public:
 
 	UFUNCTION(Exec)
 	void ShowSTRStat();
+
+	UFUNCTION(Exec)
+	void ShowAttackPowerStat();
+
+	UFUNCTION(Exec)
+	void ShowSubAttackPowerStat();
 };

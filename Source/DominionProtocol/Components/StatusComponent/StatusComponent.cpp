@@ -3,6 +3,7 @@
 #include "StatusComponent.h"
 #include "StatusComponentUser.h"
 #include "StatusComponentInitializeData.h"
+#include "Components/ItemComponent/ItemComponent.h"
 #include "StatusEffects/StatusEffectBase.h"
 #include "GameFramework/Character.h"
 #include "Interface/PawnTagInterface.h"
@@ -115,6 +116,16 @@ void UStatusComponent::SetStat(const FGameplayTag& StatTag, float Value)
 	// Debug::PrintError(TEXT("UStatusComponent::SetStat : Finding StatTag is not set."));
 }
 
+void UStatusComponent::OnPrimaryWeaponChanged()
+{
+	SetStat(StatTags::AttackPower, GetCalculatedBattleStat(StatTags::AttackPower, StatMap));
+}
+
+void UStatusComponent::OnSecondaryWeaponChanged()
+{
+	SetStat(StatTags::SubAttackPower, GetCalculatedBattleStat(StatTags::SubAttackPower, StatMap));
+}
+
 void UStatusComponent::GetPlayerStatData(TMap<FGameplayTag, float>& UIPlayerStatData)
 {
 	for (auto& [UIStatTag, UIStatValue ] : UIPlayerStatData)
@@ -171,12 +182,22 @@ float UStatusComponent::GetCalculatedBattleStat(const FGameplayTag& StatTag, con
 	if (StatTag.MatchesTag(StatTags::AttackPower))
 	{
 		// 무기계수 곱해줘야함
-		result = GetStat(StatTags::BaseAttackPower) + GetStat(StatTags::AttackPowerCoefficient) * FMath::Sqrt(InStatMap[StatTags::STR]);
+		auto OwnerCharacter = Cast<ACharacter>(GetOuter());
+		check(IsValid(OwnerCharacter));
+		auto ItemComponent = OwnerCharacter->FindComponentByClass<UItemComponent>();
+		check(IsValid(ItemComponent));
+		
+		result = ItemComponent->GetPrimaryWeaponCoefficient() * (GetStat(StatTags::BaseAttackPower) + GetStat(StatTags::AttackPowerCoefficient) * FMath::Sqrt(InStatMap[StatTags::STR]));
 	}
 	else if (StatTag.MatchesTag(StatTags::SubAttackPower))
 	{
 		// 무기계수 곱해줘야함
-		result = GetStat(StatTags::BaseAttackPower) + GetStat(StatTags::AttackPowerCoefficient) * FMath::Sqrt(InStatMap[StatTags::STR]);
+		auto OwnerCharacter = Cast<ACharacter>(GetOuter());
+		check(IsValid(OwnerCharacter));
+		auto ItemComponent = OwnerCharacter->FindComponentByClass<UItemComponent>();
+		check(IsValid(ItemComponent));
+
+		result = ItemComponent->GetSecondaryWeaponCoefficient() * (GetStat(StatTags::BaseAttackPower) + GetStat(StatTags::AttackPowerCoefficient) * FMath::Sqrt(InStatMap[StatTags::STR]));
 	}
 	else if (StatTag.MatchesTag(StatTags::MagicPower))
 	{
@@ -440,6 +461,12 @@ void UStatusComponent::InitializeStatusComponent(const FStatusComponentInitializ
 			FString Msg = FString::Printf(TEXT("UStatusComponent::InitializeStatusComponent : Create %s. "), *EffectTag.ToString());
 			Debug::PrintError(Msg);
 		}
+	}
+
+	if (auto ItemComponent = OwnerCharacter->FindComponentByClass<UItemComponent>())
+	{
+		ItemComponent->OnPrimaryWeaponChangedForAttackPowerSet.BindUObject(this, &UStatusComponent::OnPrimaryWeaponChanged);
+		ItemComponent->OnSecondaryWeaponChangedForSubAttackPowerSet.BindUObject(this, &UStatusComponent::OnSecondaryWeaponChanged);
 	}
 }
 
