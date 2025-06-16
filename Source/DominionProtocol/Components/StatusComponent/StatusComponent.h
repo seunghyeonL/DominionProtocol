@@ -10,7 +10,6 @@
 #include "Util/DebugHelper.h"
 #include "StatusComponent.generated.h"
 
-class UAIStateBase;
 //UI Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChanged, float, MaxHealth);
@@ -77,9 +76,6 @@ public:
 
 	TArray<FEffectUIData> GetEffectUIDatas();
 
-	FORCEINLINE UAIStateBase* GetAIState() { return AIState; }
-	FORCEINLINE void SetAIState(UAIStateBase* InAIState) { AIState = InAIState; }
-
 	UFUNCTION(BlueprintCallable)
 	const TMap<FGameplayTag, float>& GetStatMap() const { return StatMap; }
 	
@@ -136,9 +132,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Stats", meta=(AllowPrivateAccess=true))
-	TObjectPtr<UAIStateBase> AIState;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	TMap<FGameplayTag, float> StatMap;
