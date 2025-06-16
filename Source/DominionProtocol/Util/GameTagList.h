@@ -32,6 +32,7 @@ namespace EffectTags
 	
 	// StatusEffectTags
 	inline const FGameplayTag Running = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Running"));
+	inline const FGameplayTag Walking = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Walking"));
 
 	inline const FGameplayTag StatusDebuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Debuff"));
 	inline const FGameplayTag StatusBuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Buff"));

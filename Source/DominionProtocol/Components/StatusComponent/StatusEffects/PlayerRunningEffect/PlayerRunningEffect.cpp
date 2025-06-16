@@ -26,17 +26,15 @@ bool UPlayerRunningEffect::Activate()
 		Debug::PrintError(TEXT("UPlayerRunningEffect::Activate : Invalid OwnerCharacter."));
 		return false;
 	}
-	
-	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
-	if (!StatusComponent)
-	{
-		Debug::PrintError(TEXT("UPlayerRunningEffect::Activate : Invalid StatusComponent."));
-		return false;
-	}
 
-	// StatusComponent->StopStaminaRecovery();
+	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
+	auto ActiveStatusEffectTags = StatusComponent->GetActiveStatusEffectTags();
+	if (ActiveStatusEffectTags.HasTag(EffectTags::Walking))
+	{
+		StatusComponent->DeactivateStatusEffect(EffectTags::Walking);
+	}
+	
 	auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
-	// Debug::Print(TEXT("UPlayerRunningEffect::Activate : WalkSpeed Up."));
 	MovementComponent->MaxWalkSpeed *= SpeedCoefficient;
 	return true;
 }
@@ -45,7 +43,8 @@ bool UPlayerRunningEffect::Activate(float Duration)
 {
 	// Super::Activate(Duration);
 	Debug::PrintError(TEXT("UPlayerRunningEffect::Activate : Use Activate()!"));
-	return false;
+	Activate();
+	return true;
 }
 
 void UPlayerRunningEffect::Deactivate()
