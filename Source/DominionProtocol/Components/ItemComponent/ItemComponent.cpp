@@ -680,7 +680,7 @@ void UItemComponent::ApplyPotionBoost(int32 BoostAmount)
 		Debug::Print(TEXT("이미 최대로 강화됨"));
 		return;
 	}
-	PotionBoostLevel += BoostAmount;
+	PotionBoostLevel = BoostAmount+1;
 	if (PotionBoostLevel >= 5)
 	{
 		PotionBoostLevel = 5;
@@ -751,7 +751,11 @@ FGameplayTag UItemComponent::GetPotionTagByLevel(int32 Level) const
 	{
 		return ItemTags::PotionBoosted5;
 	}
-	return ItemTags::Potion;
+	else
+	{
+		return FGameplayTag();	
+	}
+	
 }
 
 //UI용 함수
