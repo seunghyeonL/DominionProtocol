@@ -8,6 +8,9 @@
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Util/DebugHelper.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedMagicSkill/BufferedMagicSkill.h"
+#include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedParry/BufferedParry.h"
+#include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedWeaponSkill/BufferedWeaponSkill.h"
 #include "Components/SkillComponent/SkillComponent.h"
 
 UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
@@ -134,7 +137,14 @@ void UPlayerUsingSkillEffect::Parry()
 	if (IsDoubleExecuteSkillEffect())
 	{
 		Super::Parry();
+		return;
 	}
+
+	check(ControlComponent);
+
+	auto BufferedParry = NewObject<UBufferedParry>(ControlComponent);
+	BufferedParry->SetTimer();
+	BufferedInputArray.Add(BufferedParry);
 }
 
 void UPlayerUsingSkillEffect::BaseAttack()
@@ -157,7 +167,14 @@ void UPlayerUsingSkillEffect::WeaponSkill()
 	if (IsDoubleExecuteSkillEffect())
 	{
 		Super::WeaponSkill();
+		return;
 	}
+
+	check(ControlComponent);
+
+	auto BufferedWeaponSkill = NewObject<UBufferedWeaponSkill>(ControlComponent);
+	BufferedWeaponSkill->SetTimer();
+	BufferedInputArray.Add(BufferedWeaponSkill);
 }
 
 void UPlayerUsingSkillEffect::MagicSkill()
@@ -165,7 +182,14 @@ void UPlayerUsingSkillEffect::MagicSkill()
 	if (IsDoubleExecuteSkillEffect())
 	{
 		Super::MagicSkill();
+		return;
 	}
+
+	check(ControlComponent);
+
+	auto BufferedMagicSkill = NewObject<UBufferedMagicSkill>(ControlComponent);
+	BufferedMagicSkill->SetTimer();
+	BufferedInputArray.Add(BufferedMagicSkill);
 }
 
 void UPlayerUsingSkillEffect::Interact()
@@ -178,10 +202,7 @@ void UPlayerUsingSkillEffect::Interact()
 
 void UPlayerUsingSkillEffect::LockOn()
 {
-	if (IsDoubleExecuteSkillEffect())
-	{
-		Super::LockOn();
-	}
+	Super::LockOn();
 }
 
 void UPlayerUsingSkillEffect::ConsumeItemAction_1()

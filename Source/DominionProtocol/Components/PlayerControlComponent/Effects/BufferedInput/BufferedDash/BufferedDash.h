@@ -13,4 +13,7 @@ UCLASS()
 class DOMINIONPROTOCOL_API UBufferedDash : public UBaseBufferedInput
 {
 	GENERATED_BODY()
+
+public:
+	virtual void Operate() override;
 };

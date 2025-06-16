@@ -2,3 +2,11 @@
 
 
 #include "BufferedWeaponSkill.h"
+
+void UBufferedWeaponSkill::Operate()
+{
+	check(ControlComponent);
+
+	ControlComponent->GetWorld()->GetTimerManager().ClearTimer(ValidTimerHandle);
+	ControlComponent->WeaponSkill();
+}

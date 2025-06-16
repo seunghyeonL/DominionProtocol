@@ -2,3 +2,11 @@
 
 
 #include "BufferedMagicSkill.h"
+
+void UBufferedMagicSkill::Operate()
+{
+	check(ControlComponent);
+
+	ControlComponent->GetWorld()->GetTimerManager().ClearTimer(ValidTimerHandle);
+	ControlComponent->MagicSkill();
+}

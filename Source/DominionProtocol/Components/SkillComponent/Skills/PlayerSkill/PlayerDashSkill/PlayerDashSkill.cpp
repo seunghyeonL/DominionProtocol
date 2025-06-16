@@ -43,9 +43,19 @@ void UPlayerDashSkill::Initialize(ACharacter* InOwnerCharacter)
 void UPlayerDashSkill::Execute()
 {
 	// Super::Execute();
-	check(OwnerCharacter);
+	check(IsValid(OwnerCharacter));
 	TimeElapsed = 0.f;
 	bIsMoving = false;
+
+	// 실행중인 몽타주 중단
+	// Dash는 몽타주를 안써서 수동으로 중단시켜줘야함.
+	if (auto AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance())
+	{
+		if (AnimInstance->Montage_IsPlaying(nullptr))
+		{
+			AnimInstance->Montage_Stop(0.1f);
+		}
+	}
 	
 	if (Sounds.IsValidIndex(0))
 	{

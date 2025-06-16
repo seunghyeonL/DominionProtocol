@@ -2,3 +2,11 @@
 
 
 #include "BufferedDash.h"
+
+void UBufferedDash::Operate()
+{
+	check(ControlComponent);
+
+	ControlComponent->GetWorld()->GetTimerManager().ClearTimer(ValidTimerHandle);
+	ControlComponent->Dash();
+}
