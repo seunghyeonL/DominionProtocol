@@ -175,6 +175,7 @@ void ABaseGameMode::Save()
 	check(IsValid(SaveManagerSubsystem));
 	
 	FSaveSlotMetaData NewSaveSlotMetaData;
+	NewSaveSlotMetaData.SaveSlotExist = true;
 	NewSaveSlotMetaData.SaveSlotName = GameInstance->GetSaveSlotName();
 	NewSaveSlotMetaData.SaveSlotIndex = GameInstance->GetSaveSlotIndex();
 	NewSaveSlotMetaData.SaveDateTime = FDateTime::Now();
@@ -184,10 +185,9 @@ void ABaseGameMode::Save()
 	NewSaveSlotMetaData.RecentCrackName = RecentCrackCache->GetCrackName();
 	NewSaveSlotMetaData.PlayerLevel = static_cast<int32>(PlayerCharacter->GetStatusComponent()->GetStat(StatTags::Level));
 
-	SaveManagerSubsystem->SaveGame(GameInstance->GetSaveSlotName(), GameInstance->GetSaveSlotIndex());
-	
 	SaveManagerSubsystem->SetSaveSlotData(NewSaveSlotMetaData.SaveSlotIndex, NewSaveSlotMetaData);
 	SaveManagerSubsystem->SaveSettings();
+	SaveManagerSubsystem->SaveGame(GameInstance->GetSaveSlotName(), GameInstance->GetSaveSlotIndex());
 }
 
 void ABaseGameMode::OnPlayerDeath()
@@ -281,6 +281,7 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		OnPlayerSpawn.Broadcast();
 
 		UpdateInstanceData();
+		Save();
 		RespawnEnemies();
 	}
 }
