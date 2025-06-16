@@ -15,8 +15,6 @@ UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 	ControlEffectTag = EffectTags::UsingSkill;
 	BufferedInputArray.Reserve(10);
 	DoubleExecuteSkillEffectTags.AddTag(EffectTags::UsingTeleport);
-	DashInvincibleDuration = 0.5f;
-	DashInvincibleDurationRemain = 0.f;
 }
 
 void UPlayerUsingSkillEffect::Initialize()
@@ -35,14 +33,6 @@ bool UPlayerUsingSkillEffect::Activate()
 	
 	check(ControlComponent);
 	check(OwnerCharacter);
-
-	if (ControlEffectTag == EffectTags::UsingDash)
-	{
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel1);
-		auto& ActiveControlEffectTags = ControlComponent->GetActiveControlEffectTags();
-		ActiveControlEffectTags.AddTag(EffectTags::DashInvincible);
-		DashInvincibleDurationRemain = DashInvincibleDuration;
-	}
 	
 	// Cashed Movement Vector
 	const FVector& CurrentMovementVector = ControlComponent->GetCurrentMovementVector();
@@ -212,19 +202,5 @@ void UPlayerUsingSkillEffect::ConsumeItemAction_3()
 void UPlayerUsingSkillEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (ControlEffectTag.MatchesTag(EffectTags::UsingDash))
-	{
-		if (DashInvincibleDurationRemain > 0.f)
-		{
-			DashInvincibleDurationRemain -= DeltaTime;
-			
-			if (DashInvincibleDurationRemain <= 0.f)
-			{
-				auto& ActiveControlEffectTags = ControlComponent->GetActiveControlEffectTags();
-				ActiveControlEffectTags.RemoveTag(EffectTags::DashInvincible);
-				OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
-			}
-		}
-	}
 }
 

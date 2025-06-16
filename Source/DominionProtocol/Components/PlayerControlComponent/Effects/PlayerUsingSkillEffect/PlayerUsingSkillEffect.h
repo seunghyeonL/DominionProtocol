@@ -25,9 +25,6 @@ protected:
 	
 	FGameplayTagContainer DoubleExecuteSkillEffectTags;
 
-	float DashInvincibleDuration;
-	float DashInvincibleDurationRemain;
-
 public:
 	UPlayerUsingSkillEffect();
 

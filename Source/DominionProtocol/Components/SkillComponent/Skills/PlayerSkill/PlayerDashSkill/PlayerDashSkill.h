@@ -15,15 +15,14 @@ class DOMINIONPROTOCOL_API UPlayerDashSkill : public UBaseSkill
 {
 	GENERATED_BODY()
 
-// protected:
-// 	UPROPERTY(VisibleAnywhere)
-// 	TObjectPtr<UPlayerControlComponent> ControlComponent;
+protected:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPlayerControlComponent> ControlComponent;
 
 public:
 	UPlayerDashSkill();
 
-	FVector DashMoveDirection;
-
+	virtual void Initialize(ACharacter* OwnerCharacter) override;
 	virtual void Execute() override;
 	virtual void Tick(float DeltaTime) override;
 
@@ -31,16 +30,19 @@ public:
 	void SetDashDirection();
 
 	FTimerHandle DurationTimer;
+
+	FVector DashMoveDirection;
 	
 	// === Dash 수치 설정값 ===
 	float DashSpeed;
 	float DashDuration;
-	float DashMoveDuration;
-	float DashMoveDurationRemain;
+	
+	float DashMoveStart;
+	float DashMoveEnd;
 
-	float DashInvincibleStart;
-	float DashInvincibleEnd;
-	float DashInvincibleDurationRemain;
+	bool bIsMoving;
+
+	float TimeElapsed;
 };
 
 

@@ -7,6 +7,7 @@
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Util/DebugHelper.h"
 #include "Util/GameTagList.h"
@@ -15,18 +16,36 @@ UPlayerDashSkill::UPlayerDashSkill()
 {
 	SkillTag = SkillTags::PlayerDash; 
 	ControlEffectTag = EffectTags::UsingDash;
+
+	ControlComponent = nullptr;
+	
 	DashMoveDirection = { 0.f, 0.f, 0.f };
+	
 	DashSpeed = 800.f;
 	DashDuration = 0.6f;
-	DashMoveDuration = 0.5f;
-	DashMoveDurationRemain = 0.f;
+	
+	DashMoveStart = 0.05f;
+	DashMoveEnd = 0.5f;
+
+	bIsMoving = false;
+
+	TimeElapsed = 0.f;
+}
+
+void UPlayerDashSkill::Initialize(ACharacter* InOwnerCharacter)
+{
+	Super::Initialize(InOwnerCharacter);
+
+	ControlComponent = InOwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
+	check(ControlComponent);
 }
 
 void UPlayerDashSkill::Execute()
 {
 	// Super::Execute();
 	check(OwnerCharacter);
-	DashMoveDurationRemain = DashMoveDuration;
+	TimeElapsed = 0.f;
+	bIsMoving = false;
 	
 	if (Sounds.IsValidIndex(0))
 	{
@@ -49,8 +68,6 @@ void UPlayerDashSkill::Execute()
 void UPlayerDashSkill::SetDashDirection()
 {
 	check(IsValid(OwnerCharacter));
-	
-	auto ControlComponent = OwnerCharacter->FindComponentByClass<UPlayerControlComponent>();
 	check(IsValid(ControlComponent));
 
 	auto SkillComponent = Cast<USkillComponent>(GetOuter());
@@ -72,12 +89,37 @@ void UPlayerDashSkill::SetDashDirection()
 void UPlayerDashSkill::Tick(float DeltaTime)
 {
 	check(OwnerCharacter);
-	if (DashMoveDurationRemain <= 0.f)
+
+	TimeElapsed += DeltaTime;
+
+	// 선후딜 사이에만 이동
+	if (TimeElapsed < DashMoveStart)
 	{
 		return;
 	}
 
-	DashMoveDurationRemain -= DeltaTime;
+	if (TimeElapsed > DashMoveEnd)
+	{
+		// 이동 종료시 무적 해제
+		if (bIsMoving)
+		{
+			bIsMoving = false;
+			auto& ActiveControlEffectTags = ControlComponent->GetActiveControlEffectTags();
+			ActiveControlEffectTags.RemoveTag(EffectTags::DashInvincible);
+			OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+		}
+		return;
+	}
+
+	// 이동 시작시 무적
+	if (!bIsMoving)
+	{
+		bIsMoving = true;
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel1);
+		auto& ActiveControlEffectTags = ControlComponent->GetActiveControlEffectTags();
+		ActiveControlEffectTags.AddTag(EffectTags::DashInvincible);
+	}
+	
 	auto MovementComponent = OwnerCharacter->GetCharacterMovement();
 	
 	FVector Step = DashMoveDirection * DashSpeed * DeltaTime;
