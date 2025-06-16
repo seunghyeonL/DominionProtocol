@@ -47,6 +47,7 @@ void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 				Effects = SkillData->Effects;
 				LaunchGroundSpeed = SkillData->LaunchGroundSpeed;
 				LaunchZSpeed = SkillData->LaunchZSpeed;
+				bIsMagicSkill = SkillData->bIsMagicSkill;
 			}
 			else
 			{

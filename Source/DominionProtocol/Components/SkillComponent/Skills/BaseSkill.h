@@ -47,6 +47,7 @@ public:
 	float GetFinalAttackData() const;
 	FORCEINLINE float GetLaunchGroundSpeed() const { return LaunchGroundSpeed; }
 	FORCEINLINE float GetLaunchZSpeed() const { return LaunchZSpeed; }
+	FORCEINLINE float IsMagicSkill() const { return bIsMagicSkill; }
 
 protected:
 	virtual bool CheckParry(AActor* HitActor) const;

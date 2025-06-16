@@ -166,17 +166,17 @@ float UStatusComponent::GetCalculatedBattleStat(const FGameplayTag& StatTag, con
 		Debug::PrintError(TEXT("UStatusComponent::GetCalculatedBattleStat : Invalid StatTag."));
 		return -1.f;
 	}
-		
+	
 	float result = 0.f;
 	if (StatTag.MatchesTag(StatTags::AttackPower))
 	{
-		// 무기계수로 바꿔야함
-		result = GetStat(StatTags::BaseAttackPower) + 0.9f * FMath::Sqrt(InStatMap[StatTags::STR]);
+		// 무기계수 곱해줘야함
+		result = GetStat(StatTags::BaseAttackPower) + GetStat(StatTags::AttackPowerCoefficient) * FMath::Sqrt(InStatMap[StatTags::STR]);
 	}
 	else if (StatTag.MatchesTag(StatTags::SubAttackPower))
 	{
-		// 무기계수로 바꿔야함
-		result = GetStat(StatTags::BaseAttackPower) + 0.8f * FMath::Sqrt(InStatMap[StatTags::STR]);
+		// 무기계수 곱해줘야함
+		result = GetStat(StatTags::BaseAttackPower) + GetStat(StatTags::AttackPowerCoefficient) * FMath::Sqrt(InStatMap[StatTags::STR]);
 	}
 	else if (StatTag.MatchesTag(StatTags::MagicPower))
 	{
