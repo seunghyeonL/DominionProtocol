@@ -138,6 +138,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 
 	// 2. 조력자 대화 이벤트
 	DialogueManager = NewObject<UDialogueManager>(this);
+	OnCreateDialogueManager.Broadcast(DialogueManager);
 	DialogueManager->HelperClass = HelperClass;
 	FVector CrackLocation = GetActorLocation();
 	if (DialogueManager->TryStartDialogueIfExists(GameInstance->GetCurrentGameStoryState(), CrackLocation))

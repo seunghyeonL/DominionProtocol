@@ -92,16 +92,24 @@ void UDialogueManager::ExecuteDialogueLine()
 		{
 			Debug::Print(Line->DialogueText.ToString()); // 대사
 			UE_LOG(LogTemp, Display, TEXT("%s"), *Line->DialogueText.ToString());
+			if (!CurrentDialogueString.IsEmpty())
+			{
+				CurrentDialogueString.AppendChar('\n');
+			}
+			CurrentDialogueString.Append(*Line->DialogueText.ToString());
+			OnUpdateDialogueText.Broadcast(FText::FromString(CurrentDialogueString)); // 대사 델리게이트
 		}
 		Debug::Print(TEXT("====================="));
 		AdvanceDialogue();
 		break;
 	case EDialogueEventType::SpawnHelper:
 		//AdvanceDialogue();
+		CurrentDialogueString = TEXT("");
 		TriggerHelperAppear();
 		return;
 	case EDialogueEventType::DespawnHelper:
 		//AdvanceDialogue();
+		CurrentDialogueString = TEXT("");
 		TriggerHelperDisappear();
 		return;
 	default:

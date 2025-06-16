@@ -19,6 +19,8 @@ class UDialogueManager;
 class AHelper;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCrackSystem, Log, All);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
+
 
 UCLASS()
 class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
@@ -29,6 +31,8 @@ class DOMINIONPROTOCOL_API ACrack : public AActor, public IInteractableInterface
 	
 public:
 	ACrack();
+
+	FOnCreateDialogueManager OnCreateDialogueManager;
 	
 	//Getter
 	FORCEINLINE const FText& GetCrackName() const { return CrackName; }
