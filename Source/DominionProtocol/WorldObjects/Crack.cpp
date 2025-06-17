@@ -141,10 +141,33 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	OnCreateDialogueManager.Broadcast(DialogueManager);
 	DialogueManager->HelperClass = HelperClass;
 	FVector CrackLocation = GetActorLocation();
-	if (DialogueManager->TryStartDialogueIfExists(GameInstance->GetCurrentGameStoryState(), CrackLocation))
+	FRotator CrackRotation = GetActorRotation();
+	if (DialogueManager->TryStartDialogueIfExists(GameInstance->GetCurrentGameStoryState(), CrackLocation, CrackRotation))
 	{
+		if (CachedCharacter)
+		{
+			APlayerController* PC = Cast<APlayerController>(CachedCharacter->GetController());
+			if (PC)
+			{
+				if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
+				{
+					GM->SetPlayerInputEnable(true);
+					Debug::Print(TEXT("ACrack: SetPlayerInputEnable true"));
+				}
+				else
+				{
+					Debug::Print(TEXT("ACrack: ABaseGameMode NotValid"));
+				}
+			}
+			else
+			{
+				Debug::Print(TEXT("ACrack: APlayerController NotValid"));
+			}
+		}
+		AlignPlayerForDialogue(Cast<ADomiCharacter>(Interactor));
 		Debug::Print(TEXT("Crack: 조력자 이벤트 종료"));
 		GameInstance->AdvanceStoryState();
+
 		return;
 	}
 	else
@@ -280,5 +303,24 @@ FRotator ACrack::GetRespawnTargetPointRotation() const
 	{
 		Debug::PrintError(TEXT("Invalid RespawnTargetPoint"));
 		return FRotator::ZeroRotator;
+	}
+}
+
+void ACrack::AlignPlayerForDialogue(ADomiCharacter* PlayerCharacter)
+{
+	if (!PlayerCharacter) return;
+
+	const FVector CrackForward = GetActorForwardVector();
+	const FVector Offset = FVector(100.f, 300.f, -50.f);
+	const FVector TargetLocation = GetActorLocation() + Offset;
+
+	const FRotator TargetRotation = (GetActorLocation() - TargetLocation).Rotation();
+
+	PlayerCharacter->SetActorLocation(TargetLocation);
+	PlayerCharacter->SetActorRotation(TargetRotation);
+
+	if (APlayerController* PC = Cast<APlayerController>(PlayerCharacter->GetController()))
+	{
+		PC->SetControlRotation(TargetRotation);
 	}
 }

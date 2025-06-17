@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "Util/DebugHelper.h"
 
 AHelper::AHelper()
 {
@@ -34,9 +35,10 @@ void AHelper::SetDialogueManager(UDialogueManager* InManager)
 	DialogueManager = InManager;
 }
 
-void AHelper::Appear(const FVector& SpawnLocation)
+void AHelper::Appear(const FVector& SpawnLocation, const FRotator& SpawnRotation)
 {
-	SetActorLocation(SpawnLocation + FVector(100.f, 100.f, 100.f));
+	SetActorLocation(SpawnLocation + FVector(-20.f, -50.f, 10.f));
+	SetActorRotation(SpawnRotation);
 	SetActorHiddenInGame(false);
 
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
@@ -54,8 +56,8 @@ void AHelper::Appear(const FVector& SpawnLocation)
 		);
 	}
 
-	const FVector LaunchDirection = GetActorForwardVector() * 50.f + FVector(10.f, 10.f, 50.f);
-	LaunchCharacter(LaunchDirection, true, true);
+	//const FVector LaunchDirection = GetActorForwardVector() * 50.f + FVector(10.f, 10.f, 50.f);
+	//LaunchCharacter(LaunchDirection, true, true);
 
 	if (AppearMontage)
 	{
@@ -74,6 +76,7 @@ void AHelper::Appear(const FVector& SpawnLocation)
 }
 void AHelper::Disappear()
 {
+	Debug::Print(TEXT("AHelper::Disappear()"));
 	if (DisappearMontage)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -86,16 +89,21 @@ void AHelper::Disappear()
 			FOnMontageEnded EndDelegate;
 			EndDelegate.BindUObject(this, &AHelper::OnDisappearMontageEnded);
 			AnimInstance->Montage_SetEndDelegate(EndDelegate, DisappearMontage);
+			Debug::Print(TEXT("AHelper::Disappear() AnimInstance"));
+
+			Destroy(); // 진행을 위한 임시 삭제
 		}
 	}
 	else
 	{
 		Destroy();
+		Debug::Print(TEXT("AHelper::Disappear() NoAnimInstance"));
 	}
 }
 
 void AHelper::OnDisappearMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
+	Debug::Print(TEXT("AHelper::OnDisappearMontageEnded;pp"));
 	Destroy();
 }
 
@@ -105,6 +113,7 @@ void AHelper::OnAppearMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	if (Capsule)
 	{
 		Capsule->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		SetActorRotation(FRotator::ZeroRotator);
 	}
 
 	if (OnAppearFinishedCallback.IsBound())

@@ -9,6 +9,7 @@ class UAnimMontage;
 class UDialogueManager;
 
 DECLARE_DELEGATE(FOnHelperAppearFinished);
+DECLARE_DELEGATE(FOnHelperDisappearFinished);
 
 UCLASS()
 class DOMINIONPROTOCOL_API AHelper : public ACharacter
@@ -20,7 +21,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void Appear(const FVector& SpawnLocation);
+	void Appear(const FVector& SpawnLocation, const FRotator& SpawnRotation);
 	void Disappear();
 
 	void SetDialogueManager(UDialogueManager* InManager);
@@ -34,6 +35,7 @@ protected:
 
 public:
 	FOnHelperAppearFinished OnAppearFinishedCallback;
+	FOnHelperDisappearFinished OnDisappearFinishedCallback;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
