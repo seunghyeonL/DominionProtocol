@@ -382,6 +382,20 @@ void UPlayerControlEffectBase::SwapWeapon()
 	}
 }
 
+void UPlayerControlEffectBase::DashAttack()
+{
+	Super::DashAttack();
+
+	if (IsValid(InnerState))
+	{
+		InnerState->DashAttack();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlEffectBase::DashAttack : Invalid InnerState"));
+	}
+}
+
 FEffectUIData UPlayerControlEffectBase::GetEffectUIData() const
 {
 	FString TagName = ControlEffectTag.GetTagName().ToString();

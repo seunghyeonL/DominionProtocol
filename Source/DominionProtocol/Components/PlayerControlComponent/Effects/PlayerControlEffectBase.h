@@ -64,6 +64,8 @@ public:
 	virtual void ConsumeItemAction_3()override;
 	virtual void SwapWeapon()override;
 
+	virtual void DashAttack() override;
+
 	FORCEINLINE bool IsActive() const { return bIsActive; }
 	FORCEINLINE UPlayerControlStateBase* GetInnerState() const { return InnerState; }
 	FORCEINLINE void SetInnerState(UPlayerControlStateBase* NewInnerState) { InnerState = NewInnerState; }

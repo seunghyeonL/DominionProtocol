@@ -39,6 +39,8 @@ public:
 	virtual void SwapWeapon() {}
 	virtual void InteractionScroll(const FInputActionValue& Value) {}
 
+	virtual void DashAttack() {}
+
 	virtual void Tick(float DeltaTime) {}
 
 	// Getter/Setter

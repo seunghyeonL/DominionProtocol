@@ -621,3 +621,15 @@ void UPlayerControlComponent::InteractionScroll(const FInputActionValue& Value)
 		Debug::PrintError(TEXT("UPlayerControlComponent::Interaction : Invalid ControlState."));
 	}
 }
+
+void UPlayerControlComponent::DashAttack()
+{
+	if (IsValid(PlayerControlState))
+	{
+		PlayerControlState->DashAttack();
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlComponent::DashAttack : Invalid ControlState."));
+	}
+}

@@ -103,6 +103,7 @@ namespace SkillGroupTags
 	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack"));
 	inline const FGameplayTag WeaponSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill"));
 	inline const FGameplayTag MagicSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill"));
+	inline const FGameplayTag DashAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.DashAttack"));
 	inline const FGameplayTag Dash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Dash"));
 	inline const FGameplayTag Parry = FGameplayTag::RequestGameplayTag(TEXT("Skill.Parry"));
 
@@ -144,6 +145,10 @@ namespace SkillTags
 	inline const FGameplayTag BaseAttackClaw2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.second.Claw"));
 	inline const FGameplayTag BaseAttackClaw3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.third.Claw"));
 	inline const FGameplayTag BaseAttackClaw4 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.fourth.Claw"));
+	
+	inline const FGameplayTag DashAttackSword = FGameplayTag::RequestGameplayTag(TEXT("Skill.DashAttack.Sword"));
+	inline const FGameplayTag DashAttackClaw = FGameplayTag::RequestGameplayTag(TEXT("Skill.DashAttack.Claw"));
+	inline const FGameplayTag DashAttackAxe = FGameplayTag::RequestGameplayTag(TEXT("Skill.DashAttack.Axe"));
 
 	inline const FGameplayTag WeaponSkillSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Sword"));
 	inline const FGameplayTag WeaponSkillAxe1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Axe"));
