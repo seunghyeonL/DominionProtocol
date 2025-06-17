@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SkillComponent/Skills/BaseSkill.h"
+#include "Components/SkillComponent/Skills/Weapon/BaseDashAttack.h"
 #include "DashAttackSword.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UDashAttackSword : public UBaseSkill
+class DOMINIONPROTOCOL_API UDashAttackSword : public UBaseDashAttack
 {
 	GENERATED_BODY()
 

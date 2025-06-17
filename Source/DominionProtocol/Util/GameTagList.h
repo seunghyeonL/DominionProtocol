@@ -326,6 +326,7 @@ namespace ItemTags
 	inline const FGameplayTag Key = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.Key"));
 	inline const FGameplayTag EnergyCore = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.EnergyCore"));
 	inline const FGameplayTag GolemHeart = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.GolemHeart"));
+	inline const FGameplayTag HintNote = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.HintNote"));
 }
 
 namespace TraceTags

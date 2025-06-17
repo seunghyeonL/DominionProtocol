@@ -13,4 +13,11 @@ UCLASS()
 class DOMINIONPROTOCOL_API USlowEffect : public UStatusEffectBase
 {
 	GENERATED_BODY()
+
+public:
+	USlowEffect();
+	virtual bool Activate() override;
+	virtual bool Activate(float Duration) override;
+	virtual void Deactivate() override;
+	
 };

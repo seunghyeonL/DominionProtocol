@@ -167,6 +167,15 @@ void UDevCheatManager::EquipSword()
 	}
 }
 
+void UDevCheatManager::EquipAxe()
+{
+	UWorld* World = GetWorld();
+	if (IsValid(World))
+	{
+		UCheatBPLib::EquipAxe(World);
+	}
+}
+
 void UDevCheatManager::ActivateEffect(FName GameplayTag, float Magnitude, float Duration)
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(GetOuterAPlayerController()->GetPawn());

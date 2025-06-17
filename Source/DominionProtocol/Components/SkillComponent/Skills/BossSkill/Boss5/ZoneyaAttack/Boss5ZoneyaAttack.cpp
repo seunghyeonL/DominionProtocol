@@ -1,5 +1,5 @@
 #include "Components/SkillComponent/Skills/BossSkill/Boss5/ZoneyaAttack/Boss5ZoneyaAttack.h"
-#include "NiagaraFunctionLibrary.h"
+#include "Util/DebugHelper.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
@@ -28,29 +28,34 @@ void UBoss5ZoneyaAttack::Execute()
 	UCapsuleComponent* Capsule = TargetCharacter->GetCapsuleComponent();
 	if (!Capsule) return;
 
-	const FVector SpawnLocation = TargetCharacter->GetActorLocation() - FVector(0.f, 0.f, Capsule->GetScaledCapsuleHalfHeight());
-
 	PC = Cast<APlayerController>(TargetCharacter->GetController());
 	if (PC)
 	{
-		PC->SetIgnoreMoveInput(true);
+		TargetCharacter->DisableInput(PC);
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(ZoneyaTimerHandle, this, &UBoss5ZoneyaAttack::EndZoneya, 3.0f, false);
 
-	if (!NiagaraParticles.IsEmpty() && NiagaraParticles.IsValidIndex(0))
+	UClass* TimePrisonClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss5/TimePrison/BP_TimePrison.BP_TimePrison_C"));
+	if (TimePrisonClass)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			GetWorld(),
-			NiagaraParticles[0],
-			SpawnLocation,
-			FRotator::ZeroRotator,
-			FVector(1.0f),
-			true,
-			true,
-			ENCPoolMethod::None,
-			true
-		);
+		AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(TimePrisonClass, FVector::ZeroVector, FRotator::ZeroRotator);
+
+		if (SpawnedActor && TargetCharacter)
+		{
+			USceneComponent* TargetRoot = TargetCharacter->GetRootComponent();
+			if (TargetRoot)
+			{
+				SpawnedActor->AttachToComponent(TargetRoot, FAttachmentTransformRules::KeepRelativeTransform);
+
+				const float HalfHeight = Capsule->GetScaledCapsuleHalfHeight();
+				SpawnedActor->SetActorRelativeLocation(FVector(0.f, 0.f, -HalfHeight)); // 위치 보정
+			}
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UBoss5ZoneyaAttack::TimePrison Asset's location is not assigned"));
 	}
 
 	TargetCharacter->GetMesh()->bPauseAnims = true;
@@ -60,14 +65,14 @@ void UBoss5ZoneyaAttack::Execute()
 		UGameplayStatics::PlaySoundAtLocation(
 			this,
 			Sounds[0],
-			SpawnLocation
+			TargetCharacter->GetActorLocation()
 		);
 	}
 }
 
 void UBoss5ZoneyaAttack::EndZoneya()
 {
-	PC->SetIgnoreMoveInput(false);
+	TargetCharacter->EnableInput(PC);
 	TargetCharacter->GetMesh()->bPauseAnims = false;
 
 	// 로봇 팔 공격 로직

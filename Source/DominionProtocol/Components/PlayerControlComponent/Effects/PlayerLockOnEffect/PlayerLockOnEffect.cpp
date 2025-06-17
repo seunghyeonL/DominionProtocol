@@ -10,6 +10,7 @@
 #include "VectorTypes.h"
 #include "AI/AIControllers/BaseAIController.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Util/DebugHelper.h"
 
@@ -24,16 +25,23 @@ bool UPlayerLockOnEffect::Activate()
 	{
 		return false;
 	}
+
+	check(IsValid(OwnerCharacter));
+	OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+	
 	return true;
 }
 
 bool UPlayerLockOnEffect::Activate(float Duration)
 {
-	if (!Super::Activate(Duration))
-	{
-		return false;
-	}
-	return true;
+	// 사용하지 않음
+	// if (!Super::Activate(Duration))
+	// {
+	// 	return false;
+	// }
+	
+	Activate();
+	return false;
 }
 
 void UPlayerLockOnEffect::Deactivate()
@@ -44,6 +52,9 @@ void UPlayerLockOnEffect::Deactivate()
 	}
 	
 	Super::Deactivate();
+	
+	check(IsValid(OwnerCharacter));
+	OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void UPlayerLockOnEffect::Tick(float DeltaTime)

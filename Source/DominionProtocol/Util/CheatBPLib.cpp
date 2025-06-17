@@ -137,8 +137,32 @@ void UCheatBPLib::EquipSword(UObject* WorldContextObject)
 		ItemComponent->AddItem(ItemTags::SwordWeapon,1);
 		ItemComponent->EquipItem(FName("WeaponSlot_Primary"),ItemTags::SwordWeapon);
 	}
-	else
+}
+
+void UCheatBPLib::EquipAxe(UObject* WorldContextObject)
+{
+	if (!WorldContextObject)
 	{
+		return;
+	}
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
+
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(PlayerController->GetPawn());
+	if (!IsValid(PlayerCharacter))
+	{
+		return;
+	}
+
+	UItemComponent* ItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
+	if (IsValid(ItemComponent))
+	{
+		ItemComponent->AddItem(ItemTags::AxeWeapon,1);
+		ItemComponent->EquipItem(FName("WeaponSlot_Primary"),ItemTags::AxeWeapon);
 	}
 }
 
