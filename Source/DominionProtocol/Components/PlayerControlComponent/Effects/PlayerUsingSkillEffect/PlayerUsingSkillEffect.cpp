@@ -8,6 +8,7 @@
 #include "Components/PlayerControlComponent/ControlComponentUser.h"
 #include "Util/DebugHelper.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedDashAttack/BufferedDashAttack.h"
 #include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedMagicSkill/BufferedMagicSkill.h"
 #include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedParry/BufferedParry.h"
 #include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedWeaponSkill/BufferedWeaponSkill.h"
@@ -157,9 +158,18 @@ void UPlayerUsingSkillEffect::BaseAttack()
 
 	check(ControlComponent);
 
-	auto BufferedBaseAttack = NewObject<UBufferedBaseAttack>(ControlComponent);
-	BufferedBaseAttack->SetTimer();
-	BufferedInputArray.Add(BufferedBaseAttack);
+	if (ControlEffectTag.MatchesTag(EffectTags::UsingDash))
+	{
+		auto BufferedDashAttack = NewObject<UBufferedDashAttack>(ControlComponent);
+		BufferedDashAttack->SetTimer();
+		BufferedInputArray.Add(BufferedDashAttack);
+	}
+	else
+	{
+		auto BufferedBaseAttack = NewObject<UBufferedBaseAttack>(ControlComponent);
+		BufferedBaseAttack->SetTimer();
+		BufferedInputArray.Add(BufferedBaseAttack);
+	}
 }
 
 void UPlayerUsingSkillEffect::WeaponSkill()

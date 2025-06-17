@@ -346,5 +346,21 @@ void UPlayerControlState::InteractionScroll(const FInputActionValue& Value)
 		const float InputValue = Value.Get<float>();
 		PlayerCharacter->EventInteractionWidgetScroll(InputValue);
 	}
+}
 
+void UPlayerControlState::DashAttack()
+{
+	Super::DashAttack();
+
+	// ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
+	check(OwnerCharacter);
+
+	if (auto SkillComponentUser = Cast<ISkillComponentUser>(OwnerCharacter))
+	{
+		SkillComponentUser->ExecuteSkill(SkillGroupTags::DashAttack);
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UPlayerControlState::DashAttack : Character doesn't implement ISkillComponentUser."));
+	}
 }

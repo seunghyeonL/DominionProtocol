@@ -101,4 +101,5 @@ public:
 	void SwapWeapon();
 	void InteractionScroll(const FInputActionValue& Value);
 	void SwitchShowAndHideInventory();
+	void DashAttack();
 };
