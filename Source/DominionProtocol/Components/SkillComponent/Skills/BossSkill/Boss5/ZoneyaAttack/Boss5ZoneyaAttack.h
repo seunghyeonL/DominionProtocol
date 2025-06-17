@@ -13,4 +13,14 @@ public:
 	UBoss5ZoneyaAttack();
 
 	virtual void Execute() override;
+
+	void EndZoneya();
+
+	FTimerHandle ZoneyaTimerHandle;
+
+	UPROPERTY()
+	TObjectPtr<ACharacter> TargetCharacter;
+
+	UPROPERTY()
+	TObjectPtr<APlayerController> PC;
 };
