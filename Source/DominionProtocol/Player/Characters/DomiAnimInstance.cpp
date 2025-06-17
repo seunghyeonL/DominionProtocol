@@ -102,8 +102,8 @@ void UDomiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	// + -> LockOnTarget is at RightSide, - : -> LockOnTarget is at LeftSide
 	LockOnAngle = (Cross.Z > 0) ? AngleDegrees : -AngleDegrees;
 
-	Debug::Print(FString::Printf(TEXT("LockOnAngle: %f"), LockOnAngle));
-	Debug::Print(FString::Printf(TEXT("ActorRotation: %s"), *Character->GetActorRotation().ToString()));
+	// Debug::Print(FString::Printf(TEXT("LockOnAngle: %f"), LockOnAngle));
+	// Debug::Print(FString::Printf(TEXT("ActorRotation: %s"), *Character->GetActorRotation().ToString()));
 	
 	// Set bShouldMove When Acceleration > 0 and GroundSpeed > 3.0(Little Threshold)
 	bShouldMove = bIsPlayer ? !MovementComponent->GetCurrentAcceleration().IsNearlyZero() && GroundSpeed > 3.0f : GroundSpeed > 3.0f;
