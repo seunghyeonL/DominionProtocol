@@ -44,6 +44,9 @@ protected:
 	FVector Velocity;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
+	float MaxWalkSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")
 	float GroundSpeed;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MovementData")

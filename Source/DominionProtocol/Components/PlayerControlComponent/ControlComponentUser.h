@@ -28,6 +28,7 @@ class DOMINIONPROTOCOL_API IControlComponentUser
 public:
 	virtual UPlayerControlComponent* GetPlayerControlComponent() const = 0;
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() = 0;
+	virtual const FVector& GetCurrentMovementVector() const = 0;
 	virtual void SkillStart(FGameplayTag ControlEffectTag) = 0;
 	virtual void SkillEnd(FGameplayTag ControlEffectTag) = 0;
 };
