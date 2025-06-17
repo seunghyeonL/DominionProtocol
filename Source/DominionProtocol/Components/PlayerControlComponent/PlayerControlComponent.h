@@ -74,7 +74,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UBaseBufferedInput> ValidBufferedInput;
 
-	bool bActiveLockOn = false;
+	// bool bActiveLockOn = false;
 
 public:
 	// Called every frame
