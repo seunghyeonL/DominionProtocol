@@ -15,6 +15,9 @@ struct FInputActionValue;
 
 // DECLARE_DELEGATE_OneParam(FOnDashDirectionSet, const FVector&);
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSetLockOnTarget, AActor*)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnActiveLockOn, bool)
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class DOMINIONPROTOCOL_API UPlayerControlComponent : public UActorComponent
 {
@@ -23,11 +26,14 @@ class DOMINIONPROTOCOL_API UPlayerControlComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UPlayerControlComponent();
+
+	FOnSetLockOnTarget OnSetLockOnTarget;
+	FOnActiveLockOn OnActiveLockOn;
 	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	FORCEINLINE void SetValidBufferedInput(UBaseBufferedInput* InBufferedInput) { ValidBufferedInput = InBufferedInput; }
-	FORCEINLINE void SetLockOnTargetActor(AActor* NewActor) { LockOnTargetActor = NewActor; }
+	void SetLockOnTargetActor(AActor* NewActor);
 	FORCEINLINE AActor* GetLockOnTargetActor() const { return LockOnTargetActor; }
 	
 	FORCEINLINE virtual void SetCurrentMovementVector(const FVector& InLastMovementVector) { CurrentMovementVector = InLastMovementVector; }
@@ -50,7 +56,7 @@ protected:
 
 	virtual void InitializeComponent() override;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<AActor> LockOnTargetActor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
@@ -67,6 +73,8 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UBaseBufferedInput> ValidBufferedInput;
+
+	bool bActiveLockOn = false;
 
 public:
 	// Called every frame

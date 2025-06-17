@@ -24,7 +24,7 @@ ABaseEnemy::ABaseEnemy()
 	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 
 	// UI Section
-	HPWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("DomiWidgetComponent"));
+	HPWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("HPBarWidgetComponent"));
 	HPWidgetComponent->SetupAttachment(GetMesh());
 	HPWidgetComponent->SetRelativeLocation(FVector(0, 0, 190));
 	static ConstructorHelpers::FClassFinder<UUserWidget> HPBarWidgetRef (TEXT("/Game/Blueprints/UI/WBP_DomiMonster3DWidget.WBP_DomiMonster3DWidget_C"));
@@ -34,6 +34,18 @@ ABaseEnemy::ABaseEnemy()
 		HPWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
 		HPWidgetComponent->SetDrawSize(FVector2D(80.f, 10.f));
 		HPWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	LockOnWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("LockOnWidgetComponent"));
+	LockOnWidgetComponent->SetupAttachment(GetMesh());
+	LockOnWidgetComponent->SetRelativeLocation(FVector(0, 0, 120));
+	static ConstructorHelpers::FClassFinder<UUserWidget> LockOnWidgetRef (TEXT("/Game/Blueprints/UI/LockOnWidget.LockOnWidget_C"));
+	if (LockOnWidgetRef.Class)
+	{
+		LockOnWidgetComponent->SetWidgetClass(LockOnWidgetRef.Class);
+		LockOnWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+		LockOnWidgetComponent->SetDrawSize(FVector2D(250.f, 250.f));
+		LockOnWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);

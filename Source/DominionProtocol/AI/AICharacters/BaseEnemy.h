@@ -103,6 +103,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UDomiWidgetComponent> HPWidgetComponent;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	TObjectPtr<class UDomiWidgetComponent> LockOnWidgetComponent;
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FString MonsterName;
 

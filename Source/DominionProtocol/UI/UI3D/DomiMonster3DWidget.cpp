@@ -6,12 +6,6 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/WidgetComponent/DomiWidgetComponent.h"
 
-void UDomiMonster3DWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-}
-
 void UDomiMonster3DWidget::UpdateMonsterHPBar(const float NewHP)
 {
 	AlphaForAnimMonsterHP = 0.f;
@@ -45,8 +39,17 @@ void UDomiMonster3DWidget::SetupMonster3dWidget()
 {
 	check(IsValid(OwningActor));
 
-	
-	WidgetComponent = OwningActor->FindComponentByClass<UDomiWidgetComponent>();
+	TArray<UDomiWidgetComponent*> WidgetComponents;
+	OwningActor->GetComponents<UDomiWidgetComponent>(WidgetComponents);
+
+	for (auto* DomiWidgetComponent : WidgetComponents)
+	{
+		if (DomiWidgetComponent->GetName().Contains(TEXT("HPBarWidgetComponent")))
+		{
+			WidgetComponent = DomiWidgetComponent;
+			break;
+		}
+	}
 	
 	auto* StatusComp = OwningActor->FindComponentByClass<UStatusComponent>();
 	if (StatusComp)

@@ -27,8 +27,6 @@ protected:
 	void SetWidgetRotation() const;
 
 	// Life Cycle
-	virtual void NativeConstruct() override;
-
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 protected:

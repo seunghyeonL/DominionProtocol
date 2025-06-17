@@ -6,9 +6,7 @@
 #include "PlayerControlStateBase.h"
 #include "PlayerControlState.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class DOMINIONPROTOCOL_API UPlayerControlState : public UPlayerControlStateBase
 {

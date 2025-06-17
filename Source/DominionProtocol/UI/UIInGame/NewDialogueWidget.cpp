@@ -34,5 +34,6 @@ void UNewDialogueWidget::BindCreateDialogueDelegate()
 
 void UNewDialogueWidget::BindDialogueDelegate(UDialogueManager* DialogueManager)
 {
+	CurrentDialogueManager = DialogueManager;
 	DialogueManager->OnUpdateDialogueText.AddUObject(this, &UNewDialogueWidget::UpdateDialogueWidget);
 }

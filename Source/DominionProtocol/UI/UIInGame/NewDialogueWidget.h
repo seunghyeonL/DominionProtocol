@@ -32,4 +32,7 @@ protected:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	FText CurrentDialogueText;
+
+	UPROPERTY(BlueprintReadOnly)
+	UDialogueManager* CurrentDialogueManager;
 };

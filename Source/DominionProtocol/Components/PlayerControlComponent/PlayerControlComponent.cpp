@@ -55,6 +55,12 @@ void UPlayerControlComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
+void UPlayerControlComponent::SetLockOnTargetActor(AActor* NewActor)
+{
+	LockOnTargetActor = NewActor;
+	OnSetLockOnTarget.Broadcast(LockOnTargetActor);	
+}
+
 // Called when the game starts
 void UPlayerControlComponent::BeginPlay()
 {
@@ -555,6 +561,11 @@ void UPlayerControlComponent::LockOn()
 	if (IsValid(PlayerControlState))
 	{
 		PlayerControlState->LockOn();
+
+		// bActiveLockOn Delegate -> Widget
+		const bool bActiveLockOn = GetActiveControlEffectTags().HasTag(EffectTags::LockOn);
+		// bActiveLockOn = !bActiveLockOn;
+		OnActiveLockOn.Broadcast(bActiveLockOn);
 	}
 	else
 	{
