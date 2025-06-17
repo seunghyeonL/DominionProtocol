@@ -19,6 +19,8 @@ class DOMINIONPROTOCOL_API UBaseBufferedInput : public UObject
 protected:
 	bool bIsExpired;
 	FTimerHandle ValidTimerHandle;
+	float ExpireDuration;
+	
 	UPROPERTY()
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
 

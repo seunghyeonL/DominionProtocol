@@ -6,6 +6,7 @@
 UBaseBufferedInput::UBaseBufferedInput()
 {
 	bIsExpired = false;
+	ExpireDuration = 0.3f;
 }
 
 void UBaseBufferedInput::SetTimer()
@@ -25,7 +26,7 @@ void UBaseBufferedInput::SetTimer()
 
 				WeakThis->bIsExpired = true;
 			},
-			0.3f,
+			ExpireDuration,
 			false
 			);
 	}
