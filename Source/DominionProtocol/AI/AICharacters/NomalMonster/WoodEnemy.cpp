@@ -30,6 +30,8 @@ AWoodEnemy::AWoodEnemy()
 	TagContainer.AddTag(ItemTags::BasicWeapon);
 
 	AttackTraceComponent->InitializeTracers(TagContainer, WeaponTraceBox);
+
+	EssenceAmount = 90.f;
 }
 
 void AWoodEnemy::Onewitch()

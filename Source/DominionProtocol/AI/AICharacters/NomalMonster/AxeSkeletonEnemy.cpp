@@ -8,4 +8,6 @@
 AAxeSkeletonEnemy::AAxeSkeletonEnemy()
 {
 	PawnTag = PawnTags::AxeSkeleton;
+
+	EssenceAmount = 60.f;
 }

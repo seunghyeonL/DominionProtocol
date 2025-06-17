@@ -6,4 +6,6 @@
 ASwordSkeletonEnemy::ASwordSkeletonEnemy()
 {
 	PawnTag = PawnTags::SwordSkeleton;
+
+	EssenceAmount = 500.f;
 }
