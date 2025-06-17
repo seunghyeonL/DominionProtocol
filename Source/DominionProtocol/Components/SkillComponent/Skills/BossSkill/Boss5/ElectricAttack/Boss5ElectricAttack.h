@@ -14,4 +14,6 @@ public:
 	UBoss5ElectricAttack();
 
 	virtual void Execute()override;
+
+	
 };
