@@ -12,10 +12,7 @@ class DOMINIONPROTOCOL_API UPlayerRunningEffect : public UStatusEffectBase
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Coefficient")
 	float SpeedCoefficient;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Coefficient")
 	float StaminaPerSecond;
 
 public:

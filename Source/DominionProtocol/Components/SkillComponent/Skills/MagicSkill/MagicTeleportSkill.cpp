@@ -277,16 +277,16 @@ void UMagicTeleportSkill::NotLockOnState()
 			Params
 		);
 
-		//DrawDebugLine(
-		//	World,
-		//	Start,
-		//	End,
-		//	FColor::White,
-		//	false,
-		//	2.0f,
-		//	0,
-		//	2.0f
-		//);
+		DrawDebugLine(
+			World,
+			Start,
+			End,
+			FColor::White,
+			false,
+			2.0f,
+			0,
+			2.0f
+		);
 
 		// 벽 발견
 		if (bForwardHit)

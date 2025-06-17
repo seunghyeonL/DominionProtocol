@@ -13,7 +13,6 @@ UStatusComponent::UStatusComponent()
 {
 	bWantsInitializeComponent = true;
 	PrimaryComponentTick.bCanEverTick = true;
-	AIState = nullptr;
 }
 
 void UStatusComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

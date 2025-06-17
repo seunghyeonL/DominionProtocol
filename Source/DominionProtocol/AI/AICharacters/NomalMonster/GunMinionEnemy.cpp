@@ -6,6 +6,8 @@
 AGunMinionEnemy::AGunMinionEnemy()
 {
 	PawnTag = PawnTags::GunMinion;
+
+	EssenceAmount = 55.f;
 }
 
 void AGunMinionEnemy::Attack()

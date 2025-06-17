@@ -57,8 +57,7 @@ public:
 	FOnInteractionWidgetScroll OnInteractionWidgetScroll;
 	FOnUpdateEffectUIDataArray OnUpdateEffectUIDataArray;
 
-	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
-	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
+	
 
 	//Getter
 	UFUNCTION(BlueprintCallable)
@@ -79,6 +78,9 @@ public:
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
 	FORCEINLINE virtual UPlayerControlComponent* GetPlayerControlComponent() const override { return ControlComponent; }
+	virtual const FVector& GetCurrentMovementVector() const override;
+	virtual void SkillStart(FGameplayTag ControlEffectTag) override;
+	virtual void SkillEnd(FGameplayTag ControlEffectTag) override;
 
 	// StatusComponentUser
 	FORCEINLINE virtual UStatusComponent* GetStatusComponent() const override { return StatusComponent; }

@@ -1,8 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
 #include "EnumAndStruct/EGameStoryState.h"
 #include "EnumAndStruct/FDialogueData.h"
+#include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DialogueManager.generated.h"
 
 class AHelper;
@@ -16,11 +18,10 @@ class DOMINIONPROTOCOL_API UDialogueManager : public UObject
 	GENERATED_BODY()
 	
 public:
-
-	FOnUpdateDialogueText OnUpdateDialogueText;
-
+    FOnUpdateDialogueText OnUpdateDialogueText;
 	void LoadDialogueDataTable();
-	bool TryStartDialogueIfExists(EGameStoryState InState, FVector CrackLocation);
+	bool TryStartDialogueIfExists(EGameStoryState InState, const FVector& CrackLocation, const FRotator& CrackRotation);
+	
 	UFUNCTION(BlueprintCallable)
 	void AdvanceDialogue();
 	void OnHelperAppearFinished();
@@ -49,4 +50,5 @@ private:
 	EGameStoryState CurrentStoryState;
 
 	FVector CachedHelperSpawnLocation;
+	FRotator CachedHelperSpawnRotation;
 };

@@ -18,6 +18,7 @@ UDomiAnimInstance::UDomiAnimInstance()
 	bIsPlayer = false;
 	Velocity = FVector::ZeroVector;
 	GroundSpeed = 0.f;
+	MaxWalkSpeed = 0.f;
 	LockOnAngle = 0.f;
 	bShouldMove = false;
 	bIsFalling = false;
@@ -70,9 +71,18 @@ void UDomiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	FGameplayTagContainer NewTags;
 	
+	Velocity = MovementComponent->Velocity;
+	GroundSpeed = Velocity.Size2D();
+	MaxWalkSpeed = MovementComponent->MaxWalkSpeed;
+	// Debug::Print(FString::Printf(TEXT("MaxWalkSpeed: %f"), MaxWalkSpeed));
+
+	FVector ForwardVector = Character->GetActorForwardVector();
+	FVector MoveDirection = Velocity.GetSafeNormal();
+		
 	if (bIsPlayer)
 	{
 		NewTags = Cast<IControlComponentUser>(Character)->GetActiveControlEffectTags();
+		MoveDirection = Cast<IControlComponentUser>(Character)->GetCurrentMovementVector();
 	}
 	else
 	{
@@ -83,12 +93,6 @@ void UDomiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		ActiveAnimEffects = MoveTemp(NewTags);
 	}
-	
-	Velocity = MovementComponent->Velocity;
-	GroundSpeed = GroundSpeed = Velocity.Size2D();
-
-	FVector ForwardVector = Character->GetActorForwardVector();
-	FVector MoveDirection = Velocity.GetSafeNormal();
 
 	float Dot = FVector::DotProduct(ForwardVector, MoveDirection);
 	float AngleDegrees = FMath::RadiansToDegrees(FMath::Acos(Dot));
@@ -98,13 +102,15 @@ void UDomiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	// + -> LockOnTarget is at RightSide, - : -> LockOnTarget is at LeftSide
 	LockOnAngle = (Cross.Z > 0) ? AngleDegrees : -AngleDegrees;
 
+	// Debug::Print(FString::Printf(TEXT("LockOnAngle: %f"), LockOnAngle));
+	// Debug::Print(FString::Printf(TEXT("ActorRotation: %s"), *Character->GetActorRotation().ToString()));
+	
 	// Set bShouldMove When Acceleration > 0 and GroundSpeed > 3.0(Little Threshold)
 	bShouldMove = bIsPlayer ? !MovementComponent->GetCurrentAcceleration().IsNearlyZero() && GroundSpeed > 3.0f : GroundSpeed > 3.0f;
 
 	// Set States From Character Movement Component
 	bIsFalling = MovementComponent->IsFalling();
 	// bIsCrouched = MovementComponent->IsCrouching();
-	
 }
 
 void UDomiAnimInstance::SetDashAngle(const FVector& DashDirection)

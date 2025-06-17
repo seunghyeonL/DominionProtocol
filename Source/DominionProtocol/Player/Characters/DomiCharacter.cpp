@@ -324,6 +324,12 @@ FGameplayTagContainer& ADomiCharacter::GetActiveControlEffectTags()
 	return ControlComponent->GetActiveControlEffectTags();
 }
 
+const FVector& ADomiCharacter::GetCurrentMovementVector() const
+{
+	check(ControlComponent);
+	return ControlComponent->GetCurrentMovementVector();
+}
+
 void ADomiCharacter::SkillStart(FGameplayTag ControlEffectTag)
 {
 	check(ControlComponent);

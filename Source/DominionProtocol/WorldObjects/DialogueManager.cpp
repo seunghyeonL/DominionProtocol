@@ -24,9 +24,11 @@ void UDialogueManager::LoadDialogueDataTable()
 	}
 }
 
-bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, FVector CrackLocation)
+bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const FVector& CrackLocation, const FRotator& CrackRotation)
 {
 	CachedHelperSpawnLocation = CrackLocation;
+	CachedHelperSpawnRotation = CrackRotation;
+	CachedHelperSpawnRotation.Yaw -= 40.f;
 	LoadDialogueDataTable();
 
 	Debug::Print(TEXT("UDialogueSubsystem::TryStartDialogueIfExists()"));
@@ -61,6 +63,10 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, FVector
 	CurrentLineIndex = 0;
 	ExecuteDialogueLine();
 	Debug::Print(TEXT("UDialogueSubsystem: Return true"));
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (GI) {
+		GI->AdvanceStoryState();
+	}
 	return true;
 }
 
@@ -87,7 +93,6 @@ void UDialogueManager::ExecuteDialogueLine()
 	switch (Line->EventType)
 	{
 	case EDialogueEventType::TextOnly:
-		Debug::Print(TEXT("====================="));
 		if (!Line->DialogueText.IsEmpty())
 		{
 			Debug::Print(Line->DialogueText.ToString()); // 대사
@@ -99,7 +104,6 @@ void UDialogueManager::ExecuteDialogueLine()
 			CurrentDialogueString.Append(*Line->DialogueText.ToString());
 			OnUpdateDialogueText.Broadcast(FText::FromString(CurrentDialogueString)); // 대사 델리게이트
 		}
-		Debug::Print(TEXT("====================="));
 		AdvanceDialogue();
 		break;
 	case EDialogueEventType::SpawnHelper:
@@ -127,7 +131,7 @@ void UDialogueManager::TriggerHelperAppear()
 	CurrentHelper = GetWorld()->SpawnActor<AHelper>(
 		HelperClass,
 		CachedHelperSpawnLocation,
-		FRotator::ZeroRotator,
+		CachedHelperSpawnRotation,
 		SpawnParams
 	);
 	if (CurrentHelper)
@@ -136,7 +140,7 @@ void UDialogueManager::TriggerHelperAppear()
 
 		CurrentHelper->SetDialogueManager(this);
 		CurrentHelper->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
-		CurrentHelper->Appear(CachedHelperSpawnLocation);
+		CurrentHelper->Appear(CachedHelperSpawnLocation, CachedHelperSpawnRotation);
 	}
 }
 
@@ -144,6 +148,7 @@ void UDialogueManager::TriggerHelperDisappear()
 {
 	if (CurrentHelper)
 	{
+		Debug::Print(TEXT("UDialogueManager::TriggerHelperDisappear()"));
 		CurrentHelper->Disappear();
 	}
 }
@@ -155,5 +160,6 @@ void UDialogueManager::OnHelperAppearFinished()
 
 void UDialogueManager::OnHelperDisappearFinished()
 {
+	Debug::Print(TEXT("UDialogueManager::OnHelperDisappearFinished()"));
 	AdvanceDialogue();
 }

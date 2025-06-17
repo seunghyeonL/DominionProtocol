@@ -39,12 +39,12 @@ void UBoss1SpecialAttackFirst::AttackTrace() const
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(OwnerCharacter);
 
-	bool bHit = GetWorld()->SweepMultiByChannel(
+	bool bHit = GetWorld()->SweepMultiByObjectType(
 		HitResults,
 		Start,										// 시작 위치
 		End,										// 끝 위치
 		FQuat::Identity,
-		ECollisionChannel::ECC_Pawn,				// 충돌 채널
+		FCollisionObjectQueryParams(ECC_Pawn),		// 충돌 객체 타입
 		FCollisionShape::MakeSphere(AttackRadius),	// 범위 설정 (구체 모양)
 		QueryParams
 	);

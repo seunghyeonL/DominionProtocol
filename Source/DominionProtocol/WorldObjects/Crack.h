@@ -40,6 +40,8 @@ public:
 	FVector GetRespawnTargetPointLocation() const;
 	FRotator GetRespawnTargetPointRotation() const;
 
+	void AlignPlayerForDialogue(ADomiCharacter* PlayerCharacter);
+
 	FORCEINLINE int32 GetCrackIndex() const { return CrackIndex; }
 	
 	//Setter

@@ -9,4 +9,6 @@ AMinionEnemy::AMinionEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PawnTag = PawnTags::Minion;
+
+	EssenceAmount = 68.f;
 }
