@@ -21,7 +21,7 @@ UPlayerDashSkill::UPlayerDashSkill()
 	
 	DashMoveDirection = { 0.f, 0.f, 0.f };
 	
-	DashSpeed = 900.f;
+	MaxDashSpeed = 1500.f;
 	DashDuration = 0.5f;
 	
 	DashMoveStart = 0.05f;
@@ -30,6 +30,15 @@ UPlayerDashSkill::UPlayerDashSkill()
 	bIsMoving = false;
 
 	TimeElapsed = 0.f;
+
+	const int32 Idx0 = DashSpeedCurve.AddPoint(DashMoveStart, 0.f);
+	DashSpeedCurve.Points[Idx0].InterpMode = CIM_CurveAuto;
+
+	const int32 Idx1 = DashSpeedCurve.AddPoint((DashMoveStart + DashMoveEnd) / 2, MaxDashSpeed);
+	DashSpeedCurve.Points[Idx1].InterpMode = CIM_CurveAuto;
+
+	const int32 Idx2 = DashSpeedCurve.AddPoint(DashMoveEnd, 0.f);
+	DashSpeedCurve.Points[Idx2].InterpMode = CIM_CurveAuto;
 }
 
 void UPlayerDashSkill::Initialize(ACharacter* InOwnerCharacter)
@@ -132,7 +141,7 @@ void UPlayerDashSkill::Tick(float DeltaTime)
 	
 	auto MovementComponent = OwnerCharacter->GetCharacterMovement();
 	
-	FVector Step = DashMoveDirection * DashSpeed * DeltaTime;
+	FVector Step = DashMoveDirection * DashSpeedCurve.Eval(TimeElapsed) * DeltaTime;
 	FVector AdjustedStep = Step;
 
 	// 1. 바닥에 닿아 있다면 바닥 Normal에 대해 투영
@@ -140,7 +149,7 @@ void UPlayerDashSkill::Tick(float DeltaTime)
 	{
 		FVector FloorNormal = MovementComponent->CurrentFloor.HitResult.Normal;
 		FVector DashDirection = FVector::VectorPlaneProject(Step, FloorNormal).GetSafeNormal();
-		AdjustedStep = DashDirection * DashSpeed * DeltaTime;
+		AdjustedStep = DashDirection * DashSpeedCurve.Eval(TimeElapsed) * DeltaTime;
 	}
 
 	// 2. 벽에 닿아 있다면 벽 Normal에 대해 다시 투영
@@ -165,7 +174,7 @@ void UPlayerDashSkill::Tick(float DeltaTime)
 	{
 		const FVector WallNormal = WallHit.Normal;
 		FVector DashDirection = FVector::VectorPlaneProject(AdjustedStep, WallNormal).GetSafeNormal();
-		AdjustedStep = DashDirection * DashSpeed * DeltaTime;
+		AdjustedStep = DashDirection * DashSpeedCurve.Eval(TimeElapsed) * DeltaTime;
 	}
 	// 여기까지 벽에서 미끄러지는 로직
 	

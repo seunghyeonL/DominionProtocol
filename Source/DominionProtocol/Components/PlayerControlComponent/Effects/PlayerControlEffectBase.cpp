@@ -174,12 +174,12 @@ void UPlayerControlEffectBase::Deactivate()
 	bIsActive = false;
 	CachedDuration = 0.f;
 	DurationRemained = 0.f;
+	ControlComponent->GetActiveControlEffectTags().RemoveTag(ControlEffectTag);
+	
 	if (ControlComponent->GetOwner()->GetClass()->ImplementsInterface(UEffectUser::StaticClass()))
 	{
 		IEffectUser::Execute_SendEffectUIDatas(ControlComponent->GetOwner());
 	}
-	
-	ControlComponent->GetActiveControlEffectTags().RemoveTag(ControlEffectTag);
 }
 
 void UPlayerControlEffectBase::Tick(float DeltaTime)

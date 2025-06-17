@@ -22,7 +22,9 @@ public:
 	virtual void Execute() override;
 
 protected:
+	FInterpCurveFloat MoveSpeedCurve;
+	
 	float TimeElapsed;
-	float MoveSpeed;
+	float MaxMoveSpeed;
 	float MoveDuration;
 };

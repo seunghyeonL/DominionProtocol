@@ -19,6 +19,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPlayerControlComponent> ControlComponent;
 
+	FInterpCurveFloat DashSpeedCurve;
+
 public:
 	UPlayerDashSkill();
 
@@ -34,7 +36,7 @@ public:
 	FVector DashMoveDirection;
 	
 	// === Dash 수치 설정값 ===
-	float DashSpeed;
+	float MaxDashSpeed;
 	float DashDuration;
 	
 	float DashMoveStart;
