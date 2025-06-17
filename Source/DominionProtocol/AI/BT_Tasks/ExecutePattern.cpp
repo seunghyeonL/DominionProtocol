@@ -63,7 +63,12 @@ EBTNodeResult::Type UExecutePattern::AbortTask(UBehaviorTreeComponent& OwnerComp
 	ACharacter* Character = Cast<ACharacter>(OwnerComp.GetAIOwner()->GetPawn());
 	if (Character && Character->GetMesh())
 	{
-		Character->GetMesh()->GetAnimInstance()->Montage_Stop(0.f);
+		auto Anim = Character->GetMesh()->GetAnimInstance();
+		
+		if (IsValid(Anim))
+		{
+			Anim->Montage_Stop(0.f);
+		}
 	}
 
 	return EBTNodeResult::Aborted;
