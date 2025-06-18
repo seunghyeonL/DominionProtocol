@@ -39,7 +39,7 @@ ABaseEnemy::ABaseEnemy()
 
 	//LockOnComponent
 	LockOnComponent = CreateDefaultSubobject<ULockOnComponent>(TEXT("LockOnComponent"));
-	LockOnComponent->SetupAttachment(RootComponent);
+	LockOnComponent->SetupAttachment(GetMesh(), FName("spine_03"));
 
 	LockOnWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("LockOnWidgetComponent"));
 	LockOnWidgetComponent->SetupAttachment(LockOnComponent);
