@@ -5,6 +5,7 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/LockOnComponent/LockOnComponent.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "Components/SkillComponent/SkillComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
@@ -36,9 +37,13 @@ ABaseEnemy::ABaseEnemy()
 		HPWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
+	//LockOnComponent
+	LockOnComponent = CreateDefaultSubobject<ULockOnComponent>(TEXT("LockOnComponent"));
+	LockOnComponent->SetupAttachment(RootComponent);
+
 	LockOnWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("LockOnWidgetComponent"));
-	LockOnWidgetComponent->SetupAttachment(GetMesh());
-	LockOnWidgetComponent->SetRelativeLocation(FVector(0, 0, 120));
+	LockOnWidgetComponent->SetupAttachment(LockOnComponent);
+	// LockOnWidgetComponent->SetRelativeLocation(FVector(0, 0, 120));
 	static ConstructorHelpers::FClassFinder<UUserWidget> LockOnWidgetRef (TEXT("/Game/Blueprints/UI/LockOnWidget.LockOnWidget_C"));
 	if (LockOnWidgetRef.Class)
 	{

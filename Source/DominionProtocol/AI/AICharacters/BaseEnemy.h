@@ -17,6 +17,7 @@
 class AEssence;
 class USkillComponent;
 class UStatusComponent;
+class ULockOnComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnEffectUIDataArray, TArray<FEffectUIData>&);
 
@@ -90,6 +91,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkillComponent> SkillComponent;
+
+	// LockOnComponent: LockOn할 위치 블루프린트에서 위치 수정
+	UPROPERTY(EditDefaultsOnly, BlueprintReadwrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<ULockOnComponent> LockOnComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tag", meta = (AllowPrivateAccess = "true"))
 	FGameplayTag PawnTag;
