@@ -142,7 +142,5 @@ void ALever::Interact_Implementation(AActor* Interactor)
 
 FText ALever::GetInteractMessage_Implementation() const
 {
-	return bIsOn
-		? FText::FromString(TEXT("레버 활성화"))
-		: FText::FromString(TEXT("레버 비활성화"));
+	return FText::FromString(TEXT("레버 작동"));
 }

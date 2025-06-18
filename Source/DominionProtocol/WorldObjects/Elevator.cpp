@@ -153,7 +153,5 @@ FText AElevator::GetInteractMessage_Implementation() const
 		return FText::GetEmpty();
 	}
 
-	return bIsAtTop
-		? FText::FromString(TEXT("내려가기"))
-		: FText::FromString(TEXT("올라가기"));
+	return FText::FromString(TEXT("엘레베이터 작동"));
 }

@@ -97,5 +97,5 @@ void AStoryTrigger::Interact_Implementation(AActor* Interactor)
 
 FText AStoryTrigger::GetInteractMessage_Implementation() const
 {
-	return FText::FromString(TEXT("Story 확인하기"));
+	return FText::FromString(TEXT("확인하기"));
 }

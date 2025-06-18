@@ -45,7 +45,7 @@ void AElevatorCaller::Interact_Implementation(AActor* Interactor)
 
 FText AElevatorCaller::GetInteractMessage_Implementation() const
 {
-	return FText();
+	return FText::FromString(TEXT("엘레베이터 부르기"));
 }
 
 void AElevatorCaller::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
