@@ -17,7 +17,6 @@ ABoss2Enemy::ABoss2Enemy()
 void ABoss2Enemy::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -28,7 +27,7 @@ void ABoss2Enemy::Tick(float DeltaTime)
 
 void ABoss2Enemy::OnParried_Implementation()
 {
-	StatusComponent->ActivateStatusEffect(EffectTags::Parried, 0.f, 1.f);
+	StatusComponent->ActivateStatusEffect(EffectTags::Parried, 0.f, 3.f);
 }
 
 // Called to bind functionality to input
