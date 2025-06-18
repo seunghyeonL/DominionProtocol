@@ -41,6 +41,9 @@ protected:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
+
+private:
+	void FindAndLinkAnother();
 	
 // Variables
 protected:
@@ -52,10 +55,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UArrowComponent> ArrowComponent;
-	
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	TObjectPtr<ATeleporter> LinkedTeleporter;
+	FString TeleporterName;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	FString LinkedTeleporterName;
 
 private:
+	UPROPERTY()
 	TObjectPtr<ADomiCharacter> CachedCharacter;
+
+	UPROPERTY()
+	TObjectPtr<ATeleporter> LinkedTeleporter;
 };

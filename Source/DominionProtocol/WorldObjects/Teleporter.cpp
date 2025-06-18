@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "EngineUtils.h"
 
 #include "Util/DebugHelper.h"
 
@@ -32,13 +33,16 @@ void ATeleporter::BeginPlay()
 
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ATeleporter::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ATeleporter::OnOverlapEnd);
+
+	FindAndLinkAnother();
 }
 
 void ATeleporter::Interact_Implementation(AActor* Interactor)
 {
 	if (IsValid(CachedCharacter))
 	{
-		CachedCharacter->TeleportTo(LinkedTeleporter->GetActorLocation(), LinkedTeleporter->GetActorRotation());
+		CachedCharacter->SetActorLocation(LinkedTeleporter->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		CachedCharacter->SetActorRotation(LinkedTeleporter->GetActorRotation(), ETeleportType::TeleportPhysics);
 	}
 	else
 	{
@@ -82,5 +86,23 @@ void ATeleporter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		}
 		
 		CachedCharacter->RemoveInteractableActor(this);
+	}
+}
+
+void ATeleporter::FindAndLinkAnother()
+{
+	for (TActorIterator<ATeleporter> It(GetWorld()); It; ++It)
+	{
+		ATeleporter* OtherTeleporter = *It;
+		if (OtherTeleporter != this && OtherTeleporter->TeleporterName == LinkedTeleporterName)
+		{
+			LinkedTeleporter = OtherTeleporter;
+
+			if (!IsValid(OtherTeleporter->LinkedTeleporter))
+			{
+				OtherTeleporter->LinkedTeleporter = this;
+			}
+			break;
+		}
 	}
 }
