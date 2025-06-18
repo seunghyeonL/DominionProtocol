@@ -108,5 +108,4 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FString MonsterName;
-
 };
