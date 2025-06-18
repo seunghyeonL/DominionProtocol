@@ -51,7 +51,7 @@ public:
 	FORCEINLINE float GetLaunchZSpeed() const { return LaunchZSpeed; }
 	FORCEINLINE float IsMagicSkill() const { return bIsMagicSkill; }
 	FORCEINLINE float IsCoolDowning() const { return bIsCoolDowning; }
-	
+	FORCEINLINE float GetGroggyDamage() const { return GroggyDamage; }
 
 protected:
 	virtual bool CheckParry(AActor* HitActor) const;
@@ -105,4 +105,6 @@ protected:
 	float LaunchZSpeed;
 
 	float CoolDownTime;
+
+	float GroggyDamage;
 };
