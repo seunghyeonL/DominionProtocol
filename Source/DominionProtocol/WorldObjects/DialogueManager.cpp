@@ -102,15 +102,12 @@ void UDialogueManager::ExecuteDialogueLine()
 			CurrentDialogueString.Append(*Line->DialogueText.ToString());
 			OnUpdateDialogueText.Broadcast(FText::FromString(CurrentDialogueString)); // 대사 델리게이트
 		}
-		AdvanceDialogue();
 		break;
 	case EDialogueEventType::SpawnHelper:
-		//AdvanceDialogue();
 		CurrentDialogueString = TEXT("");
 		TriggerHelperAppear();
 		return;
 	case EDialogueEventType::DespawnHelper:
-		//AdvanceDialogue();
 		CurrentDialogueString = TEXT("");
 		TriggerHelperDisappear();
 		return;

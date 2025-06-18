@@ -83,7 +83,7 @@ void AInGameController::SetupInputModeUIOnly()
 	{
 		if (!LocalPlayerInputSubsystem->HasMappingContext(UIOnlyMappingContext))
 		{
-			LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1000);	
+			LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1);	
 		}
 		LocalPlayerInputSubsystem->RemoveMappingContext(DefaultMappingContext);
 
@@ -99,7 +99,7 @@ void AInGameController::SetupInputModeGameAndUI()
 	{
 		if (!LocalPlayerInputSubsystem->HasMappingContext(UIOnlyMappingContext))
 		{
-			LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1000);	
+			LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1);	
 		}
 
 		const FInputModeGameAndUI CurrentInputMode;
