@@ -223,7 +223,6 @@ void UPlayerControlState::LockOn()
 	if (PlayerControlComponent->GetActiveControlEffectTags().HasTag(EffectTags::LockOn))
 	{
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::LockOn);
-		PlayerControlComponent->SetLockOnTargetActor(nullptr);
 	}
 	else
 	{

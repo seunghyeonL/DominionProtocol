@@ -55,7 +55,11 @@ void UPlayerLockOnEffect::Deactivate()
 	Super::Deactivate();
 	
 	check(IsValid(OwnerCharacter));
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(IsValid(ControlComponent));
+	
 	OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
+	ControlComponent->SetLockOnTargetActor(nullptr);
 }
 
 void UPlayerLockOnEffect::Tick(float DeltaTime)
@@ -72,7 +76,6 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 	check(StatusComponenetUser);
 	if (StatusComponenetUser->GetActiveStatusEffectTags().HasTagExact(EffectTags::Death))
 	{
-		ControlComponent->SetLockOnTargetActor(nullptr);
 		Deactivate();
 		ControlComponent->LockOn();
 		return;
