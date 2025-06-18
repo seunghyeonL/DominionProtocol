@@ -335,15 +335,19 @@ const FVector& ADomiCharacter::GetCurrentMovementVector() const
 void ADomiCharacter::SkillStart(FGameplayTag ControlEffectTag)
 {
 	check(ControlComponent);
+	check(StatusComponent);
 	
 	ControlComponent->ActivateControlEffect(ControlEffectTag);
+	StatusComponent->StopStaminaRecovery();
 }
 
 void ADomiCharacter::SkillEnd(FGameplayTag ControlEffectTag)
 {
 	check(ControlComponent);
+	check(StatusComponent);
 	
 	ControlComponent->DeactivateControlEffect(ControlEffectTag);
+	StatusComponent->StartStaminaRecovery();
 }
 
 

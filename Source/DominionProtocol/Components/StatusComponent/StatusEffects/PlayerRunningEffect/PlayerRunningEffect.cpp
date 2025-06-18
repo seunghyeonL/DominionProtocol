@@ -68,8 +68,7 @@ void UPlayerRunningEffect::Deactivate()
 		Debug::PrintError(TEXT("UPlayerRunningEffect::Deactivate : Invalid StatusComponent."));
 		return;
 	}
-
-	StatusComponent->BlockStaminaRecovery();
+	
 	auto MovementComponent = Cast<UCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
 	MovementComponent->MaxWalkSpeed /= SpeedCoefficient;
 }

@@ -20,6 +20,7 @@
 #include "InputActionValue.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "Effects/PlayerConsumingItemEffect/PlayerConsumingItemEffect.h"
+#include "Effects/PlayerDashAttackPossibleEffect/PlayerDashAttackPossibleEffect.h"
 #include "Effects/PlayerFlewEffect/PlayerFlewEffect.h"
 #include "Effects/PlayerParryEffect/PlayerParryEffect.h"
 #include "Effects/PlayerPreStunEffect/PlayerPreStunEffect.h"
@@ -102,6 +103,7 @@ void UPlayerControlComponent::InitializeComponent()
 	
 	ControlEffectMap.Add(EffectTags::Death, NewObject<UPlayerDeathEffect>(this));
 	ControlEffectMap.Add(EffectTags::UsingSkill, NewObject<UPlayerUsingSkillEffect>(this));
+	ControlEffectMap.Add(EffectTags::DashAttackPossible, NewObject<UPlayerDashAttackPossibleEffect>(this));
 	ControlEffectMap.Add(EffectTags::Parry, NewObject<UPlayerParryEffect>(this));
 	ControlEffectMap.Add(EffectTags::ConsumingItem, NewObject<UPlayerConsumingItemEffect>(this));
 	ControlEffectMap.Add(EffectTags::LockOn, NewObject<UPlayerLockOnEffect>(this));

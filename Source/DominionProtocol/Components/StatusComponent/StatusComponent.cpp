@@ -373,7 +373,6 @@ bool UStatusComponent::HasEnoughStamina(const float RequiredAmount) const
 void UStatusComponent::ConsumeStamina(const float Amount)
 {
 	SetStamina(GetStat(StatTags::Stamina) - Amount);
-	BlockStaminaRecovery();
 }
 
 void UStatusComponent::StartStaminaRecovery()
@@ -384,16 +383,6 @@ void UStatusComponent::StartStaminaRecovery()
 void UStatusComponent::StopStaminaRecovery()
 {
 	bIsRecoveringStamina = false;
-	GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryDelayTimer);
-}
-
-void UStatusComponent::BlockStaminaRecovery()
-{
-	bIsRecoveringStamina = false;
-	GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryDelayTimer);
-	GetWorld()->GetTimerManager().SetTimer(StaminaRecoveryDelayTimer, this, &UStatusComponent::StartStaminaRecovery, StaminaRecoveryDelay, false);
-	
-	UE_LOG(LogTemp, Warning, TEXT("ConsumeStamina called, Timer set"));
 }
 
 void UStatusComponent::InitializeComponent()

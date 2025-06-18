@@ -60,10 +60,14 @@ bool UPlayerUsingSkillEffect::Activate(float Duration)
 void UPlayerUsingSkillEffect::Deactivate()
 {
 	Super::Deactivate();
+	check(ControlComponent);
+
+	if (ControlEffectTag.MatchesTag(EffectTags::UsingDash))
+	{
+		ControlComponent->ActivateControlEffect(EffectTags::DashAttackPossible, 0.5f);
+	}
 	
 	SetControlEffectTag(EffectTags::UsingSkill);
-	
-	check(ControlComponent);
 	
 	for (int32 i = 0; i < BufferedInputArray.Num(); i++)
 	{

@@ -66,8 +66,6 @@ public:
 	FOnBattleMonster OnBattleMonster;
 
 	// TimerHandles
-	FTimerHandle StaminaRecoveryDelayTimer;
-	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -113,7 +111,6 @@ public:
 	void ConsumeStamina(float Amount);
 	void StartStaminaRecovery();
 	void StopStaminaRecovery();
-	void BlockStaminaRecovery();
 	
 	void InitializeStatusComponent(const FStatusComponentInitializeData& InitializeData);
 	void RemoveActiveStatusEffect(const FGameplayTag StatusEffectTag);
