@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/LockOnComponent/LockOnComponent.h"
 #include "Components/SkillComponent/SkillComponentUser.h"
 #include "Components/StatusComponent/StatusComponentUser.h"
 #include "GameFramework/Character.h"
@@ -17,7 +18,6 @@
 class AEssence;
 class USkillComponent;
 class UStatusComponent;
-class ULockOnComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnEffectUIDataArray, TArray<FEffectUIData>&);
 
@@ -77,6 +77,9 @@ public:
 	// PawnTagInterface
 	virtual FString GetPawnName_Implementation() override;
 	virtual FGameplayTag GetPawnTag_Implementation() override;
+
+	// LockOnComponent
+	FORCEINLINE FVector GetLockOnLocation() const { return LockOnComponent->GetComponentLocation(); }
 
 protected:
 	// Called when the game starts or when spawned
