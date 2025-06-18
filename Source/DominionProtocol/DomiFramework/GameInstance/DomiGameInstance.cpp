@@ -10,7 +10,7 @@ void UDomiGameInstance::Init()
 {
 	Super::Init();
 
-	CurrentGameStoryState = EGameStoryState::Game_Start;
+	CurrentGameStoryState = EGameStoryState::Tutorial;
 	PlayerCurrentEssence = 0;
 	PlayTime = 0;
 }
