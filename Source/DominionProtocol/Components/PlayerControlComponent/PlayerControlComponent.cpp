@@ -231,7 +231,7 @@ bool UPlayerControlComponent::SetLockOnTargetActorInVisibility()
 	const FVector Start = ViewPointLocation + FMath::Sqrt(2.f) * ControllerForwardVector * VisibilityDistance;
 	const FVector End = Start;
 
-	const FVector BoxSize = FVector(VisibilityDistance,VisibilityDistance,600.f);
+	const FVector BoxSize = FVector(VisibilityDistance,VisibilityDistance,3000.f);
 	
 	bool bBoxTraceHit = GetWorld()->SweepMultiByChannel(
 		SphereTraceHitResults,

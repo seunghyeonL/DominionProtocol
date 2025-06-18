@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "LandscapeGizmoActiveActor.h"
 #include "VectorTypes.h"
+#include "AI/AICharacters/BaseEnemy.h"
 #include "AI/AIControllers/BaseAIController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -76,18 +77,25 @@ void UPlayerLockOnEffect::Tick(float DeltaTime)
 		ControlComponent->LockOn();
 		return;
 	}
+
+	ABaseEnemy* LockOnTargetEnemy = Cast<ABaseEnemy>(LockOnTargetActor);
+	check(LockOnTargetEnemy);
 	
-	FVector LockOnTargetActorLocation = LockOnTargetActor->GetActorLocation();
+	const FVector LockOnTargetActorLocation = LockOnTargetEnemy->GetLockOnLocation();
 
 	auto Controller = OwnerCharacter->GetController();
 	check(Controller);
 	FVector ViewLocation;
 	FRotator ViewRotation;
 	Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+
+	float Distance = FVector::Dist(ViewLocation, LockOnTargetActorLocation);
+	ViewLocation.Z += 0.1*Distance;
+	
 	
 	// 타겟방향의 벡터 계산
 	FRotator NewControllerRotator = (LockOnTargetActorLocation - ViewLocation).Rotation();
-	NewControllerRotator.Pitch = FMath::Min(NewControllerRotator.Pitch, -15.0f);
+	// NewControllerRotator.Pitch = FMath::Min(NewControllerRotator.Pitch, -15.0f);
 	
 	const FRotator CurrentControlRotation = OwnerCharacter->GetControlRotation();
 	const FRotator NewCharacterRotator = FRotator(0.f, NewControllerRotator.Yaw, NewControllerRotator.Roll);
