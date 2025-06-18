@@ -41,7 +41,7 @@ bool UPlayerPreStunEffect::Activate()
 		GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 			DurationTimer,
 			this,
-			&UPlayerControlEffectBase::Deactivate,
+			&UPlayerPreStunEffect::Deactivate,
 			CachedDuration,
 			false
 		);
@@ -73,7 +73,7 @@ bool UPlayerPreStunEffect::Activate()
 		GetOuter()->GetWorld()->GetTimerManager().SetTimer(
 			DurationTimer,
 			this,
-			&UPlayerControlEffectBase::Deactivate,
+			&UPlayerPreStunEffect::Deactivate,
 			DurationPerAttack,
 			false
 		);
@@ -105,4 +105,19 @@ void UPlayerPreStunEffect::Deactivate()
 
 	CachedDuration = 100.f;
 	DurationRemained = 0.f;
+}
+
+void UPlayerPreStunEffect::Tick(float DeltaTime)
+{
+	check(IsValid(InnerState));
+	
+	InnerState->Tick(DeltaTime);
+	if (DurationRemained > 0.f)
+	{
+		DurationRemained -= DeltaTime;
+		if (DurationRemained <= 0.f)
+		{
+			Deactivate();
+		}
+	}
 }

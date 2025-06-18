@@ -56,9 +56,7 @@ public:
 	FOnRemoveInteractableActor OnRemoveInteractableActor;
 	FOnInteractionWidgetScroll OnInteractionWidgetScroll;
 	FOnUpdateEffectUIDataArray OnUpdateEffectUIDataArray;
-
 	
-
 	//Getter
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AActor* GetCurrentInteractableActor() const;
