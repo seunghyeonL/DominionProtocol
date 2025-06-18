@@ -8,6 +8,9 @@
 
 class UBoxComponent;
 class ADomiCharacter;
+class UDialogueManager;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
 
 UCLASS()
 class DOMINIONPROTOCOL_API AStoryTrigger : public AActor, public IInteractableInterface
@@ -16,6 +19,8 @@ class DOMINIONPROTOCOL_API AStoryTrigger : public AActor, public IInteractableIn
 	
 public:	
 	AStoryTrigger();
+
+	FOnCreateDialogueManager OnCreateDialogueManager;
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,6 +51,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	EGameStoryState ForcedStoryState;
 
+	UPROPERTY()
+	UDialogueManager* DialogueManager;
 private:
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;

@@ -139,7 +139,7 @@ void ABlockedPath::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	}
 	else
 	{
-		Debug::Print(TEXT("AElevator::OnOverlapEnd : OtherActor Is not PlayerCharacter"));
+		Debug::Print(TEXT("ABlockedPath::OnOverlapEnd : OtherActor Is not PlayerCharacter"));
 	}
 }
 
@@ -154,11 +154,11 @@ void ABlockedPath::Interact_Implementation(AActor* Interactor)
 	UItemComponent* PlayerItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
 	if (!IsValid(PlayerItemComponent) || !PlayerItemComponent->HasItem(RequiredKey, 1))
 	{
-		Debug::Print(TEXT("AElevator::Item Not Found"));
+		Debug::Print(TEXT("ABlockedPath::Item Not Found"));
 		return;
 	}
 		
-	Debug::Print(TEXT("AElevator::Item Check"));
+	Debug::Print(TEXT("ABlockedPath::Item Check"));
 	PlayerItemComponent->RemoveItem(RequiredKey, 1);
 	GI->AdvanceStoryState();
 	TryOpen();

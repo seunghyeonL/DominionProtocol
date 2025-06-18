@@ -86,7 +86,6 @@ void UDialogueManager::AdvanceDialogue()
 
 void UDialogueManager::ExecuteDialogueLine()
 {
-	Debug::Print(TEXT("UDialogueSubsystem::ExecuteDialogueLine()"));
 	if (!CurrentDialogueLines.IsValidIndex(CurrentLineIndex)) return;
 	const FDialogueData* Line = CurrentDialogueLines[CurrentLineIndex];
 
@@ -96,7 +95,6 @@ void UDialogueManager::ExecuteDialogueLine()
 		if (!Line->DialogueText.IsEmpty())
 		{
 			Debug::Print(Line->DialogueText.ToString()); // 대사
-			UE_LOG(LogTemp, Display, TEXT("%s"), *Line->DialogueText.ToString());
 			if (!CurrentDialogueString.IsEmpty())
 			{
 				CurrentDialogueString.AppendChar('\n');

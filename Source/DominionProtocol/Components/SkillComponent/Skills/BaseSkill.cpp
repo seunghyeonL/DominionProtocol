@@ -50,6 +50,7 @@ void UBaseSkill::Initialize(ACharacter* InOwnerCharacter)
 				LaunchZSpeed = SkillData->LaunchZSpeed;
 				bIsMagicSkill = SkillData->bIsMagicSkill;
 				CoolDownTime = SkillData->CoolDownTime;
+				GroggyDamage = SkillData->GroggyDamage;
 			}
 			else
 			{
@@ -244,18 +245,18 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 	{
 		return;
 	}
-	
-	FAttackData AttackData;
-
-	AttackData.Damage = GetFinalAttackData();
-	
-	
-	AttackData.Instigator = OwnerCharacter;
-	AttackData.Effects = Effects;
 
 	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 	{
+		FAttackData AttackData;
+
+		AttackData.Instigator = OwnerCharacter;
+		AttackData.Damage = GetFinalAttackData();
+		AttackData.GroggyDamage = GroggyDamage;
+		AttackData.Effects = Effects;
+		
 		FVector GroundLaunchVector = (HitActor->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal() * LaunchGroundSpeed;
+		
 		AttackData.LaunchVector = {GroundLaunchVector.X, GroundLaunchVector.Y, LaunchZSpeed};
 		
 		IDamagable::Execute_OnAttacked(HitActor, AttackData);

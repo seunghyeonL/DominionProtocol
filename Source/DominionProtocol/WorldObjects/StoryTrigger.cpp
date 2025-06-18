@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Util/DebugHelper.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "WorldObjects/DialogueManager.h"
 
 AStoryTrigger::AStoryTrigger()
 {
@@ -70,10 +71,27 @@ void AStoryTrigger::Interact_Implementation(AActor* Interactor)
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (!PlayerCharacter) return;
-
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (GI)
+	{
+		GI->AdvanceStoryState();
+	}
 
-	GI->SetCurrentGameStoryState(ForcedStoryState);
+	DialogueManager = NewObject<UDialogueManager>(this);
+	OnCreateDialogueManager.Broadcast(DialogueManager);
+	FVector CrackLocation = GetActorLocation();
+	FRotator CrackRotation = GetActorRotation();
+	if (DialogueManager->TryStartDialogueIfExists(GI->GetCurrentGameStoryState(), CrackLocation, CrackRotation))
+	{
+		Debug::Print(TEXT("AStoryTrigger: 대사 종료"));
+
+		return;
+	}
+	else
+	{
+		Debug::Print(TEXT("AStoryTrigger: 대사 없음"));
+	}
+
 	PlayerCharacter->RemoveInteractableActor(this);
 }
 

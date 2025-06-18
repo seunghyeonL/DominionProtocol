@@ -104,9 +104,9 @@ void UAnimNotify_SpawnProjectile::ProjectileFromPool()
 		// 	AttackData.Damage = CurrentSkill->GetFinalAttackData();
 		// }
 
-		AttackData.Damage = CurrentSkill->GetFinalAttackData();
-	
 		AttackData.Instigator = OwnerCharacter;
+		AttackData.Damage = CurrentSkill->GetFinalAttackData();
+		AttackData.GroggyDamage = CurrentSkill->GetGroggyDamage();
 		AttackData.Effects = CurrentSkill->GetEffects();
 		AttackData.LaunchVector = FVector::ZeroVector;
 	

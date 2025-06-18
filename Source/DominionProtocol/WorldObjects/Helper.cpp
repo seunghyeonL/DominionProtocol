@@ -83,6 +83,8 @@ void AHelper::Disappear()
 		UAnimInstance* HeadAnim = Hair->GetAnimInstance();
 		if (AnimInstance)
 		{
+			SetActorRotation(FRotator(0.f, 0.f, 100.f));
+
 			AnimInstance->Montage_Play(DisappearMontage, 1.f);
 			HeadAnim->Montage_Play(DisappearMontage, 1.f);
 

@@ -35,19 +35,12 @@ ABossCloudDoor::ABossCloudDoor()
 
 void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
-	Debug::Print(FString::Printf(TEXT("BossCloudDoor: OnStoryStateUpdated - CurrentState = %d, From = %d, Until = %d"),
-		static_cast<int32>(NewState),
-		static_cast<int32>(ActiveFromState),
-		static_cast<int32>(ActiveUntilState)));
-
 	const bool bTooEarly = (NewState < ActiveFromState);
 	const bool bValid = (NewState >= ActiveFromState && NewState <= ActiveUntilState);
 	const bool bTooLate = (NewState > ActiveUntilState);
 
 	if (bTooLate)
 	{
-		Debug::Print(TEXT("BossCloudDoor: Too late → Remove door"));
-
 		if (PathEffect)
 		{
 			PathEffect->Deactivate();
@@ -76,7 +69,6 @@ void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState
 
 		if (bValid)
 		{
-			Debug::Print(TEXT("BossCloudDoor: Valid → 상호작용 가능"));
 			if (CollisionBox)
 			{
 				CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -84,7 +76,6 @@ void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState
 		}
 		else if (bTooEarly)
 		{
-			Debug::Print(TEXT("BossCloudDoor: Too early → 상호작용 불가"));
 			if (CollisionBox)
 			{
 				CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -135,7 +126,6 @@ void ABossCloudDoor::EnterDoor()
 
 void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	Debug::Print(TEXT("ABossCloudDoor: OnEnterMontageEnded"));
 	bIsMontagePlaying = false;
 	if (CachedCharacter)
 	{
@@ -145,16 +135,7 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 			if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
 			{
 				GM->SetPlayerInputEnable(true);
-				Debug::Print(TEXT("ABossCloudDoor: SetPlayerInputEnable true"));
 			}
-			else
-			{
-				Debug::Print(TEXT("ABossCloudDoor: ABaseGameMode NotValid"));
-			}
-		}
-		else
-		{
-			Debug::Print(TEXT("ABossCloudDoor: APlayerController NotValid"));
 		}
 
 		//PathEffect->Activate();
@@ -166,16 +147,10 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 		if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
 		{
 			GI->AdvanceStoryState();
-			Debug::Print(TEXT("ABossCloudDoor: 스토리 상태 변경"));
 		}
 
-		Debug::Print(TEXT("ABossCloudDoor: Calling SpawnBoss()"));
 		LinkedBossSpawner->SpawnBoss();
 
-	}
-	else
-	{
-		Debug::Print(TEXT("ABossCloudDoor: CachedCharacter NotValid"));
 	}
 	CachedCharacter = nullptr;
 }
@@ -203,7 +178,6 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 		if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
 		{
 			GM->SetPlayerInputEnable(false);
-			Debug::Print(TEXT("ABossCloudDoor: SetPlayerInputEnable false"));
 		}
 	}
 
@@ -217,18 +191,15 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 
 void ABossCloudDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Debug::Print(TEXT("ABossCloudDoor: Overlap"));
 
 	if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
 	{
-		Debug::Print(TEXT("ABossCloudDoor: Not Player"));
 		return;
 	}
 
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (!GI)
 	{
-		Debug::Print(TEXT("ABossCloudDoor: GameInstance Not Valid"));
 		return;
 	}
 
@@ -252,10 +223,6 @@ void ABossCloudDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* O
 		{
 			CachedCharacter = nullptr;
 		}
-	}
-	else
-	{
-		Debug::Print(TEXT("ABossCloudDoor::OnOverlapEnd : OtherActor Is not PlayerCharacter"));
 	}
 }
 

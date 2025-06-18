@@ -80,16 +80,16 @@ bool UDomiGameInstance::ReturnStoryState()
 		SetCurrentGameStoryState(EGameStoryState::Find_Boss2);
 		break;
 
-	case EGameStoryState::Battle_Boss3_1:
-		SetCurrentGameStoryState(EGameStoryState::Find_Boss3_1);
-		break;
-
-	case EGameStoryState::Battle_Boss3_2:
-		SetCurrentGameStoryState(EGameStoryState::Find_Boss3_2);
+	case EGameStoryState::Battle_Boss3:
+		SetCurrentGameStoryState(EGameStoryState::Find_Boss3);
 		break;
 
 	case EGameStoryState::Battle_Boss4:
 		SetCurrentGameStoryState(EGameStoryState::Find_Boss4);
+		break;
+
+	case EGameStoryState::Battle_Boss5:
+		SetCurrentGameStoryState(EGameStoryState::Find_Boss5);
 		break;
 
 	default:

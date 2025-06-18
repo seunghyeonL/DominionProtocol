@@ -323,4 +323,36 @@ void ACrack::AlignPlayerForDialogue(ADomiCharacter* PlayerCharacter)
 	{
 		PC->SetControlRotation(TargetRotation);
 	}
+
+	//////////////////
+	/*
+	if (!PlayerCharacter) return;
+
+	const FVector CrackForward = GetActorForwardVector();
+	const FVector DesiredLocation = GetActorLocation() + CrackForward * 200.f;
+
+	FNavLocation SafeLocation;
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+
+	if (NavSys && NavSys->ProjectPointToNavigation(
+		DesiredLocation,
+		SafeLocation,
+		FVector(100.f, 100.f, 200.f))) // 탐색 반경
+	{
+		PlayerCharacter->SetActorLocation(SafeLocation.Location);
+
+		const FRotator TargetRotation = (GetActorLocation() - SafeLocation.Location).Rotation();
+		PlayerCharacter->SetActorRotation(TargetRotation);
+
+		if (APlayerController* PC = Cast<APlayerController>(PlayerCharacter->GetController()))
+		{
+			PC->SetControlRotation(TargetRotation);
+		}
+		Debug::Print(TEXT("플레이어를 NavMesh 안전 위치로 이동시켰습니다"));
+	}
+	else
+	{
+		Debug::Print(TEXT("NavMesh 기반 안전 위치 탐색 실패: 위치 이동 안 함"));
+	}
+	*/
 }
