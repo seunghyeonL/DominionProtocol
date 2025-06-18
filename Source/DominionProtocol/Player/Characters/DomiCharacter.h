@@ -136,6 +136,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitSound();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitAnimMontage(float Duration);
 	
 	// WeaopnMeshChange
 	UFUNCTION(BlueprintImplementableEvent)

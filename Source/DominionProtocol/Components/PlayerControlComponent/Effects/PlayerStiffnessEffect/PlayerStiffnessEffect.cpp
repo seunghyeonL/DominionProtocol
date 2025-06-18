@@ -19,13 +19,18 @@ bool UPlayerStiffnessEffect::Activate()
 	// }
 
 	// 피격 몽타주 길이만큼 Stiffness Effect
-	Activate(0.8333f);
+	Activate(DefaultDuration);
 	
 	return true;
 }
 
 bool UPlayerStiffnessEffect::Activate(float Duration)
 {
+	if (FMath::IsNearlyZero(Duration))
+	{
+		Duration = DefaultDuration;	
+	}
+	
 	if (!Super::Activate(Duration))
 	{
 		return false;
