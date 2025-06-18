@@ -57,6 +57,9 @@ public:
 	float DamageCoefficient;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
+	float GroggyDamage;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	float LaunchGroundSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
