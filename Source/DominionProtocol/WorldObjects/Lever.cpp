@@ -109,6 +109,7 @@ void ALever::OnTimelineFinished()
 	if (Door)
 	{
 		Door->OpenDoor();
+		GI->AdvanceStoryState();
 	}
 }
 

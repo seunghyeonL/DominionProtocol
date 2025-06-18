@@ -96,7 +96,6 @@ void UDialogueManager::ExecuteDialogueLine()
 		if (!Line->DialogueText.IsEmpty())
 		{
 			Debug::Print(Line->DialogueText.ToString()); // 대사
-			UE_LOG(LogTemp, Display, TEXT("%s"), *Line->DialogueText.ToString());
 			if (!CurrentDialogueString.IsEmpty())
 			{
 				CurrentDialogueString.AppendChar('\n');
