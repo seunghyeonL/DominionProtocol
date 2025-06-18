@@ -123,16 +123,16 @@ public:
 	void PlayWeaponSwapAnimMontage();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayHitFrontAnimMontage();
+	void PlayHitFrontAnimMontage(float Duration);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayHitRightAnimMontage();
+	void PlayHitRightAnimMontage(float Duration);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayHitLeftAnimMontage();
+	void PlayHitLeftAnimMontage(float Duration);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayHitBackAnimMontage();
+	void PlayHitBackAnimMontage(float Duration);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitSound();

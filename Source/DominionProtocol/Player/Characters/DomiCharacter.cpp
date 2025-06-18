@@ -491,23 +491,22 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 
 					if (HitAngle > -45.0f && HitAngle <= 45.0f) // 정면 피격
 					{
-						PlayHitFrontAnimMontage();
+						PlayHitFrontAnimMontage(Duration);
 					}
 					else if (HitAngle > 45.0f && HitAngle <= 135.0f) // 우측 피격
 					{
-						PlayHitRightAnimMontage();
+						PlayHitRightAnimMontage(Duration);
 					}
 					else if (HitAngle > -135.0f && HitAngle <= -45.0f) // 좌측 피격
 					{
-						PlayHitLeftAnimMontage();
+						PlayHitLeftAnimMontage(Duration);
 					}
 					else
 					{
-						PlayHitBackAnimMontage();
-						
+						PlayHitBackAnimMontage(Duration);
 					}
 					
-					ControlComponent->ActivateControlEffect(EffectTags::Stiffness);
+					ControlComponent->ActivateControlEffect(EffectTags::Stiffness, Duration);
 					PlayHitSound();
 					return;
 				}
