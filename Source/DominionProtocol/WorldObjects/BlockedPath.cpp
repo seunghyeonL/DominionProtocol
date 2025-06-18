@@ -160,7 +160,7 @@ void ABlockedPath::Interact_Implementation(AActor* Interactor)
 		
 	Debug::Print(TEXT("ABlockedPath::Item Check"));
 	PlayerItemComponent->RemoveItem(RequiredKey, 1);
-	//GI->AdvanceStoryState();
+	GI->AdvanceStoryState();
 	TryOpen();
 }
 
