@@ -86,7 +86,6 @@ void UDialogueManager::AdvanceDialogue()
 
 void UDialogueManager::ExecuteDialogueLine()
 {
-	Debug::Print(TEXT("UDialogueSubsystem::ExecuteDialogueLine()"));
 	if (!CurrentDialogueLines.IsValidIndex(CurrentLineIndex)) return;
 	const FDialogueData* Line = CurrentDialogueLines[CurrentLineIndex];
 
