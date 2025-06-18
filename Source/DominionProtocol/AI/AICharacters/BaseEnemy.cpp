@@ -153,8 +153,15 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 
 	float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
+	float CurrentGroggyGauge = StatusComponent->GetStat(StatTags::GroggyGauge);
+
+	if (CurrentGroggyGauge > 0.f)
+	{
+		StatusComponent->SetGroggyGauge(CurrentGroggyGauge - AttackData.GroggyDamage);
+	}
 
 	LaunchCharacter(AttackData.LaunchVector, true, true);
+	PlayHitSound();
 
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)
@@ -240,6 +247,7 @@ void ABaseEnemy::InitializeStatusComponent()
 			{
 				StatusComponent->InitializeStatusComponent(*InitializeData);
 				StatusComponent->OnDeath.AddUObject(this, &ABaseEnemy::OnDeath);
+				StatusComponent->OnGroggy.BindUObject(this, &ABaseEnemy::OnGroggy);
 			}
 		}
 	}

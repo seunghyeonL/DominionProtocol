@@ -102,6 +102,7 @@ public:
 
 	// Getter/Setter with Delegate
 	void SetHealth(const float NewHealth);
+	void SetGroggyGauge(const float NewGroggyGauge);
 	void SetMaxHealth(const float NewMaxHealth);
 	void SetShield(const float NewShield);
 	void SetStamina(float NewHealth);

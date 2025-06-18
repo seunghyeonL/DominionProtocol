@@ -46,6 +46,9 @@ struct FAttackData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Damage { 0.f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GroggyDamage { 0.f };
     
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector LaunchVector { 0.f, 0.f, 0.f };

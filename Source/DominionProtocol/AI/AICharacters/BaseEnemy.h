@@ -81,6 +81,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// HitSound
+	UFUNCTION(BlueprintImplementableEvent, Category = "Sound")
+	void PlayHitSound();
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStatusComponent> StatusComponent;
 

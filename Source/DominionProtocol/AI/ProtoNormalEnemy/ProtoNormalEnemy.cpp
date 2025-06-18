@@ -2,6 +2,7 @@
 
 
 #include "ProtoNormalEnemy.h"
+#include "Components/StatusComponent/StatusComponent.h"
 
 
 // Sets default values
@@ -29,5 +30,11 @@ void AProtoNormalEnemy::Tick(float DeltaTime)
 void AProtoNormalEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AProtoNormalEnemy::OnGroggy()
+{
+	Super::OnGroggy();
+	StatusComponent->ActivateStatusEffect(EffectTags::Groggy, 0.f, 3.f);
 }
 

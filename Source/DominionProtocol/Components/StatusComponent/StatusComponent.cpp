@@ -245,6 +245,7 @@ float UStatusComponent::GetMaxVariableStat(const FGameplayTag& StatTag) const
 void UStatusComponent::SetHealth(float NewHealth)
 {
 	ensure(StatMap.Contains(StatTags::MaxHealth));
+	ensure(StatMap.Contains(StatTags::Health));
 
 	const float MaxHealth = GetStat(StatTags::MaxHealth);
 	const float ClampedHealth = FMath::Clamp(NewHealth, 0.f, MaxHealth);
@@ -267,8 +268,28 @@ void UStatusComponent::SetHealth(float NewHealth)
 		}
 		else
 		{
-			Debug::PrintError(TEXT("UStatusComponentBase::SetHealth : OwnerCharacter need to implement IStatusComponentUser."));
+			Debug::PrintError(TEXT("UStatusComponent::SetHealth : OwnerCharacter need to implement IStatusComponentUser."));
 		}
+	}
+}
+
+void UStatusComponent::SetGroggyGauge(const float NewGroggyGauge)
+{
+	if (!StatMap.Contains(StatTags::MaxGroggyGauge) || !StatMap.Contains(StatTags::GroggyGauge))
+	{
+		return;
+	}
+
+	const float MaxGroggyGauge = GetStat(StatTags::MaxGroggyGauge);
+	const float ClampedGroggyGauge = FMath::Clamp(NewGroggyGauge, 0.f, MaxGroggyGauge);
+
+	Debug::Print(FString::Printf(TEXT("NewGroggyGauge : %f"), ClampedGroggyGauge));
+	SetStat(StatTags::GroggyGauge, ClampedGroggyGauge);
+
+	// OnGroggy 
+	if (FMath::IsNearlyZero(GetStat(StatTags::GroggyGauge)))
+	{
+		OnGroggy.ExecuteIfBound();
 	}
 }
 
@@ -434,12 +455,16 @@ void UStatusComponent::InitializeStatusComponent(const FStatusComponentInitializ
 				StatMap.Add(StatTag, StatValue);
 			}
 		}
+	}
 
+	for (auto [StatTag, StatValue] : StatDatas)
+	{
 		if (StatTag.MatchesTag(StatTags::VariableStat))
 		{
 			StatMap.Add(StatTag, GetMaxVariableStat(StatTag));
 		}
 	}
+	
 
 	for (auto [EffectTag, EffectClass] : EffectClassDatas)
 	{
