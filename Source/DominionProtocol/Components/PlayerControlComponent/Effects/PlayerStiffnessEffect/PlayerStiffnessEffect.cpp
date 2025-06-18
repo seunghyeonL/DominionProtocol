@@ -27,6 +27,11 @@ bool UPlayerStiffnessEffect::Activate()
 
 bool UPlayerStiffnessEffect::Activate(float Duration)
 {
+	if (Duration < 0.001f)
+	{
+		Duration = DefaultDuration;
+	}
+	
 	if (!Super::Activate(Duration))
 	{
 		return false;
