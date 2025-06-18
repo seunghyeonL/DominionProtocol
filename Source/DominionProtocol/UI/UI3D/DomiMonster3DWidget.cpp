@@ -44,7 +44,7 @@ void UDomiMonster3DWidget::SetupMonster3dWidget()
 
 	for (auto* DomiWidgetComponent : WidgetComponents)
 	{
-		if (DomiWidgetComponent->GetName().Contains(TEXT("HPBarWidgetComponent")))
+		if (DomiWidgetComponent->GetName().Contains(TEXT("HPWidgetComponent")))
 		{
 			WidgetComponent = DomiWidgetComponent;
 			break;
