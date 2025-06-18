@@ -100,10 +100,10 @@ protected:
 	int32 EssenceAmount;
 	
 	// UI Section
-	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UDomiWidgetComponent> HPWidgetComponent;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UDomiWidgetComponent> LockOnWidgetComponent;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)

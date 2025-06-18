@@ -24,7 +24,7 @@ ABaseEnemy::ABaseEnemy()
 	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 
 	// UI Section
-	HPWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("HPBarWidgetComponent"));
+	HPWidgetComponent = CreateDefaultSubobject<UDomiWidgetComponent>(TEXT("HPWidgetComponent"));
 	HPWidgetComponent->SetupAttachment(GetMesh());
 	HPWidgetComponent->SetRelativeLocation(FVector(0, 0, 190));
 	static ConstructorHelpers::FClassFinder<UUserWidget> HPBarWidgetRef (TEXT("/Game/Blueprints/UI/WBP_DomiMonster3DWidget.WBP_DomiMonster3DWidget_C"));
