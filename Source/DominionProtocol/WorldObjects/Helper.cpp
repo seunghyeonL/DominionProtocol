@@ -18,6 +18,8 @@ AHelper::AHelper()
 	Hair->SetupAttachment(GetMesh());
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	GetMesh()->bReceivesDecals = false;
 }
 
 void AHelper::Tick(float DeltaTime)

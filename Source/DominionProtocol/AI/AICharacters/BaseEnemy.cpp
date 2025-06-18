@@ -67,6 +67,8 @@ ABaseEnemy::ABaseEnemy()
 	{
 		EssenceClass = EssenceBPClass.Class;
 	}
+
+	GetMesh()->bReceivesDecals = false;
 }
 
 // Called when the game starts or when spawned
