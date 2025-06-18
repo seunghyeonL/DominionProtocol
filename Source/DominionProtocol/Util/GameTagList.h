@@ -134,6 +134,7 @@ namespace SkillGroupTags
 	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
 	inline const FGameplayTag Boss4BackDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BackDash"));
 	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
+	inline const FGameplayTag Boss4RandomMove = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.RandomMove"));
 }
 
 namespace SkillTags
@@ -257,6 +258,7 @@ namespace SkillTags
 	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
 	inline const FGameplayTag Boss4BackDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BackDash"));
 	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
+	inline const FGameplayTag Boss4RandomMove = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.RandomMove"));
 
 	//Boss5
 	inline const FGameplayTag Boss5PeckingAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.PeckingAttack"));
