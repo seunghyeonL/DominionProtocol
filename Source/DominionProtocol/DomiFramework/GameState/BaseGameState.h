@@ -53,6 +53,7 @@ protected:
 	void InitializeItemInstanceSubsystem();
 	void InitializeZeroIndexCrackData(const FString CurrentLevelName);
 
+	//=====Call in BaseGameMode::StartPlay
 	void CacheAllCracks();
 	
 	void LoadCrackDataFromInstance();
@@ -62,6 +63,7 @@ protected:
 	void InitializeCrackDataMap();
 
 	ACrack* FindNearestCrack();
+	//=====
 	
 
 //Variables
