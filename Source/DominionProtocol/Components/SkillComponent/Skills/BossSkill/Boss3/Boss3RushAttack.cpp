@@ -5,5 +5,5 @@
 
 UBoss3RushAttack::UBoss3RushAttack()
 {
-	SkillTag = SkillTags::Boss3RockThrow;
+	SkillTag = SkillTags::Boss3RushAttack;
 } 

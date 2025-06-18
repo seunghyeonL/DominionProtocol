@@ -98,7 +98,7 @@ void ABoss3Enemy::SpawnStone()
 					SpawnedStoneMeshComp = nullptr;
 				}
 			},
-			1.1f,
+			1.2f,
 			false
 		);
 	}
