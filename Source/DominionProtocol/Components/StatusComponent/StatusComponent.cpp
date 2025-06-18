@@ -237,8 +237,7 @@ float UStatusComponent::GetMaxVariableStat(const FGameplayTag& StatTag) const
 	}
 	else if (StatTag.MatchesTag(StatTags::Shield))
 	{
-		// result = GetStat(StatTags::MaxShield);
-		result = 0.f;
+		result = GetStat(StatTags::MaxShield);
 	}
 	return result;
 }
