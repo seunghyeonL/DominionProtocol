@@ -19,14 +19,21 @@ void UDomiInGameHUDWidget::OnPlayerSpawn()
 	HideDeathScriptWidget();
 }
 
-void UDomiInGameHUDWidget::OnSwitchShowAndHideOnInGameMenuWidget()
+void UDomiInGameHUDWidget::OnShowCrackMenuWidget()
 {
-	SwitchShowAndHideOnInGameMenuWidget();
+	ShowCrackMenuWidget();
+
+	OwningController->SetupMappingContext(OwningController->CrackMenuMappingContext);
 }
 
-void UDomiInGameHUDWidget::OnSwitchShowAndHideCrackMenuWidget()
+void UDomiInGameHUDWidget::OnMainMenuSwitchShowAndHideWidget()
 {
-	SwitchShowAndHideCrackMenuWidget();
+	MainMenuSwitchShowAndHideWidget();
+}
+
+void UDomiInGameHUDWidget::OnDialogueChangedNextStoryState()
+{
+	DialogueChangedNextStoryState();
 }
 
 void UDomiInGameHUDWidget::ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder)

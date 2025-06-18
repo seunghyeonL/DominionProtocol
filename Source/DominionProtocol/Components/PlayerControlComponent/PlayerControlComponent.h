@@ -108,6 +108,5 @@ public:
 	void ConsumeItemAction_3();
 	void SwapWeapon();
 	void InteractionScroll(const FInputActionValue& Value);
-	void SwitchShowAndHideInventory();
 	void DashAttack();
 };

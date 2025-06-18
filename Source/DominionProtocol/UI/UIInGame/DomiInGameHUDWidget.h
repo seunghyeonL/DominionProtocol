@@ -26,19 +26,27 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void HideDeathScriptWidget();
-
-	UFUNCTION()
-	void OnSwitchShowAndHideOnInGameMenuWidget();
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SwitchShowAndHideOnInGameMenuWidget();
-
+	
 	UFUNCTION(BlueprintCallable)
-	void OnSwitchShowAndHideCrackMenuWidget();
+	void OnShowCrackMenuWidget();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void SwitchShowAndHideCrackMenuWidget();
+	void ShowCrackMenuWidget();
 
+	// Binding Input Action
+	UFUNCTION(BlueprintCallable)
+	void OnMainMenuSwitchShowAndHideWidget();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void MainMenuSwitchShowAndHideWidget();
+
+	UFUNCTION()
+	void OnDialogueChangedNextStoryState();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void DialogueChangedNextStoryState();
+
+	//
 	UFUNCTION(BlueprintCallable)
 	void ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder);
 
@@ -71,6 +79,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UBossMonsterHPBarWidget> BossMonsterHPBar;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UUserWidget> MainMenuWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UNewDialogueWidget> DialogueWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UUserWidget> LockOnHUDWidget;
+
+	
 	
 #pragma endregion
 };

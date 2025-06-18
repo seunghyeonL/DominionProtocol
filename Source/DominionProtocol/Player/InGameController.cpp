@@ -17,20 +17,40 @@ AInGameController::AInGameController()
 	}
 	
 	CheatClass = UDevCheatManager::StaticClass();
+	
 }
 
 void AInGameController::HandleSetupInGameHUD()
 {
 	CreateHUDWidget();
 	AddHUDToViewport();
-	SetupInputModeGameOnly();
+	
+	MappingContextArray.AddUnique(DefaultMappingContext);
+	MappingContextArray.AddUnique(MainMenuMappingContext);
+	MappingContextArray.AddUnique(DialogueMappingContext);
+	MappingContextArray.AddUnique(CrackMenuMappingContext);
+	
+	SetupMappingContext(DefaultMappingContext);
 
 	BindControllerInputActions();
 }
 
-void AInGameController::OnSwitchShowAndHideOnInGameMenuWidget()
+void AInGameController::OnMainMenuSwitchShowAndHideWidget()
 {
-	InGameHUDWidgetInstance->OnSwitchShowAndHideOnInGameMenuWidget();
+	InGameHUDWidgetInstance->OnMainMenuSwitchShowAndHideWidget();
+}
+
+void AInGameController::OnDialogueChangedNextStoryState()
+{
+	InGameHUDWidgetInstance->OnDialogueChangedNextStoryState();
+}
+
+void AInGameController::RemoveAllMappingContext()
+{
+	for (const auto* MappingContext : MappingContextArray)
+	{
+		LocalPlayerInputSubsystem->RemoveMappingContext(MappingContext);
+	}
 }
 
 void AInGameController::BeginPlay()
@@ -60,64 +80,51 @@ void AInGameController::AddHUDToViewport() const
 	InGameHUDWidgetInstance->AddToViewport();
 }
 
-void AInGameController::SetupInputModeGameOnly()
+void AInGameController::SetupMappingContext(class UInputMappingContext* NewMappingContext)
 {
 	if (LocalPlayerInputSubsystem)
 	{
-		if (!LocalPlayerInputSubsystem->HasMappingContext(DefaultMappingContext))
+		// Mapping Context Add & Remove
+		RemoveAllMappingContext();
+		if (!LocalPlayerInputSubsystem->HasMappingContext(NewMappingContext))
 		{
-			LocalPlayerInputSubsystem->AddMappingContext(DefaultMappingContext, 0);	
+			LocalPlayerInputSubsystem->AddMappingContext(NewMappingContext, 1);	
 		}
-		LocalPlayerInputSubsystem->RemoveMappingContext(UIOnlyMappingContext);
 
-		
-		const FInputModeGameOnly CurrentInputMode;
-		SetInputMode(CurrentInputMode);
-		bShowMouseCursor = false;
+		// Setting InputMode 
+		if (DefaultMappingContext == NewMappingContext)
+		{
+			const FInputModeGameOnly CurrentInputMode;
+			SetInputMode(CurrentInputMode);
+			bShowMouseCursor = false;
+		}
+		else
+		{
+			const FInputModeGameAndUI CurrentInputMode;
+			SetInputMode(CurrentInputMode);
+			bShowMouseCursor = true;
+		}
 	}
 }
 
-void AInGameController::SetupInputModeUIOnly()
-{
-	if (LocalPlayerInputSubsystem)
-	{
-		if (!LocalPlayerInputSubsystem->HasMappingContext(UIOnlyMappingContext))
-		{
-			LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1);	
-		}
-		LocalPlayerInputSubsystem->RemoveMappingContext(DefaultMappingContext);
-
-		const FInputModeGameAndUI CurrentInputMode;
-		SetInputMode(CurrentInputMode);
-		bShowMouseCursor = true;
-	}
-}
-
-void AInGameController::SetupInputModeGameAndUI()
-{
-	if (LocalPlayerInputSubsystem)
-	{
-		if (!LocalPlayerInputSubsystem->HasMappingContext(UIOnlyMappingContext))
-		{
-			LocalPlayerInputSubsystem->AddMappingContext(UIOnlyMappingContext, 1);	
-		}
-
-		const FInputModeGameAndUI CurrentInputMode;
-		SetInputMode(CurrentInputMode);
-		bShowMouseCursor = true;
-	}
-}
 
 void AInGameController::BindControllerInputActions()
 {
 	auto* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent);
 	if (EnhancedInputComp)
 	{
-		if (IsValid(SwitchShowAndHideInGameMenuWidget))
+		if (IsValid(MainMenuSwitchShowAndHideWidget))
 		{
-			EnhancedInputComp->BindAction(SwitchShowAndHideInGameMenuWidget, ETriggerEvent::Started,
+			EnhancedInputComp->BindAction(MainMenuSwitchShowAndHideWidget, ETriggerEvent::Started,
 				this,
-				&AInGameController::OnSwitchShowAndHideOnInGameMenuWidget);
+				&AInGameController::OnMainMenuSwitchShowAndHideWidget);
+		}
+
+		if (IsValid(DialogueChangeNextStoryState))
+		{
+			EnhancedInputComp->BindAction(DialogueChangeNextStoryState, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnDialogueChangedNextStoryState);
 		}
 	}
 }

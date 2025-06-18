@@ -17,18 +17,17 @@ class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 public:
 	AInGameController();
 	
-	// 필요시 위젯에서 호출하여 사용
+	// 필요시 위젯에서 호출하여 사용)
 	UFUNCTION(BlueprintCallable)
-	void SetupInputModeGameOnly();
-	
-	UFUNCTION(BlueprintCallable)
-	void SetupInputModeUIOnly();
-
-	UFUNCTION(BlueprintCallable)
-	void SetupInputModeGameAndUI();
+	void SetupMappingContext(class UInputMappingContext* NewMappingContext);
 	
 	void HandleSetupInGameHUD();
-	void OnSwitchShowAndHideOnInGameMenuWidget();
+	
+	void RemoveAllMappingContext();
+	
+	void OnMainMenuSwitchShowAndHideWidget();
+	
+	void OnDialogueChangedNextStoryState();
 
 	UFUNCTION(BlueprintPure)
 	class UDomiInGameHUDWidget* GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
@@ -44,11 +43,23 @@ protected:
 public:
 	
 	/** MappingContext */
+	UPROPERTY(BlueprintReadOnly)
+	TArray<UInputMappingContext*> MappingContextArray;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputMappingContext> UIOnlyMappingContext;
+	TObjectPtr<UInputMappingContext> MainMenuMappingContext;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> DialogueMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> CrackMenuMappingContext;
+
+	
+
 
 #pragma region Character Input Actions Section
 	/** Move Input Action */
@@ -115,7 +126,10 @@ public:
 	
 #pragma region Controller Input Actions Section
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> SwitchShowAndHideInGameMenuWidget;
+	TObjectPtr<UInputAction> MainMenuSwitchShowAndHideWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> DialogueChangeNextStoryState;
 	
 #pragma endregion
 	
