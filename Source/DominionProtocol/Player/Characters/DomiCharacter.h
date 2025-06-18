@@ -138,7 +138,7 @@ public:
 	void PlayHitSound();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayHitAnimMontage(float Duration);
+	void PlayDeathSound();
 	
 	// WeaopnMeshChange
 	UFUNCTION(BlueprintImplementableEvent)

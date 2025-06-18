@@ -14,7 +14,7 @@ class DOMINIONPROTOCOL_API UPlayerStiffnessEffect : public UPlayerControlEffectB
 {
 	GENERATED_BODY()
 protected:
-	float DefaultDuration = 0.8333f;
+	float DefaultDuration;
 
 public:
 	UPlayerStiffnessEffect();

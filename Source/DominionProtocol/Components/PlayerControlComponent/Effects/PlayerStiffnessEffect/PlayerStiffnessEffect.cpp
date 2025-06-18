@@ -9,6 +9,7 @@
 UPlayerStiffnessEffect::UPlayerStiffnessEffect()
 {
 	ControlEffectTag = EffectTags::Stiffness;
+	DefaultDuration = 0.8333f;
 }
 
 bool UPlayerStiffnessEffect::Activate()
@@ -26,11 +27,6 @@ bool UPlayerStiffnessEffect::Activate()
 
 bool UPlayerStiffnessEffect::Activate(float Duration)
 {
-	if (FMath::IsNearlyZero(Duration))
-	{
-		Duration = DefaultDuration;	
-	}
-	
 	if (!Super::Activate(Duration))
 	{
 		return false;
