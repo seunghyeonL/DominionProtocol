@@ -129,6 +129,10 @@ namespace SkillGroupTags
 	inline const FGameplayTag Boss4WeaponAttack1Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.second"));
 	inline const FGameplayTag Boss4WeaponAttack1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.third"));
 	inline const FGameplayTag Boss4WeaponAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2"));
+	inline const FGameplayTag Boss4WeaponAttack3First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.first"));
+	inline const FGameplayTag Boss4WeaponAttack3Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.second"));
+	inline const FGameplayTag Boss4WeaponAttack3Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.third"));
+	inline const FGameplayTag Boss4WeaponAttack3Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.fourth"));
 	inline const FGameplayTag Boss4FlameStrike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.FlameStrike"));
 	inline const FGameplayTag Boss4SpawnClone = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SpawnClone"));
 	inline const FGameplayTag Boss4InfernoSpike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.InfernoSpike"));
@@ -137,6 +141,7 @@ namespace SkillGroupTags
 	inline const FGameplayTag Boss4BackDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BackDash"));
 	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
 	inline const FGameplayTag Boss4RandomMove = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.RandomMove"));
+	inline const FGameplayTag Boss4EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.EvadeAttack"));
 }
 
 namespace SkillTags
@@ -272,6 +277,11 @@ namespace SkillTags
 	inline const FGameplayTag Boss4WeaponAttack2Sixth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.sixth"));
 	inline const FGameplayTag Boss4WeaponAttack2Seventh = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.seventh"));
 	inline const FGameplayTag Boss4WeaponAttack2Eighth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.eighth"));
+	inline const FGameplayTag Boss4WeaponAttack3First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.first"));
+	inline const FGameplayTag Boss4WeaponAttack3Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.second"));
+	inline const FGameplayTag Boss4WeaponAttack3Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.third"));
+	inline const FGameplayTag Boss4WeaponAttack3Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.fourth"));
+	inline const FGameplayTag Boss4EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.EvadeAttack"));
 
 	//Boss5
 	inline const FGameplayTag Boss5PeckingAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.PeckingAttack"));
