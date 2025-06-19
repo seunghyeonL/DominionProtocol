@@ -13,6 +13,7 @@ UStatusComponent::UStatusComponent()
 {
 	bWantsInitializeComponent = true;
 	PrimaryComponentTick.bCanEverTick = true;
+	bIsRecoveringStamina = true;
 }
 
 void UStatusComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

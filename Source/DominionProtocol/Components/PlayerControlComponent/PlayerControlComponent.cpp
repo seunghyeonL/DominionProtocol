@@ -22,6 +22,7 @@
 #include "Effects/PlayerConsumingItemEffect/PlayerConsumingItemEffect.h"
 #include "Effects/PlayerDashAttackPossibleEffect/PlayerDashAttackPossibleEffect.h"
 #include "Effects/PlayerFlewEffect/PlayerFlewEffect.h"
+#include "Effects/PlayerInterecEffect/PlayerInteractEffect.h"
 #include "Effects/PlayerParryEffect/PlayerParryEffect.h"
 #include "Effects/PlayerPreStunEffect/PlayerPreStunEffect.h"
 #include "Effects/PlayerStandingUpEffect/PlayerStandingUpEffect.h"
@@ -102,6 +103,7 @@ void UPlayerControlComponent::InitializeComponent()
 	ControlEffectMap.Add(EffectTags::Confused, NewObject<UPlayerConfusedEffect>(this));  
 	
 	ControlEffectMap.Add(EffectTags::Death, NewObject<UPlayerDeathEffect>(this));
+	ControlEffectMap.Add(EffectTags::Interact, NewObject<UPlayerInteractEffect>(this));
 	ControlEffectMap.Add(EffectTags::UsingSkill, NewObject<UPlayerUsingSkillEffect>(this));
 	ControlEffectMap.Add(EffectTags::DashAttackPossible, NewObject<UPlayerDashAttackPossibleEffect>(this));
 	ControlEffectMap.Add(EffectTags::Parry, NewObject<UPlayerParryEffect>(this));

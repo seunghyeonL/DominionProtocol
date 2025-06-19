@@ -139,6 +139,9 @@ public:
 	void PlayHitBackAnimMontage(float Duration);
 
 	UFUNCTION(BlueprintImplementableEvent)
+	void PlayInteractAnimMontage();
+
+	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitSound();
 
 	UFUNCTION(BlueprintImplementableEvent)

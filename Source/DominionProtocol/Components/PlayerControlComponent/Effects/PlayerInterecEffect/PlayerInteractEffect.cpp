@@ -7,7 +7,7 @@
 UPlayerInteractEffect::UPlayerInteractEffect()
 {
 	ControlEffectTag = EffectTags::Interact;
-	InteractMontageDuration = 1.0f;
+	InteractMontageDuration = 1.5f;
 }
 
 bool UPlayerInteractEffect::Activate()
@@ -26,6 +26,7 @@ bool UPlayerInteractEffect::Activate(float Duration)
 	if (auto DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
 	{
 		DomiCharacter->OnRemoveInteractableActor.Broadcast({});
+		DomiCharacter->PlayInteractAnimMontage();
 	}
 	
 	return true;
