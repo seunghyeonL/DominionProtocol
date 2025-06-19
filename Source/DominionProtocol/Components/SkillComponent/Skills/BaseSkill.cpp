@@ -7,6 +7,7 @@
 #include "DomiFramework/GameState/BaseGameState.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
+#include "AI/AICharacters/BaseEnemy.h"
 #include "Util/DebugHelper.h"
 #include "Interface/Parryable.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -246,6 +247,11 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 		return;
 	}
 
+	if (auto EnemyHitActor = Cast<ABaseEnemy>(HitActor))
+	{
+		EnemyHitActor->PlayHitVFX(HitResult.ImpactPoint);
+	}
+	
 	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 	{
 		FAttackData AttackData;
