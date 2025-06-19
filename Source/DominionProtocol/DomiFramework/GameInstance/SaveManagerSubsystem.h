@@ -38,11 +38,11 @@ public:
 	FORCEINLINE void SetSaveSlotData(int32 SlotIndex, const FSaveSlotMetaData& Data) { SaveSlotArray[SlotIndex] = Data; }
 
 	// Getter
-
-private:
-	UPROPERTY()
+protected:
+	UPROPERTY(BlueprintReadOnly)
 	TArray<FSaveSlotMetaData> SaveSlotArray;
 
+private:
 	// TitleLevel에서만 사용됨
 	UPROPERTY()
 	TObjectPtr<UWorld> World;

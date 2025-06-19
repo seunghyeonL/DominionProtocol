@@ -27,8 +27,8 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<class UDomiTitleHUDWidget> TitleHUDWidgetClass;
+	TSubclassOf<class UUserWidget> TitleHUDWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<class UDomiTitleHUDWidget> TitleHUDWidgetInstance;
+	TObjectPtr<class UUserWidget> TitleHUDWidgetInstance;
 };

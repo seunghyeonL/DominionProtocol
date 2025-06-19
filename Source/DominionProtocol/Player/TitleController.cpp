@@ -2,15 +2,16 @@
 
 
 #include "TitleController.h"
-#include "UI/UITitle/DomiTitleHUDWidget.h"
+
+#include "Blueprint/UserWidget.h"
 #include "Util/DevCheatManager.h"
 
 ATitleController::ATitleController()
 {
-	static ConstructorHelpers::FClassFinder<UDomiTitleHUDWidget> TitleHUDWidgetRef (TEXT("/Game/Blueprints/UI/WBP_DomiTitleHUDWidget.WBP_DomiTitleHUDWidget_C"));
-	if (TitleHUDWidgetRef.Class)
+	static ConstructorHelpers::FClassFinder<UUserWidget> StartMenuWidgetRef (TEXT("/Game/Blueprints/UI/NewUI/StartMenuWidget.StartMenuWidget_C"));
+	if (StartMenuWidgetRef.Class)
 	{
-		TitleHUDWidgetClass = TitleHUDWidgetRef.Class;
+		TitleHUDWidgetClass = StartMenuWidgetRef.Class;
 	}
 
 	CheatClass = UDevCheatManager::StaticClass();
@@ -43,7 +44,7 @@ void ATitleController::CreateHUDWidget()
 {
 	check(TitleHUDWidgetClass);
 	
-	TitleHUDWidgetInstance = CreateWidget<UDomiTitleHUDWidget>(this, TitleHUDWidgetClass);
+	TitleHUDWidgetInstance = CreateWidget<UUserWidget>(this, TitleHUDWidgetClass);
 }
 
 void ATitleController::AddHUDToViewport() const
