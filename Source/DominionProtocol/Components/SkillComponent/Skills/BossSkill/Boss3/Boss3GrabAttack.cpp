@@ -17,4 +17,16 @@ void UBoss3GrabAttack::AttackTrace() const
 	{
 		Boss->ThrowCapturedTarget(); // 잡은 캐릭터 던짐
 	}
+
+	Super::AttackTrace();
+}
+
+void UBoss3GrabAttack::StartTrace(const FGameplayTagContainer& TagContainer)
+{
+	if (ABoss3Enemy* Boss = Cast<ABoss3Enemy>(OwnerCharacter))
+	{
+		Boss->ThrowCapturedTarget(); // 잡은 캐릭터 던짐
+	}
+
+	Super::StartTrace(TagContainer);
 }

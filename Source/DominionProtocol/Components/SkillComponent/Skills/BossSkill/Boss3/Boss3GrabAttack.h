@@ -17,4 +17,6 @@ public:
 	UBoss3GrabAttack();
 
 	virtual void AttackTrace() const override;
+
+	virtual void StartTrace(const FGameplayTagContainer& TagContainer) override; 
 };

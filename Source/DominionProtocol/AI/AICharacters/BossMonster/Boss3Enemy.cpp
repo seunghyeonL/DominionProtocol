@@ -98,7 +98,7 @@ void ABoss3Enemy::SpawnStone()
 					SpawnedStoneMeshComp = nullptr;
 				}
 			},
-			1.2f,
+			1.4f,
 			false
 		);
 	}
@@ -117,6 +117,7 @@ void ABoss3Enemy::Attack4()
 
 void ABoss3Enemy::ThrowCapturedTarget()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Grab"));
 	if (!IsValid(CapturedTarget)) return;
 
 	// 부착 해제
@@ -138,10 +139,10 @@ void ABoss3Enemy::ThrowCapturedTarget()
 	}
 
 	// 던지는 방향: 골렘 앞쪽 + 위로
-	FVector LaunchDirection = GetActorForwardVector() + FVector(0.f, 0.f, 0.5f);
+	FVector LaunchDirection = GetActorForwardVector() + FVector(0.f, 0.f, 0.2f);
 	LaunchDirection.Normalize();
 
-	CapturedTarget->LaunchCharacter(LaunchDirection * 1500.f, true, true);
+	CapturedTarget->LaunchCharacter(LaunchDirection * 2500.f, true, true);
 
 	// 상태 초기화
 	CapturedTarget = nullptr;
