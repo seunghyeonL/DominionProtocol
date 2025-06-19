@@ -5,6 +5,7 @@
 namespace EffectTags
 {
 	// ControlEffectTags
+	inline const FGameplayTag Interact = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Interact"));
 	inline const FGameplayTag UsingSkill = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill"));
 	inline const FGameplayTag ConsumingItem = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.ConsumingItem"));
 	inline const FGameplayTag Death = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Death"));

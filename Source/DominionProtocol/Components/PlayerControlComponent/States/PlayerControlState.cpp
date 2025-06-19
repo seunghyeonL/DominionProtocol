@@ -204,6 +204,11 @@ void UPlayerControlState::Interact()
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OwnerCharacter);
 	check(PlayerCharacter);
 
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
+
+	ControlComponent->ActivateControlEffect(EffectTags::Interact);
+
 	AActor* InteractableObject = PlayerCharacter->GetCurrentInteractableActor();
 	if (IsValid(InteractableObject))
 	{

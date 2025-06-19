@@ -59,7 +59,8 @@ public:
 	
 	//Getter
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE AActor* GetCurrentInteractableActor() const;
+	AActor* GetCurrentInteractableActor() const;
+	FORCEINLINE const TSet<AActor*>& GetInteractableActorSet() const { return InteractableActorSet; }
 	
 	//Setter
 	UFUNCTION(BlueprintCallable)
