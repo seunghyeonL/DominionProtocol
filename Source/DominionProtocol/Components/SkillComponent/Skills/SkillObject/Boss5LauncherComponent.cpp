@@ -1,26 +1,23 @@
 #include "Components/SkillComponent/Skills/SkillObject/Boss5LauncherComponent.h"
 #include "Boss5LauncherComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Engine/World.h"
 #include "Util/DebugHelper.h"
 
 UBoss5LauncherComponent::UBoss5LauncherComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	ProjectileSpeed = 2000.0f;
 	AttackCooldown = 1.0f;
 	bCanLaunchProjectile = true; 
 	LaunchSocketName = "None";
+	CurrentTargetActor = nullptr;
 }
 
 void UBoss5LauncherComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (!GetOwner()->FindComponentByClass<UStaticMeshComponent>())
-	{
-		
-	}
 }
 
 
@@ -28,6 +25,14 @@ void UBoss5LauncherComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+}
+
+void UBoss5LauncherComponent::SetAndTrackTarget(AActor* NewTargetActor)
+{
+}
+
+void UBoss5LauncherComponent::ClearTarget()
+{
 }
 
 void UBoss5LauncherComponent::LaunchProjectileAtTarget(AActor* TargetActor)
@@ -89,6 +94,11 @@ void UBoss5LauncherComponent::OnCooldownFinished()
 
 void UBoss5LauncherComponent::SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation)
 {
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = GetOwner(); // 발사한 액터를 Owner로 설정 (피해 계산 등)
 	SpawnParams.Instigator = GetOwner()->GetInstigator(); // 발사한 인스티게이터 설정
@@ -106,7 +116,7 @@ void UBoss5LauncherComponent::SpawnProjectile(const FVector& SpawnLocation, cons
 
 		// 쿨타임 시작
 		bCanLaunchProjectile = false;
-		GetWorld()->GetTimerManager().SetTimer(CooldownTimerHandle, this, &UBoss5LauncherComponent::OnCooldownFinished, AttackCooldown, false);
+		World->GetTimerManager().SetTimer(CooldownTimerHandle, this, &UBoss5LauncherComponent::OnCooldownFinished, AttackCooldown, false);
 	}
 }
 
