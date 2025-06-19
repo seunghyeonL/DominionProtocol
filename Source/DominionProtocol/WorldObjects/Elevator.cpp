@@ -94,6 +94,14 @@ void AElevator::OnTimelineFinished()
 {
 	bIsAtTop = !bIsAtTop;
 	bIsMoving = false;
+
+	if (auto PC = GetWorld()->GetFirstPlayerController())
+	{
+		if (auto DomiCharacter = Cast<ADomiCharacter>(PC->GetPawn()))
+		{
+			DomiCharacter->ToggleCamareLagEnable();
+		}
+	}
 }
 
 void AElevator::MoveElevatorTo(float TargetZ)
@@ -109,7 +117,6 @@ void AElevator::MoveElevatorTo(float TargetZ)
 		Debug::Print(TEXT("Elevator is moving – movement blocked"));
 		return;
 	}
-
 	
 	StartLocation = CurrentLocation;
 	TargetLocation = FVector(CurrentLocation.X, CurrentLocation.Y, TargetZ);
@@ -117,6 +124,14 @@ void AElevator::MoveElevatorTo(float TargetZ)
 	Timeline.PlayFromStart();
 	bIsMoving = true;
 
+	if (auto PC = GetWorld()->GetFirstPlayerController())
+	{
+		if (auto DomiCharacter = Cast<ADomiCharacter>(PC->GetPawn()))
+		{
+			DomiCharacter->ToggleCamareLagEnable();
+		}
+	}
+	
 	Debug::Print(FString::Printf(TEXT("Elevator Moving To Z: %.2f"), TargetZ));
 }
 
@@ -138,7 +153,7 @@ void AElevator::Interact_Implementation(AActor* Interactor)
 		Debug::Print(TEXT("TopCaller not assigned!"));
 		return;
 	}
-
+	
 	float TargetZ = bIsAtTop
 		? BottomCaller->GetActorLocation().Z
 		: TopCaller->GetActorLocation().Z;

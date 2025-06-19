@@ -68,6 +68,9 @@ public:
 	void AddInteractableActor(AActor* AddInteractableActor);
 	void RemoveInteractableActor(AActor* RemoveInteractableActor);
 
+	// Camera
+	void ToggleCamareLagEnable();
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/

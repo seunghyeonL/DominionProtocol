@@ -133,6 +133,13 @@ void ADomiCharacter::RemoveInteractableActor(AActor* RemoveInteractableActor)
 	}
 }
 
+void ADomiCharacter::ToggleCamareLagEnable()
+{
+	check(CameraBoom);
+
+	CameraBoom->bEnableCameraLag = !CameraBoom->bEnableCameraLag;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
