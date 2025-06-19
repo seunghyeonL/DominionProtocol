@@ -1,18 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PoisonEffect.h"
+#include "BurnEffect.h"
 
 #include "Components/StatusComponent/StatusComponent.h"
 #include "GameFramework/Character.h"
-#include "Player/Damagable.h"
 
-UPoisonEffect::UPoisonEffect()
+UBurnEffect::UBurnEffect()
 {
-	StatusEffectTag = EffectTags::Poison;
+	StatusEffectTag = EffectTags::Burn;
 }
 
-bool UPoisonEffect::Activate()
+bool UBurnEffect::Activate()
 {
 	if (!Super::Activate())
 	{
@@ -22,7 +21,7 @@ bool UPoisonEffect::Activate()
 	OwnerCharacter->GetWorldTimerManager().SetTimer(
 		DoTTimer,
 		this,
-		&UPoisonEffect::ApplyDoTDamage,
+		&UBurnEffect::ApplyDoTDamage,
 		0.25f,
 		true
 		);
@@ -30,7 +29,7 @@ bool UPoisonEffect::Activate()
 	return true;
 }
 
-bool UPoisonEffect::Activate(float Duration)
+bool UBurnEffect::Activate(float Duration)
 {
 	if (!Super::Activate(Duration))
 	{
@@ -40,7 +39,7 @@ bool UPoisonEffect::Activate(float Duration)
 	OwnerCharacter->GetWorldTimerManager().SetTimer(
 		DoTTimer,
 		this,
-		&UPoisonEffect::ApplyDoTDamage,
+		&UBurnEffect::ApplyDoTDamage,
 		0.25f,
 		true
 		);
@@ -48,7 +47,7 @@ bool UPoisonEffect::Activate(float Duration)
 	return true;
 }
 
-void UPoisonEffect::Deactivate()
+void UBurnEffect::Deactivate()
 {
 	if (!bIsActive)
 	{
@@ -60,7 +59,7 @@ void UPoisonEffect::Deactivate()
 	Super::Deactivate();
 }
 
-void UPoisonEffect::ApplyDoTDamage()
+void UBurnEffect::ApplyDoTDamage()
 {
 	if (auto StatusComponent = Cast<UStatusComponent>(GetOuter()))
 	{
