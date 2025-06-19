@@ -40,10 +40,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void MainMenuSwitchShowAndHideWidget();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnDialogueChangedNextStoryState();
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UFUNCTION(BlueprintImplementableEvent)
 	void DialogueChangedNextStoryState();
 
 	//
