@@ -156,18 +156,18 @@ bool USaveManagerSubsystem::SaveSettings()
 		SaveSettingsInstance->SoundSubsystemData = SoundSubsystem->GetSaveData();
 	}
 	
-	return UGameplayStatics::SaveGameToSlot(SaveSettingsInstance, FString::Printf(TEXT("UserSettings")), 0);
+	return UGameplayStatics::SaveGameToSlot(SaveSettingsInstance, FString::Printf(TEXT("UserSettings")), 999);
 }
 
 bool USaveManagerSubsystem::LoadSettings()
 {
-	if (!UGameplayStatics::DoesSaveGameExist(FString::Printf(TEXT("UserSettings")), 0))
+	if (!UGameplayStatics::DoesSaveGameExist(FString::Printf(TEXT("UserSettings")), 999))
 	{
 		Debug::PrintError(TEXT("Invalid SaveSlot"));
 		return false;
 	}
 
-	UDomiSaveSettings* LoadedGame = Cast<UDomiSaveSettings>(UGameplayStatics::LoadGameFromSlot(FString::Printf(TEXT("UserSettings")), 0));
+	UDomiSaveSettings* LoadedGame = Cast<UDomiSaveSettings>(UGameplayStatics::LoadGameFromSlot(FString::Printf(TEXT("UserSettings")), 999));
 	if (!IsValid(LoadedGame))
 	{
 		Debug::PrintError(TEXT("Load GameData Failed"));
