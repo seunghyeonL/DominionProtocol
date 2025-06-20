@@ -65,6 +65,8 @@ void USaveManagerSubsystem::DeleteSaveSlot(int32 SlotIndex)
 {
 	UGameplayStatics::DeleteGameInSlot(SaveSlotArray[SlotIndex].SaveSlotName, SaveSlotArray[SlotIndex].SaveSlotIndex);
 	SaveSlotArray[SlotIndex] = FSaveSlotMetaData();
+	SaveSlotArray[SlotIndex].SaveSlotName = FString::Printf(TEXT("SaveSlot%d"), SlotIndex + 1);
+	SaveSlotArray[SlotIndex].SaveSlotIndex = SlotIndex;
 	SaveSettings();
 }
 
