@@ -210,9 +210,10 @@ void UPlayerControlState::Interact()
 	AActor* InteractableObject = PlayerCharacter->GetCurrentInteractableActor();
 	if (IsValid(InteractableObject))
 	{
+		ControlComponent->ActivateControlEffect(EffectTags::Interact);
 		IInteractableInterface::Execute_Interact(InteractableObject, PlayerCharacter);
 		FText UIText = IInteractableInterface::Execute_GetInteractMessage(InteractableObject);
-		ControlComponent->ActivateControlEffect(EffectTags::Interact);
+		
 	}
 	
 	Debug::Print(TEXT("UPlayerControlState::Interact : Call."));

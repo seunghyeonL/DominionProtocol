@@ -253,7 +253,7 @@ void ABaseEnemy::InitializeStatusComponent()
 			if (FStatusComponentInitializeData* InitializeData = BaseGameState->GetStatusComponentInitializeData(PawnTag))
 			{
 				StatusComponent->InitializeStatusComponent(*InitializeData);
-				StatusComponent->OnDeath.AddUObject(this, &ABaseEnemy::OnDeath_Implementation);
+				StatusComponent->OnDeath.AddUObject(this, &ABaseEnemy::OnDeath);
 				StatusComponent->OnGroggy.BindUObject(this, &ABaseEnemy::OnGroggy);
 			}
 		}
