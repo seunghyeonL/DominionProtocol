@@ -54,4 +54,6 @@ public:
 	UPROPERTY()
 	ACharacter* CapturedTarget;
 	void ThrowCapturedTarget();
+
+	virtual void OnGroggy() override;
 };

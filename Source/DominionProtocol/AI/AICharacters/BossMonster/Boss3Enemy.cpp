@@ -5,6 +5,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StatusComponent/StatusComponent.h"
 
 ABoss3Enemy::ABoss3Enemy()
 {
@@ -146,4 +147,10 @@ void ABoss3Enemy::ThrowCapturedTarget()
 
 	// 상태 초기화
 	CapturedTarget = nullptr;
+}
+
+void ABoss3Enemy::OnGroggy()
+{
+	Super::OnGroggy();
+	StatusComponent->ActivateStatusEffect(EffectTags::Groggy, 0.f, 3.f);
 }
