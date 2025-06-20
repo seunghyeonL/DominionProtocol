@@ -23,6 +23,8 @@ void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		SaveSlotArray[i].SaveSlotName = FString::Printf(TEXT("SaveSlot%d"), i + 1);
 		SaveSlotArray[i].SaveSlotIndex = i;
+		SaveSlotArray[i].PlayingLevelName = "PresentLevel";
+		SaveSlotArray[i].PlayingLevelDisplayName = FText::FromString(TEXT("2375 에어로발리스카"));
 	}
 }
 
@@ -37,13 +39,18 @@ void USaveManagerSubsystem::StartNewGame(int32 SlotIndex)
 	{
 		SaveSlotArray[SlotIndex].SaveSlotExist = true;
 		UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
-		if (IsValid(GameInstance))
-		{
-			GameInstance->SetSaveSlotName(SaveSlotArray[SlotIndex].SaveSlotName);
-			GameInstance->SetSaveSlotIndex(SaveSlotArray[SlotIndex].SaveSlotIndex);
-		}
+		check(IsValid(GameInstance));
+		UWorldInstanceSubsystem* WorldInstanceSubsystem = GameInstance->GetSubsystem<UWorldInstanceSubsystem>();
+		check(IsValid(WorldInstanceSubsystem));
+		
+		GameInstance->SetSaveSlotName(SaveSlotArray[SlotIndex].SaveSlotName);
+		GameInstance->SetSaveSlotIndex(SaveSlotArray[SlotIndex].SaveSlotIndex);
+		WorldInstanceSubsystem->SetCurrentLevelName("PresentLevel");
+		WorldInstanceSubsystem->SetCurrentLevelDisplayName(FText::FromString(TEXT("2375 에어로발리스카")));
+
 		SaveGame(SaveSlotArray[SlotIndex].SaveSlotName, SaveSlotArray[SlotIndex].SaveSlotIndex);
 		SaveSettings();
+		
 		Debug::Print(TEXT("Start New Game"));
 		UGameplayStatics::OpenLevel(World, FName(TEXT("PresentLevel")));
 	}

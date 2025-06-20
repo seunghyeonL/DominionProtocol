@@ -66,13 +66,13 @@ void ABaseGameState::InitializeWorldInstanceSubsystem()
 	check(IsValid(WorldInstanceSubsystem));
 
 	WorldInstanceSubsystem->SetCurrentLevelName(UGameplayStatics::GetCurrentLevelName(GetWorld(), true));
-	if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Level1"))
+	if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Level1") || WorldInstanceSubsystem->GetCurrentLevelName().Contains("PresentLevel"))
 	{
-		WorldInstanceSubsystem->SetCurrentLevelDisplayName(FText::FromString("Level 1"));
+		WorldInstanceSubsystem->SetCurrentLevelDisplayName(FText::FromString(TEXT("2375 에어로발리스카")));
 	}
-	else if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Level 2"))
+	else if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Level 2") || WorldInstanceSubsystem->GetCurrentLevelName().Contains("PastLevel"))
 	{
-		WorldInstanceSubsystem->SetCurrentLevelDisplayName(FText::FromString("Level 2"));
+		WorldInstanceSubsystem->SetCurrentLevelDisplayName(FText::FromString(TEXT("1168 발리스카")));
 	}
 }
 
