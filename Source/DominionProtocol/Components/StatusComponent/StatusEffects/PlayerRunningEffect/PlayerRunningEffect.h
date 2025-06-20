@@ -13,7 +13,7 @@ class DOMINIONPROTOCOL_API UPlayerRunningEffect : public UStatusEffectBase
 	GENERATED_BODY()
 protected:
 	float SpeedCoefficient;
-	float StaminaPerSecond;
+	float StaminaPerSecondRate;
 
 public:
 	UPlayerRunningEffect();

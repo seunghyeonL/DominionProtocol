@@ -13,6 +13,7 @@
 #include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedParry/BufferedParry.h"
 #include "Components/PlayerControlComponent/Effects/BufferedInput/BufferedWeaponSkill/BufferedWeaponSkill.h"
 #include "Components/SkillComponent/SkillComponent.h"
+#include "Player/Characters/DomiCharacter.h"
 
 UPlayerUsingSkillEffect::UPlayerUsingSkillEffect()
 {
@@ -37,6 +38,11 @@ bool UPlayerUsingSkillEffect::Activate()
 	
 	check(ControlComponent);
 	check(OwnerCharacter);
+
+	if (auto DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		DomiCharacter->StartCombat();
+	}
 	
 	// Cashed Movement Vector
 	const FVector& CurrentMovementVector = ControlComponent->GetCurrentMovementVector();

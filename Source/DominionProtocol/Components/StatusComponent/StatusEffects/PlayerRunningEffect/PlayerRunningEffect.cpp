@@ -6,12 +6,13 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/Characters/DomiCharacter.h"
 
 UPlayerRunningEffect::UPlayerRunningEffect()
 {
 	StatusEffectTag = EffectTags::Running;
 	SpeedCoefficient = 1.7f;
-	StaminaPerSecond = 5.0f;
+	StaminaPerSecondRate = 0.1f;
 }
 
 bool UPlayerRunningEffect::Activate()
@@ -42,7 +43,6 @@ bool UPlayerRunningEffect::Activate()
 bool UPlayerRunningEffect::Activate(float Duration)
 {
 	// Super::Activate(Duration);
-	Debug::PrintError(TEXT("UPlayerRunningEffect::Activate : Use Activate()!"));
 	Activate();
 	return true;
 }
@@ -79,6 +79,14 @@ void UPlayerRunningEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (auto DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
+	{
+		if (!DomiCharacter->IsInCombat())
+		{
+			return;
+		}
+	}
+
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	check(StatusComponent);
 
@@ -87,5 +95,5 @@ void UPlayerRunningEffect::Tick(float DeltaTime)
 		Deactivate();
 	}
 	
-	StatusComponent->SetStamina(StatusComponent->GetStat(StatTags::Stamina) - StaminaPerSecond * DeltaTime);
+	StatusComponent->SetStamina(StatusComponent->GetStat(StatTags::Stamina) - StatusComponent->GetStat(StatTags::MaxStamina) * StaminaPerSecondRate * DeltaTime);
 }
