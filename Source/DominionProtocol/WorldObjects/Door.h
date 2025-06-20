@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface/InteractableInterface.h"
+#include "Interface/StoryDependentInterface.h"
 #include "Components/TimelineComponent.h"
 #include "Door.generated.h"
 
@@ -12,12 +13,14 @@ class UBoxComponent;
 class ADomiCharacter;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ADoor : public AActor, public IInteractableInterface
+class DOMINIONPROTOCOL_API ADoor : public AActor, public IInteractableInterface, public IStoryDependentInterface
 {
 	GENERATED_BODY()
 
 public:
 	ADoor();
+
+	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
 
 	UFUNCTION()
 	virtual void MoveDoor(float Value);

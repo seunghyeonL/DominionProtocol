@@ -2,6 +2,8 @@
 #include "Util/DebugHelper.h"
 #include "Components/BoxComponent.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "DomiFramework/GameInstance/DomiGameInstance.h"
+#include "EnumAndStruct/EGameStoryState.h"
 
 ADoor::ADoor()
 	: bIsDoorClosed(true),
@@ -32,6 +34,15 @@ ADoor::ADoor()
 	BoxCollisionComp->SetupAttachment(SceneComp);
 	BoxCollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxCollisionComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
+void ADoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
+{
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (GI->GetCurrentGameStoryState()>=EGameStoryState::Open_Lever)
+	{
+		OpenDoor();
+	}
 }
 
 void ADoor::BeginPlay()
