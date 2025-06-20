@@ -66,6 +66,10 @@ void UPlayerUsingSkillEffect::Deactivate()
 	{
 		ControlComponent->ActivateControlEffect(EffectTags::DashAttackPossible, 0.5f);
 	}
+	else if (ControlEffectTag.MatchesTag(EffectTags::UsingParry))
+	{
+		ControlComponent->DeactivateControlEffect(EffectTags::Parry);
+	}
 	
 	SetControlEffectTag(EffectTags::UsingSkill);
 	
