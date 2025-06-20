@@ -326,6 +326,16 @@ void ADomiCharacter::BindInputFunctions()
 	}
 }
 
+void ADomiCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	check(StatusComponent);
+
+	auto CurrentZSpeed = FMath::Abs(GetVelocity().Z);
+	float Damage = FMath::Clamp(CurrentZSpeed - 1000.f, 0.f, 500.f) * StatusComponent->GetStat(StatTags::MaxHealth) / 500.f;
+	StatusComponent->SetHealth(StatusComponent->GetStat(StatTags::Health) - Damage);
+}
+
 FGameplayTagContainer& ADomiCharacter::GetActiveControlEffectTags()
 {
 	check(ControlComponent);
