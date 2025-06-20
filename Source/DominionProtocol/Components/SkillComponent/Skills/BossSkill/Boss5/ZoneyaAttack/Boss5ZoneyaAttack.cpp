@@ -3,8 +3,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
-#include "AI/AIControllers/Boss5AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "AI/AIControllers/Boss5AIController.h"
 #include "Components/SkillComponent/SkillComponent.h"
 
 UBoss5ZoneyaAttack::UBoss5ZoneyaAttack()
@@ -74,8 +74,6 @@ void UBoss5ZoneyaAttack::EndZoneya()
 {
 	TargetCharacter->EnableInput(PC);
 	TargetCharacter->GetMesh()->bPauseAnims = false;
-
-	// 로봇 팔 공격 로직
 
 	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
 
