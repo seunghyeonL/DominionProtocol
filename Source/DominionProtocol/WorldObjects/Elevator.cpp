@@ -159,6 +159,14 @@ void AElevator::Interact_Implementation(AActor* Interactor)
 		: TopCaller->GetActorLocation().Z;
 
 	MoveElevatorTo(TargetZ);
+
+	if (IsValid(Interactor))
+	{
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
+		ensure(PlayerCharacter);
+
+		PlayerCharacter->RemoveInteractableActor(this);
+	}
 }
 
 FText AElevator::GetInteractMessage_Implementation() const
