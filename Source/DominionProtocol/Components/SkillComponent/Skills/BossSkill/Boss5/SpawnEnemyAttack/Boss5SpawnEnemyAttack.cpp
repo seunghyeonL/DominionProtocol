@@ -20,34 +20,46 @@ void UBoss5SpawnEnemyAttack::Execute()
 	UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
 	if (!BBComp) return;
 
-	static const FName MeleeLeftKey("MeleeLeftSpawnLocation");
-	static const FName MeleeRightKey("MeleeRightSpawnLocation");
-	static const FName RangedLeftKey("RangedLeftSpawnLocation");
-	static const FName RangedRightKey("RangedRightSpawnLocation");
+	const FName TargetActorKey("TargetActor");
+	const FName MeleeLeftKey("MeleeLeftSpawnLocation");
+	const FName MeleeRightKey("MeleeRightSpawnLocation");
+	const FName RangedLeftKey("RangedLeftSpawnLocation");
+	const FName RangedRightKey("RangedRightSpawnLocation");
+
+	AActor* TargetActor = Cast<AActor>(BBComp->GetValueAsObject(TargetActorKey));
+	if (!TargetActor) return;
+	FVector TargetLocation = TargetActor->GetActorLocation();
 
 	FVector MeleeLeftSpawnLocation = BBComp->GetValueAsVector(MeleeLeftKey);
 	FVector MeleeRightSpawnLocation = BBComp->GetValueAsVector(MeleeRightKey);
 	FVector RangedLeftSpawnLocation = BBComp->GetValueAsVector(RangedLeftKey);
 	FVector RangedRightSpawnLocation = BBComp->GetValueAsVector(RangedRightKey);
 
-	UClass* MeleeAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Dev/JCH/NomalMonster/BP_MinionAI.BP_MinionAI"));
+	UClass* MeleeAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Dev/JCH/NomalMonster/BP_MinionAI.BP_MinionAI_C"));
 	if (MeleeAI)
 	{
-		AActor* SpawnedMinion1 = GetWorld()->SpawnActor<AActor>(MeleeAI, MeleeLeftSpawnLocation, FRotator::ZeroRotator);
-		AActor* SpawnedMinion2 = GetWorld()->SpawnActor<AActor>(MeleeAI, MeleeRightSpawnLocation, FRotator::ZeroRotator);
+		FRotator MeleeLeftRot = (TargetLocation - MeleeLeftSpawnLocation).Rotation();
+		FRotator MeleeRightRot = (TargetLocation - MeleeRightSpawnLocation).Rotation();
+
+		AActor* SpawnedMeleeAI1 = GetWorld()->SpawnActor<AActor>(MeleeAI, MeleeLeftSpawnLocation, MeleeLeftRot);
+		AActor* SpawnedMeleeAI2 = GetWorld()->SpawnActor<AActor>(MeleeAI, MeleeRightSpawnLocation, MeleeRightRot);
 	}
 	else
 	{
 		Debug::PrintError(TEXT("UBoss5SpawnEnemyAttack::BP_MinionAI Asset's location is not assigned"));
 	}
 
-	UClass* RangedAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Dev/JCH/NomalMonster/BP_GunMinionAI.BP_GunMinionAI"));
+	UClass* RangedAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Dev/JCH/NomalMonster/BP_GunMinionAI.BP_GunMinionAI_C"));
 	if (RangedAI)
 	{
-		FVector ChosenSpawnLocation = FMath::RandBool() ? RangedLeftSpawnLocation : RangedRightSpawnLocation;
+		//FVector ChosenSpawnLocation = FMath::RandBool() ? RangedLeftSpawnLocation : RangedRightSpawnLocation;
+		//FRotator RangedRot = (TargetLocation - ChosenSpawnLocation).Rotation();
 
-		AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(RangedAI, ChosenSpawnLocation, FRotator::ZeroRotator);
+		FRotator RangeLeftRot = (TargetLocation - RangedLeftSpawnLocation).Rotation();
+		FRotator RangeRightRot = (TargetLocation - RangedRightSpawnLocation).Rotation();
 
+		AActor* SpawnedRangeAI1 = GetWorld()->SpawnActor<AActor>(RangedAI, RangedLeftSpawnLocation, RangeLeftRot);
+		AActor* SpawnedRangeAI2 = GetWorld()->SpawnActor<AActor>(RangedAI, RangedRightSpawnLocation, RangeRightRot);
 	}
 	else
 	{
