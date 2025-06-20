@@ -42,6 +42,15 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI|State")
 	bool bIsAttacking = true;
+
+	// Death Handler
+	UFUNCTION(BlueprintNativeEvent)
+	void OnDeath();
+	
+	virtual void OnDeath_Implementation();
+
+	// Groggy Handler
+	virtual void OnGroggy();
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -49,8 +58,6 @@ public:
 	// StatusComponentUser
 	FORCEINLINE virtual UStatusComponent* GetStatusComponent() const override { return StatusComponent; }
 	virtual void InitializeStatusComponent() override;
-	virtual void OnDeath();
-	virtual void OnGroggy();
 	virtual FGameplayTagContainer& GetActiveStatusEffectTags() override;
 
 	// SkillComponentUser

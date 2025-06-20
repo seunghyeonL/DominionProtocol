@@ -284,7 +284,7 @@ void UStatusComponent::SetGroggyGauge(const float NewGroggyGauge)
 	const float MaxGroggyGauge = GetStat(StatTags::MaxGroggyGauge);
 	const float ClampedGroggyGauge = FMath::Clamp(NewGroggyGauge, 0.f, MaxGroggyGauge);
 
-	Debug::Print(FString::Printf(TEXT("NewGroggyGauge : %f"), ClampedGroggyGauge));
+	// Debug::Print(FString::Printf(TEXT("NewGroggyGauge : %f"), ClampedGroggyGauge));
 	SetStat(StatTags::GroggyGauge, ClampedGroggyGauge);
 
 	// OnGroggy 

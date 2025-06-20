@@ -77,7 +77,7 @@ void ABaseEnemy::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ABaseEnemy::OnDeath()
+void ABaseEnemy::OnDeath_Implementation()
 {
 	StatusComponent->ActivateStatusEffect(EffectTags::Death, 0);
 
@@ -253,7 +253,7 @@ void ABaseEnemy::InitializeStatusComponent()
 			if (FStatusComponentInitializeData* InitializeData = BaseGameState->GetStatusComponentInitializeData(PawnTag))
 			{
 				StatusComponent->InitializeStatusComponent(*InitializeData);
-				StatusComponent->OnDeath.AddUObject(this, &ABaseEnemy::OnDeath);
+				StatusComponent->OnDeath.AddUObject(this, &ABaseEnemy::OnDeath_Implementation);
 				StatusComponent->OnGroggy.BindUObject(this, &ABaseEnemy::OnGroggy);
 			}
 		}
