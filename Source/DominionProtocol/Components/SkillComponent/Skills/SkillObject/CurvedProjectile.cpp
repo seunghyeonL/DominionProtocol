@@ -278,6 +278,11 @@ void ACurvedProjectile::DestroyProjectile()
 		UGameplayStatics::PlaySoundAtLocation(World, Sounds[1], GetActorLocation());
 	}
 
+	if (DestroySound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(World, DestroySound, GetActorLocation());
+	}
+
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	SetActorTickEnabled(false);

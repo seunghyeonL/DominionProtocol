@@ -75,6 +75,14 @@ public:
 	UPROPERTY()
 	FAttackData AttackData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	bool bUseLookAtRotation = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SFX")
+	USoundBase* DestroySound = nullptr;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
+	TObjectPtr<UStaticMeshComponent> Projectile;
 protected:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -103,8 +111,8 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Collision")
 	TObjectPtr<USphereComponent> SphereCollision;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
-	TObjectPtr<UStaticMeshComponent> Projectile;
+	//UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
+	//TObjectPtr<UStaticMeshComponent> Projectile;
 
 	UPROPERTY()
 	TObjectPtr<USoundBase> Sound;
