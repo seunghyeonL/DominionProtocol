@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "EnumAndStruct/EGameStoryState.h"
 #include "Interface/InteractableInterface.h"
+#include "Interface/StoryDependentInterface.h"
 #include "StoryTrigger.generated.h"
 
 class UBoxComponent;
@@ -13,13 +14,14 @@ class UDialogueManager;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
 
 UCLASS()
-class DOMINIONPROTOCOL_API AStoryTrigger : public AActor, public IInteractableInterface
+class DOMINIONPROTOCOL_API AStoryTrigger : public AActor, public IInteractableInterface, public IStoryDependentInterface
 {
 	GENERATED_BODY()
 	
 public:	
 	AStoryTrigger();
 
+	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
 	FOnCreateDialogueManager OnCreateDialogueManager;
 
 protected:

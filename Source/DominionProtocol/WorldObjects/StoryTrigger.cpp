@@ -18,6 +18,18 @@ AStoryTrigger::AStoryTrigger()
 
 }
 
+void AStoryTrigger::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
+{
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (GI && GI->GetCurrentGameStoryState()>ForcedStoryState)
+	{
+		if (CollisionBox)
+		{
+			CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
+}
+
 void AStoryTrigger::BeginPlay()
 {
 	Super::BeginPlay();
@@ -71,6 +83,8 @@ void AStoryTrigger::Interact_Implementation(AActor* Interactor)
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (!PlayerCharacter) return;
+	
+	/////// 삭제****
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (GI)
 	{
