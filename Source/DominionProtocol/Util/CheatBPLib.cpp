@@ -166,6 +166,33 @@ void UCheatBPLib::EquipAxe(UObject* WorldContextObject)
 	}
 }
 
+void UCheatBPLib::EquipClaw(UObject* WorldContextObject)
+{
+	if (!WorldContextObject)
+	{
+		return;
+	}
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0);
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
+
+	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(PlayerController->GetPawn());
+	if (!IsValid(PlayerCharacter))
+	{
+		return;
+	}
+
+	UItemComponent* ItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
+	if (IsValid(ItemComponent))
+	{
+		ItemComponent->AddItem(ItemTags::ClawWeapon,1);
+		ItemComponent->EquipItem(FName("WeaponSlot_Primary"),ItemTags::ClawWeapon);
+	}
+}
+
 void UCheatBPLib::ToggleFog(UObject* WorldContextObject)
 {
 	if (!WorldContextObject) return;

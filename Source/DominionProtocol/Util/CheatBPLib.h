@@ -46,6 +46,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void EquipAxe(UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintCallable)
+	static void EquipClaw(UObject* WorldContextObject);
+
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
 	static void ToggleFog(UObject* WorldContextObject);
 };
