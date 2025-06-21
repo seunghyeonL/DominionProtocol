@@ -19,16 +19,16 @@
 #include "EnumAndStruct/FCrackData.h"
 #include "EngineUtils.h"
 #include "LevelSequencePlayer.h"
-#include "LevelSequenceActor.h"
 #include "MovieSceneSequencePlaybackSettings.h"
 #include "MovieScene.h"
-#include "MovieSceneSequence.h"
-#include "Camera/CameraComponent.h"
 #include "Engine/Engine.h"
 #include "Components/AudioComponent.h"
+#include "Engine/ExponentialHeightFog.h"
 #include "Sound/SoundWave.h"
-#include "GameFramework/SpringArmComponent.h"
+#include "Components/ExponentialHeightFogComponent.h"
+#include "Engine/ExponentialHeightFog.h"
 
+#include "Util/CheatBPLib.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
 
@@ -108,6 +108,8 @@ void ABaseGameMode::StartPlay()
 	BaseGameState = Cast<ABaseGameState>(World->GetGameState());
 	check(GameState);
 	BaseGameState->InitializeGame();
+
+	CheckFogCrackAndOffFog();
 
 	//최근 균열 데이터 있을 경우 그곳으로 플레이어 이동
 	if (!WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
@@ -436,6 +438,7 @@ void ABaseGameMode::OnFadeSequenceFinished()
 			PlayerCharacter->SetActorLocationAndRotation(PendingMoveLocation, PendingMoveRotation);
 			FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
 			PlayerController->SetControlRotation(NewRotation);
+			CheckFogCrackAndOffFog();
 			PlayFade(true);
 			ExitAudioComponent->Play();
 		}
@@ -471,6 +474,42 @@ void ABaseGameMode::UpdateInstanceData()
 void ABaseGameMode::PlayTimeAdder()
 {
 	PlayTime++;
+}
+
+void ABaseGameMode::CheckFogCrackAndOffFog()
+{
+	AExponentialHeightFog* Fog = Cast<AExponentialHeightFog>(UGameplayStatics::GetActorOfClass(World, AExponentialHeightFog::StaticClass()));
+	UExponentialHeightFogComponent* FogComponent;
+	
+	if (IsValid(Fog))
+	{
+		FogComponent = Fog->GetComponent();
+		if (!FogComponent)
+		{
+			Debug::Print(TEXT("FogComponent is invalid"));
+			return;
+		}
+	}
+	else
+	{
+		Debug::Print(TEXT("Fog is invalid"));
+		return;
+	}
+	
+	if (RecentCrackCache->GetIsInFogCrack())
+	{
+		if (FogComponent->FogMaxOpacity == 1.f)
+		{
+			UCheatBPLib::ToggleFog(this);
+		}
+	}
+	else
+	{
+		if (FogComponent->FogMaxOpacity == 0.f)
+		{
+			UCheatBPLib::ToggleFog(this);
+		}
+	}
 }
 
 void ABaseGameMode::SetPlayerInputEnable(bool bEnable)

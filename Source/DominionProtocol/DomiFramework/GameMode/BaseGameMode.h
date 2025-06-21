@@ -82,6 +82,8 @@ public:
 
 protected:
 	void PlayTimeAdder();
+
+	void CheckFogCrackAndOffFog();
 	
 public:
 	// Delegate
