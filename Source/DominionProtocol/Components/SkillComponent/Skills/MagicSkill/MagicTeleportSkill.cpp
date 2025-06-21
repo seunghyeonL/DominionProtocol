@@ -10,6 +10,8 @@
 #include "Components/SkillComponent/Skills/SkillObject/Portal.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 
+#include "Util/DebugHelper.h"
+
 UMagicTeleportSkill::UMagicTeleportSkill()
 {
 	SkillTag = SkillTags::MagicTeleportSkill;
@@ -277,7 +279,7 @@ void UMagicTeleportSkill::NotLockOnState()
 			Params
 		);
 
-		DrawDebugLine(
+		Debug::DrawLine(
 			World,
 			Start,
 			End,
