@@ -101,11 +101,27 @@ void ABaseGameMode::StartPlay()
 	{
 		PlayerCharacter->Tags.Add("Player");
 	}
+
+	PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
+	check(IsValid(PlayerController));
 	
 	BaseGameState = Cast<ABaseGameState>(World->GetGameState());
 	check(GameState);
 	BaseGameState->InitializeGame();
-	
+
+	//최근 균열 데이터 있을 경우 그곳으로 플레이어 이동
+	if (!WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
+	{
+		const FCrackData* CrackData = WorldInstanceSubsystem->GetCrackData(WorldInstanceSubsystem->GetCurrentLevelName(), WorldInstanceSubsystem->GetRecentCrackIndex());
+		check(CrackData);
+		
+		PlayerCharacter->SetActorLocation(CrackData->RespawnLocation);
+		PlayerCharacter->SetActorRotation(CrackData->RespawnRotation);
+		FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
+		PlayerController->SetControlRotation(NewRotation);
+	}
+
+	//균열 이동으로 인한 레벨 이동 시의 플레이어 위치 변경 로직
 	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
 		Debug::Print(FString::Printf(TEXT("%s, %s"), *WorldInstanceSubsystem->GetMoveTargetLocation().ToString(), *WorldInstanceSubsystem->GetMoveTargetRotation().ToString()));
@@ -113,7 +129,6 @@ void ABaseGameMode::StartPlay()
 		WorldInstanceSubsystem->SwitchIsLevelChanged();
 		WorldInstanceSubsystem->SetMoveTargetLocation(FVector::ZeroVector);
 		WorldInstanceSubsystem->SetMoveTargetRotator(FRotator::ZeroRotator);
-		AController* PlayerController = PlayerCharacter->GetController();
 		FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
 		PlayerController->SetControlRotation(NewRotation);
 	}
@@ -328,6 +343,7 @@ void ABaseGameMode::MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCr
 		Debug::Print(TEXT("Move Another Level"));
 		WorldInstanceSubsystem->SwitchIsLevelChanged();
 	}
+	Save();
 }
 
 void ABaseGameMode::DestroyAllNormalEnemy()
@@ -418,7 +434,6 @@ void ABaseGameMode::OnFadeSequenceFinished()
 		if (bIsSameLevelMove)
 		{
 			PlayerCharacter->SetActorLocationAndRotation(PendingMoveLocation, PendingMoveRotation);
-			AController* PlayerController = PlayerCharacter->GetController();
 			FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
 			PlayerController->SetControlRotation(NewRotation);
 			PlayFade(true);
@@ -463,13 +478,6 @@ void ABaseGameMode::SetPlayerInputEnable(bool bEnable)
 	if (!IsValid(PlayerCharacter))
 	{
 		Debug::Print(TEXT("PlayerCharacter is not valid"));
-		return;
-	}
-
-	APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
-	if (!IsValid(PlayerController))
-	{
-		Debug::Print(TEXT("PlayerController is not valid"));
 		return;
 	}
 	

@@ -121,6 +121,9 @@ protected:
 	TObjectPtr<UWorld> World;
 
 	UPROPERTY()
+	TObjectPtr<APlayerController> PlayerController;
+
+	UPROPERTY()
 	TObjectPtr<ADomiCharacter> PlayerCharacter;
 
 	UPROPERTY()
