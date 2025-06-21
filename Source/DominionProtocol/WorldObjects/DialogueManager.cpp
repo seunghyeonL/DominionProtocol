@@ -95,11 +95,7 @@ void UDialogueManager::ExecuteDialogueLine()
 		if (!Line->DialogueText.IsEmpty())
 		{
 			Debug::Print(Line->DialogueText.ToString()); // 대사
-			if (!CurrentDialogueString.IsEmpty())
-			{
-				CurrentDialogueString.AppendChar('\n');
-			}
-			CurrentDialogueString.Append(*Line->DialogueText.ToString());
+			CurrentDialogueString = Line->DialogueText.ToString();
 			OnUpdateDialogueText.Broadcast(FText::FromString(CurrentDialogueString)); // 대사 델리게이트
 		}
 		break;

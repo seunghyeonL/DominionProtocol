@@ -21,7 +21,7 @@ AStoryTrigger::AStoryTrigger()
 void AStoryTrigger::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GI && GI->GetCurrentGameStoryState()>ForcedStoryState)
+	if (GI && GI->GetCurrentGameStoryState()>=ForcedStoryState)
 	{
 		if (CollisionBox)
 		{
@@ -98,8 +98,6 @@ void AStoryTrigger::Interact_Implementation(AActor* Interactor)
 	if (DialogueManager->TryStartDialogueIfExists(GI->GetCurrentGameStoryState(), CrackLocation, CrackRotation))
 	{
 		Debug::Print(TEXT("AStoryTrigger: 대사 종료"));
-
-		return;
 	}
 	else
 	{
@@ -107,6 +105,10 @@ void AStoryTrigger::Interact_Implementation(AActor* Interactor)
 	}
 
 	PlayerCharacter->RemoveInteractableActor(this);
+	if (CollisionBox)
+	{
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
 FText AStoryTrigger::GetInteractMessage_Implementation() const
