@@ -127,21 +127,7 @@ void ABaseGameState::InitializeGame()
 	check(IsValid(SoundSubsystem));
 	check(IsValid(ItemInstanceSubsystem));
 	check(IsValid(SaveManagerSubsystem));
-	
-	CacheAllCracks();
-	LoadCrackDataFromInstance();
-	InitializeCrackDataMap();
-	BaseGameMode = Cast<ABaseGameMode>(World->GetAuthGameMode());
-	if (IsValid(BaseGameMode))
-	{
-		ACrack* NearestCrack = FindNearestCrack();
-		BaseGameMode->SetRecentCrackCache(NearestCrack);
-		if (WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
-		{
-			WorldInstanceSubsystem->SetRecentCrackName(NearestCrack->GetCrackName());
-			WorldInstanceSubsystem->SetRecentCrackIndex(NearestCrack->GetCrackIndex());
-		}
-	}
+
 	LoadItemDataFromInstance();
 
 	// 캐릭터 스탯값 적용
@@ -183,6 +169,33 @@ void ABaseGameState::InitializeGame()
 			WorldInstanceSubsystem->SetDropEssenceAmount(0);
 			WorldInstanceSubsystem->SetDropEssenceLocation(FVector::ZeroVector);
 			WorldInstanceSubsystem->SetDropEssenceLocationLevel("");
+		}
+	}
+
+	// 균열 정보 초기화
+	CacheAllCracks();
+	LoadCrackDataFromInstance();
+	InitializeCrackDataMap();
+	BaseGameMode = Cast<ABaseGameMode>(World->GetAuthGameMode());
+	if (IsValid(BaseGameMode))
+	{
+		if (IsValid(WorldInstanceSubsystem))
+		{
+			if (WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level1" &&
+				WorldInstanceSubsystem->GetCurrentLevelName() != "Proto_Level2" &&
+				WorldInstanceSubsystem->GetCurrentLevelName() != "PastLevel" &&
+				WorldInstanceSubsystem->GetCurrentLevelName() != "PresentLevel")
+			{
+				return;
+			}
+		}
+		
+		ACrack* NearestCrack = FindNearestCrack();
+		BaseGameMode->SetRecentCrackCache(NearestCrack);
+		if (WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
+		{
+			WorldInstanceSubsystem->SetRecentCrackName(NearestCrack->GetCrackName());
+			WorldInstanceSubsystem->SetRecentCrackIndex(NearestCrack->GetCrackIndex());
 		}
 	}
 }

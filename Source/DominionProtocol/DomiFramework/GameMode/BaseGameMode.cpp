@@ -478,6 +478,11 @@ void ABaseGameMode::PlayTimeAdder()
 
 void ABaseGameMode::CheckFogCrackAndOffFog()
 {
+	if (!IsValid(RecentCrackCache))
+	{
+		return;
+	}
+	
 	AExponentialHeightFog* Fog = Cast<AExponentialHeightFog>(UGameplayStatics::GetActorOfClass(World, AExponentialHeightFog::StaticClass()));
 	UExponentialHeightFogComponent* FogComponent;
 	
