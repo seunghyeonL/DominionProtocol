@@ -289,6 +289,7 @@ namespace SkillTags
 	inline const FGameplayTag Boss5ZoneyaAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.ZoneyaAttack"));
 	inline const FGameplayTag Boss5ElectricAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.ElectricAttack"));
 	inline const FGameplayTag Boss5SpawnEnemyAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.SpawnEnemyAttack"));
+	inline const FGameplayTag Boss5ProjectileAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.ProjectileAttack"));
 }
 
 namespace PawnTags
