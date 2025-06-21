@@ -134,7 +134,13 @@ void ABaseGameState::InitializeGame()
 	BaseGameMode = Cast<ABaseGameMode>(World->GetAuthGameMode());
 	if (IsValid(BaseGameMode))
 	{
-		BaseGameMode->SetRecentCrackCache(FindNearestCrack());
+		ACrack* NearestCrack = FindNearestCrack();
+		BaseGameMode->SetRecentCrackCache(NearestCrack);
+		if (WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
+		{
+			WorldInstanceSubsystem->SetRecentCrackName(NearestCrack->GetCrackName());
+			WorldInstanceSubsystem->SetRecentCrackIndex(NearestCrack->GetCrackIndex());
+		}
 	}
 	LoadItemDataFromInstance();
 
