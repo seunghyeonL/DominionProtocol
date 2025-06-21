@@ -33,16 +33,16 @@ public:
 	ACrack();
 
 	FOnCreateDialogueManager OnCreateDialogueManager;
+
+	void AlignPlayerForDialogue(ADomiCharacter* PlayerCharacter);
 	
 	//Getter
 	FORCEINLINE const FText& GetCrackName() const { return CrackName; }
 	FORCEINLINE bool GetIsActivate() const { return bIsActivate; }
 	FVector GetRespawnTargetPointLocation() const;
 	FRotator GetRespawnTargetPointRotation() const;
-
-	void AlignPlayerForDialogue(ADomiCharacter* PlayerCharacter);
-
 	FORCEINLINE int32 GetCrackIndex() const { return CrackIndex; }
+	FORCEINLINE bool GetIsInFogCrack() const { return bIsInFogCrack;}
 	
 	//Setter
 	FORCEINLINE void SetActive() { bIsActivate = true; }
@@ -107,6 +107,9 @@ protected:
 	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	bool bIsBossRoomCrack;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	bool bIsInFogCrack;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float InteractableRadius;

@@ -30,6 +30,7 @@ ACrack::ACrack()
 	: CrackName(FText::GetEmpty()),
 	  CrackIndex(0),
 	  bIsBossRoomCrack(false),
+	  bIsInFogCrack(false),
 	  InteractableRadius(150.f),
 	  ActivationDistanceCalculateRadius(1500.f),
 	  Distance(1600.f),
