@@ -14,6 +14,7 @@
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "EnumAndStruct/EffectData/EffectInitializeData.h"
+#include "EnumAndStruct/PhysicalSurfaceTypeData/PhysicalSurfaceTypeData.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "WorldObjects/Crack.h"
 #include "Player/Characters/DomiCharacter.h"
@@ -118,6 +119,24 @@ FEffectInitializeData* ABaseGameState::GetEffectInitializeData(const FGameplayTa
 	check(EffectInitializeDataTable);
 
 	return EffectInitializeDataTable->FindRow<FEffectInitializeData>(EffectTag.GetTagName(), TEXT(""));
+}
+
+FName ABaseGameState::GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType) const
+{
+	switch (PhysicalSurfaceType)
+	{
+		case SurfaceType_Default : return FName("Default");
+		case SurfaceType1:        return FName("Metal");
+		case SurfaceType2:        return FName("Flesh");
+		default:                  return FName("Default");
+	}
+}
+
+FPhysicalSurfaceTypeData* ABaseGameState::GetPhysicalSurfaceTypeData(EPhysicalSurface PhysicalSurfaceType) const
+{
+	check(SurfaceDataTable);
+
+	return SurfaceDataTable->FindRow<FPhysicalSurfaceTypeData>(GetSurfaceNameByEnum(PhysicalSurfaceType), TEXT("GetPhysicalSurfaceTypeData"));
 }
 
 void ABaseGameState::InitializeGame()

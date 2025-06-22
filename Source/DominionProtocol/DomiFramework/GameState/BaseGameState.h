@@ -8,6 +8,7 @@
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
+struct FPhysicalSurfaceTypeData;
 class ADropEssence;
 class USaveManagerSubsystem;
 class ABaseGameMode;
@@ -39,6 +40,8 @@ public:
 	FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
 	FEffectInitializeData* GetEffectInitializeData(const FGameplayTag EffectTag) const;
 	FORCEINLINE ACrack* GetCrackByIndex(int32 InCrackIndex) const {return AllCracksCache[InCrackIndex]; }
+	FName GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType) const;
+	FPhysicalSurfaceTypeData* GetPhysicalSurfaceTypeData(EPhysicalSurface PhysicalSurfaceType) const;
 
 	void InitializeGame();
 	
@@ -86,6 +89,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|Status|Intialize ", meta = (AllowPrivateAccess = "true"))
 	UDataTable* EffectInitializeDataTable;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|PhysicalSurface ", meta = (AllowPrivateAccess = "true"))
+	UDataTable* SurfaceDataTable;
+	
 	UPROPERTY()
 	UWorld* World;
 
