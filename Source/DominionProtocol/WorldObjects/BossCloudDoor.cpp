@@ -143,14 +143,13 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 		BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 		BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 		BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 
-		if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
+		if (GI->GetCurrentGameStoryState() == ActiveFromState)
 		{
+			LinkedBossSpawner->SpawnBoss();
 			GI->AdvanceStoryState();
 		}
-
-		LinkedBossSpawner->SpawnBoss();
-
 	}
 	CachedCharacter = nullptr;
 }
