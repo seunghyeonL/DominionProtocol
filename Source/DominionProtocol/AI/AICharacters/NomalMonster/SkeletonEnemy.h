@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AI/AICharacters/BaseEnemy.h"
+#include "AI/AICharacters/NomalMonster/NomalEnemy.h"
 #include "SkeletonEnemy.generated.h"
 
 class UMnhTracerComponent;
 class UMnhBoxComponent;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ASkeletonEnemy : public ABaseEnemy
+class DOMINIONPROTOCOL_API ASkeletonEnemy : public ANomalEnemy
 {
 	GENERATED_BODY()
 public:

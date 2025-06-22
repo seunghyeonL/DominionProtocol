@@ -26,7 +26,8 @@ public class DominionProtocol : ModuleRules
             "MovieSceneTools",
             "MovieSceneTracks",
             "SlateCore",
-            "Slate"
+            "Slate",
+            "GeometryCollectionEngine"
         });
 		
 		PrivateIncludePaths.Add("DominionProtocol");

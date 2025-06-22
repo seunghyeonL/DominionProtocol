@@ -100,7 +100,7 @@ private:
 
 	void CurveControl();
 
-	void DestroyProjectile();
+	virtual void DestroyProjectile();
 
 	void UpdateCurveMovement(float DeltaTime);
 	void FixTargetPoint();

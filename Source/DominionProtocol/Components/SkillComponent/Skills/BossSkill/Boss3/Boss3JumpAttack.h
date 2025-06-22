@@ -21,6 +21,7 @@ protected:
 
 	void LaunchParabolicAtTarget(AActor* TargetActorA, float TimeToReach);
 
+	virtual void AttackTrace() const override;
 private:
 	UPROPERTY()
 	AActor* TargetActor1;

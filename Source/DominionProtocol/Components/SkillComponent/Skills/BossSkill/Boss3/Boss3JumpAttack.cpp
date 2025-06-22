@@ -21,7 +21,6 @@ void UBoss3JumpAttack::Execute()
 			if (IsValid(Target))
 			{
 				TargetActor1 = Target;
-				//JumpToTarget();
 			}
 		}
 	}
@@ -69,4 +68,11 @@ void UBoss3JumpAttack::LaunchParabolicAtTarget(AActor* TargetActor, float TimeTo
 	LaunchVelocity.Z = VerticalSpeed;
 
 	OwnerCharacter->LaunchCharacter(LaunchVelocity, true, true);
+}
+
+void UBoss3JumpAttack::AttackTrace() const
+{
+	Super::AttackTrace();
+
+	UE_LOG(LogTemp, Warning, TEXT("JumpAttackTrace"));
 }
