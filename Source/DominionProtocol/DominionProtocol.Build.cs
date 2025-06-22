@@ -27,6 +27,7 @@ public class DominionProtocol : ModuleRules
             "MovieSceneTracks",
             "SlateCore",
             "Slate",
+            "PhysicsCore"
             "GeometryCollectionEngine"
         });
 		

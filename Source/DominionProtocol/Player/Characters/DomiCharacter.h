@@ -77,7 +77,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	virtual void Landed(const FHitResult& Hit) override;
+	virtual void Landed(const FHitResult& HitResult) override;
 
 	// Combat
 	FORCEINLINE bool IsInCombat() const { return bIsInCombat; }
@@ -163,6 +163,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void HideParryWall();
+
+	// On Attack Detected
+	UFUNCTION(BlueprintCallable)
+	void PlayEffectsOnMnhAttack(const FHitResult& HitResult);
 
 protected:
 	virtual void BeginPlay() override;

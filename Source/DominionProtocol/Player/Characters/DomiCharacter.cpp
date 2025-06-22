@@ -20,6 +20,7 @@
 #include "Components/ItemComponent/ItemComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Components/SkillComponent/SkillComponent.h"
@@ -30,6 +31,9 @@
 
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhComponents.h"
+#include "Engine/StreamableManager.h"
+#include "Engine/AssetManager.h"
+#include "EnumAndStruct/PhysicalSurfaceTypeData/PhysicalSurfaceTypeData.h"
 
 
 class UPoisonEffect;
@@ -178,6 +182,99 @@ void ADomiCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// 	BindInputFunctions();
 	// }
 	// ControlComponent->OnComponentReady.BindUObject(this, &ADomiCharacter::BindInputFunctions);
+}
+
+void ADomiCharacter::PlayEffectsOnMnhAttack(const FHitResult& HitResult)
+{
+	check(StatusComponent);
+	
+	FVector HitLocation = HitResult.Location;
+	FRotator HitRotation = HitResult.ImpactNormal.Rotation();
+	EPhysicalSurface SurfaceType = SurfaceType_Default;
+	if (auto PhysMat = HitResult.PhysMaterial.Get())
+	{
+		SurfaceType = PhysMat->SurfaceType;
+	}
+	
+	if (auto GS = Cast<ABaseGameState>(GetWorld()->GetGameState()))
+	{
+		if (FPhysicalSurfaceTypeData* SurfaceTypeData = GS->GetPhysicalSurfaceTypeData(SurfaceType))
+		{
+			FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
+	
+			// HitSound 비동기 실행
+			TSoftObjectPtr<USoundBase> SoftHitSound = SurfaceTypeData->HitSound;
+			if (SoftHitSound.ToSoftObjectPath().IsValid())
+			{
+				float PitchMultiplier = 1.f;
+				auto PrimaryWeaponTag = ItemComponent->GetEquippedItem(FName("WeaponSlot_Primary"));
+				if (PrimaryWeaponTag.IsValid())
+				{
+					if (PrimaryWeaponTag.MatchesTag(ItemTags::SwordWeapon))
+					{
+						PitchMultiplier = 0.8f;
+					}
+					else if (PrimaryWeaponTag.MatchesTag(ItemTags::AxeWeapon))
+					{
+						PitchMultiplier = 0.6f;
+					}
+				}
+				
+				if (SoftHitSound.IsValid())
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoftHitSound.Get(), HitLocation, FRotator(0.f), 1.f, PitchMultiplier);
+				}
+				else
+				{
+					TWeakObjectPtr<ThisClass> WeakThis = this;
+					Streamable.RequestAsyncLoad(SoftHitSound.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakThis, SoftHitSound, HitLocation, PitchMultiplier]()
+					{
+						if (SoftHitSound.IsValid() && WeakThis.IsValid())
+						{
+							UGameplayStatics::PlaySoundAtLocation(WeakThis->GetWorld(), SoftHitSound.Get(), HitLocation, FRotator(0.f), 1.f, PitchMultiplier);
+						}
+					}));
+				}
+			}
+
+			// HitVfx 비동기 실행
+			TSoftObjectPtr<UNiagaraSystem> SoftHitVfx = SurfaceTypeData->HitVfx;
+			if (SoftHitVfx.ToSoftObjectPath().IsValid())
+			{
+				if (SoftHitVfx.IsValid())
+				{
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+						GetWorld(),
+						SoftHitVfx.Get(),
+						HitLocation,
+						HitRotation,
+						FVector(1.f),
+						true,
+						true
+					);
+				}
+				else
+				{
+					TWeakObjectPtr<ThisClass> WeakThis = this;
+					Streamable.RequestAsyncLoad(SoftHitVfx.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakThis, SoftHitVfx, HitLocation, HitRotation]()
+					{
+						if (SoftHitVfx.IsValid())
+						{
+							UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+							WeakThis->GetWorld(),
+							SoftHitVfx.Get(),
+							HitLocation,
+							HitRotation,
+							FVector(1.f),
+							true,
+							true
+							);	
+						}
+					}));
+				}
+			}
+		}
+	}
 }
 
 void ADomiCharacter::BeginPlay()
@@ -329,9 +426,9 @@ void ADomiCharacter::BindInputFunctions()
 	}
 }
 
-void ADomiCharacter::Landed(const FHitResult& Hit)
+void ADomiCharacter::Landed(const FHitResult& HitResult)
 {
-	Super::Landed(Hit);
+	Super::Landed(HitResult);
 	check(StatusComponent);
 
 	auto CurrentZSpeed = FMath::Abs(GetVelocity().Z);

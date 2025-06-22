@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Util/DebugHelper.h"
 
 void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                   const FAnimNotifyEventReference& EventReference)
@@ -38,7 +39,6 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 						
 						if (auto GS = Cast<ABaseGameState>(MeshComp->GetWorld()->GetGameState()))
 						{
-							// FootStep사운드 실행
 							if (FPhysicalSurfaceTypeData* SurfaceTypeData = GS->GetPhysicalSurfaceTypeData(SurfaceType))
 							{
 								check(MeshComp->DoesSocketExist(SocketName));
@@ -47,7 +47,9 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 								FVector FootStepLocation = MeshComp->GetSocketLocation(SocketName);
 								FRotator FootStepRotation = MeshComp->GetSocketRotation(SocketName);
 								
-								if (TSoftObjectPtr<USoundBase> SoftFootStepSound = SurfaceTypeData->FootStepSound)
+								// FootStep사운드 실행
+								TSoftObjectPtr<USoundBase> SoftFootStepSound = SurfaceTypeData->FootStepSound;
+								if (SoftFootStepSound.ToSoftObjectPath().IsValid())
 								{
 									if (SoftFootStepSound.IsValid())
 									{
@@ -64,8 +66,10 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 										}));
 									}
 								}
-
-								if (TSoftObjectPtr<UNiagaraSystem> SoftFootStepVfx = SurfaceTypeData->FootStepVfx)
+						
+								// FootStepVfx 실행
+								TSoftObjectPtr<UNiagaraSystem> SoftFootStepVfx = SurfaceTypeData->FootStepVfx;
+								if (SoftFootStepVfx.ToSoftObjectPath().IsValid())
 								{
 									if (SoftFootStepVfx.IsValid())
 									{
@@ -87,7 +91,7 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 											{
 												UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 												MeshComp->GetWorld(),
-												LoadedVfx,
+												SoftFootStepVfx.Get(),
 												FootStepLocation,
 												FootStepRotation,
 												FVector(1.f),
