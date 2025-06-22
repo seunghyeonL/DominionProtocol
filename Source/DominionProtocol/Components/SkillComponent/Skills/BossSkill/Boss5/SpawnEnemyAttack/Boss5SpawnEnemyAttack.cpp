@@ -10,14 +10,99 @@ UBoss5SpawnEnemyAttack::UBoss5SpawnEnemyAttack()
 	SkillTag = SkillTags::Boss5SpawnEnemyAttack;
 }
 
+void UBoss5SpawnEnemyAttack::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (!SpawnedCapsule[0]) return;
+
+	ElapsedTime += DeltaTime;
+
+	switch (CapsuleState)
+	{
+	case ECapsuleState::Rising:
+	{
+		float Alpha = FMath::Clamp(ElapsedTime / Duration, 0.f, 1.0f);		
+		for (int i = 0; i < 4; i++)
+		{
+			FVector NewLocation = FMath::Lerp(CapsuleStartLocation[i], CapsuleEndLocation[i], Alpha);
+			SpawnedCapsule[i]->SetActorLocation(NewLocation);
+		}
+
+		if (Alpha >= 1.0f)
+		{
+			SpawnEnemy();
+
+			CapsuleState = ECapsuleState::Holding;
+			ElapsedTime = 0.0f;
+		}
+		break;
+	}
+	case ECapsuleState::Holding:
+	{
+		if (ElapsedTime >= 5.0f)
+		{
+			CapsuleState = ECapsuleState::Falling;
+			ElapsedTime = 0.0f;
+		}
+		break;
+	}
+	case ECapsuleState::Falling:
+	{
+		float Alpha = FMath::Clamp(ElapsedTime / Duration, 0.f, 1.0f);
+		
+		for (int i = 0; i < 4; i++)
+		{
+			FVector NewLocation = FMath::Lerp(CapsuleEndLocation[i], CapsuleStartLocation[i], Alpha);
+			SpawnedCapsule[i]->SetActorLocation(NewLocation);
+
+			if (Alpha >= 1.0f && CapsuleState != ECapsuleState::None)
+			{
+				for (auto Capsule : SpawnedCapsule)
+				{
+					if (Capsule)
+					{
+						Capsule->SetActorHiddenInGame(true);
+						Capsule->SetActorEnableCollision(false);
+						Capsule->SetActorTickEnabled(false);
+						Capsule->Destroy();
+					}
+				}
+
+				CapsuleState = ECapsuleState::None;
+				End();
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
 void UBoss5SpawnEnemyAttack::Execute()
+{
+	InitializeArray();
+	SpawnCapsule();
+}
+
+void UBoss5SpawnEnemyAttack::InitializeArray()
+{
+	SpawnedCapsuleLocation.Reset();
+	CapsuleStartLocation.Reset();
+	CapsuleEndLocation.Reset();
+	SpawnedEnemyRotation.Reset();
+	SpawnedCapsule.Reset();
+}
+
+void UBoss5SpawnEnemyAttack::SpawnCapsule()
 {
 	if (!OwnerCharacter) return;
 
 	AAIController* AIController = Cast<AAIController>(OwnerCharacter->GetController());
 	if (!AIController) return;
 
-	UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+	BBComp = AIController->GetBlackboardComponent();
 	if (!BBComp) return;
 
 	const FName TargetActorKey("TargetActor");
@@ -26,23 +111,56 @@ void UBoss5SpawnEnemyAttack::Execute()
 	const FName RangedLeftKey("RangedLeftSpawnLocation");
 	const FName RangedRightKey("RangedRightSpawnLocation");
 
-	AActor* TargetActor = Cast<AActor>(BBComp->GetValueAsObject(TargetActorKey));
-	if (!TargetActor) return;
-	FVector TargetLocation = TargetActor->GetActorLocation();
-
 	FVector MeleeLeftSpawnLocation = BBComp->GetValueAsVector(MeleeLeftKey);
 	FVector MeleeRightSpawnLocation = BBComp->GetValueAsVector(MeleeRightKey);
 	FVector RangedLeftSpawnLocation = BBComp->GetValueAsVector(RangedLeftKey);
 	FVector RangedRightSpawnLocation = BBComp->GetValueAsVector(RangedRightKey);
 
+	SpawnedCapsuleLocation.Add(MeleeLeftSpawnLocation);
+	SpawnedCapsuleLocation.Add(MeleeRightSpawnLocation);
+	SpawnedCapsuleLocation.Add(RangedLeftSpawnLocation);
+	SpawnedCapsuleLocation.Add(RangedRightSpawnLocation);
+
+	AActor* TargetActor = Cast<AActor>(BBComp->GetValueAsObject(TargetActorKey));
+	if (!TargetActor) return;
+
+	UClass* Capsule = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss5/Capsule/BP_EnemyCapsule.BP_EnemyCapsule_C"));
+
+	if (Capsule)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			FVector StartLocation = SpawnedCapsuleLocation[i] + FVector(0, 0, -240.f);
+			TargetLocation = TargetActor->GetActorLocation();
+			SpawnedEnemyRotation.Add((TargetLocation - SpawnedCapsuleLocation[i]).Rotation());
+			SpawnedCapsule.Add(GetWorld()->SpawnActor<AActor>(Capsule, StartLocation, SpawnedEnemyRotation[i]));
+
+			//	SpawnedCapsule = GetWorld()->SpawnActor<AActor>(Capsule, StartLocation, FRotator(0.f, -180.f, 0.f));
+
+			if (SpawnedCapsule[i])
+			{
+				CapsuleStartLocation.Add(StartLocation);
+				CapsuleEndLocation.Add(SpawnedCapsuleLocation[i]);
+				ElapsedTime = 0.0f;
+				CapsuleState = ECapsuleState::Rising;
+			}
+		}
+	}
+	else
+	{
+		Debug::PrintError(TEXT("UBoss5SpawnEnemyAttack::Capsule1 Asset's location is not assigned"));
+	}
+}
+
+void UBoss5SpawnEnemyAttack::SpawnEnemy()
+{
 	UClass* MeleeAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Dev/JCH/NomalMonster/BP_MinionAI.BP_MinionAI_C"));
 	if (MeleeAI)
 	{
-		FRotator MeleeLeftRot = (TargetLocation - MeleeLeftSpawnLocation).Rotation();
-		FRotator MeleeRightRot = (TargetLocation - MeleeRightSpawnLocation).Rotation();
-
-		AActor* SpawnedMeleeAI1 = GetWorld()->SpawnActor<AActor>(MeleeAI, MeleeLeftSpawnLocation, MeleeLeftRot);
-		AActor* SpawnedMeleeAI2 = GetWorld()->SpawnActor<AActor>(MeleeAI, MeleeRightSpawnLocation, MeleeRightRot);
+		for (int i = 0; i < 2; i++)
+		{
+			SpawnedEnemy.Add(GetWorld()->SpawnActor<AActor>(MeleeAI, SpawnedCapsuleLocation[i], SpawnedEnemyRotation[i]));
+		}
 	}
 	else
 	{
@@ -55,27 +173,21 @@ void UBoss5SpawnEnemyAttack::Execute()
 		//FVector ChosenSpawnLocation = FMath::RandBool() ? RangedLeftSpawnLocation : RangedRightSpawnLocation;
 		//FRotator RangedRot = (TargetLocation - ChosenSpawnLocation).Rotation();
 
-		FRotator RangeLeftRot = (TargetLocation - RangedLeftSpawnLocation).Rotation();
-		FRotator RangeRightRot = (TargetLocation - RangedRightSpawnLocation).Rotation();
-
-		AActor* SpawnedRangeAI1 = GetWorld()->SpawnActor<AActor>(RangedAI, RangedLeftSpawnLocation, RangeLeftRot);
-		AActor* SpawnedRangeAI2 = GetWorld()->SpawnActor<AActor>(RangedAI, RangedRightSpawnLocation, RangeRightRot);
+		for (int i = 0; i < 2; i++)
+		{
+			SpawnedEnemy.Add(GetWorld()->SpawnActor<AActor>(RangedAI, SpawnedCapsuleLocation[i + 2], SpawnedEnemyRotation[i + 2]));
+		}
 	}
 	else
 	{
 		Debug::PrintError(TEXT("UBoss5SpawnEnemyAttack::BP_GunMinionAI Asset's location is not assigned"));
 	}
+}
 
+void UBoss5SpawnEnemyAttack::End()
+{
 	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
 
 	check(SkillComponent);
 	SkillComponent->EndSkill();
 }
-
-//TArray<FVector> SpawnLocations;
-//SpawnLocations.Add(BBComp->GetValueAsVector(RangedLeftKey));
-//SpawnLocations.Add(BBComp->GetValueAsVector(RangedRightKey));
-//
-//// 랜덤 인덱스 선택
-//int32 RandomIndex = FMath::RandRange(0, SpawnLocations.Num() - 1);
-//FVector ChosenSpawnLocation = SpawnLocations[RandomIndex];
