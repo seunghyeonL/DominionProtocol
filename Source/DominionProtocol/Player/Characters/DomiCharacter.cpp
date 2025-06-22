@@ -258,7 +258,7 @@ void ADomiCharacter::PlayEffectsOnMnhAttack(const FHitResult& HitResult)
 					TWeakObjectPtr<ThisClass> WeakThis = this;
 					Streamable.RequestAsyncLoad(SoftHitVfx.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakThis, SoftHitVfx, HitLocation, HitRotation]()
 					{
-						if (SoftHitVfx.IsValid())
+						if (SoftHitVfx.IsValid() && WeakThis.IsValid())
 						{
 							UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 							WeakThis->GetWorld(),

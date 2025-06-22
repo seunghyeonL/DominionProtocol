@@ -57,11 +57,12 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 									}
 									else
 									{
-										Streamable.RequestAsyncLoad(SoftFootStepSound.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([MeshComp, SoftFootStepSound, FootStepLocation]()
+										TWeakObjectPtr<USceneComponent> WeakMesh = MeshComp;
+										Streamable.RequestAsyncLoad(SoftFootStepSound.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakMesh, SoftFootStepSound, FootStepLocation]()
 										{
-											if (USoundBase* LoadedSound = SoftFootStepSound.Get())
+											if (SoftFootStepSound.IsValid() && WeakMesh.IsValid())
 											{
-												UGameplayStatics::PlaySoundAtLocation(MeshComp->GetWorld(), SoftFootStepSound.Get(), FootStepLocation);
+												UGameplayStatics::PlaySoundAtLocation(WeakMesh.Get(), SoftFootStepSound.Get(), FootStepLocation);
 											}
 										}));
 									}
@@ -85,12 +86,13 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 									}
 									else
 									{
-										Streamable.RequestAsyncLoad(SoftFootStepVfx.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([MeshComp, SoftFootStepVfx, FootStepLocation, FootStepRotation]()
+										TWeakObjectPtr<USceneComponent> WeakMesh = MeshComp;
+										Streamable.RequestAsyncLoad(SoftFootStepVfx.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakMesh, SoftFootStepVfx, FootStepLocation, FootStepRotation]()
 										{
-											if (UNiagaraSystem* LoadedVfx = SoftFootStepVfx.Get())
+											if (SoftFootStepVfx.IsValid() && WeakMesh.IsValid())
 											{
 												UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-												MeshComp->GetWorld(),
+												WeakMesh.Get(),
 												SoftFootStepVfx.Get(),
 												FootStepLocation,
 												FootStepRotation,
