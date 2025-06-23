@@ -255,6 +255,8 @@ void ABaseGameMode::OnPlayerDeath()
 			EndBattle();
 		}
 	}
+
+	PlayerDeathLocation = PlayerCharacter->GetActorLocation();
 	
 	FTimerHandle RespawnTimerHandle;
 	GetWorldTimerManager().SetTimer(
@@ -285,7 +287,7 @@ void ABaseGameMode::RestorePlayer()
 void ABaseGameMode::RespawnPlayerCharacter()
 {
 	DestroyAllNormalEnemy();
-
+	
 	// Essence 레벨에 드랍
 	ADropEssence* DropEssence = WorldInstanceSubsystem->GetDropEssenceCache();
 	if (IsValid(DropEssence))
@@ -296,14 +298,14 @@ void ABaseGameMode::RespawnPlayerCharacter()
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	ADropEssence* NewDropEssence = World->SpawnActor<ADropEssence>(DropEssenceClass, PlayerCharacter->GetActorLocation(), PlayerCharacter->GetActorRotation(), SpawnParams);
+	ADropEssence* NewDropEssence = World->SpawnActor<ADropEssence>(DropEssenceClass, PlayerDeathLocation, FRotator::ZeroRotator, SpawnParams);
 	if (IsValid(NewDropEssence))
 	{
 		Debug::Print(FString::Printf(TEXT("Spawned DropEssence : %s"), *NewDropEssence->GetName()));
 		WorldInstanceSubsystem->SetDropEssenceCache(NewDropEssence);
 		WorldInstanceSubsystem->SetIsDropEssenceExist(true);
 		WorldInstanceSubsystem->SetDropEssenceAmount(GameInstance->GetPlayerCurrentEssence());
-		WorldInstanceSubsystem->SetDropEssenceLocation(PlayerCharacter->GetActorLocation());
+		WorldInstanceSubsystem->SetDropEssenceLocation(PlayerDeathLocation);
 		WorldInstanceSubsystem->SetDropEssenceLocationLevel(WorldInstanceSubsystem->GetCurrentLevelName());
 		GameInstance->SetPlayerCurrentEssence(0);
 	}
@@ -335,6 +337,7 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		UpdateInstanceData();
 		Save();
 		RespawnEnemies();
+		ToggleBoss3BattleRoom(false);
 	}
 }
 
@@ -572,7 +575,7 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 	UGameplayStatics::GetAllActorsOfClass(World, APostProcessVolume::StaticClass(), PostProcessVolumes);
 	for (AActor* PostProcessVolume : PostProcessVolumes)
 	{
-		if (PostProcessVolume->GetName().Contains(TEXT("Witch")))
+		if (PostProcessVolume->GetActorLabel().Contains(TEXT("Witch")))
 		{
 			APostProcessVolume* WitchPostProcessVolume = Cast<APostProcessVolume>(PostProcessVolume);
 			WitchPostProcessVolume->bEnabled = !bIsBattleRoom;
@@ -591,6 +594,7 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 					Boss3Skull = Cast<ABoss3Skull>(UGameplayStatics::GetActorOfClass(World, ABoss3Skull::StaticClass()));
 				}
 				Boss3Skull->SetIsInBattleRoom(true);
+				Boss3Skull->SetIsInteractable(false);
 				UStaticMeshComponent* SkullMesh = Boss3Skull->GetSkullMeshComponent();
 				UStaticMeshComponent* AltarMesh = Boss3Skull->GetAltarMeshComponent();
 				SkullMesh->SetVisibility(false);
@@ -622,6 +626,13 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 			Actor->SetActorHiddenInGame(false);
 			Actor->SetActorEnableCollision(true);
 		}
+
+		ADropEssence* CurrentDropEssence = WorldInstanceSubsystem->GetDropEssenceCache();
+		if (IsValid(CurrentDropEssence))
+		{
+			CurrentDropEssence->SetActorHiddenInGame(false);
+			CurrentDropEssence->SetIsInteractable(true);
+		}
 	}
 	else if (!bIsBattleRoom)
 	{
@@ -634,6 +645,7 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 					Boss3Skull = Cast<ABoss3Skull>(UGameplayStatics::GetActorOfClass(World, ABoss3Skull::StaticClass()));
 				}
 				Boss3Skull->SetIsInBattleRoom(false);
+				Boss3Skull->SetIsInteractable(true);
 				UStaticMeshComponent* SkullMesh = Boss3Skull->GetSkullMeshComponent();
 				UStaticMeshComponent* AltarMesh = Boss3Skull->GetAltarMeshComponent();
 				SkullMesh->SetVisibility(true);
@@ -653,6 +665,13 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 		{
 			Actor->SetActorHiddenInGame(true);
 			Actor->SetActorEnableCollision(false);
+		}
+
+		ADropEssence* CurrentDropEssence = WorldInstanceSubsystem->GetDropEssenceCache();
+		if (IsValid(CurrentDropEssence))
+		{
+			CurrentDropEssence->SetActorHiddenInGame(true);
+			CurrentDropEssence->SetIsInteractable(false);
 		}
 	}
 }

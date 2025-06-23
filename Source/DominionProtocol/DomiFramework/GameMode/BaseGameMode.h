@@ -172,6 +172,8 @@ protected:
 
 	FTimerHandle PlayTimer;
 
+	FVector PlayerDeathLocation;
+
 #pragma endregion
 
 	
