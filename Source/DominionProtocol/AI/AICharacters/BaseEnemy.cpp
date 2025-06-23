@@ -169,7 +169,6 @@ void ABaseEnemy::OnAttacked_Implementation(const FAttackData& AttackData)
 	}
 
 	LaunchCharacter(AttackData.LaunchVector, true, true);
-	PlayHitSound();
 
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)

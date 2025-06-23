@@ -246,11 +246,6 @@ void UBaseSkill::ApplyAttackToHitActor(const FHitResult& HitResult, const float 
 	{
 		return;
 	}
-
-	if (auto EnemyHitActor = Cast<ABaseEnemy>(HitActor))
-	{
-		EnemyHitActor->PlayHitVFX(HitResult.ImpactPoint);
-	}
 	
 	if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 	{
