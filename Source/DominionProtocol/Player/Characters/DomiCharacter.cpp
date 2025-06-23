@@ -189,16 +189,16 @@ void ADomiCharacter::PlayEffectsOnMnhAttack(const FHitResult& HitResult)
 {
 	check(StatusComponent);
 	
-	FVector HitLocation = HitResult.Location;
-	FRotator HitRotation = HitResult.ImpactNormal.Rotation();
+	const FVector& HitLocation = HitResult.ImpactPoint;
+	const FRotator HitRotation = HitResult.ImpactNormal.Rotation();
 	
 	EPhysicalSurface SurfaceType = SurfaceType_Default;
-	if (auto PhysMat = HitResult.PhysMaterial.Get())
+	if (UPhysicalMaterial* PhysMat = HitResult.PhysMaterial.Get())
 	{
 		SurfaceType = PhysMat->SurfaceType;
 	}
 	
-	if (auto GS = Cast<ABaseGameState>(GetWorld()->GetGameState()))
+	if (auto* GS = GetWorld()->GetGameState<ABaseGameState>())
 	{
 		if (FPhysicalSurfaceTypeData* SurfaceTypeData = GS->GetPhysicalSurfaceTypeData(SurfaceType))
 		{

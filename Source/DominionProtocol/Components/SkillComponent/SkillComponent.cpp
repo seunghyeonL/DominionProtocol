@@ -316,6 +316,13 @@ void USkillComponent::StopSkill()
         Debug::Print(TEXT("USkillComponent::StopSkill : Montage not stop."));
     }
 
+    ABaseAIController* BaseAIController = Cast<ABaseAIController>(Character->GetController());
+
+    if (IsValid(BaseAIController))
+    {
+        BaseAIController->ClearCachedTask();
+    }
+
     FGameplayTagContainer TagContainer;
 
     CurrentSkill->StopTrace(TagContainer);
