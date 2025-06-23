@@ -29,8 +29,11 @@ DEFINE_LOG_CATEGORY(LogCrackSystem);
 ACrack::ACrack()
 	: CrackName(FText::GetEmpty()),
 	  CrackIndex(0),
+	  RequiredRevealStoryState(EGameStoryState::Tutorial),
 	  bIsBossRoomCrack(false),
 	  bIsInFogCrack(false),
+	  bIsBoss3Crack(false),
+	  bShouldOffSkyAtmosphere(false),
 	  InteractableRadius(150.f),
 	  ActivationDistanceCalculateRadius(1500.f),
 	  Distance(1600.f),
