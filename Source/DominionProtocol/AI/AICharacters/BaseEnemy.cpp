@@ -53,7 +53,7 @@ ABaseEnemy::ABaseEnemy()
 		LockOnWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	
 	// InvincibilityTags Setting
@@ -69,6 +69,7 @@ ABaseEnemy::ABaseEnemy()
 	}
 
 	GetMesh()->bReceivesDecals = false;
+
 }
 
 // Called when the game starts or when spawned

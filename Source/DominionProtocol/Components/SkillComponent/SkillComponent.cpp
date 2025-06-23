@@ -13,6 +13,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Skills/MagicSkill/MagicTeleportSkill.h"
 #include "Components/SkillComponent/Skills/SkillObject/Portal.h"
+#include "Components/AIComponent/AIStateComponent.h"
 
 USkillComponent::USkillComponent()
 {
@@ -275,6 +276,14 @@ void USkillComponent::EndSkill()
     {
         OnSkillEnd.Execute(CurrentSkillControlEffectTag);
     }
+
+    if (ABaseAIController* Controller = Cast<ABaseAIController>(Character->GetController()))
+    {
+        if (IsValid(Controller))
+        {
+            Controller->EvaluateTargetPerception();
+        }
+    }
 }
 
 void USkillComponent::ResetCombo(const FGameplayTag& SkillGroupTag)
@@ -326,6 +335,11 @@ void USkillComponent::StopSkill()
     {
         OnSkillEnd.Execute(CurrentSkillControlEffectTag);
     }
+}
+
+bool USkillComponent::IsUsingSkill() const
+{
+    return IsValid(CurrentSkill);
 }
 
 // Debug::PrintLog(TEXT(" "));
