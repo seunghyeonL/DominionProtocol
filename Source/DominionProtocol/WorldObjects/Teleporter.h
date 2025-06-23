@@ -7,6 +7,7 @@
 #include "Interface/InteractableInterface.h"
 #include "Teleporter.generated.h"
 
+class ATargetPoint;
 class UArrowComponent;
 class ADomiCharacter;
 class USphereComponent;
@@ -55,6 +56,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UArrowComponent> ArrowComponent;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	TObjectPtr<UChildActorComponent> TeleportPointComponent;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FString TeleporterName;

@@ -4,6 +4,7 @@
 #include "Teleporter.h"
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Engine/TargetPoint.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "EngineUtils.h"
 
@@ -25,6 +26,10 @@ ATeleporter::ATeleporter()
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
 	ArrowComponent->SetupAttachment(SceneComp);
+
+	TeleportPointComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("RespawnTargetPoint"));
+	TeleportPointComponent->SetupAttachment(SceneComp);
+	TeleportPointComponent->SetChildActorClass(ATargetPoint::StaticClass());
 }
 
 void ATeleporter::BeginPlay()
@@ -41,8 +46,8 @@ void ATeleporter::Interact_Implementation(AActor* Interactor)
 {
 	if (IsValid(CachedCharacter))
 	{
-		CachedCharacter->SetActorLocation(LinkedTeleporter->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
-		CachedCharacter->SetActorRotation(LinkedTeleporter->GetActorRotation(), ETeleportType::TeleportPhysics);
+		CachedCharacter->SetActorLocation(LinkedTeleporter->TeleportPointComponent->GetChildActor()->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		CachedCharacter->SetActorRotation(LinkedTeleporter->TeleportPointComponent->GetChildActor()->GetActorRotation(), ETeleportType::TeleportPhysics);
 	}
 	else
 	{
