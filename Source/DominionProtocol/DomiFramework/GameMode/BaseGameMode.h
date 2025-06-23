@@ -9,6 +9,8 @@
 #include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
 #include "BaseGameMode.generated.h"
 
+class ABoss3Skull;
+class ATeleporter;
 class UItemComponent;
 class ADropEssence;
 class ALevelSequenceActor;
@@ -65,6 +67,9 @@ public:
 	void RestorePlayer();
 	
 	void RespawnPlayerCharacter();
+
+	//Boss3Skull에서 호출
+	void ToggleBoss3BattleRoom(bool bIsInBattleRoom);
 	
 	//UI 쪽에서 레벨과 균열인덱스를 정하면 해당 함수를 호출하도록 하면 됩니다
 	UFUNCTION(BlueprintCallable)
@@ -73,6 +78,9 @@ public:
 	//균열 쪽에서 호출할 함수
 	void DestroyAllNormalEnemy();	// 기존 적들 제거
 	void RespawnEnemies();	// 적 기존 위치에 리스폰
+
+	//Teleporter에서 호출
+	void CheckSkyAtmosphereAndToggle(ATeleporter* Teleporter = nullptr);
 
 	//Getter
 	FORCEINLINE int32 GetPlayTime() { return PlayTime; }
@@ -141,7 +149,16 @@ protected:
 	float RespawnDelay;
 
 	UPROPERTY()
+	TObjectPtr<ABoss3Skull> Boss3Skull;
+	
+	UPROPERTY()
 	TArray<FEnemySpawnInfo> CachedEnemyInfo;
+
+	UPROPERTY()
+	TArray<AActor*> Boss3RoomNormalState;
+
+	UPROPERTY()
+	TArray<AActor*> Boss3RoomBattleState;
 
 	bool bIsSameLevelMove;
 

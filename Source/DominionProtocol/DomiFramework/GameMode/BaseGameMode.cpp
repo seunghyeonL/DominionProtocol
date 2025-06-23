@@ -15,6 +15,7 @@
 #include "WorldObjects/DropEssence.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/ItemComponent/ItemComponent.h"
+#include "Components/SpotLightComponent.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "EngineUtils.h"
@@ -26,17 +27,23 @@
 #include "Engine/ExponentialHeightFog.h"
 #include "Sound/SoundWave.h"
 #include "Components/ExponentialHeightFogComponent.h"
+#include "Components/SkyAtmosphereComponent.h"
 #include "Engine/ExponentialHeightFog.h"
+#include "Engine/PostProcessVolume.h" 
+#include "Engine/SpotLight.h"
 
 #include "Util/CheatBPLib.h"
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
+#include "WorldObjects/Boss3Skull.h"
+#include "WorldObjects/Teleporter.h"
 
 ABaseGameMode::ABaseGameMode()
 	:	GameInstance(nullptr),
 		PlayerCharacter(nullptr),
 		RecentCrackCache(nullptr),
 		RespawnDelay(2.f),
+		Boss3Skull(nullptr),
 		PlayTime(0),
 		bIsFadeIn(true)
 {
@@ -109,7 +116,24 @@ void ABaseGameMode::StartPlay()
 	check(GameState);
 	BaseGameState->InitializeGame();
 
+	// Boss3Room 액터들 저장
+	if (WorldInstanceSubsystem->GetCurrentLevelName() == "PastLevel")
+	{
+		UGameplayStatics::GetAllActorsWithTag(World, TEXT("NormalState"), Boss3RoomNormalState);
+		UGameplayStatics::GetAllActorsWithTag(World, TEXT("BattleState"), Boss3RoomBattleState);
+	}
+
 	CheckFogCrackAndOffFog();
+	CheckSkyAtmosphereAndToggle();
+
+	if (RecentCrackCache->GetIsBoss3Crack())
+	{
+		ToggleBoss3BattleRoom(true);
+	}
+	else
+	{
+		ToggleBoss3BattleRoom(false);
+	}
 
 	//최근 균열 데이터 있을 경우 그곳으로 플레이어 이동
 	if (!WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
@@ -179,11 +203,22 @@ void ABaseGameMode::StartPlay()
 void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
 {
 	OnStartBattle.Broadcast(SpawnedBoss);
+	// if (SpawnedBoss->GetName().Contains("3"))
+	// {
+	// 	Boss3Skull = Cast<ABoss3Skull>(UGameplayStatics::GetActorOfClass(GetWorld(), ABoss3Skull::StaticClass()));
+	// 	check(IsValid(Boss3Skull));
+	// 	
+	// 	ToggleBoss3BattleRoom(true);
+	// }
 }
 
 void ABaseGameMode::EndBattle()
 {
 	OnEndBattle.Broadcast();
+	// if (IsValid(Boss3Skull) && Boss3Skull->GetIsInBattleRoom())
+	// {
+	// 	ToggleBoss3BattleRoom(false);
+	// }
 }
 
 void ABaseGameMode::Save()
@@ -439,6 +474,15 @@ void ABaseGameMode::OnFadeSequenceFinished()
 			FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
 			PlayerController->SetControlRotation(NewRotation);
 			CheckFogCrackAndOffFog();
+			CheckSkyAtmosphereAndToggle();
+			if (RecentCrackCache->GetIsBoss3Crack())
+			{
+				ToggleBoss3BattleRoom(true);
+			}
+			else if (!RecentCrackCache->GetIsBoss3Crack())
+			{
+				ToggleBoss3BattleRoom(false);
+			}
 			PlayFade(true);
 			ExitAudioComponent->Play();
 		}
@@ -514,6 +558,145 @@ void ABaseGameMode::CheckFogCrackAndOffFog()
 		{
 			UCheatBPLib::ToggleFog(this);
 		}
+	}
+}
+
+void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
+{
+	if (WorldInstanceSubsystem->GetCurrentLevelName() != "PastLevel")
+	{
+		return;
+	}
+	
+	TArray<AActor*> PostProcessVolumes;
+	UGameplayStatics::GetAllActorsOfClass(World, APostProcessVolume::StaticClass(), PostProcessVolumes);
+	for (AActor* PostProcessVolume : PostProcessVolumes)
+	{
+		if (PostProcessVolume->GetName().Contains(TEXT("Witch")))
+		{
+			APostProcessVolume* WitchPostProcessVolume = Cast<APostProcessVolume>(PostProcessVolume);
+			WitchPostProcessVolume->bEnabled = !bIsBattleRoom;
+			WitchPostProcessVolume->SetActorHiddenInGame(bIsBattleRoom);
+		}
+	}
+	
+	if (bIsBattleRoom)
+	{
+		for (AActor* Actor : Boss3RoomNormalState)
+		{
+			if (Actor->IsA(ABoss3Skull::StaticClass()))
+			{
+				if (!IsValid(Boss3Skull))
+				{
+					Boss3Skull = Cast<ABoss3Skull>(UGameplayStatics::GetActorOfClass(World, ABoss3Skull::StaticClass()));
+				}
+				Boss3Skull->SetIsInBattleRoom(true);
+				UStaticMeshComponent* SkullMesh = Boss3Skull->GetSkullMeshComponent();
+				UStaticMeshComponent* AltarMesh = Boss3Skull->GetAltarMeshComponent();
+				SkullMesh->SetVisibility(false);
+				SkullMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				AltarMesh->SetVisibility(false);
+				AltarMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			}
+			else if (Actor->IsA(ASpotLight::StaticClass()))
+			{
+				USpotLightComponent* SpotLightComponent = Cast<ASpotLight>(Actor)->GetComponentByClass<USpotLightComponent>();
+				SpotLightComponent->SetHiddenInGame(true);
+				SpotLightComponent->SetVisibility(false);
+			}
+		}
+
+		for (AActor* Actor : Boss3RoomBattleState)
+		{
+			if (Actor->IsA(ACrack::StaticClass()))
+			{
+				ACrack* Crack = Cast<ACrack>(Actor);
+				if (static_cast<int32>(Crack->GetRequiredRevealStoryState()) != 0)
+				{
+					if (GameInstance->GetCurrentGameStoryState() < Crack->GetRequiredRevealStoryState())
+					{
+						continue;
+					}
+				}
+			}
+			Actor->SetActorHiddenInGame(false);
+			Actor->SetActorEnableCollision(true);
+		}
+	}
+	else if (!bIsBattleRoom)
+	{
+		for (AActor* Actor : Boss3RoomNormalState)
+		{
+			if (Actor->IsA(ABoss3Skull::StaticClass()))
+			{
+				if (!IsValid(Boss3Skull))
+				{
+					Boss3Skull = Cast<ABoss3Skull>(UGameplayStatics::GetActorOfClass(World, ABoss3Skull::StaticClass()));
+				}
+				Boss3Skull->SetIsInBattleRoom(false);
+				UStaticMeshComponent* SkullMesh = Boss3Skull->GetSkullMeshComponent();
+				UStaticMeshComponent* AltarMesh = Boss3Skull->GetAltarMeshComponent();
+				SkullMesh->SetVisibility(true);
+				SkullMesh->SetCollisionProfileName(TEXT("BlockAll"));
+				AltarMesh->SetVisibility(true);
+				AltarMesh->SetCollisionProfileName(TEXT("BlockAll"));
+			}
+			else if (Actor->IsA(ASpotLight::StaticClass()))
+			{
+				USpotLightComponent* SpotLightComponent = Cast<ASpotLight>(Actor)->GetComponentByClass<USpotLightComponent>();
+				SpotLightComponent->SetHiddenInGame(false);
+				SpotLightComponent->SetVisibility(true);
+			}
+		}
+
+		for (AActor* Actor : Boss3RoomBattleState)
+		{
+			Actor->SetActorHiddenInGame(true);
+			Actor->SetActorEnableCollision(false);
+		}
+	}
+}
+
+void ABaseGameMode::CheckSkyAtmosphereAndToggle(ATeleporter* Teleporter)
+{
+	if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Past"))
+	{
+		ASkyAtmosphere* SkyAtmosphere = Cast<ASkyAtmosphere>(UGameplayStatics::GetActorOfClass(World, ASkyAtmosphere::StaticClass()));
+		check(IsValid(SkyAtmosphere));
+
+		if (Teleporter != nullptr)
+		{
+			// 던전으로 가는 텔레포터인 경우
+			if (Teleporter->GetShouldOffSkyAtmosphere())
+			{
+				SkyAtmosphere->SetActorHiddenInGame(true);
+				SkyAtmosphere->GetComponent()->SetVisibility(false);
+			}
+			// 던전을 벗어나는 텔레포터인 경우
+			else if (Teleporter->GetShouldOnSkyAtmosphere())
+			{
+				SkyAtmosphere->SetActorHiddenInGame(false);
+				SkyAtmosphere->GetComponent()->SetVisibility(true);
+			}
+			return;
+		}
+		
+		// 최근 균열이 Sky를 끄는 균열이면
+		if (RecentCrackCache->GetShouldOffSkyAtmosphere())
+		{
+			SkyAtmosphere->SetActorHiddenInGame(true);
+			SkyAtmosphere->GetComponent()->SetVisibility(false);
+		}
+		// SkyAtmosphere를 끄지 않는 균열일 경우
+		else
+		{
+			SkyAtmosphere->SetActorHiddenInGame(false);
+			SkyAtmosphere->GetComponent()->SetVisibility(true);
+		}
+	}
+	else
+	{
+		return;
 	}
 }
 
