@@ -20,6 +20,8 @@ class DOMINIONPROTOCOL_API ABoss3Skull : public AActor, public IInteractableInte
 public:
 	ABoss3Skull();
 
+	void SetIsInteractable(bool bNewIsInteractable);
+	
 // Getter
 	FORCEINLINE bool GetIsInBattleRoom() const { return bIsInBattleRoom; }
 	FORCEINLINE UStaticMeshComponent* GetSkullMeshComponent() const { return SkullMeshComponent; }
@@ -104,8 +106,6 @@ private:
 	TObjectPtr<ADomiCharacter> CachedCharacter;
 
 	EGameStoryState StoryStateCache;
-
-	bool bIsInteractable;
 
 	bool bIsInBattleRoom;
 	

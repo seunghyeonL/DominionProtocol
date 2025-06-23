@@ -16,7 +16,6 @@ ABoss3Skull::ABoss3Skull()
 	  MaxShakeTime(2.f),
 	  KnockbackStrength(1000.f),
 	  StoryStateCache(EGameStoryState::Tutorial),
-	  bIsInteractable(true),
 	  bIsInBattleRoom(false),
 	  TimeCount(0.f)
 {
@@ -35,8 +34,28 @@ ABoss3Skull::ABoss3Skull()
 
 	InteractableCollisionSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("InteractableCollisionSphere"));
 	InteractableCollisionSphereComponent->SetupAttachment(SceneRootComponent);
+	InteractableCollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	InteractableCollisionSphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InteractableCollisionSphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
+void ABoss3Skull::SetIsInteractable(bool bNewIsInteractable)
+{
+	if (bNewIsInteractable)
+	{
+		InteractableCollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		InteractableCollisionSphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		InteractableCollisionSphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		InteractableCollisionSphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ABoss3Skull::OnOverlapBegin);
+		InteractableCollisionSphereComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ABoss3Skull::OnOverlapEnd);
+	}
+	else
+	{
+		InteractableCollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		InteractableCollisionSphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		InteractableCollisionSphereComponent->OnComponentBeginOverlap.Clear();
+		InteractableCollisionSphereComponent->OnComponentEndOverlap.Clear();
+	}
 }
 
 void ABoss3Skull::BeginPlay()
@@ -88,13 +107,11 @@ void ABoss3Skull::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 	{
 		if (static_cast<int32>(NewState) >= static_cast<int32>(EGameStoryState::Clear_Boss3))
 		{
-			bIsInteractable = false;
 			SkullMeshComponent->SetVisibility(false);
 			SkullMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 		else
 		{
-			bIsInteractable = true;
 			if (!SkullMeshComponent->IsVisible())
 			{
 				SkullMeshComponent->SetVisibility(true);
@@ -107,13 +124,12 @@ void ABoss3Skull::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 			}
 		}
 	}
-	//IStoryDependentInterface::OnStoryStateUpdated_Implementation(NewState);
 }
 
 void ABoss3Skull::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!bIsInteractable ||!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
+	if (!IsValid(OtherActor) || !OtherActor->ActorHasTag("Player"))
 	{
 		return;
 	}
@@ -131,11 +147,6 @@ void ABoss3Skull::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 void ABoss3Skull::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex)
 {
-	if (!bIsInteractable)
-	{
-		return;
-	}
-	
 	if (IsValid(OtherActor) && OtherActor == CachedCharacter)
 	{
 		if (!IsValid(CachedCharacter))
@@ -220,7 +231,8 @@ void ABoss3Skull::SpawnBoss3()
 	CachedCharacter->SetActorRotation(PlayerRotation);
 	
 	FVector LaunchDirection = (GetActorLocation() - CachedCharacter->GetActorLocation()).GetSafeNormal();
-	CachedCharacter->LaunchCharacter(LaunchDirection * KnockbackStrength, true, true);
+	FRotator LookAtBossRotation = (-LaunchDirection).Rotation();
+	CachedCharacter->SetActorRotation(LookAtBossRotation);
 
 	if (IsValid(KnockbackMontage))
 	{
