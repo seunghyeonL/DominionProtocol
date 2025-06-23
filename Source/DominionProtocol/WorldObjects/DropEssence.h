@@ -21,6 +21,8 @@ class DOMINIONPROTOCOL_API ADropEssence : public AActor, public IInteractableInt
 //Functions
 public:
 	ADropEssence();
+	
+	void SetIsInteractable(bool bNewIsInteractable);
 
 protected:
 	virtual void BeginPlay() override;

@@ -27,6 +27,25 @@ ADropEssence::ADropEssence()
 	SphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
+void ADropEssence::SetIsInteractable(bool bNewIsInteractable)
+{
+	if (bNewIsInteractable)
+	{
+		SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		SphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ADropEssence::OnOverlapBegin);
+		SphereComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ADropEssence::OnOverlapEnd);
+	}
+	else
+	{
+		SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		SphereComponent->OnComponentBeginOverlap.Clear();
+		SphereComponent->OnComponentEndOverlap.Clear();
+	}
+}
+
 void ADropEssence::BeginPlay()
 {
 	Super::BeginPlay();
