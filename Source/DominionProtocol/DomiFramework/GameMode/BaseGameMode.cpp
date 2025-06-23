@@ -225,6 +225,8 @@ void ABaseGameMode::Save()
 {
 	USaveManagerSubsystem* SaveManagerSubsystem = GameInstance->GetSubsystem<USaveManagerSubsystem>();
 	check(IsValid(SaveManagerSubsystem));
+
+	UpdateInstanceData();
 	
 	FSaveSlotMetaData NewSaveSlotMetaData;
 	NewSaveSlotMetaData.SaveSlotExist = true;

@@ -57,12 +57,11 @@ public:
 
 	virtual void OnPlayerDeath();
 
+	UFUNCTION(BlueprintCallable)
+	void Save();
+	
 	UFUNCTION()
 	void SaveItemDataToInstance();
-
-	void UpdateInstanceData();
-	
-	void Save();
 	
 	void RestorePlayer();
 	
@@ -92,6 +91,8 @@ protected:
 	void PlayTimeAdder();
 
 	void CheckFogCrackAndOffFog();
+
+	void UpdateInstanceData();
 	
 public:
 	// Delegate

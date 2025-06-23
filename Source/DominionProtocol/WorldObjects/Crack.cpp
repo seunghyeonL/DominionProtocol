@@ -136,6 +136,8 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 		UGameplayStatics::PlaySoundAtLocation(this, ActivateSound, GetActorLocation());
 		bIsActivate = true;
 		WorldInstanceSubsystem->SetIsActivateCrackIndex(WorldInstanceSubsystem->GetCurrentLevelName(), CrackIndex);
+		// 저장
+		BaseGameMode->Save();
 		Debug::Print(CrackName.ToString() + TEXT(" 활성화"));
 		return;
 	}
@@ -188,11 +190,8 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	// 적 몬스터 초기화
 	BaseGameMode->RespawnEnemies();
 
-	// 저장
-	BaseGameMode->UpdateInstanceData();
-
 	BaseGameMode->Save();
-
+	
 	UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
 
 	// 균열 이동
