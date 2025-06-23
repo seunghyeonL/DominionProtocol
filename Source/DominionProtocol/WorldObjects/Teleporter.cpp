@@ -7,11 +7,14 @@
 #include "Engine/TargetPoint.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "EngineUtils.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 
 #include "Util/DebugHelper.h"
 
 
 ATeleporter::ATeleporter()
+	: bShouldOnSkyAtmosphere(false),
+	  bShouldOffSkyAtmosphere(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -48,6 +51,13 @@ void ATeleporter::Interact_Implementation(AActor* Interactor)
 	{
 		CachedCharacter->SetActorLocation(LinkedTeleporter->TeleportPointComponent->GetChildActor()->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
 		CachedCharacter->SetActorRotation(LinkedTeleporter->TeleportPointComponent->GetChildActor()->GetActorRotation(), ETeleportType::TeleportPhysics);
+
+		if (bShouldOffSkyAtmosphere || bShouldOnSkyAtmosphere)
+		{
+			ABaseGameMode* BaseGameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
+			check(IsValid(BaseGameMode))
+			BaseGameMode->CheckSkyAtmosphereAndToggle(this);
+		}
 	}
 	else
 	{

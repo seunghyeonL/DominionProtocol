@@ -21,6 +21,10 @@ class DOMINIONPROTOCOL_API ATeleporter : public AActor, public IInteractableInte
 public:
 	ATeleporter();
 
+// Getter
+	FORCEINLINE bool GetShouldOnSkyAtmosphere() const { return bShouldOnSkyAtmosphere; }
+	FORCEINLINE bool GetShouldOffSkyAtmosphere() const { return bShouldOffSkyAtmosphere; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -66,10 +70,18 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FString LinkedTeleporterName;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	bool bShouldOnSkyAtmosphere;
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	bool bShouldOffSkyAtmosphere;
+
 private:
 	UPROPERTY()
 	TObjectPtr<ADomiCharacter> CachedCharacter;
 
 	UPROPERTY()
 	TObjectPtr<ATeleporter> LinkedTeleporter;
+
+	
 };
