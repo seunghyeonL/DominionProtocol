@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "Interface/InteractableInterface.h"
 #include "Boss3Skull.generated.h"
@@ -58,6 +59,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USphereComponent> InteractableCollisionSphereComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag BossTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> BossClass;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float ShakeTimeDuration;
 

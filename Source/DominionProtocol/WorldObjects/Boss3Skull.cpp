@@ -3,7 +3,10 @@
 
 #include "Boss3Skull.h"
 #include "Components/SphereComponent.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Player/Characters/DomiCharacter.h"
+#include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
+
 #include "Util/DebugHelper.h"
 
 ABoss3Skull::ABoss3Skull()
@@ -114,10 +117,26 @@ void ABoss3Skull::OnShake()
 
 void ABoss3Skull::SpawnBoss3()
 {
-	SkullMeshComponent->DestroyComponent();
-	AltarMeshComponent->DestroyComponent();
+	SkullMeshComponent->SetVisibility(false);
+	SkullMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AltarMeshComponent->SetVisibility(false);
+	AltarMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	InteractableCollisionSphereComponent->DestroyComponent();
 
-	Debug::Print(TEXT("Boss3 is Coming!!!"));
+	if (!BossClass || !BossTag.IsValid())
+	{
+		Debug::Print(TEXT("BossSpawner: Return - !BossClass || !BossTag.IsValid()"));
+		return;
+	}
+	AActor* SpawnedBoss = GetWorld()->SpawnActor<AActor>(BossClass, GetActorLocation(),	GetActorRotation());
+
+	if (SpawnedBoss)
+	{
+		Debug::Print(TEXT("BossSpawner: Spawned boss"));
+		if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
+		{
+			GM->StartBattle(SpawnedBoss);
+		}
+	}
 }
