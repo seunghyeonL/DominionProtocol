@@ -7,6 +7,17 @@
 class UBlackboardComponent;
 
 UENUM()
+enum class EColorType : uint8
+{
+	Red,
+	Green,
+	Yellow,
+	Black,
+	Blue,
+	None
+};
+
+UENUM()
 enum class ECapsuleState : uint8
 {
 	None,
@@ -29,22 +40,29 @@ public:
 
 	virtual void Execute() override;
 
+private:
 	void InitializeArray();
 
 	void SpawnCapsule();
 
 	void SpawnEnemy();
 
+	void DestroySpawnedBoss();
+
 	void End();
 
-private:
 	UPROPERTY()
 	TArray<TObjectPtr<AActor>> SpawnedCapsule;
 
 	UPROPERTY()
-	TArray<TObjectPtr<AActor>> SpawnedEnemy;
+	TArray<TObjectPtr<AActor>> SpawnedNormalEnemy;
+
+	UPROPERTY()
+	TObjectPtr<AActor> SpawnedBossEnemy;
 
 	TObjectPtr<UBlackboardComponent> BBComp;
+
+	EColorType CurrentColorType;
 	FVector TargetLocation;
 
 	float ElapsedTime = 0.0f;
@@ -56,4 +74,8 @@ private:
 	TArray<FVector> SpawnedCapsuleLocation;
 	TArray<FVector> SpawnedEnemyLocation;
 	TArray<FRotator> SpawnedEnemyRotation;
+
+	int32 RandomIndex;
+
+	FTimerHandle SpawnedBossAILifeSpanTimer;
 };
