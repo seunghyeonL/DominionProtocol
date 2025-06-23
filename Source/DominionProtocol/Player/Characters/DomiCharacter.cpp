@@ -34,6 +34,7 @@
 #include "Engine/StreamableManager.h"
 #include "Engine/AssetManager.h"
 #include "EnumAndStruct/PhysicalSurfaceTypeData/PhysicalSurfaceTypeData.h"
+#include "Util/AsyncLoadBPLib.h"
 
 
 class UPoisonEffect;
@@ -103,7 +104,7 @@ ADomiCharacter::ADomiCharacter()
 	GetMesh()->bReceivesDecals = false;
 
 	bIsInCombat = false;
-	CombatDuration = 5.f;
+	CombatDuration = 3.f;
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -190,6 +191,7 @@ void ADomiCharacter::PlayEffectsOnMnhAttack(const FHitResult& HitResult)
 	
 	FVector HitLocation = HitResult.Location;
 	FRotator HitRotation = HitResult.ImpactNormal.Rotation();
+	
 	EPhysicalSurface SurfaceType = SurfaceType_Default;
 	if (auto PhysMat = HitResult.PhysMaterial.Get())
 	{
@@ -201,78 +203,26 @@ void ADomiCharacter::PlayEffectsOnMnhAttack(const FHitResult& HitResult)
 		if (FPhysicalSurfaceTypeData* SurfaceTypeData = GS->GetPhysicalSurfaceTypeData(SurfaceType))
 		{
 			FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
-	
-			// HitSound 비동기 실행
-			TSoftObjectPtr<USoundBase> SoftHitSound = SurfaceTypeData->HitSound;
-			if (SoftHitSound.ToSoftObjectPath().IsValid())
+			
+			float PitchMultiplier = 1.f;
+			auto PrimaryWeaponTag = ItemComponent->GetEquippedItem(FName("WeaponSlot_Primary"));
+			if (PrimaryWeaponTag.IsValid())
 			{
-				float PitchMultiplier = 1.f;
-				auto PrimaryWeaponTag = ItemComponent->GetEquippedItem(FName("WeaponSlot_Primary"));
-				if (PrimaryWeaponTag.IsValid())
+				if (PrimaryWeaponTag.MatchesTag(ItemTags::ClawWeapon))
 				{
-					if (PrimaryWeaponTag.MatchesTag(ItemTags::SwordWeapon))
-					{
-						PitchMultiplier = 0.8f;
-					}
-					else if (PrimaryWeaponTag.MatchesTag(ItemTags::AxeWeapon))
-					{
-						PitchMultiplier = 0.6f;
-					}
+					PitchMultiplier = 1.2f;
 				}
-				
-				if (SoftHitSound.IsValid())
+				else if (PrimaryWeaponTag.MatchesTag(ItemTags::AxeWeapon))
 				{
-					UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoftHitSound.Get(), HitLocation, FRotator(0.f), 1.f, PitchMultiplier);
-				}
-				else
-				{
-					TWeakObjectPtr<ThisClass> WeakThis = this;
-					Streamable.RequestAsyncLoad(SoftHitSound.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakThis, SoftHitSound, HitLocation, PitchMultiplier]()
-					{
-						if (SoftHitSound.IsValid() && WeakThis.IsValid())
-						{
-							UGameplayStatics::PlaySoundAtLocation(WeakThis->GetWorld(), SoftHitSound.Get(), HitLocation, FRotator(0.f), 1.f, PitchMultiplier);
-						}
-					}));
+					PitchMultiplier = 0.8f;
 				}
 			}
 
+			// HitSound 비동기 실행
+			UAsyncLoadBPLib::AsyncPlaySoundAtLocation(this, SurfaceTypeData->HitSound, HitLocation, PitchMultiplier, 0.7f);
+
 			// HitVfx 비동기 실행
-			TSoftObjectPtr<UNiagaraSystem> SoftHitVfx = SurfaceTypeData->HitVfx;
-			if (SoftHitVfx.ToSoftObjectPath().IsValid())
-			{
-				if (SoftHitVfx.IsValid())
-				{
-					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-						GetWorld(),
-						SoftHitVfx.Get(),
-						HitLocation,
-						HitRotation,
-						FVector(1.f),
-						true,
-						true
-					);
-				}
-				else
-				{
-					TWeakObjectPtr<ThisClass> WeakThis = this;
-					Streamable.RequestAsyncLoad(SoftHitVfx.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakThis, SoftHitVfx, HitLocation, HitRotation]()
-					{
-						if (SoftHitVfx.IsValid() && WeakThis.IsValid())
-						{
-							UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-							WeakThis->GetWorld(),
-							SoftHitVfx.Get(),
-							HitLocation,
-							HitRotation,
-							FVector(1.f),
-							true,
-							true
-							);	
-						}
-					}));
-				}
-			}
+			UAsyncLoadBPLib::AsyncSpawnNiagaraSystem(this, SurfaceTypeData->HitVfx, HitLocation, HitRotation);
 		}
 	}
 }

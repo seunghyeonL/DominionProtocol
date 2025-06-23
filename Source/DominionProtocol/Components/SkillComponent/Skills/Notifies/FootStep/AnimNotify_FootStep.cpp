@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Util/AsyncLoadBPLib.h"
 #include "Util/DebugHelper.h"
 
 void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -48,62 +49,10 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 								FRotator FootStepRotation = MeshComp->GetSocketRotation(SocketName);
 								
 								// FootStep사운드 실행
-								TSoftObjectPtr<USoundBase> SoftFootStepSound = SurfaceTypeData->FootStepSound;
-								if (SoftFootStepSound.ToSoftObjectPath().IsValid())
-								{
-									if (SoftFootStepSound.IsValid())
-									{
-										UGameplayStatics::PlaySoundAtLocation(MeshComp->GetWorld(), SoftFootStepSound.Get(), FootStepLocation);
-									}
-									else
-									{
-										TWeakObjectPtr<USceneComponent> WeakMesh = MeshComp;
-										Streamable.RequestAsyncLoad(SoftFootStepSound.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakMesh, SoftFootStepSound, FootStepLocation]()
-										{
-											if (SoftFootStepSound.IsValid() && WeakMesh.IsValid())
-											{
-												UGameplayStatics::PlaySoundAtLocation(WeakMesh.Get(), SoftFootStepSound.Get(), FootStepLocation);
-											}
-										}));
-									}
-								}
+								UAsyncLoadBPLib::AsyncPlaySoundAtLocation(MeshComp, SurfaceTypeData->FootStepSound, FootStepLocation);
 						
 								// FootStepVfx 실행
-								TSoftObjectPtr<UNiagaraSystem> SoftFootStepVfx = SurfaceTypeData->FootStepVfx;
-								if (SoftFootStepVfx.ToSoftObjectPath().IsValid())
-								{
-									if (SoftFootStepVfx.IsValid())
-									{
-										UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-											MeshComp->GetWorld(),
-											SoftFootStepVfx.Get(),
-											FootStepLocation,
-											FootStepRotation,
-											FVector(1.f),
-											true,
-											true
-										);
-									}
-									else
-									{
-										TWeakObjectPtr<USceneComponent> WeakMesh = MeshComp;
-										Streamable.RequestAsyncLoad(SoftFootStepVfx.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([WeakMesh, SoftFootStepVfx, FootStepLocation, FootStepRotation]()
-										{
-											if (SoftFootStepVfx.IsValid() && WeakMesh.IsValid())
-											{
-												UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-												WeakMesh.Get(),
-												SoftFootStepVfx.Get(),
-												FootStepLocation,
-												FootStepRotation,
-												FVector(1.f),
-												true,
-												true
-												);	
-											}
-										}));
-									}
-								}
+								UAsyncLoadBPLib::AsyncSpawnNiagaraSystem(MeshComp, SurfaceTypeData->FootStepVfx, FootStepLocation, FootStepRotation);
 							}
 						}
 					}

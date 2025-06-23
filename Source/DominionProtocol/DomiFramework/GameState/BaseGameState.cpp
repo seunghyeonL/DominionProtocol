@@ -128,6 +128,7 @@ FName ABaseGameState::GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType)
 		case SurfaceType_Default : return FName("Default");
 		case SurfaceType1:        return FName("Metal");
 		case SurfaceType2:        return FName("Flesh");
+		case SurfaceType3:        return FName("DefaultEnemy");
 		default:                  return FName("Default");
 	}
 }
