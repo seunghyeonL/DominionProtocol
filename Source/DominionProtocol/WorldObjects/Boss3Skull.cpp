@@ -230,7 +230,7 @@ void ABoss3Skull::SpawnBoss3()
 	CachedCharacter->SetActorLocation(PlayerLocation);
 	CachedCharacter->SetActorRotation(PlayerRotation);
 	
-	FVector LaunchDirection = (GetActorLocation() - CachedCharacter->GetActorLocation()).GetSafeNormal();
+	FVector LaunchDirection = (CachedCharacter->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	FRotator LookAtBossRotation = (-LaunchDirection).Rotation();
 	CachedCharacter->SetActorRotation(LookAtBossRotation);
 
