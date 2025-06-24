@@ -2,6 +2,8 @@
 
 
 #include "Boss3Skull.h"
+
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
@@ -201,6 +203,19 @@ void ABoss3Skull::SpawnBoss3()
 	FRotator BossRotation = GetActorRotation();
 	FVector PlayerLocation = CachedCharacter->GetActorLocation();
 	FRotator PlayerRotation = CachedCharacter->GetActorRotation();
+
+	// 나이아가라 VFX 생성
+	for (UNiagaraSystem* Effect : NiagaraSystems)
+	{
+		if (Effect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				GetWorld(),
+				Effect,
+				GetActorLocation(),
+				GetActorRotation());
+		}
+	}
 	
 	//보스 스폰 start
 	if (!BossClass || !BossTag.IsValid())

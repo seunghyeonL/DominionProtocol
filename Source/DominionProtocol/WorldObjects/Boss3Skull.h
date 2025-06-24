@@ -9,6 +9,7 @@
 #include "Interface/StoryDependentInterface.h"
 #include "Boss3Skull.generated.h"
 
+class UNiagaraSystem;
 class ADomiCharacter;
 class USphereComponent;
 
@@ -100,6 +101,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float KnockbackStrength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TObjectPtr<UNiagaraSystem>> NiagaraSystems;
 	
 private:
 	UPROPERTY()
