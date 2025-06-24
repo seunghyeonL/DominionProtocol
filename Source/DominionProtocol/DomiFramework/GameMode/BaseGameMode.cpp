@@ -29,7 +29,7 @@
 #include "Components/ExponentialHeightFogComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
 #include "Engine/ExponentialHeightFog.h"
-#include "Engine/PostProcessVolume.h" 
+#include "Engine/PostProcessVolume.h"
 #include "Engine/SpotLight.h"
 
 #include "Util/CheatBPLib.h"
@@ -39,13 +39,13 @@
 #include "WorldObjects/Teleporter.h"
 
 ABaseGameMode::ABaseGameMode()
-	:	GameInstance(nullptr),
-		PlayerCharacter(nullptr),
-		RecentCrackCache(nullptr),
-		RespawnDelay(2.f),
-		Boss3Skull(nullptr),
-		PlayTime(0),
-		bIsFadeIn(true)
+	: GameInstance(nullptr),
+	  PlayerCharacter(nullptr),
+	  RecentCrackCache(nullptr),
+	  RespawnDelay(2.f),
+	  Boss3Skull(nullptr),
+	  PlayTime(0),
+	  bIsFadeIn(true)
 {
 	static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
 	if (DropEssenceBPClass.Succeeded())
@@ -62,7 +62,7 @@ ABaseGameMode::ABaseGameMode()
 void ABaseGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	checkf(GameInstance, TEXT("Get GameInstance Fail"));
 
@@ -74,20 +74,21 @@ void ABaseGameMode::BeginPlay()
 
 	World = GetWorld();
 	check(IsValid(World));
-	
+
 	if (!IsValid(FadeSequence))
 	{
 		FadeSequence = LoadObject<ULevelSequence>(nullptr, TEXT("/Game/Levels/LevelSequence/FadeTrack"));
 		if (!IsValid(FadeSequence))
 		{
-			Debug::Print(FString::Printf(TEXT("%s::BeginPlay : Failed to load 'FadeTrack' Level Sequence"), *GetName()));
+			Debug::Print(
+				FString::Printf(TEXT("%s::BeginPlay : Failed to load 'FadeTrack' Level Sequence"), *GetName()));
 			return;
 		}
 	}
-	
+
 	SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
-		GetWorld(), 
-		FadeSequence, 
+		GetWorld(),
+		FadeSequence,
 		FMovieSceneSequencePlaybackSettings(),
 		SequenceActor
 	);
@@ -111,7 +112,7 @@ void ABaseGameMode::StartPlay()
 
 	PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
 	check(IsValid(PlayerController));
-	
+
 	BaseGameState = Cast<ABaseGameState>(World->GetGameState());
 	check(GameState);
 	BaseGameState->InitializeGame();
@@ -126,21 +127,25 @@ void ABaseGameMode::StartPlay()
 	CheckFogCrackAndOffFog();
 	CheckSkyAtmosphereAndToggle();
 
-	if (RecentCrackCache->GetIsBoss3Crack())
+	if (!WorldInstanceSubsystem->GetCurrentLevelName().Contains("Test"))
 	{
-		ToggleBoss3BattleRoom(true);
-	}
-	else
-	{
-		ToggleBoss3BattleRoom(false);
+		if (RecentCrackCache->GetIsBoss3Crack())
+		{
+			ToggleBoss3BattleRoom(true);
+		}
+		else
+		{
+			ToggleBoss3BattleRoom(false);
+		}
 	}
 
 	//최근 균열 데이터 있을 경우 그곳으로 플레이어 이동
 	if (!WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
 	{
-		const FCrackData* CrackData = WorldInstanceSubsystem->GetCrackData(WorldInstanceSubsystem->GetCurrentLevelName(), WorldInstanceSubsystem->GetRecentCrackIndex());
+		const FCrackData* CrackData = WorldInstanceSubsystem->GetCrackData(
+			WorldInstanceSubsystem->GetCurrentLevelName(), WorldInstanceSubsystem->GetRecentCrackIndex());
 		check(CrackData);
-		
+
 		PlayerCharacter->SetActorLocation(CrackData->RespawnLocation);
 		PlayerCharacter->SetActorRotation(CrackData->RespawnRotation);
 		FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
@@ -150,15 +155,17 @@ void ABaseGameMode::StartPlay()
 	//균열 이동으로 인한 레벨 이동 시의 플레이어 위치 변경 로직
 	if (WorldInstanceSubsystem->GetIsLevelChanged())
 	{
-		Debug::Print(FString::Printf(TEXT("%s, %s"), *WorldInstanceSubsystem->GetMoveTargetLocation().ToString(), *WorldInstanceSubsystem->GetMoveTargetRotation().ToString()));
-		PlayerCharacter->SetActorLocationAndRotation(WorldInstanceSubsystem->GetMoveTargetLocation(), WorldInstanceSubsystem->GetMoveTargetRotation());
+		Debug::Print(FString::Printf(TEXT("%s, %s"), *WorldInstanceSubsystem->GetMoveTargetLocation().ToString(),
+		                             *WorldInstanceSubsystem->GetMoveTargetRotation().ToString()));
+		PlayerCharacter->SetActorLocationAndRotation(WorldInstanceSubsystem->GetMoveTargetLocation(),
+		                                             WorldInstanceSubsystem->GetMoveTargetRotation());
 		WorldInstanceSubsystem->SwitchIsLevelChanged();
 		WorldInstanceSubsystem->SetMoveTargetLocation(FVector::ZeroVector);
 		WorldInstanceSubsystem->SetMoveTargetRotator(FRotator::ZeroRotator);
 		FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
 		PlayerController->SetControlRotation(NewRotation);
 	}
-	
+
 	//=====Enemy 위치정보 캐싱=====
 	TArray<AActor*> Enemies;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseEnemy::StaticClass(), Enemies);
@@ -176,7 +183,8 @@ void ABaseGameMode::StartPlay()
 	//==========================
 
 	// 스토리 상태 불러오기
-	Debug::Print(FString::Printf(TEXT("Current Story State: %s"), *UEnum::GetValueAsString(GameInstance->GetCurrentGameStoryState())));
+	Debug::Print(FString::Printf(
+		TEXT("Current Story State: %s"), *UEnum::GetValueAsString(GameInstance->GetCurrentGameStoryState())));
 	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
 		AActor* Actor = *It;
@@ -194,7 +202,7 @@ void ABaseGameMode::StartPlay()
 		&ABaseGameMode::PlayTimeAdder,
 		60.f,
 		true);
-	
+
 	// 페이드인
 	SetPlayerInputEnable(false);
 	PlayFade(true);
@@ -227,7 +235,7 @@ void ABaseGameMode::Save()
 	check(IsValid(SaveManagerSubsystem));
 
 	UpdateInstanceData();
-	
+
 	FSaveSlotMetaData NewSaveSlotMetaData;
 	NewSaveSlotMetaData.SaveSlotExist = true;
 	NewSaveSlotMetaData.SaveSlotName = GameInstance->GetSaveSlotName();
@@ -237,7 +245,8 @@ void ABaseGameMode::Save()
 	NewSaveSlotMetaData.PlayingLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
 	NewSaveSlotMetaData.PlayingLevelDisplayName = WorldInstanceSubsystem->GetCurrentLevelDisplayName();
 	NewSaveSlotMetaData.RecentCrackName = RecentCrackCache->GetCrackName();
-	NewSaveSlotMetaData.PlayerLevel = static_cast<int32>(PlayerCharacter->GetStatusComponent()->GetStat(StatTags::Level));
+	NewSaveSlotMetaData.PlayerLevel = static_cast<int32>(PlayerCharacter->GetStatusComponent()->
+	                                                                      GetStat(StatTags::Level));
 
 	SaveManagerSubsystem->SetSaveSlotData(NewSaveSlotMetaData.SaveSlotIndex, NewSaveSlotMetaData);
 	SaveManagerSubsystem->SaveSettings();
@@ -247,7 +256,7 @@ void ABaseGameMode::Save()
 void ABaseGameMode::OnPlayerDeath()
 {
 	checkf(RecentCrackCache, TEXT("ABaseGameMode::OnPlayerDeath : RecentCrackCache is Nullptr"));
-	
+
 	Debug::Print("ABaseGameMode::OnPlayerDeath : Respawn Player");
 
 	if (UDomiGameInstance* GI = GetGameInstance<UDomiGameInstance>())
@@ -259,7 +268,7 @@ void ABaseGameMode::OnPlayerDeath()
 	}
 
 	PlayerDeathLocation = PlayerCharacter->GetActorLocation();
-	
+
 	FTimerHandle RespawnTimerHandle;
 	GetWorldTimerManager().SetTimer(
 		RespawnTimerHandle,
@@ -277,7 +286,7 @@ void ABaseGameMode::RestorePlayer()
 	{
 		StatusComponent->SetHealth(UE_BIG_NUMBER);
 	}
-		
+
 	//회복 포션 개수 -> Max 회복
 	ItemComponent = PlayerCharacter->GetItemComponent();
 	if (IsValid(ItemComponent))
@@ -289,7 +298,7 @@ void ABaseGameMode::RestorePlayer()
 void ABaseGameMode::RespawnPlayerCharacter()
 {
 	DestroyAllNormalEnemy();
-	
+
 	// Essence 레벨에 드랍
 	ADropEssence* DropEssence = WorldInstanceSubsystem->GetDropEssenceCache();
 	if (IsValid(DropEssence))
@@ -300,7 +309,8 @@ void ABaseGameMode::RespawnPlayerCharacter()
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	ADropEssence* NewDropEssence = World->SpawnActor<ADropEssence>(DropEssenceClass, PlayerDeathLocation, FRotator::ZeroRotator, SpawnParams);
+	ADropEssence* NewDropEssence = World->SpawnActor<ADropEssence>(DropEssenceClass, PlayerDeathLocation,
+	                                                               FRotator::ZeroRotator, SpawnParams);
 	if (IsValid(NewDropEssence))
 	{
 		Debug::Print(FString::Printf(TEXT("Spawned DropEssence : %s"), *NewDropEssence->GetName()));
@@ -317,7 +327,7 @@ void ABaseGameMode::RespawnPlayerCharacter()
 	{
 		FVector RespawnLocation = RecentCrackCache->GetRespawnTargetPointLocation();
 		FRotator RespawnRotation = RecentCrackCache->GetRespawnTargetPointRotation();
-		
+
 		PlayerCharacter->SetActorLocation(RespawnLocation);
 		PlayerCharacter->SetActorRotation(RespawnRotation);
 
@@ -330,9 +340,9 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		TObjectPtr<UPlayerControlComponent> PlayerControlComponent = PlayerCharacter->GetPlayerControlComponent();
 		PlayerControlComponent->DeactivateControlEffect(EffectTags::Death);
 		RestorePlayer();
-		
+
 		ExitAudioComponent->Play();
-		
+
 		// Using InGameHUD
 		OnPlayerSpawn.Broadcast();
 
@@ -350,7 +360,7 @@ void ABaseGameMode::MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCr
 		Debug::Print(TEXT("Crack is not Activate"));
 		return;
 	}
-	
+
 	const FString& CurrentLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
 	const FCrackData* TargetCrackData = WorldInstanceSubsystem->GetCrackData(InOwningCrackLevelName, InCrackIndex);
 
@@ -359,12 +369,12 @@ void ABaseGameMode::MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCr
 		Debug::Print(TEXT("TargetCrackData is nullptr"));
 		return;
 	}
-	
+
 	// Debug::Print(FString::Printf(TEXT("Target Location: X=%.2f, Y=%.2f, Z=%.2f"), 
 	// 							TargetCrackData->RespawnLocation.X,
 	// 							TargetCrackData->RespawnLocation.Y,
 	// 							TargetCrackData->RespawnLocation.Z));
-	
+
 	WorldInstanceSubsystem->SetRecentCrackIndex(InCrackIndex);
 	WorldInstanceSubsystem->SetRecentCrackName(TargetCrackData->CrackName);
 	WorldInstanceSubsystem->SetMoveTargetLocation(TargetCrackData->RespawnLocation);
@@ -413,7 +423,6 @@ void ABaseGameMode::RespawnEnemies()
 }
 
 
-
 #pragma region KyuHyeok
 
 void ABaseGameMode::PlayFade(bool bFadeIn)
@@ -432,11 +441,12 @@ void ABaseGameMode::PlayFade(bool bFadeIn)
 
 	FFrameRate FrameRate = FadeSequence->GetMovieScene()->GetTickResolution();
 	FFrameTime SequenceLength = FadeSequence->GetMovieScene()->GetPlaybackRange().Size<FFrameTime>();
-	
+
 	if (bFadeIn)
 	{
 		bIsFadeIn = true;
-		SequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(FFrameTime(0), EUpdatePositionMethod::Play));
+		SequencePlayer->SetPlaybackPosition(
+			FMovieSceneSequencePlaybackParams(FFrameTime(0), EUpdatePositionMethod::Play));
 		SequencePlayer->SetPlayRate(1.f);
 		SequencePlayer->Play();
 		EnterAudioComponent->Play();
@@ -445,7 +455,8 @@ void ABaseGameMode::PlayFade(bool bFadeIn)
 	{
 		bIsFadeIn = false;
 		SetPlayerInputEnable(false);
-		SequencePlayer->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(SequenceLength, EUpdatePositionMethod::Play));
+		SequencePlayer->SetPlaybackPosition(
+			FMovieSceneSequencePlaybackParams(SequenceLength, EUpdatePositionMethod::Play));
 		SequencePlayer->SetPlayRate(-1.f);
 		SequencePlayer->Play();
 		ExitAudioComponent->Play();
@@ -458,7 +469,7 @@ void ABaseGameMode::PlayerLevelUp(FGameplayTag StatTag)
 	{
 		if (!IsValid(StatusComponent))
 		{
-			StatusComponent =  PlayerCharacter->GetStatusComponent();
+			StatusComponent = PlayerCharacter->GetStatusComponent();
 		}
 		//레벨업 로직 추후 작성
 	}
@@ -504,7 +515,7 @@ void ABaseGameMode::SaveItemDataToInstance()
 	{
 		if (!IsValid(ItemComponent))
 		{
-			ItemComponent =  PlayerCharacter->GetItemComponent();
+			ItemComponent = PlayerCharacter->GetItemComponent();
 		}
 		ItemComponent->UpdateItemInstanceSubsystem();
 	}
@@ -531,10 +542,11 @@ void ABaseGameMode::CheckFogCrackAndOffFog()
 	{
 		return;
 	}
-	
-	AExponentialHeightFog* Fog = Cast<AExponentialHeightFog>(UGameplayStatics::GetActorOfClass(World, AExponentialHeightFog::StaticClass()));
+
+	AExponentialHeightFog* Fog = Cast<AExponentialHeightFog>(
+		UGameplayStatics::GetActorOfClass(World, AExponentialHeightFog::StaticClass()));
 	UExponentialHeightFogComponent* FogComponent;
-	
+
 	if (IsValid(Fog))
 	{
 		FogComponent = Fog->GetComponent();
@@ -549,7 +561,7 @@ void ABaseGameMode::CheckFogCrackAndOffFog()
 		Debug::Print(TEXT("Fog is invalid"));
 		return;
 	}
-	
+
 	if (RecentCrackCache->GetIsInFogCrack())
 	{
 		if (FogComponent->FogMaxOpacity == 1.f)
@@ -572,7 +584,7 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 	{
 		return;
 	}
-	
+
 	TArray<AActor*> PostProcessVolumes;
 	UGameplayStatics::GetAllActorsOfClass(World, APostProcessVolume::StaticClass(), PostProcessVolumes);
 	for (AActor* PostProcessVolume : PostProcessVolumes)
@@ -584,7 +596,7 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 			WitchPostProcessVolume->SetActorHiddenInGame(bIsBattleRoom);
 		}
 	}
-	
+
 	if (bIsBattleRoom)
 	{
 		for (AActor* Actor : Boss3RoomNormalState)
@@ -593,7 +605,8 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 			{
 				if (!IsValid(Boss3Skull))
 				{
-					Boss3Skull = Cast<ABoss3Skull>(UGameplayStatics::GetActorOfClass(World, ABoss3Skull::StaticClass()));
+					Boss3Skull = Cast<
+						ABoss3Skull>(UGameplayStatics::GetActorOfClass(World, ABoss3Skull::StaticClass()));
 				}
 				Boss3Skull->SetIsInBattleRoom(true);
 				Boss3Skull->SetIsInteractable(false);
@@ -606,7 +619,8 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 			}
 			else if (Actor->IsA(ASpotLight::StaticClass()))
 			{
-				USpotLightComponent* SpotLightComponent = Cast<ASpotLight>(Actor)->GetComponentByClass<USpotLightComponent>();
+				USpotLightComponent* SpotLightComponent = Cast<ASpotLight>(Actor)->GetComponentByClass<
+					USpotLightComponent>();
 				SpotLightComponent->SetHiddenInGame(true);
 				SpotLightComponent->SetVisibility(false);
 			}
@@ -644,7 +658,8 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 			{
 				if (!IsValid(Boss3Skull))
 				{
-					Boss3Skull = Cast<ABoss3Skull>(UGameplayStatics::GetActorOfClass(World, ABoss3Skull::StaticClass()));
+					Boss3Skull = Cast<
+						ABoss3Skull>(UGameplayStatics::GetActorOfClass(World, ABoss3Skull::StaticClass()));
 				}
 				Boss3Skull->SetIsInBattleRoom(false);
 				Boss3Skull->SetIsInteractable(true);
@@ -657,7 +672,8 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 			}
 			else if (Actor->IsA(ASpotLight::StaticClass()))
 			{
-				USpotLightComponent* SpotLightComponent = Cast<ASpotLight>(Actor)->GetComponentByClass<USpotLightComponent>();
+				USpotLightComponent* SpotLightComponent = Cast<ASpotLight>(Actor)->GetComponentByClass<
+					USpotLightComponent>();
 				SpotLightComponent->SetHiddenInGame(false);
 				SpotLightComponent->SetVisibility(true);
 			}
@@ -682,7 +698,8 @@ void ABaseGameMode::CheckSkyAtmosphereAndToggle(ATeleporter* Teleporter)
 {
 	if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("Past"))
 	{
-		ASkyAtmosphere* SkyAtmosphere = Cast<ASkyAtmosphere>(UGameplayStatics::GetActorOfClass(World, ASkyAtmosphere::StaticClass()));
+		ASkyAtmosphere* SkyAtmosphere = Cast<ASkyAtmosphere>(
+			UGameplayStatics::GetActorOfClass(World, ASkyAtmosphere::StaticClass()));
 		check(IsValid(SkyAtmosphere));
 
 		if (Teleporter != nullptr)
@@ -701,7 +718,7 @@ void ABaseGameMode::CheckSkyAtmosphereAndToggle(ATeleporter* Teleporter)
 			}
 			return;
 		}
-		
+
 		// 최근 균열이 Sky를 끄는 균열이면
 		if (RecentCrackCache->GetShouldOffSkyAtmosphere())
 		{
@@ -728,7 +745,7 @@ void ABaseGameMode::SetPlayerInputEnable(bool bEnable)
 		Debug::Print(TEXT("PlayerCharacter is not valid"));
 		return;
 	}
-	
+
 	if (bEnable)
 	{
 		PlayerController->SetIgnoreMoveInput(false);
@@ -747,14 +764,12 @@ void ABaseGameMode::SetPlayerInputEnable(bool bEnable)
 		FInputModeUIOnly InputMode;
 		PlayerController->SetInputMode(InputMode);
 	}
-	
 }
 
 #pragma endregion
 
 
 #pragma region SeoYoung
-
 
 
 #pragma endregion
