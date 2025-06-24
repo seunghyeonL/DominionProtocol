@@ -135,6 +135,7 @@ FName ABaseGameState::GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType)
 FPhysicalSurfaceTypeData* ABaseGameState::GetPhysicalSurfaceTypeData(EPhysicalSurface PhysicalSurfaceType) const
 {
 	check(SurfaceDataTable);
+
 	return SurfaceDataTable->FindRow<FPhysicalSurfaceTypeData>(GetSurfaceNameByEnum(PhysicalSurfaceType), TEXT("GetPhysicalSurfaceTypeData"));
 }
 

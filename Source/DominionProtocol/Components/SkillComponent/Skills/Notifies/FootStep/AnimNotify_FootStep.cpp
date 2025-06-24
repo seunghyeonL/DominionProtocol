@@ -33,9 +33,22 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 					{
 						// PhysicalMaterial 설정되어있으면 그거에 맞게, 아니면 Default로.
 						EPhysicalSurface SurfaceType = SurfaceType_Default;
-						if (UPhysicalMaterial* PhysMat = CurrentFloor.HitResult.PhysMaterial.Get()) 
+
+						// Py
+						FHitResult Hit;
+						FVector Start = OwnerCharacter->GetActorLocation();
+						FVector End = Start - FVector(0, 0, 100.f); // 적당한 거리
+						
+						FCollisionQueryParams Params;
+						Params.AddIgnoredActor(OwnerCharacter);
+						Params.bReturnPhysicalMaterial = true;
+						
+						if (OwnerCharacter->GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
 						{
-							SurfaceType = PhysMat->SurfaceType;
+							if (UPhysicalMaterial* PhysMat = Hit.PhysMaterial.Get())
+							{
+								SurfaceType = PhysMat->SurfaceType;
+							}
 						}
 						
 						if (auto GS = Cast<ABaseGameState>(MeshComp->GetWorld()->GetGameState()))
