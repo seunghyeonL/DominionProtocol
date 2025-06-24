@@ -3,15 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/BTTaskNode.h"
+#include "BehaviorTree/Tasks/BTTask_MoveTo.h"
 #include "BTTask_MoveToNextPatrolPoint.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API UBTTask_MoveToNextPatrolPoint : public UBTTaskNode
+class DOMINIONPROTOCOL_API UBTTask_MoveToNextPatrolPoint : public UBTTask_MoveTo
 {
 	GENERATED_BODY()
-	
+
+public:
+	UBTTask_MoveToNextPatrolPoint();
 };

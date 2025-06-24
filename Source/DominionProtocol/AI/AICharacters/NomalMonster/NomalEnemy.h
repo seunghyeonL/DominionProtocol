@@ -14,6 +14,8 @@ class DOMINIONPROTOCOL_API ANomalEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
 public:
+	ANomalEnemy();
+
 	virtual void OnDeath_Implementation() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")

@@ -14,6 +14,7 @@
 #include "Util/DebugHelper.h"
 #include "Components/SkillComponent/SkillComponent.h"
 #include "AI/AICharacters/BaseEnemy.h"
+#include "GameFramework/CharacterMovementComponent.h" 
 
 // Sets default values
 ABaseAIController::ABaseAIController()
@@ -40,6 +41,7 @@ ABaseAIController::ABaseAIController()
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ABaseAIController::OnTargetPerceptionUpdated);
 
 	AIStateComponent = CreateDefaultSubobject<UAIStateComponent>(TEXT("AIStateComponent"));
+
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +69,7 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (AIStateComponent)
 	{
 		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
+		SetAISpeed();
 	}
 }
 
@@ -83,6 +86,7 @@ void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 			GetWorld()->GetTimerManager().ClearTimer(LoseTargetTimerHandle);
 		}
 		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
+		SetAISpeed();
 	}
 	else
 	{
@@ -91,6 +95,7 @@ void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Sti
 			return;
 		}
 		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
+		SetAISpeed();
 		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);	
 	}
 }
@@ -169,6 +174,7 @@ void ABaseAIController::HandleTargetLost()
 	if (!GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor")))
 	{
 		AIStateComponent->SetAIStateByTag(EffectTags::Return);
+		SetAISpeed();
 	}
 }
 
@@ -208,6 +214,11 @@ void ABaseAIController::EvaluateTargetPerception()
 	if (IsValid(TargetActor))
 	{
 		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
+		ABaseEnemy* BaseEne = Cast<ABaseEnemy>(GetPawn());
+		if (BaseEne)
+		{
+			BaseEne->GetCharacterMovement()->MaxWalkSpeed = 600;
+		}
 	}
 	else
 	{
@@ -237,5 +248,24 @@ void ABaseAIController::NotifyNearbyAllies(AActor* SensedActor)
 				BB->SetValueAsObject("TargetActor", SensedActor);
 			}
 		}
+	}
+}
+
+void ABaseAIController::SetAISpeed()
+{
+	if (!AIStateComponent) return;
+
+	ABaseEnemy* BaseEnemy = Cast<ABaseEnemy>(GetPawn());
+	if (!BaseEnemy) return;
+
+	const FGameplayTag CurrentState = AIStateComponent->GetCurrentStateTag();
+
+	if (CurrentState == EffectTags::Combat)
+	{
+		BaseEnemy->GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	}
+	else if (CurrentState == EffectTags::Idle || CurrentState == EffectTags::Return)
+	{
+		BaseEnemy->GetCharacterMovement()->MaxWalkSpeed = 350.f;
 	}
 }

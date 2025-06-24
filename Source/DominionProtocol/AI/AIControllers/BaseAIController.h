@@ -71,6 +71,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Perception")
 	float AIVisionAngle = 360;
+
+	void SetAISpeed();
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

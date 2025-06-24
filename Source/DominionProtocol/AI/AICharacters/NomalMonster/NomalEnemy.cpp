@@ -6,7 +6,17 @@
 #include "AI/AIControllers/BaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h" 
 
+ANomalEnemy::ANomalEnemy()
+{
+    PrimaryActorTick.bCanEverTick = true;
+
+    //bUseControllerRotationYaw = false;
+
+    //GetCharacterMovement()->bOrientRotationToMovement = true;
+    //GetCharacterMovement()->RotationRate = FRotator(0.f, 180.f, 0.f);
+}
 
 void ANomalEnemy::OnDeath_Implementation()
 {
@@ -19,10 +29,18 @@ void ANomalEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+
     if (bUsePatrolPoint)
     {
+        float MaxSearchRadius = 2000.f;
+
         TArray<AActor*> PatrolCandidates;
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), APatrolPoint::StaticClass(), PatrolCandidates);
+
+        PatrolCandidates = PatrolCandidates.FilterByPredicate([this, MaxSearchRadius](AActor* Actor)
+            {
+                return FVector::DistSquared(this->GetActorLocation(), Actor->GetActorLocation()) <= FMath::Square(MaxSearchRadius);
+            });
 
         PatrolCandidates.Sort([this](const AActor& A, const AActor& B) {
             return FVector::DistSquared(this->GetActorLocation(), A.GetActorLocation()) <
@@ -37,12 +55,12 @@ void ANomalEnemy::BeginPlay()
             AAIController* AIController = Cast<AAIController>(GetController());
             if (AIController && AIController->GetBlackboardComponent())
             {
-                AIController->GetBlackboardComponent()->SetValueAsObject("PatrolPointA", Closest);
-                AIController->GetBlackboardComponent()->SetValueAsObject("PatrolPointB", SecondClosest);
-                AIController->GetBlackboardComponent()->SetValueAsBool("bShouldPatrol", true);
-                AIController->GetBlackboardComponent()->SetValueAsObject("CurrentPatrol", Closest);
+                UBlackboardComponent* BB = AIController->GetBlackboardComponent();
+                BB->SetValueAsObject("PatrolPointA", Closest);
+                BB->SetValueAsObject("PatrolPointB", SecondClosest);
+                BB->SetValueAsBool("bShouldPatrol", true);
+                BB->SetValueAsVector("CurrentPatrol", Closest->GetActorLocation());
             }
         }
     }
-
 }
