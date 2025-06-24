@@ -30,7 +30,7 @@ AItemContainer::AItemContainer()
 
 	//콜리전 오버랩 채널 설정
 	ContainerShellMesh->SetCollisionResponseToAllChannels(ECR_Block); // 기본은 모든 채널에 대해 Block
-	ContainerShellMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // <-- 캐릭터 공격 채널에 대해 Overlap
+	ContainerShellMesh->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap); // <-- 캐릭터 공격 채널에 대해 Overlap
 
 	DustVFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DustVFX"));
 	DustVFXComponent->SetupAttachment(RootComponent); //스태틱 메시에 attach

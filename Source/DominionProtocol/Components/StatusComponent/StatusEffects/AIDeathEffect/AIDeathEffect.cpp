@@ -29,7 +29,7 @@ bool UAIDeathEffect::Activate()
 		}
 		
 		// OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Visibility);
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionProfileName(TEXT("DeadPawn"));
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionProfileName(TEXT("DeadPawnCapsule"));
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel3);
 		OwnerCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
