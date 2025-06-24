@@ -143,6 +143,15 @@ namespace SkillGroupTags
 	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
 	inline const FGameplayTag Boss4RandomMove = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.RandomMove"));
 	inline const FGameplayTag Boss4EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.EvadeAttack"));
+	inline const FGameplayTag Boss4RisingWall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.RisingWall"));
+	inline const FGameplayTag Boss4SlashWave = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SlashWave"));
+	inline const FGameplayTag Boss4SpawnClonePhase2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SpawnClonePhase2"));
+	inline const FGameplayTag Boss4ClonePhase2_1First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_1.first"));
+	inline const FGameplayTag Boss4ClonePhase2_1Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_1.second"));
+	inline const FGameplayTag Boss4ClonePhase2_1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_1.third"));
+	inline const FGameplayTag Boss4ClonePhase2_2First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_2.first"));
+	inline const FGameplayTag Boss4ClonePhase2_2Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_2.second"));
+	inline const FGameplayTag Boss4ClonePhase2_2Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_2.third"));
 }
 
 namespace SkillTags
@@ -283,6 +292,17 @@ namespace SkillTags
 	inline const FGameplayTag Boss4WeaponAttack3Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.third"));
 	inline const FGameplayTag Boss4WeaponAttack3Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.fourth"));
 	inline const FGameplayTag Boss4EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.EvadeAttack"));
+	inline const FGameplayTag Boss4RisingWall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.RisingWall"));
+	inline const FGameplayTag Boss4SlashWaveFirst = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SlashWave.first"));
+	inline const FGameplayTag Boss4SlashWaveSecond = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SlashWave.second"));
+	inline const FGameplayTag Boss4SlashWaveThird = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SlashWave.third"));
+	inline const FGameplayTag Boss4SpawnClonePhase2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SpawnClonePhase2"));
+	inline const FGameplayTag Boss4ClonePhase2_1First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_1.first"));
+	inline const FGameplayTag Boss4ClonePhase2_1Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_1.second"));
+	inline const FGameplayTag Boss4ClonePhase2_1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_1.third"));
+	inline const FGameplayTag Boss4ClonePhase2_2First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_2.first"));
+	inline const FGameplayTag Boss4ClonePhase2_2Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_2.second"));
+	inline const FGameplayTag Boss4ClonePhase2_2Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.ClonePhase2_2.third"));
 
 	//Boss5
 	inline const FGameplayTag Boss5PeckingAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.PeckingAttack"));
@@ -312,6 +332,7 @@ namespace PawnTags
 	inline const FGameplayTag Boss3 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.3"));
 	inline const FGameplayTag Boss4 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.4"));
 	inline const FGameplayTag Boss4Clone = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.4.Clone"));
+	inline const FGameplayTag Boss4Clone2Phase = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.4.Clone.2Phase"));
 	inline const FGameplayTag Boss5 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.5"));
 
 }
