@@ -27,4 +27,5 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void OnGroggy() override;
+	virtual void OnDeath_Implementation() override;
 };

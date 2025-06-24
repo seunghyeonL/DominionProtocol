@@ -29,7 +29,8 @@ bool UPlayerDeathEffect::Activate()
 	// Ignore Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		// OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		OwnerCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
 	return true;
@@ -63,7 +64,8 @@ void UPlayerDeathEffect::Deactivate()
 	// Set Collision with Pawn
 	if (IsValid(OwnerCharacter))
 	{
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		// OwnerCharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		OwnerCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
 
 	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
