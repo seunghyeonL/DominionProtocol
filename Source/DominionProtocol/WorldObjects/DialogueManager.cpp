@@ -4,24 +4,21 @@
 #include "Kismet/GameplayStatics.h"
 #include "Util/DebugHelper.h"
 #include "EnumAndStruct/FDialogueData.h"
-#include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-void UDialogueManager::LoadDialogueDataTable()
+UDataTable* UDialogueManager::LoadDialogueDataTable(const FString& Path)
 {
-	if (DialogueDataTable) return;
-
-	static const FString Path = TEXT("/Game/Data/DT_DialogueData.DT_DialogueData");
-	DialogueDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *Path));
-
-	if (DialogueDataTable)
+	UDataTable* Table = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *Path));
+	if (!Table)
 	{
-		Debug::Print(TEXT("O DialogueDataTable 로딩 성공"));
+		Debug::Print(FString::Printf(TEXT("X 로딩 실패: %s"), *Path));
 	}
 	else
 	{
-		Debug::Print(TEXT("X DialogueDataTable 로딩 실패"));
+		Debug::Print(FString::Printf(TEXT("O 로딩 성공: %s"), *Path));
 	}
+
+	return Table;
 }
 
 bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const FVector& CrackLocation, const FRotator& CrackRotation)
@@ -29,12 +26,13 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const F
 	CachedHelperSpawnLocation = CrackLocation;
 	CachedHelperSpawnRotation = CrackRotation;
 	CachedHelperSpawnRotation.Yaw -= 40.f;
-	LoadDialogueDataTable();
 
-	Debug::Print(TEXT("UDialogueSubsystem::TryStartDialogueIfExists()"));
-	if (!DialogueDataTable) return false;
+	const FString Path = TEXT("/Game/Data/DT_HelperDialogueData");
+	UDataTable* Table = LoadDialogueDataTable(Path);
+	if (!Table) return false;
 
 	TArray<FDialogueData*> AllRows;
+	DialogueDataTable = Table;
 	DialogueDataTable->GetAllRows(TEXT("Dialogue"), AllRows);
 
 	CurrentDialogueLines.Empty();
@@ -55,18 +53,45 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const F
 
 	if (CurrentDialogueLines.Num() == 0)
 	{
-		Debug::Print(TEXT("UDialogueSubsystem: NoLine, Return False"));
+		Debug::Print(TEXT("UDialogueSubsystem: 대사 없음"));
 		return false;
 	}
 		
 	CurrentStoryState = InState;
 	CurrentLineIndex = 0;
-	ExecuteDialogueLine();
-	Debug::Print(TEXT("UDialogueSubsystem: Return true"));
-	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GI) {
-		GI->AdvanceStoryState();
+	TriggerHelperAppear();
+	return true;
+}
+
+bool UDialogueManager::TryStartDialogueByID(const FString& DialogueID)
+{
+	const FString Path = TEXT("/Game/Data/DT_DialogueData");
+	UDataTable* Table = LoadDialogueDataTable(Path);
+	if (!Table) return false;
+
+	TArray<FDialogueData*> AllRows;
+	DialogueDataTable = Table;
+	DialogueDataTable->GetAllRows(TEXT("Dialogue"), AllRows);
+
+	CurrentDialogueLines.Empty();
+
+	for (FDialogueData* Row : AllRows)
+	{
+		if (Row && Row->DialogueID.ToString() == DialogueID)
+		{
+			CurrentDialogueLines.Add(Row);
+		}
 	}
+
+	if (CurrentDialogueLines.Num() == 0)
+	{
+		Debug::Print(TEXT("UDialogueManager::대사 없음"));
+		return false;
+	}
+
+	CurrentDialogueID = DialogueID;
+	CurrentLineIndex = 0;
+	ExecuteDialogueLine();
 	return true;
 }
 
@@ -80,7 +105,7 @@ void UDialogueManager::AdvanceDialogue()
 	}
 	else
 	{
-		Debug::Print("대사 종료");
+		TriggerHelperDisappear();
 	}
 }
 
@@ -89,26 +114,11 @@ void UDialogueManager::ExecuteDialogueLine()
 	if (!CurrentDialogueLines.IsValidIndex(CurrentLineIndex)) return;
 	const FDialogueData* Line = CurrentDialogueLines[CurrentLineIndex];
 
-	switch (Line->EventType)
+	if (!Line->DialogueText.IsEmpty())
 	{
-	case EDialogueEventType::TextOnly:
-		if (!Line->DialogueText.IsEmpty())
-		{
-			Debug::Print(Line->DialogueText.ToString()); // 대사
-			CurrentDialogueString = Line->DialogueText.ToString();
-			OnUpdateDialogueText.Broadcast(FText::FromString(CurrentDialogueString)); // 대사 델리게이트
-		}
-		break;
-	case EDialogueEventType::SpawnHelper:
-		CurrentDialogueString = TEXT("");
-		TriggerHelperAppear();
-		return;
-	case EDialogueEventType::DespawnHelper:
-		CurrentDialogueString = TEXT("");
-		TriggerHelperDisappear();
-		return;
-	default:
-		break;
+		Debug::Print(Line->DialogueText.ToString()); // 대사
+		CurrentDialogueString = Line->DialogueText.ToString();
+		OnUpdateDialogueText.Broadcast(FText::FromString(CurrentDialogueString)); // 대사 델리게이트
 	}
 }
 
@@ -133,6 +143,8 @@ void UDialogueManager::TriggerHelperAppear()
 		CurrentHelper->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 		CurrentHelper->Appear(CachedHelperSpawnLocation, CachedHelperSpawnRotation);
 	}
+
+	ExecuteDialogueLine();
 }
 
 void UDialogueManager::TriggerHelperDisappear()

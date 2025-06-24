@@ -22,10 +22,10 @@ struct FDialogueData : public FTableRowBase
 	EGameStoryState StoryState;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 LineIndex;
+	FName DialogueID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EDialogueEventType EventType;
+	int32 LineIndex;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText DialogueText;

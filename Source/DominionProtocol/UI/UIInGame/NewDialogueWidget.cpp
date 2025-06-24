@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "WorldObjects/Crack.h"
 #include "WorldObjects/StoryTrigger.h"
+#include "WorldObjects/BlockedPath.h"
 #include "WorldObjects/DialogueManager.h"
 
 void UNewDialogueWidget::UpdateDialogueWidget(const FText NewText)
@@ -23,6 +24,7 @@ void UNewDialogueWidget::NativeConstruct()
 
 void UNewDialogueWidget::BindCreateDialogueDelegate()
 {
+	
 	TArray<AActor*> Actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACrack::StaticClass() ,Actors);
 
@@ -31,7 +33,7 @@ void UNewDialogueWidget::BindCreateDialogueDelegate()
 		auto* Crack = Cast<ACrack>(Actor);
 		Crack->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
 	}
-
+	/*
 	TArray<AActor*> TriggerActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStoryTrigger::StaticClass(), TriggerActors);
 
@@ -39,6 +41,15 @@ void UNewDialogueWidget::BindCreateDialogueDelegate()
 	{
 		auto* StoryTrigger = Cast<AStoryTrigger>(Actor);
 		StoryTrigger->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
+	}
+	*/
+	TArray<AActor*> PathActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABlockedPath::StaticClass(), PathActors);
+
+	for (const auto Actor : PathActors)
+	{
+		auto* BlockedPath = Cast<ABlockedPath>(Actor);
+		BlockedPath->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
 	}
 }
 

@@ -19,8 +19,9 @@ class DOMINIONPROTOCOL_API UDialogueManager : public UObject
 	
 public:
     FOnUpdateDialogueText OnUpdateDialogueText;
-	void LoadDialogueDataTable();
+	UDataTable* LoadDialogueDataTable(const FString& Path);
 	bool TryStartDialogueIfExists(EGameStoryState InState, const FVector& CrackLocation, const FRotator& CrackRotation);
+	bool TryStartDialogueByID(const FString& DialogueID);
 	
 	UFUNCTION(BlueprintCallable)
 	void AdvanceDialogue();
@@ -48,6 +49,7 @@ private:
 
 	int32 CurrentLineIndex = 0;
 	EGameStoryState CurrentStoryState;
+	FString CurrentDialogueID;
 
 	FVector CachedHelperSpawnLocation;
 	FRotator CachedHelperSpawnRotation;

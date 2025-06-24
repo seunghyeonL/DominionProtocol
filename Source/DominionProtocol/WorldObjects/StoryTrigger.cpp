@@ -35,7 +35,6 @@ void AStoryTrigger::BeginPlay()
 	Super::BeginPlay();
 
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AStoryTrigger::OnOverlapBegin);
-	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &AStoryTrigger::OnOverlapEnd);
 
 }
 
@@ -55,63 +54,5 @@ void AStoryTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 		Debug::Print(TEXT("Not RequiredStoryState"));
 		return;
 	}
-
-	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
-	ensure(PlayerCharacter);
-	CachedCharacter = PlayerCharacter;
-
-	PlayerCharacter->AddInteractableActor(this);
-}
-
-void AStoryTrigger::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (IsValid(OtherActor) && OtherActor == CachedCharacter)
-	{
-		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
-		ensure(PlayerCharacter);
-
-		CachedCharacter = nullptr;
-		PlayerCharacter->RemoveInteractableActor(this);
-	}
-	else
-	{
-		Debug::Print(TEXT("AStoryTrigger::OnOverlapEnd : OtherActor Is not PlayerCharacter"));
-	}
-}
-
-void AStoryTrigger::Interact_Implementation(AActor* Interactor)
-{
-	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
-	if (!PlayerCharacter) return;
-	
-	/////// 삭제****
-	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GI)
-	{
-		GI->AdvanceStoryState();
-	}
-
-	DialogueManager = NewObject<UDialogueManager>(this);
-	OnCreateDialogueManager.Broadcast(DialogueManager);
-	FVector CrackLocation = GetActorLocation();
-	FRotator CrackRotation = GetActorRotation();
-	if (DialogueManager->TryStartDialogueIfExists(GI->GetCurrentGameStoryState(), CrackLocation, CrackRotation))
-	{
-		Debug::Print(TEXT("AStoryTrigger: 대사 종료"));
-	}
-	else
-	{
-		Debug::Print(TEXT("AStoryTrigger: 대사 없음"));
-	}
-
-	PlayerCharacter->RemoveInteractableActor(this);
-	if (CollisionBox)
-	{
-		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-}
-
-FText AStoryTrigger::GetInteractMessage_Implementation() const
-{
-	return FText::FromString(TEXT("확인하기"));
+	GI->SetCurrentGameStoryState(ForcedStoryState);
 }
