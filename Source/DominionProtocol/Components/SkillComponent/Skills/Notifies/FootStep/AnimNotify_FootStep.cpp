@@ -34,8 +34,8 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 						// PhysicalMaterial 설정되어있으면 그거에 맞게, 아니면 Default로.
 						EPhysicalSurface SurfaceType = SurfaceType_Default;
 
-						// Py
-						FHitResult Hit;
+						// 바닥 라인트레이스
+						FHitResult HitResult;
 						FVector Start = OwnerCharacter->GetActorLocation();
 						FVector End = Start - FVector(0, 0, 100.f); // 적당한 거리
 						
@@ -43,9 +43,9 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 						Params.AddIgnoredActor(OwnerCharacter);
 						Params.bReturnPhysicalMaterial = true;
 						
-						if (OwnerCharacter->GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+						if (OwnerCharacter->GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
 						{
-							if (UPhysicalMaterial* PhysMat = Hit.PhysMaterial.Get())
+							if (UPhysicalMaterial* PhysMat = HitResult.PhysMaterial.Get())
 							{
 								SurfaceType = PhysMat->SurfaceType;
 							}
@@ -62,10 +62,25 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 								FRotator FootStepRotation = MeshComp->GetSocketRotation(SocketName);
 								
 								// FootStep사운드 실행
-								UAsyncLoadBPLib::AsyncPlaySoundAtLocation(MeshComp, SurfaceTypeData->FootStepSound, FootStepLocation);
+								if (IsValid(SurfaceTypeData->HitSound))
+								{
+									UGameplayStatics::PlaySoundAtLocation(this, SurfaceTypeData->HitSound, FootStepLocation, FootStepRotation);
+								}
 						
 								// FootStepVfx 실행
-								UAsyncLoadBPLib::AsyncSpawnNiagaraSystem(MeshComp, SurfaceTypeData->FootStepVfx, FootStepLocation, FootStepRotation);
+								if (IsValid(SurfaceTypeData->FootStepVfx))
+								{
+									UAsyncLoadBPLib::AsyncSpawnNiagaraSystem(MeshComp, SurfaceTypeData->FootStepVfx, FootStepLocation, FootStepRotation);
+									UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+										this,
+										SurfaceTypeData->HitVfx,
+										FootStepLocation,
+										FootStepRotation,
+										FVector(1.f),
+										true,
+										true
+									);
+								}
 							}
 						}
 					}

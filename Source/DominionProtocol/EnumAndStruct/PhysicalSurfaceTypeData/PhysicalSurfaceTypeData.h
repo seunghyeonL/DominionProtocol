@@ -10,14 +10,14 @@ struct FPhysicalSurfaceTypeData : public FTableRowBase
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<USoundBase> FootStepSound;
+	TObjectPtr<USoundBase> FootStepSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<USoundBase> HitSound;
+	TObjectPtr<USoundBase> HitSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UNiagaraSystem> FootStepVfx;
+	TObjectPtr<UNiagaraSystem> FootStepVfx;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UNiagaraSystem> HitVfx;
+	TObjectPtr<UNiagaraSystem> HitVfx;
 };

@@ -218,11 +218,25 @@ void ADomiCharacter::PlayEffectsOnMnhAttack(const FHitResult& HitResult)
 				}
 			}
 
-			// HitSound 비동기 실행
-			UAsyncLoadBPLib::AsyncPlaySoundAtLocation(this, SurfaceTypeData->HitSound, HitLocation, PitchMultiplier, 0.7f);
-
-			// HitVfx 비동기 실행
-			UAsyncLoadBPLib::AsyncSpawnNiagaraSystem(this, SurfaceTypeData->HitVfx, HitLocation, HitRotation);
+			// HitSound 실행
+			if (IsValid(SurfaceTypeData->HitSound))
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, SurfaceTypeData->HitSound, HitLocation, FRotator(0.f), 0.7f, PitchMultiplier);
+			}
+			
+			// HitVfx 실행
+			if (IsValid(SurfaceTypeData->HitVfx))
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					this,
+					SurfaceTypeData->HitVfx,
+					HitLocation,
+					HitRotation,
+					FVector(1.f),
+					true,
+					true
+				);
+			}
 		}
 	}
 }
