@@ -195,7 +195,7 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 {
 	if (CurrentColorType == EColorType::Blue)
 	{
-		UClass* MeleeAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Dev/JCH/NomalMonster/BP_MinionAI.BP_MinionAI_C"));
+		UClass* MeleeAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss5/BP_MinionAI.BP_MinionAI_C"));
 		if (MeleeAI)
 		{
 			for (int i = 0; i < 2; i++)
@@ -208,7 +208,7 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 			Debug::PrintError(TEXT("UBoss5SpawnEnemyAttack::BP_MinionAI Asset's location is not assigned"));
 		}
 
-		UClass* RangedAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Dev/JCH/NomalMonster/BP_GunMinionAI.BP_GunMinionAI_C"));
+		UClass* RangedAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss5/BP_GunMinionAI.BP_GunMinionAI_C"));
 		if (RangedAI)
 		{
 			//FVector ChosenSpawnLocation = FMath::RandBool() ? RangedLeftSpawnLocation : RangedRightSpawnLocation;
