@@ -13,6 +13,8 @@ class UWorldInstanceSubsystem;
 class UDomiGameInstance;
 class USphereComponent;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDropEssenceRestored, int32)
+
 UCLASS()
 class DOMINIONPROTOCOL_API ADropEssence : public AActor, public IInteractableInterface
 {
@@ -20,6 +22,8 @@ class DOMINIONPROTOCOL_API ADropEssence : public AActor, public IInteractableInt
 
 //Functions
 public:
+	FOnDropEssenceRestored OnDropEssenceRestored;
+	
 	ADropEssence();
 	
 	void SetIsInteractable(bool bNewIsInteractable);

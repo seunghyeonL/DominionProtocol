@@ -20,7 +20,7 @@ protected:
 	virtual void StartPlay() override;
 
 	UFUNCTION()
-	void EndBattle() override;
+	void EndBattle(AActor* DeadMonster = nullptr) override;
 
 	virtual void OnPlayerDeath() override;
 

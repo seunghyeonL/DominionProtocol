@@ -138,6 +138,8 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 		WorldInstanceSubsystem->SetIsActivateCrackIndex(WorldInstanceSubsystem->GetCurrentLevelName(), CrackIndex);
 		// 저장
 		BaseGameMode->Save();
+
+		OnActiveCrack.Broadcast(CrackName);
 		Debug::Print(CrackName.ToString() + TEXT(" 활성화"));
 		return;
 	}

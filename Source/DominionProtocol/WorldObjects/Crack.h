@@ -20,6 +20,7 @@ class AHelper;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCrackSystem, Log, All);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnActiveCrack, FText)
 
 
 UCLASS()
@@ -33,6 +34,7 @@ public:
 	ACrack();
 
 	FOnCreateDialogueManager OnCreateDialogueManager;
+	FOnActiveCrack OnActiveCrack;
 
 	void AlignPlayerForDialogue(ADomiCharacter* PlayerCharacter);
 	

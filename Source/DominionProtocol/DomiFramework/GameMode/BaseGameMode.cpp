@@ -80,8 +80,7 @@ void ABaseGameMode::BeginPlay()
 		FadeSequence = LoadObject<ULevelSequence>(nullptr, TEXT("/Game/Levels/LevelSequence/FadeTrack"));
 		if (!IsValid(FadeSequence))
 		{
-			Debug::Print(
-				FString::Printf(TEXT("%s::BeginPlay : Failed to load 'FadeTrack' Level Sequence"), *GetName()));
+			Debug::Print(FString::Printf(TEXT("%s::BeginPlay : Failed to load 'FadeTrack' Level Sequence"), *GetName()));
 			return;
 		}
 	}
@@ -183,8 +182,7 @@ void ABaseGameMode::StartPlay()
 	//==========================
 
 	// 스토리 상태 불러오기
-	Debug::Print(FString::Printf(
-		TEXT("Current Story State: %s"), *UEnum::GetValueAsString(GameInstance->GetCurrentGameStoryState())));
+	Debug::Print(FString::Printf(TEXT("Current Story State: %s"), *UEnum::GetValueAsString(GameInstance->GetCurrentGameStoryState())));
 	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
 		AActor* Actor = *It;
@@ -220,9 +218,9 @@ void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
 	// }
 }
 
-void ABaseGameMode::EndBattle()
+void ABaseGameMode::EndBattle(AActor* DeadMonster)
 {
-	OnEndBattle.Broadcast();
+	OnEndBattle.Broadcast(DeadMonster);
 	// if (IsValid(Boss3Skull) && Boss3Skull->GetIsInBattleRoom())
 	// {
 	// 	ToggleBoss3BattleRoom(false);
@@ -311,6 +309,7 @@ void ABaseGameMode::RespawnPlayerCharacter()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ADropEssence* NewDropEssence = World->SpawnActor<ADropEssence>(DropEssenceClass, PlayerDeathLocation,
 	                                                               FRotator::ZeroRotator, SpawnParams);
+	OnSpawnDropEssence.Broadcast(NewDropEssence);
 	if (IsValid(NewDropEssence))
 	{
 		Debug::Print(FString::Printf(TEXT("Spawned DropEssence : %s"), *NewDropEssence->GetName()));
@@ -770,6 +769,7 @@ void ABaseGameMode::SetPlayerInputEnable(bool bEnable)
 
 
 #pragma region SeoYoung
+
 
 
 #pragma endregion

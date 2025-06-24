@@ -76,12 +76,16 @@ void ADropEssence::Interact_Implementation(AActor* Interactor)
 	check(GameInstance);
 	check(WorldInstanceSubsystem);
 
-	GameInstance->SetPlayerCurrentEssence(GameInstance->GetPlayerCurrentEssence() + WorldInstanceSubsystem->GetDropEssenceAmount());
+	
+	const int32 RestoredEssence = GameInstance->GetPlayerCurrentEssence() + WorldInstanceSubsystem->GetDropEssenceAmount();
+	GameInstance->SetPlayerCurrentEssence(RestoredEssence);
 	WorldInstanceSubsystem->SetDropEssenceCache(nullptr);
 	WorldInstanceSubsystem->SetIsDropEssenceExist(false);
 	WorldInstanceSubsystem->SetDropEssenceAmount(0);
 	WorldInstanceSubsystem->SetDropEssenceLocation(FVector::ZeroVector);
+	
 	//나중에 복구 UI 만들어지면 그걸로 변경
+	OnDropEssenceRestored.Broadcast(RestoredEssence);
 	Debug::Print(TEXT("Essence Restored!!"));
 	
 	Destroy();

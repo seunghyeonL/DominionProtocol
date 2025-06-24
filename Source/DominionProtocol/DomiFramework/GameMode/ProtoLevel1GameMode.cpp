@@ -20,7 +20,7 @@ void AProtoLevel1GameMode::StartPlay()
 }
 
 
-void AProtoLevel1GameMode::EndBattle()
+void AProtoLevel1GameMode::EndBattle(AActor* DeadMonster)
 {
 	Super::EndBattle();
 }

@@ -39,7 +39,7 @@ public:
 	void OnStartBattleBossMonster();
 
 	UFUNCTION()
-	void EndBattleBossMonster();
+	void EndBattleBossMonster(AActor* DeadMonster);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnEndBattleBossMonster();

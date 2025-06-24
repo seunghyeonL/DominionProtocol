@@ -37,7 +37,8 @@ struct FEnemySpawnInfo
 
 DECLARE_MULTICAST_DELEGATE(FOnPlayerSpawn);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnStartBattle, AActor*);
-DECLARE_MULTICAST_DELEGATE(FOnEndBattle);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEndBattle, AActor*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSpawnDropEssence, ADropEssence*);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
@@ -53,7 +54,7 @@ public:
 	virtual void StartPlay() override;
 	
 	virtual void StartBattle(AActor* SpawnedBoss);
-	virtual void EndBattle();
+	virtual void EndBattle(AActor* DeadMonster = nullptr);
 
 	virtual void OnPlayerDeath();
 
@@ -99,6 +100,7 @@ public:
 	FOnPlayerSpawn OnPlayerSpawn;
 	FOnStartBattle OnStartBattle;
 	FOnEndBattle OnEndBattle;
+	FOnSpawnDropEssence OnSpawnDropEssence;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawning")
