@@ -3,6 +3,7 @@
 
 #include "ProtoNormalEnemy.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/SkillComponent/SkillComponent.h"
 
 
 // Sets default values
@@ -34,7 +35,11 @@ void AProtoNormalEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AProtoNormalEnemy::OnGroggy()
 {
+	check(SkillComponent);
 	Super::OnGroggy();
+	
+	SkillComponent->StopSkill();
 	StatusComponent->ActivateStatusEffect(EffectTags::Groggy, 0.f, 3.f);
 }
+
 
