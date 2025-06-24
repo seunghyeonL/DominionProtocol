@@ -22,6 +22,13 @@ void ANomalEnemy::OnDeath_Implementation()
 {
 	Super::OnDeath_Implementation();
 
+    if (auto* MeshComp = GetMesh())
+    {
+        MeshComp->SetSimulatePhysics(true);  // 물리 시뮬레이션 시작
+        MeshComp->SetCollisionProfileName("Ragdoll");  // 적절한 콜리전 프로필 설정
+        MeshComp->bPauseAnims = true;        // 애니메이션 중지
+        MeshComp->bNoSkeletonUpdate = false;
+    }
 	SetLifeSpan(5.f);
 }
 
