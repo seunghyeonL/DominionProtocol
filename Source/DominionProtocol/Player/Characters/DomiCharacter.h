@@ -119,7 +119,7 @@ public:
 	// Parryable
 	virtual bool IsParryingCond_Implementation() override;
 	virtual void OnParried_Implementation() override;
-	virtual void OnParrySuccess_Implementation() override;
+	// virtual void OnParrySuccess_Implementation() override;
 	virtual AActor* GetTargetEnemy_Implementation() override;
 
 	// EffectUser

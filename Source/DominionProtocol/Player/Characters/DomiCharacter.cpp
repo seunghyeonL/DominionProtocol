@@ -683,12 +683,6 @@ void ADomiCharacter::OnParried_Implementation()
 	// 일단 패리당할일 없어서 비워둠
 }
 
-void ADomiCharacter::OnParrySuccess_Implementation()
-{
-	// 패리성공시 나이아가라 보여주기
-	ShowParryWall();
-}
-
 AActor* ADomiCharacter::GetTargetEnemy_Implementation()
 {
 	check(ControlComponent);
