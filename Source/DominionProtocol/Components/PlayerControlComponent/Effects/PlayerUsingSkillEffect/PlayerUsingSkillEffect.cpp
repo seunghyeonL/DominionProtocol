@@ -72,10 +72,11 @@ void UPlayerUsingSkillEffect::Deactivate()
 	{
 		ControlComponent->ActivateControlEffect(EffectTags::DashAttackPossible, 0.5f);
 	}
-	// else if (ControlEffectTag.MatchesTag(EffectTags::UsingParry))
-	// {
-	// 	ControlComponent->DeactivateControlEffect(EffectTags::Parry);
-	// }
+	else if (ControlEffectTag.MatchesTag(EffectTags::UsingParry))
+	{
+		// 패리 방패 없애는 안전코드 2
+		ControlComponent->DeactivateControlEffect(EffectTags::Parry);
+	}
 	
 	SetControlEffectTag(EffectTags::UsingSkill);
 	
