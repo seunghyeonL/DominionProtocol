@@ -29,6 +29,9 @@ protected:
 	void BindCreateDialogueDelegate();
 	void BindDialogueDelegate(UDialogueManager* DialogueManager);
 
+	template<typename T>
+	void BindDialogueSources();
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	FText CurrentDialogueText;

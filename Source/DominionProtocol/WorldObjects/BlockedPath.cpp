@@ -147,25 +147,6 @@ void ABlockedPath::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	}
 }
 
-void ABlockedPath::StartDialogue(const FString& ID)
-{/*
-	UDialogueManager* DialogueManager = NewObject<UDialogueManager>(this);
-
-	// UI 바인딩
-	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
-	{
-		if (UNewDialogueWidget* HUD = Cast<UNewDialogueWidget>(PC->GetHUD()))
-		{
-			if (UNewDialogueWidget* DialogueWidget = HUD->GetDialogueWidget())
-			{
-				DialogueWidget->BindDialogueDelegate(DialogueManager);
-			}
-		}
-	}
-
-	DialogueManager->TryStartDialogueByID(DialogueID);*/
-}
-
 void ABlockedPath::Interact_Implementation(AActor* Interactor)
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(Interactor);

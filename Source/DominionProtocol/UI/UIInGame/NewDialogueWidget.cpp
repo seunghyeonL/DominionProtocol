@@ -24,37 +24,28 @@ void UNewDialogueWidget::NativeConstruct()
 
 void UNewDialogueWidget::BindCreateDialogueDelegate()
 {
-	
+	BindDialogueSources<ACrack>();
+	BindDialogueSources<ABlockedPath>();
+}
+
+template<typename T>
+void UNewDialogueWidget::BindDialogueSources()
+{
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACrack::StaticClass() ,Actors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), T::StaticClass(), Actors);
 
 	for (const auto Actor : Actors)
 	{
-		auto* Crack = Cast<ACrack>(Actor);
-		Crack->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
-	}
-	/*
-	TArray<AActor*> TriggerActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStoryTrigger::StaticClass(), TriggerActors);
-
-	for (const auto Actor : TriggerActors)
-	{
-		auto* StoryTrigger = Cast<AStoryTrigger>(Actor);
-		StoryTrigger->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
-	}
-	*/
-	TArray<AActor*> PathActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABlockedPath::StaticClass(), PathActors);
-
-	for (const auto Actor : PathActors)
-	{
-		auto* BlockedPath = Cast<ABlockedPath>(Actor);
-		BlockedPath->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
+		if (T* TypedActor = Cast<T>(Actor))
+		{
+			TypedActor->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
+		}
 	}
 }
 
 void UNewDialogueWidget::BindDialogueDelegate(UDialogueManager* DialogueManager)
 {
 	CurrentDialogueManager = DialogueManager;
+	DialogueManager->OnUpdateDialogueText.Clear();
 	DialogueManager->OnUpdateDialogueText.AddUObject(this, &UNewDialogueWidget::UpdateDialogueWidget);
 }
