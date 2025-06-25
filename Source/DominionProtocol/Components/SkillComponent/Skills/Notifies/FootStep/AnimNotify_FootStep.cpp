@@ -11,7 +11,6 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Util/AsyncLoadBPLib.h"
 #include "Util/DebugHelper.h"
 
 void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -33,7 +32,7 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 					{
 						// PhysicalMaterial 설정되어있으면 그거에 맞게, 아니면 Default로.
 						EPhysicalSurface SurfaceType = SurfaceType_Default;
-
+	
 						// 바닥 라인트레이스
 						FHitResult HitResult;
 						FVector Start = OwnerCharacter->GetActorLocation();
@@ -60,19 +59,16 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 								FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
 								FVector FootStepLocation = MeshComp->GetSocketLocation(SocketName);
 								FRotator FootStepRotation = MeshComp->GetSocketRotation(SocketName);
-
-								Debug::Print(TEXT("Notify_FootStep"));
+								
 								// FootStep사운드 실행
 								if (IsValid(SurfaceTypeData->FootStepSound))
 								{
-									Debug::Print(TEXT("FootStepSound"));
 									UGameplayStatics::PlaySoundAtLocation(MeshComp, SurfaceTypeData->FootStepSound, FootStepLocation);
 								}
 						
 								// FootStepVfx 실행
 								if (IsValid(SurfaceTypeData->FootStepVfx))
 								{
-									UAsyncLoadBPLib::AsyncSpawnNiagaraSystem(MeshComp, SurfaceTypeData->FootStepVfx, FootStepLocation, FootStepRotation);
 									UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 										MeshComp,
 										SurfaceTypeData->FootStepVfx,
