@@ -60,9 +60,6 @@ protected:
 private:
 	UFUNCTION()
 	void OnKnockbackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-
-	UFUNCTION()
-	void OnGetupMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	
 	void OnShake();
 
@@ -85,9 +82,6 @@ protected:
 	TObjectPtr<UAnimMontage> KnockbackMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UAnimMontage> GetupMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag BossTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -98,9 +92,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float MaxShakeTime;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float KnockbackStrength;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UNiagaraSystem>> NiagaraSystems;

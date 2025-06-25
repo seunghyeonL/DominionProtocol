@@ -16,7 +16,6 @@
 ABoss3Skull::ABoss3Skull()
 	: ShakeTimeDuration(0.02f),
 	  MaxShakeTime(2.f),
-	  KnockbackStrength(1000.f),
 	  StoryStateCache(EGameStoryState::Tutorial),
 	  bIsInBattleRoom(false),
 	  TimeCount(0.f)
@@ -111,9 +110,11 @@ void ABoss3Skull::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 		{
 			SkullMeshComponent->SetVisibility(false);
 			SkullMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			SetIsInteractable(false);
 		}
 		else
 		{
+			SetIsInteractable(true);
 			if (!SkullMeshComponent->IsVisible())
 			{
 				SkullMeshComponent->SetVisibility(true);
@@ -269,26 +270,6 @@ void ABoss3Skull::OnKnockbackMontageEnded(UAnimMontage* Montage, bool bInterrupt
 	check(IsValid(AnimInstance));
 
 	AnimInstance->OnMontageEnded.RemoveDynamic(this, &ABoss3Skull::OnKnockbackMontageEnded);
-
-	if (IsValid(GetupMontage))
-	{
-		AnimInstance->Montage_Play(GetupMontage);
-		AnimInstance->OnMontageEnded.AddDynamic(this, &ABoss3Skull::OnGetupMontageEnded);
-	}
-}
-
-void ABoss3Skull::OnGetupMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	if (Montage != GetupMontage)
-	{
-		Debug::PrintError(TEXT("ABoss3Skull::OnGetupMontageEnded : Montage is not GetupMontage"));
-		return;
-	}
-	
-	UAnimInstance* AnimInstance = CachedCharacter->GetMesh()->GetAnimInstance();
-	check(IsValid(AnimInstance));
-
-	AnimInstance->OnMontageEnded.RemoveDynamic(this, &ABoss3Skull::OnGetupMontageEnded);
 
 	CachedCharacter->GetController()->SetIgnoreMoveInput(false);
 	CachedCharacter->GetController()->SetIgnoreLookInput(false);
