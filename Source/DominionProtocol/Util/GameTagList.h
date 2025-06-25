@@ -130,6 +130,7 @@ namespace SkillGroupTags
 	inline const FGameplayTag Boss4WeaponAttack1Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.second"));
 	inline const FGameplayTag Boss4WeaponAttack1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.third"));
 	inline const FGameplayTag Boss4WeaponAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2"));
+	inline const FGameplayTag Boss4WeaponAttack3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3"));
 	inline const FGameplayTag Boss4WeaponAttack3First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.first"));
 	inline const FGameplayTag Boss4WeaponAttack3Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.second"));
 	inline const FGameplayTag Boss4WeaponAttack3Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.third"));

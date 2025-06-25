@@ -106,8 +106,12 @@ public:
 	float GetMaxVariableStat(const FGameplayTag& StatTag) const;
 
 	// Getter/Setter with Delegate
+	UFUNCTION(BlueprintCallable)
 	void SetHealth(const float NewHealth);
+
+	UFUNCTION(BlueprintCallable)
 	void SetGroggyGauge(const float NewGroggyGauge);
+
 	void SetMaxHealth(const float NewMaxHealth);
 	void SetShield(const float NewShield);
 	void SetStamina(float NewHealth);
