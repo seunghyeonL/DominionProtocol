@@ -11,31 +11,32 @@ ABoss5Wall::ABoss5Wall()
 
     // 벽 메쉬
     WallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WallMesh"));
-    WallMesh->SetupAttachment(RootComponent);
-    WallMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    WallMesh->SetCollisionResponseToAllChannels(ECR_Block);
-    WallMesh->SetCollisionObjectType(ECC_WorldStatic);
-    WallMesh->SetGenerateOverlapEvents(false); // 벽 자체는 오버랩 없음
+    SetRootComponent(WallMesh);
 
     // 푸시 트리거
     PushTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PushTrigger"));
     PushTrigger->SetupAttachment(WallMesh);
-    PushTrigger->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-    PushTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    PushTrigger->SetCollisionObjectType(ECC_WorldDynamic);
-    PushTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
-    PushTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+    PushTrigger->SetRelativeLocation(FVector(200.f, 40.f, 150.f));
     PushTrigger->SetGenerateOverlapEvents(true);
 
     PushTrigger->OnComponentBeginOverlap.AddDynamic(this, &ABoss5Wall::OnPushTriggerBeginOverlap);
     PushTrigger->OnComponentEndOverlap.AddDynamic(this, &ABoss5Wall::OnPushTriggerEndOverlap);
 
+    CheckTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("CheckTrigger"));
+    CheckTrigger->SetupAttachment(WallMesh);
+    CheckTrigger->SetRelativeLocation(FVector(200.f, 40.f, 150.f));
+    CheckTrigger->SetGenerateOverlapEvents(true);
+
+    CheckTrigger->OnComponentBeginOverlap.AddDynamic(this, &ABoss5Wall::OnCheckTriggerBeginOverlap);
+    CheckTrigger->OnComponentEndOverlap.AddDynamic(this, &ABoss5Wall::OnCheckTriggerEndOverlap);
+
     // 초기 상태 설정
     bShouldPush = false;
-    PushSpeed = 1500.f;
+    bShouldReturn = false;
+    PushSpeed = 100.f;
     PushProgress = 0.f;
     LastPushTime = -FLT_MAX;
-    PushCooldown = 8.f;
+    PushCooldown = 5.f;
 }
 
 void ABoss5Wall::Tick(float DeltaTime)
@@ -43,8 +44,7 @@ void ABoss5Wall::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     if (!bShouldPush && !bShouldReturn)
-    {
-        Push();
+    {    
         return;
     }
 
@@ -80,6 +80,7 @@ void ABoss5Wall::Tick(float DeltaTime)
     }
 }
 
+<<<<<<< HEAD
 void ABoss5Wall::Push()
 {
     float CurrentTime = GetWorld()->GetTimeSeconds();
@@ -133,6 +134,8 @@ void ABoss5Wall::Push()
     LastPushTime = CurrentTime;
 }
 
+=======
+>>>>>>> 2d835bb6 ([update] 보스5 1층 외곽벽 tick->오버랩으로 변경 및 보스5 테스트맵 업데이트)
 void ABoss5Wall::OnPushTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -152,4 +155,31 @@ void ABoss5Wall::OnPushTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AA
             OverlappingCharacter = nullptr;
         }
     }
+}
+
+void ABoss5Wall::OnCheckTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OtherActor))
+    {
+        CurrentTime = GetWorld()->GetTimeSeconds();
+        if (CurrentTime - LastPushTime < PushCooldown)
+        {
+            return;
+        }
+
+        FVector Forward = GetActorRightVector();
+        float Length = 1000.f;
+
+        bShouldPush = true;
+        bShouldReturn = false;
+        StartLocation = GetActorLocation();
+        EndLocation = StartLocation + Forward * Length;
+        PushProgress = 0.f;
+        LastPushTime = CurrentTime;
+    }
+}
+
+void ABoss5Wall::OnCheckTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
 }

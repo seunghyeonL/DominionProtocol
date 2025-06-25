@@ -230,7 +230,7 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 		if (BossAI)
 		{
 			SpawnedBossEnemy = Cast<ABoss2Enemy>(GetWorld()->SpawnActor<AActor>(BossAI, SpawnedCapsuleLocation[RandomIndex], SpawnedEnemyRotation[0]));
-			GetWorld()->GetTimerManager().SetTimer(SpawnedBossAILifeSpanTimer, this, &UBoss5SpawnEnemyAttack::DestroySpawnedBoss, 5.0f, false);
+			GetWorld()->GetTimerManager().SetTimer(SpawnedBossAILifeSpanTimer, this, &UBoss5SpawnEnemyAttack::DestroySpawnedBoss, 60.0f, false);
 
 		}
 		else

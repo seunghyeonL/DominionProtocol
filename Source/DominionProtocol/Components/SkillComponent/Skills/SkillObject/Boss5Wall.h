@@ -14,8 +14,8 @@ class DOMINIONPROTOCOL_API ABoss5Wall : public AActor
 
 public:
     ABoss5Wall();
+
     virtual void Tick(float DeltaTime) override;
-    void Push();
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     UStaticMeshComponent* WallMesh;
@@ -23,12 +23,23 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     UBoxComponent* PushTrigger;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    UBoxComponent* CheckTrigger;
+
     UFUNCTION()
     void OnPushTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION()
     void OnPushTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+    UFUNCTION()
+    void OnCheckTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    void OnCheckTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
     TWeakObjectPtr<ADomiCharacter> OverlappingCharacter;
@@ -43,6 +54,7 @@ private:
     FVector StartLocation;
     FVector EndLocation;
 
+    float CurrentTime;
     float LastPushTime;
     float PushCooldown;
 };
