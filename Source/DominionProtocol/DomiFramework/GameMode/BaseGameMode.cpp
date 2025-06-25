@@ -123,6 +123,21 @@ void ABaseGameMode::StartPlay()
 		UGameplayStatics::GetAllActorsWithTag(World, TEXT("BattleState"), Boss3RoomBattleState);
 	}
 
+	//최근 균열 데이터 있을 경우 그곳으로 플레이어 이동
+	if (!WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
+	{
+		const FCrackData* CrackData = WorldInstanceSubsystem->GetCrackData(
+			WorldInstanceSubsystem->GetCurrentLevelName(), WorldInstanceSubsystem->GetRecentCrackIndex());
+		check(CrackData);
+
+		ACrack* NearCrack = BaseGameState->GetCrackByIndex(CrackData->CrackIndex);
+		RecentCrackCache = NearCrack;
+		PlayerCharacter->SetActorLocation(CrackData->RespawnLocation);
+		PlayerCharacter->SetActorRotation(CrackData->RespawnRotation);
+		FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
+		PlayerController->SetControlRotation(NewRotation);
+	}
+
 	CheckFogCrackAndOffFog();
 	CheckSkyAtmosphereAndToggle();
 
@@ -136,19 +151,6 @@ void ABaseGameMode::StartPlay()
 		{
 			ToggleBoss3BattleRoom(false);
 		}
-	}
-
-	//최근 균열 데이터 있을 경우 그곳으로 플레이어 이동
-	if (!WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
-	{
-		const FCrackData* CrackData = WorldInstanceSubsystem->GetCrackData(
-			WorldInstanceSubsystem->GetCurrentLevelName(), WorldInstanceSubsystem->GetRecentCrackIndex());
-		check(CrackData);
-
-		PlayerCharacter->SetActorLocation(CrackData->RespawnLocation);
-		PlayerCharacter->SetActorRotation(CrackData->RespawnRotation);
-		FRotator NewRotation = PlayerCharacter->GetActorForwardVector().Rotation();
-		PlayerController->SetControlRotation(NewRotation);
 	}
 
 	//균열 이동으로 인한 레벨 이동 시의 플레이어 위치 변경 로직
