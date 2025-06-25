@@ -60,11 +60,13 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 								FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
 								FVector FootStepLocation = MeshComp->GetSocketLocation(SocketName);
 								FRotator FootStepRotation = MeshComp->GetSocketRotation(SocketName);
-								
+
+								Debug::Print(TEXT("Notify_FootStep"));
 								// FootStep사운드 실행
-								if (IsValid(SurfaceTypeData->HitSound))
+								if (IsValid(SurfaceTypeData->FootStepSound))
 								{
-									UGameplayStatics::PlaySoundAtLocation(this, SurfaceTypeData->HitSound, FootStepLocation, FootStepRotation);
+									Debug::Print(TEXT("FootStepSound"));
+									UGameplayStatics::PlaySoundAtLocation(MeshComp, SurfaceTypeData->FootStepSound, FootStepLocation);
 								}
 						
 								// FootStepVfx 실행
@@ -72,8 +74,8 @@ void UAnimNotify_FootStep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 								{
 									UAsyncLoadBPLib::AsyncSpawnNiagaraSystem(MeshComp, SurfaceTypeData->FootStepVfx, FootStepLocation, FootStepRotation);
 									UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-										this,
-										SurfaceTypeData->HitVfx,
+										MeshComp,
+										SurfaceTypeData->FootStepVfx,
 										FootStepLocation,
 										FootStepRotation,
 										FVector(1.f),
