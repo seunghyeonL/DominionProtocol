@@ -3,15 +3,17 @@
 
 #include "TitleController.h"
 
-#include "Blueprint/UserWidget.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "UI/UITitle/NewTitleMenuWidget.h"
 #include "Util/DevCheatManager.h"
 
 ATitleController::ATitleController()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> StartMenuWidgetRef (TEXT("/Game/Blueprints/UI/NewUI/StartMenuWidget.StartMenuWidget_C"));
-	if (StartMenuWidgetRef.Class)
+	static ConstructorHelpers::FClassFinder<UNewTitleMenuWidget> TitleMenuWidgetRef (TEXT("/Game/Blueprints/UI/NewUI/StartMenuWidget.StartMenuWidget_C"));
+	if (TitleMenuWidgetRef.Class)
 	{
-		TitleHUDWidgetClass = StartMenuWidgetRef.Class;
+		TitleHUDWidgetClass = TitleMenuWidgetRef.Class;
 	}
 
 	CheatClass = UDevCheatManager::StaticClass();
@@ -19,23 +21,84 @@ ATitleController::ATitleController()
 
 void ATitleController::HandleSetupTitleHUD()
 {
+	SetupMappingContext();
 	CreateHUDWidget();
 	AddHUDToViewport();
-	SetupInputModeUIOnly();
+	SetupInputModeGameAndUI();
+
+	BindControllerInputActions();
 }
 
-void ATitleController::SetupInputModeUIOnly()
+void ATitleController::OnStartGame()
 {
-	const FInputModeUIOnly CurrentInputMode;
+	OnPressedStartGame.ExecuteIfBound();
+	UE_LOG(LogTemp, Warning, TEXT("OnStartGame"));
+}
+
+void ATitleController::OnDeleteGame()
+{
+	OnPressedDeleteGame.ExecuteIfBound();
+	UE_LOG(LogTemp, Warning, TEXT("OnDeleteGame"));
+}
+
+void ATitleController::OnBackToMainMenu()
+{
+	OnPressedBackToMainMenu.ExecuteIfBound();
+	UE_LOG(LogTemp, Warning, TEXT("OnBackToMainMenu"));
+}
+
+void ATitleController::SetupInputModeGameAndUI()
+{
+	const FInputModeGameAndUI CurrentInputMode;
 	SetInputMode(CurrentInputMode);
 	bShowMouseCursor = true;
 
 	// Focus Setting -> HUD Widget, not Controller
 }
 
+void ATitleController::SetupMappingContext() const
+{
+	if (LocalPlayerInputSubsystem)
+	{
+		if (TitleMappingContext)
+		{
+			LocalPlayerInputSubsystem->AddMappingContext(TitleMappingContext, 0);
+		}
+	}
+}
+
+void ATitleController::BindControllerInputActions()
+{
+	auto* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+	if (EnhancedInputComponent)
+	{
+		if (IsValid(StartGame))
+		{
+			EnhancedInputComponent->BindAction(StartGame, ETriggerEvent::Started, this, &ATitleController::OnStartGame);
+		}
+
+		if (IsValid(DeleteGame))
+		{
+			EnhancedInputComponent->BindAction(DeleteGame, ETriggerEvent::Started, this, &ATitleController::OnDeleteGame);
+		}
+
+		if (IsValid(BackToMainMenu))
+		{
+			EnhancedInputComponent->BindAction(BackToMainMenu, ETriggerEvent::Started, this, &ATitleController::OnBackToMainMenu);
+		}
+	}
+	
+}
+
 void ATitleController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	const ULocalPlayer* LocalPlayer = GetLocalPlayer();
+	if (LocalPlayer)
+	{
+		LocalPlayerInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+	}
 
 	HandleSetupTitleHUD();
 }
@@ -44,7 +107,7 @@ void ATitleController::CreateHUDWidget()
 {
 	check(TitleHUDWidgetClass);
 	
-	TitleHUDWidgetInstance = CreateWidget<UUserWidget>(this, TitleHUDWidgetClass);
+	TitleHUDWidgetInstance = CreateWidget<UNewTitleMenuWidget>(this, TitleHUDWidgetClass);
 }
 
 void ATitleController::AddHUDToViewport() const
