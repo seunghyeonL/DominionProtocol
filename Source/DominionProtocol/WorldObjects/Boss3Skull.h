@@ -14,7 +14,7 @@ class ADomiCharacter;
 class USphereComponent;
 
 UCLASS()
-class DOMINIONPROTOCOL_API ABoss3Skull : public AActor, public IInteractableInterface, public IStoryDependentInterface
+class DOMINIONPROTOCOL_API ABoss3Skull : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 
@@ -22,6 +22,8 @@ public:
 	ABoss3Skull();
 
 	void SetIsInteractable(bool bNewIsInteractable);
+	
+	void CheckStoryStateAndToggleVisibility();
 	
 // Getter
 	FORCEINLINE bool GetIsInBattleRoom() const { return bIsInBattleRoom; }
@@ -37,9 +39,6 @@ protected:
 	//Interact Interface function
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
-
-	//StoryState Interface function
-	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
 	
 	UFUNCTION()
 	void OnOverlapBegin(

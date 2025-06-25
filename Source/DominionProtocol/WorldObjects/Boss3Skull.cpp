@@ -59,6 +59,18 @@ void ABoss3Skull::SetIsInteractable(bool bNewIsInteractable)
 	}
 }
 
+void ABoss3Skull::CheckStoryStateAndToggleVisibility()
+{
+	UDomiGameInstance* GameInstance = Cast<UDomiGameInstance>(GetWorld()->GetGameInstance());
+	EGameStoryState CurrentStoryState = GameInstance->GetCurrentGameStoryState();
+	if (CurrentStoryState >= EGameStoryState::Clear_Boss3)
+	{
+		SkullMeshComponent->SetVisibility(false);
+		SkullMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SetIsInteractable(false);
+	}
+}
+
 void ABoss3Skull::BeginPlay()
 {
 	Super::BeginPlay();
@@ -98,35 +110,6 @@ void ABoss3Skull::Interact_Implementation(AActor* Interactor)
 FText ABoss3Skull::GetInteractMessage_Implementation() const
 {
 	return FText::FromString(TEXT("건드려 본다"));
-}
-
-void ABoss3Skull::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
-{
-	StoryStateCache = NewState;
-
-	if (!bIsInBattleRoom)
-	{
-		if (static_cast<int32>(NewState) >= static_cast<int32>(EGameStoryState::Clear_Boss3))
-		{
-			SkullMeshComponent->SetVisibility(false);
-			SkullMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			SetIsInteractable(false);
-		}
-		else
-		{
-			SetIsInteractable(true);
-			if (!SkullMeshComponent->IsVisible())
-			{
-				SkullMeshComponent->SetVisibility(true);
-				SkullMeshComponent->SetCollisionProfileName(TEXT("BlockAll"));
-			}
-			if (!AltarMeshComponent->IsVisible())
-			{
-				AltarMeshComponent->SetVisibility(true);
-				AltarMeshComponent->SetCollisionProfileName(TEXT("BlockAll"));
-			}
-		}
-	}
 }
 
 void ABoss3Skull::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
