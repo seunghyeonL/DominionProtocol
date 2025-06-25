@@ -11,7 +11,7 @@ ABoss5Wall::ABoss5Wall()
 
     // 벽 메쉬
     WallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WallMesh"));
-    SetRootComponent(WallMesh);
+    WallMesh->SetupAttachment(RootComponent);
     WallMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     WallMesh->SetCollisionResponseToAllChannels(ECR_Block);
     WallMesh->SetCollisionObjectType(ECC_WorldStatic);
@@ -113,7 +113,7 @@ void ABoss5Wall::Push()
         ObjectTypes,
         false,
         IgnoreActors,
-        EDrawDebugTrace::Persistent,
+        EDrawDebugTrace::None,
         Hit,
         true
     );
