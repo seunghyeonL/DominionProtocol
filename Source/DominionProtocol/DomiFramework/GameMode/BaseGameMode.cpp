@@ -253,6 +253,14 @@ void ABaseGameMode::Save()
 	SaveManagerSubsystem->SaveGame(GameInstance->GetSaveSlotName(), GameInstance->GetSaveSlotIndex());
 }
 
+void ABaseGameMode::MoveToRecentCrack()
+{
+	if (IsValid(RecentCrackCache))
+	{
+		MoveToTargetCrack(WorldInstanceSubsystem->GetCurrentLevelName(), RecentCrackCache->GetCrackIndex());
+	}
+}
+
 void ABaseGameMode::OnPlayerDeath()
 {
 	checkf(RecentCrackCache, TEXT("ABaseGameMode::OnPlayerDeath : RecentCrackCache is Nullptr"));

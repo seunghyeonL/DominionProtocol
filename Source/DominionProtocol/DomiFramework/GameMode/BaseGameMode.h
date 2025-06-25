@@ -60,6 +60,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Save();
+
+	//긴급탈출 : UI에서 호출
+	UFUNCTION(BlueprintCallable)
+	void MoveToRecentCrack();
 	
 	UFUNCTION()
 	void SaveItemDataToInstance();
