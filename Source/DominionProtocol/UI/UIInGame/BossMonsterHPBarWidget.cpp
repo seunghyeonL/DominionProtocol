@@ -33,11 +33,16 @@ void UBossMonsterHPBarWidget::UpdateBossMonsterShield(const float NewShield)
 	CurrentBossMonsterShield = NewShield;
 }
 
-void UBossMonsterHPBarWidget::UpdateBossMonsterName(const FString NewBossMonsterName)
+void UBossMonsterHPBarWidget::UpdateBossMonsterName(AActor* NewBossMonster)
 {
-	BossMonsterName = NewBossMonsterName;
-
-	OnUpdateBossMonsterName();
+	if (NewBossMonster->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
+	{
+		const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(NewBossMonster);
+		CurrentBossMonster = NewBossMonster;
+		BossMonsterName = CharacterName;
+		
+		OnUpdateBossMonsterName();
+	}
 }
 
 

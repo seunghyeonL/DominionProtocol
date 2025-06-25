@@ -275,12 +275,7 @@ void UStatusComponent::SetHealth(float NewHealth)
 
 	SetStat(StatTags::Health ,ClampedHealth);
 	OnHealthChanged.Broadcast(ClampedHealth);
-
-	if (GetOwner()->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
-	{
-		const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(GetOwner());
-		OnBattleMonster.Broadcast(CharacterName);
-	}
+	OnBattleMonster.Broadcast(GetOwner());
 	
 	// OnDeath 
 	if (FMath::IsNearlyZero(GetStat(StatTags::Health)))
@@ -324,11 +319,7 @@ void UStatusComponent::SetMaxHealth(float NewMaxHealth)
 
 	SetStat(StatTags::MaxHealth, NewMaxHealth);
 	OnMaxHealthChanged.Broadcast(NewMaxHealth);
-	if (GetOwner()->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
-	{
-		const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(GetOwner());
-		OnBattleMonster.Broadcast(CharacterName);
-	}
+	OnBattleMonster.Broadcast(GetOwner());
 }
 
 void UStatusComponent::SetShield(const float NewShield)
@@ -340,11 +331,7 @@ void UStatusComponent::SetShield(const float NewShield)
 
 	SetStat(StatTags::Shield ,ClampedShield);
 	OnShieldChanged.Broadcast(ClampedShield);
-	if (GetOwner()->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
-	{
-		const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(GetOwner());
-		OnBattleMonster.Broadcast(CharacterName);
-	}
+	OnBattleMonster.Broadcast(GetOwner());
 }
 
 void UStatusComponent::SetStamina(float NewStamina)
