@@ -14,6 +14,28 @@ UStatusComponent::UStatusComponent()
 	bWantsInitializeComponent = true;
 	PrimaryComponentTick.bCanEverTick = true;
 	bIsRecoveringStamina = true;
+	CombatDuration = 3.0f;
+	bIsInCombat = false;
+}
+
+void UStatusComponent::StartCombat()
+{
+	bIsInCombat = true;
+	check(IsValid(GetWorld()));
+	
+	GetWorld()->GetTimerManager().ClearTimer(CombatTimer);
+	GetWorld()->GetTimerManager().SetTimer(
+		CombatTimer,
+		this,
+		&UStatusComponent::EndCombat,
+		CombatDuration,
+		false
+	);
+}
+
+void UStatusComponent::EndCombat()
+{
+	bIsInCombat = false;
 }
 
 void UStatusComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -39,7 +61,7 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (bIsRecoveringStamina && !ActiveStatusEffectTags.HasTag(EffectTags::Running))
+	if (bIsRecoveringStamina && !(ActiveStatusEffectTags.HasTag(EffectTags::Running) && bIsInCombat))
 	{
 		float Current = GetStat(StatTags::Stamina);
 		float Max = GetStat(StatTags::MaxStamina);

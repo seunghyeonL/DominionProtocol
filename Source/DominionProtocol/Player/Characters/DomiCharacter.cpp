@@ -103,9 +103,6 @@ ADomiCharacter::ADomiCharacter()
 
 	GetMesh()->bReceivesDecals = false;
 
-	bIsInCombat = false;
-	CombatDuration = 3.f;
-
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -400,24 +397,6 @@ void ADomiCharacter::Landed(const FHitResult& HitResult)
 	StatusComponent->SetHealth(StatusComponent->GetStat(StatTags::Health) - Damage);
 }
 
-void ADomiCharacter::StartCombat()
-{
-	bIsInCombat = true;
-	GetWorldTimerManager().ClearTimer(CombatTimer);
-	GetWorldTimerManager().SetTimer(
-		CombatTimer,
-		this,
-		&ADomiCharacter::EndCombat,
-		CombatDuration,
-		false
-	);
-}
-
-void ADomiCharacter::EndCombat()
-{
-	bIsInCombat = false;
-}
-
 FGameplayTagContainer& ADomiCharacter::GetActiveControlEffectTags()
 {
 	check(ControlComponent);
@@ -564,7 +543,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 		return;
 	}
 
-	StartCombat();
+	StatusComponent->StartCombat();
 	
 	float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);

@@ -64,8 +64,15 @@ public:
 
 	FOnMaxShieldChanged OnMaxShieldChanged;
 	FOnBattleMonster OnBattleMonster;
-
-	// TimerHandles
+	
+	// Combat State
+	FTimerHandle CombatTimer;
+	
+	FORCEINLINE bool IsInCombat() const { return bIsInCombat; }
+	FORCEINLINE void SetIsInCombat(const bool Flag) { bIsInCombat = Flag; }
+	void StartCombat();
+	void EndCombat();
+	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -130,6 +137,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	float CombatDuration;
+
+	bool bIsInCombat;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	TMap<FGameplayTag, float> StatMap;

@@ -78,11 +78,6 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	virtual void Landed(const FHitResult& HitResult) override;
-
-	// Combat
-	FORCEINLINE bool IsInCombat() const { return bIsInCombat; }
-	void StartCombat();
-	void EndCombat();
 	
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
@@ -216,13 +211,6 @@ protected:
 	TObjectPtr<UStaticMeshComponent> DownTrace;
 
 	FString PlayerName;
-
-	// Combat
-	FTimerHandle CombatTimer;
-	bool bIsInCombat;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
-	float CombatDuration;
 
 private:
 	UPROPERTY(VisibleAnywhere)
