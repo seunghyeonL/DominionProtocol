@@ -19,7 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttackPowerChanged, float, AttackPower);
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMaxShieldChanged, float);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnBattleMonster, FString);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBattleMonster, AActor*);
 DECLARE_MULTICAST_DELEGATE(FOnStatusEffectsChanged);
 DECLARE_MULTICAST_DELEGATE(FOnDeath);
 
