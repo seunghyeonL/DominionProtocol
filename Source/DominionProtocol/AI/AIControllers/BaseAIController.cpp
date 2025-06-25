@@ -76,28 +76,40 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 void ABaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	EvaluateTargetPriority();
+	EvaluateTargetPerception();
+	//if (!AIStateComponent) return;
 
-	if (!AIStateComponent) return;
-
-	if (Stimulus.WasSuccessfullySensed() && IsValid(Actor))
-	{
-		if (GetWorld()->GetTimerManager().IsTimerActive(LoseTargetTimerHandle))
-		{
-			GetWorld()->GetTimerManager().ClearTimer(LoseTargetTimerHandle);
-		}
-		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
-		SetAISpeed();
-	}
-	else
-	{
-		if (IsUsingSkill())
-		{
-			return;
-		}
-		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
-		SetAISpeed();
-		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);	
-	}
+	//if (Stimulus.WasSuccessfullySensed() && IsValid(Actor))
+	//{
+	//	if (GetWorld()->GetTimerManager().IsTimerActive(LoseTargetTimerHandle))
+	//	{
+	//		GetWorld()->GetTimerManager().ClearTimer(LoseTargetTimerHandle);
+	//	}
+	//	AIStateComponent->SetAIStateByTag(EffectTags::Combat);
+	//	APawn* MyPawn = GetPawn();
+	//	if (MyPawn)
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("[AI] %s"), *MyPawn->GetName());
+	//		UE_LOG(LogTemp, Warning, TEXT("[State] Before Change: %s"), *AIStateComponent->GetCurrentStateTag().ToString());
+	//	}
+	//	SetAISpeed();
+	//}
+	//else
+	//{
+	//	if (IsUsingSkill())
+	//	{
+	//		return;
+	//	}
+	//	AIStateComponent->SetAIStateByTag(EffectTags::Idle);
+	//	APawn* MyPawn = GetPawn();
+	//	if (MyPawn)
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("[AI] %s"), *MyPawn->GetName());
+	//		UE_LOG(LogTemp, Warning, TEXT("[State] Before Change: %s"), *AIStateComponent->GetCurrentStateTag().ToString());
+	//	}
+	//	SetAISpeed();
+	//	GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);	
+	//}
 }
 
 void ABaseAIController::EvaluateTargetPriority()
@@ -210,20 +222,18 @@ void ABaseAIController::EvaluateTargetPerception()
 	if (!AIStateComponent || !Blackboard) return;
 
 	AActor* TargetActor = Cast<AActor>(Blackboard->GetValueAsObject("TargetActor"));
+	//AActor* TargetActor = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject("TargetActor"));
 
 	if (IsValid(TargetActor))
 	{
 		AIStateComponent->SetAIStateByTag(EffectTags::Combat);
-		ABaseEnemy* BaseEne = Cast<ABaseEnemy>(GetPawn());
-		if (BaseEne)
-		{
-			BaseEne->GetCharacterMovement()->MaxWalkSpeed = 600;
-		}
+		SetAISpeed();
 	}
 	else
 	{
 		if (IsUsingSkill()) return;
 		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
+		SetAISpeed();
 		GetWorld()->GetTimerManager().SetTimer(LoseTargetTimerHandle, this, &ABaseAIController::HandleTargetLost, 3.0f, false);
 	}
 }

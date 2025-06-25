@@ -163,18 +163,18 @@ void UBaseSkill::AttackTrace_Cylinder(FVector Offset, float Radius, float HalfHe
 	);
 
 	// 디버그
-#if WITH_EDITOR
-	DrawDebugCapsule(
-		World,
-		Start,
-		HalfHeight,
-		Radius,
-		CapsuleRotation,
-		FColor::Green,
-		false,
-		2.0f
-	);
-#endif
+//#if WITH_EDITOR
+//	DrawDebugCapsule(
+//		World,
+//		Start,
+//		HalfHeight,
+//		Radius,
+//		CapsuleRotation,
+//		FColor::Green,
+//		false,
+//		2.0f
+//	);
+//#endif
 
 	if (!bHit) return;
 
