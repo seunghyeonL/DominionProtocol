@@ -16,10 +16,15 @@ ABossCloudDoor::ABossCloudDoor()
 	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	BlockingBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blocking"));
+	BlockingBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Blocking"));
 	BlockingBox->SetupAttachment(RootComponent);
 	BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BlockingBox->SetCollisionResponseToAllChannels(ECR_Block);
+
+	BlockingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlockingMesh"));
+	BlockingMesh->SetupAttachment(RootComponent);
+	BlockingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BlockingMesh->SetCollisionResponseToAllChannels(ECR_Block);
 
 	PathEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PathEffect"));
 	PathEffect->SetupAttachment(RootComponent);
@@ -49,6 +54,10 @@ void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState
 		if (BlockingBox)
 		{
 			BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+		if (BlockingMesh)
+		{
+			BlockingMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 		if (CollisionBox)
 		{
@@ -162,9 +171,18 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 			}
 		}
 
-		BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-		BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-		BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		if (BlockingMesh)
+		{
+			BlockingMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+			BlockingMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+			BlockingMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		}
+		if (BlockingBox)
+		{
+			BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+			BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+			BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		}
 		UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 
 		if (GI->GetCurrentGameStoryState() == ActiveFromState)
@@ -204,6 +222,13 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 		{
 			GM->SetPlayerInputEnable(false);
 		}
+	}
+
+	if (BlockingMesh)
+	{
+		BlockingMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		BlockingMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+		BlockingMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 	}
 	if (BlockingBox)
 	{

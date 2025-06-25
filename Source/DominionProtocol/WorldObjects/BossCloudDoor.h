@@ -46,7 +46,10 @@ private:
 	UBoxComponent* CollisionBox;
 
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* BlockingBox;
+	UStaticMeshComponent* BlockingMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	UBoxComponent* BlockingBox;
 
 	UPROPERTY(VisibleAnywhere)
 	UNiagaraComponent* PathEffect;
