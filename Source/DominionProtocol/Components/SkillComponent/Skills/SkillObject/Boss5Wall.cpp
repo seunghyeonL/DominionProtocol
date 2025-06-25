@@ -9,12 +9,9 @@ ABoss5Wall::ABoss5Wall()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    // Root 설정
-    RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-
     // 벽 메쉬
     WallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WallMesh"));
-    WallMesh->SetupAttachment(RootComponent);
+    SetRootComponent(WallMesh);
     WallMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     WallMesh->SetCollisionResponseToAllChannels(ECR_Block);
     WallMesh->SetCollisionObjectType(ECC_WorldStatic);
@@ -23,6 +20,7 @@ ABoss5Wall::ABoss5Wall()
     // 푸시 트리거
     PushTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PushTrigger"));
     PushTrigger->SetupAttachment(WallMesh);
+    PushTrigger->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
     PushTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     PushTrigger->SetCollisionObjectType(ECC_WorldDynamic);
     PushTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -34,10 +32,10 @@ ABoss5Wall::ABoss5Wall()
 
     // 초기 상태 설정
     bShouldPush = false;
-    PushSpeed = 1000.f;
+    PushSpeed = 1500.f;
     PushProgress = 0.f;
     LastPushTime = -FLT_MAX;
-    PushCooldown = 5.f;
+    PushCooldown = 8.f;
 }
 
 void ABoss5Wall::Tick(float DeltaTime)
@@ -91,11 +89,12 @@ void ABoss5Wall::Push()
     }
 
     float TraceLength = 1000.f;
-    FVector BoxHalfSize = FVector(200.f, 10.f, 150.f);
 
     FVector Forward = GetActorRightVector();
-    FVector TraceStart = GetActorLocation() + FVector(0.f, 20.f, 0.f) + Forward;
+    FVector TraceStart = WallMesh->Bounds.Origin;
     FVector TraceEnd = TraceStart + Forward * TraceLength;
+
+    FVector BoxSize = PushTrigger->GetScaledBoxExtent();
 
     FHitResult Hit;
 
@@ -109,15 +108,16 @@ void ABoss5Wall::Push()
         this,
         TraceStart,
         TraceEnd,
-        BoxHalfSize,
-        GetActorRotation(),
+        BoxSize,
+        WallMesh->GetComponentRotation(),
         ObjectTypes,
         false,
         IgnoreActors,
-        EDrawDebugTrace::None,
+        EDrawDebugTrace::Persistent,
         Hit,
         true
     );
+
 
     if (!Hit.bBlockingHit) return;
 

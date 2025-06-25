@@ -17,10 +17,10 @@ public:
     virtual void Tick(float DeltaTime) override;
     void Push();
 
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     UStaticMeshComponent* WallMesh;
 
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     UBoxComponent* PushTrigger;
 
     UFUNCTION()
