@@ -211,22 +211,11 @@ void ABaseGameMode::StartPlay()
 void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
 {
 	OnStartBattle.Broadcast(SpawnedBoss);
-	// if (SpawnedBoss->GetName().Contains("3"))
-	// {
-	// 	Boss3Skull = Cast<ABoss3Skull>(UGameplayStatics::GetActorOfClass(GetWorld(), ABoss3Skull::StaticClass()));
-	// 	check(IsValid(Boss3Skull));
-	// 	
-	// 	ToggleBoss3BattleRoom(true);
-	// }
 }
 
 void ABaseGameMode::EndBattle(AActor* DeadMonster)
 {
 	OnEndBattle.Broadcast(DeadMonster);
-	// if (IsValid(Boss3Skull) && Boss3Skull->GetIsInBattleRoom())
-	// {
-	// 	ToggleBoss3BattleRoom(false);
-	// }
 }
 
 void ABaseGameMode::Save()
@@ -678,6 +667,7 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 				SkullMesh->SetCollisionProfileName(TEXT("BlockAll"));
 				AltarMesh->SetVisibility(true);
 				AltarMesh->SetCollisionProfileName(TEXT("BlockAll"));
+				Boss3Skull->CheckStoryStateAndToggleVisibility();
 			}
 			else if (Actor->IsA(ASpotLight::StaticClass()))
 			{
