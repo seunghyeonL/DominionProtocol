@@ -45,6 +45,16 @@ void AInGameController::OnDialogueChangedNextStoryState()
 	InGameHUDWidgetInstance->OnDialogueChangedNextStoryState();
 }
 
+void AInGameController::OnPressedCrackMenuBackButton()
+{
+	OnPressedCrackMenuBackButtonEvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedCrackMenuConfirmButton()
+{
+	OnPressedCrackMenuConfirmButtonEvent.ExecuteIfBound();
+}
+
 void AInGameController::RemoveAllMappingContext()
 {
 	for (const auto* MappingContext : MappingContextArray)
@@ -113,6 +123,7 @@ void AInGameController::BindControllerInputActions()
 	auto* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent);
 	if (EnhancedInputComp)
 	{
+		// MainMenuUI Section
 		if (IsValid(MainMenuSwitchShowAndHideWidget))
 		{
 			EnhancedInputComp->BindAction(MainMenuSwitchShowAndHideWidget, ETriggerEvent::Started,
@@ -120,11 +131,27 @@ void AInGameController::BindControllerInputActions()
 				&AInGameController::OnMainMenuSwitchShowAndHideWidget);
 		}
 
+		// DialogueUI Section
 		if (IsValid(DialogueChangeNextStoryState))
 		{
 			EnhancedInputComp->BindAction(DialogueChangeNextStoryState, ETriggerEvent::Started,
 				this,
 				&AInGameController::OnDialogueChangedNextStoryState);
+		}
+
+		// CrackMenuUI Section
+		if (IsValid(PressedCrackBackButton))
+		{
+			EnhancedInputComp->BindAction(PressedCrackBackButton, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedCrackMenuBackButton);
+		}
+
+		if (IsValid(PressedCrackConfirmButton))
+		{
+			EnhancedInputComp->BindAction(PressedCrackConfirmButton, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedCrackMenuConfirmButton);
 		}
 	}
 }

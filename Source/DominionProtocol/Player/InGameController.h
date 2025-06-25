@@ -9,12 +9,18 @@
 class UInputAction;
 class UInputMappingContext;
 
+DECLARE_DELEGATE(FOnPressedCrackMenuBackButtonEvent);
+DECLARE_DELEGATE(FOnPressedCrackMenuConfirmButtonEvent);
+
 UCLASS()
 class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
+	FOnPressedCrackMenuBackButtonEvent OnPressedCrackMenuBackButtonEvent;
+	FOnPressedCrackMenuConfirmButtonEvent OnPressedCrackMenuConfirmButtonEvent;
+	
 	AInGameController();
 	
 	// 필요시 위젯에서 호출하여 사용)
@@ -24,11 +30,21 @@ public:
 	void HandleSetupInGameHUD();
 	
 	void RemoveAllMappingContext();
+
 	
+	// Binding InputAction
 	void OnMainMenuSwitchShowAndHideWidget();
 	
 	void OnDialogueChangedNextStoryState();
 
+	UFUNCTION()
+	void OnPressedCrackMenuBackButton();
+
+	UFUNCTION()
+	void OnPressedCrackMenuConfirmButton();
+
+
+	
 	UFUNCTION(BlueprintPure)
 	class UDomiInGameHUDWidget* GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
 
@@ -125,11 +141,22 @@ public:
 #pragma endregion
 	
 #pragma region Controller Input Actions Section
+	// MainMenuUI Section 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MainMenuSwitchShowAndHideWidget;
 
+	
+	// DialogueUI Section
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> DialogueChangeNextStoryState;
+
+
+	// CrackMenuUI Section
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> PressedCrackBackButton;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> PressedCrackConfirmButton;
 	
 #pragma endregion
 	
