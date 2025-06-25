@@ -128,6 +128,10 @@ FName ABaseGameState::GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType)
 		case SurfaceType_Default : return FName("Default");
 		case SurfaceType1:        return FName("Metal");
 		case SurfaceType2:        return FName("Flesh");
+		case SurfaceType3:        return FName("CityRoads");
+		case SurfaceType4:        return FName("BuildingsAndWalls");
+		case SurfaceType5:        return FName("FactoryFloor");
+		case SurfaceType6:        return FName("Rebar");
 		default:                  return FName("Default");
 	}
 }
@@ -135,7 +139,6 @@ FName ABaseGameState::GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType)
 FPhysicalSurfaceTypeData* ABaseGameState::GetPhysicalSurfaceTypeData(EPhysicalSurface PhysicalSurfaceType) const
 {
 	check(SurfaceDataTable);
-
 	return SurfaceDataTable->FindRow<FPhysicalSurfaceTypeData>(GetSurfaceNameByEnum(PhysicalSurfaceType), TEXT("GetPhysicalSurfaceTypeData"));
 }
 
