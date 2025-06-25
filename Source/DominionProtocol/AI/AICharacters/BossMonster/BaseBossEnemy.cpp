@@ -47,7 +47,7 @@ void ABaseBossEnemy::OnDeath_Implementation()
 	}
 	if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
 	{
-		GM->EndBattle();
+		GM->EndBattle(this);
 	}
 	//OnBossDeathDelegate.Broadcast();
 }
