@@ -33,7 +33,7 @@ ABoss5Wall::ABoss5Wall()
     // 초기 상태 설정
     bShouldPush = false;
     bShouldReturn = false;
-    PushSpeed = 100.f;
+    PushSpeed = 4500.f;
     PushProgress = 0.f;
     LastPushTime = -FLT_MAX;
     PushCooldown = 5.f;
@@ -80,62 +80,6 @@ void ABoss5Wall::Tick(float DeltaTime)
     }
 }
 
-<<<<<<< HEAD
-void ABoss5Wall::Push()
-{
-    float CurrentTime = GetWorld()->GetTimeSeconds();
-    if (CurrentTime - LastPushTime < PushCooldown)
-    {
-        return;
-    }
-
-    float TraceLength = 1000.f;
-
-    FVector Forward = GetActorRightVector();
-    FVector TraceStart = WallMesh->Bounds.Origin;
-    FVector TraceEnd = TraceStart + Forward * TraceLength;
-
-    FVector BoxSize = PushTrigger->GetScaledBoxExtent();
-
-    FHitResult Hit;
-
-    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
-    TArray<AActor*> IgnoreActors;
-    IgnoreActors.Add(this);
-
-    UKismetSystemLibrary::BoxTraceSingleForObjects(
-        this,
-        TraceStart,
-        TraceEnd,
-        BoxSize,
-        WallMesh->GetComponentRotation(),
-        ObjectTypes,
-        false,
-        IgnoreActors,
-        EDrawDebugTrace::None,
-        Hit,
-        true
-    );
-
-
-    if (!Hit.bBlockingHit) return;
-
-    ADomiCharacter* TargetActor = Cast<ADomiCharacter>(Hit.GetActor());
-    if (!TargetActor) return;
-
-    bShouldPush = true;
-    bShouldReturn = false;
-    StartLocation = GetActorLocation();
-    EndLocation = StartLocation + Forward * TraceLength;
-    PushProgress = 0.f;
-
-    LastPushTime = CurrentTime;
-}
-
-=======
->>>>>>> 2d835bb6 ([update] 보스5 1층 외곽벽 tick->오버랩으로 변경 및 보스5 테스트맵 업데이트)
 void ABoss5Wall::OnPushTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
