@@ -19,6 +19,7 @@ void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	SaveSlotArray.AddDefaulted(3);
 
+	// 기본값으로 초기화
 	for (int32 i = 0; i < 3; i++)
 	{
 		SaveSlotArray[i].SaveSlotName = FString::Printf(TEXT("SaveSlot%d"), i + 1);
@@ -26,6 +27,9 @@ void USaveManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		SaveSlotArray[i].PlayingLevelName = "PresentLevel";
 		SaveSlotArray[i].PlayingLevelDisplayName = FText::FromString(TEXT("2375 에어로발리스카"));
 	}
+
+	// 저장된 설정이 있다면 로드
+	LoadSettings();
 }
 
 void USaveManagerSubsystem::Deinitialize()
@@ -173,7 +177,7 @@ bool USaveManagerSubsystem::LoadSettings()
 {
 	if (!UGameplayStatics::DoesSaveGameExist(FString::Printf(TEXT("UserSettings")), 999))
 	{
-		Debug::PrintError(TEXT("Invalid SaveSlot"));
+		Debug::Print(TEXT("No existing user settings found, using defaults"));
 		return false;
 	}
 
