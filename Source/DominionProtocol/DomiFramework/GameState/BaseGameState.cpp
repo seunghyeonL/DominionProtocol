@@ -213,9 +213,9 @@ void ABaseGameState::InitializeGame()
 		}
 		
 		ACrack* NearestCrack = FindNearestCrack();
-		BaseGameMode->SetRecentCrackCache(NearestCrack);
 		if (WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
 		{
+			BaseGameMode->SetRecentCrackCache(NearestCrack);
 			WorldInstanceSubsystem->SetRecentCrackName(NearestCrack->GetCrackName());
 			WorldInstanceSubsystem->SetRecentCrackIndex(NearestCrack->GetCrackIndex());
 		}
