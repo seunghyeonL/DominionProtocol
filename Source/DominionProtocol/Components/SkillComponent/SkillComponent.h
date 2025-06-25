@@ -36,6 +36,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetCombo(const FGameplayTag& SkillGroupTag);
 
+	UFUNCTION(BlueprintCallable)
 	virtual void StopSkill();
 
 	UBaseSkill* GetCurrentSkill() const { return CurrentSkill; }
