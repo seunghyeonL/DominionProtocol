@@ -163,10 +163,7 @@ protected:
 	FGameplayTagContainer ImmuneStatusEffectTags;
 	
 	UPROPERTY(EditAnywhere, Category = "Stamina")
-	float StaminaRecoveryRate = 10.f;
-
-	UPROPERTY(EditAnywhere, Category = "Stamina")
-	float StaminaRecoveryDelay = 1.f;
+	float StaminaRecoveryRate;
 
 	bool bIsRecoveringStamina = false;
 	

@@ -14,8 +14,9 @@ UStatusComponent::UStatusComponent()
 	bWantsInitializeComponent = true;
 	PrimaryComponentTick.bCanEverTick = true;
 	bIsRecoveringStamina = true;
-	CombatDuration = 3.0f;
+	CombatDuration = 5.0f;
 	bIsInCombat = false;
+	StaminaRecoveryRate = 0.2f;
 }
 
 void UStatusComponent::StartCombat()
@@ -68,7 +69,7 @@ void UStatusComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 		if (Current < Max)
 		{
-			SetStamina(Current + StaminaRecoveryRate * DeltaTime);
+			SetStamina(Current + GetStat(StatTags::MaxStamina) * StaminaRecoveryRate * DeltaTime);
 		}
 		else
 		{
