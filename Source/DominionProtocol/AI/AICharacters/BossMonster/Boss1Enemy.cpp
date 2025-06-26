@@ -3,6 +3,8 @@
 
 #include "AI/AICharacters/BossMonster/Boss1Enemy.h"
 
+#include "Components/StatusComponent/StatusComponent.h"
+
 // Sets default values
 ABoss1Enemy::ABoss1Enemy()
 {
@@ -29,4 +31,10 @@ void ABoss1Enemy::Tick(float DeltaTime)
 void ABoss1Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ABoss1Enemy::OnGroggy()
+{
+	// Super::OnGroggy();
+	StatusComponent->ActivateStatusEffect(EffectTags::Groggy, 0.f, 8.f);
 }

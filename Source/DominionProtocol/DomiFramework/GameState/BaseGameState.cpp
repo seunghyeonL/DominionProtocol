@@ -143,6 +143,7 @@ FName ABaseGameState::GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType)
 		case SurfaceType4:        return FName("BuildingsAndWalls");
 		case SurfaceType5:        return FName("FactoryFloor");
 		case SurfaceType6:        return FName("Rebar");
+		case SurfaceType7:        return FName("Boss1Blood");
 		default:                  return FName("Default");
 	}
 }
