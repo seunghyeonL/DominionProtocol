@@ -31,6 +31,10 @@ void UActorStateComponent::SwitchStateAndUpdateInstance(FGameplayTag Tag, int32 
 	{
 		ActorData.bIsItemCollected = true;
 	}
+	else if (Tag == WorldActorTags::DyingHelper)
+	{
+		ActorData.bIsDead = true;
+	}
 
 	WorldInstanceSubsystem->SetWorldActorData(UniqueActorID, ActorData);
 }
