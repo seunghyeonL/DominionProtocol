@@ -387,7 +387,13 @@ namespace ItemTags
 	inline const FGameplayTag Key = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.Key"));
 	inline const FGameplayTag EnergyCore = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.EnergyCore"));
 	inline const FGameplayTag GolemHeart = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.GolemHeart"));
-	inline const FGameplayTag HintNote = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.HintNote"));
+	inline const FGameplayTag HintNote1 = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.HintNote1"));
+	inline const FGameplayTag HintNote2 = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.HintNote2"));
+	inline const FGameplayTag HintNote3 = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.HintNote3"));
+	inline const FGameplayTag WitchDiary1 = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.WitchDiary1"));
+	inline const FGameplayTag WitchDiary2 = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.WitchDiary2"));
+	inline const FGameplayTag WitchDiary3 = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.WitchDiary3"));
+	inline const FGameplayTag WitchDiary4 = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.WitchDiary4"));
 }
 
 namespace TraceTags
