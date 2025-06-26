@@ -14,18 +14,22 @@ class DOMINIONPROTOCOL_API UNewMainMenuWidget : public UUserWidget
 
 
 protected:
+	virtual void NativeConstruct() override;
+
+	void BindInputActionDelegates();
+	
 	UFUNCTION(BlueprintCallable)
 	void ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder);
 
-	UFUNCTION()
-	void EventPressButtonZ();
-
-	UFUNCTION()
-	void EventPressButtonC();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void PressButtonZ();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void PressButtonC();
+// 	UFUNCTION()
+// 	void OnPressButtonZ();
+//
+// 	UFUNCTION()
+// 	void OnPressButtonC();
+//
+// 	UFUNCTION(BlueprintImplementableEvent)
+// 	void PressButtonZ();
+//
+// 	UFUNCTION(BlueprintImplementableEvent)
+// 	void PressButtonC();
 };

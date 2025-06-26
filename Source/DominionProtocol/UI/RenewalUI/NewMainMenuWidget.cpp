@@ -5,6 +5,15 @@
 
 #include "Components/CanvasPanelSlot.h"
 
+void UNewMainMenuWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
+void UNewMainMenuWidget::BindInputActionDelegates()
+{
+}
+
 void UNewMainMenuWidget::ChangeWidgetZOrder(const UUserWidget* TargetWidget, const int32 NewZOrder)
 {
 	if (!IsValid(TargetWidget))
@@ -17,21 +26,5 @@ void UNewMainMenuWidget::ChangeWidgetZOrder(const UUserWidget* TargetWidget, con
 	if (IsValid(CanvasSlot))
 	{
 		CanvasSlot->SetZOrder(NewZOrder);
-	}
-}
-
-void UNewMainMenuWidget::EventPressButtonZ()
-{
-	if (IsVisible())
-	{
-		PressButtonZ();
-	}
-}
-
-void UNewMainMenuWidget::EventPressButtonC()
-{
-	if (IsVisible())
-	{
-		PressButtonC();	
 	}
 }
