@@ -4,6 +4,9 @@
 #include "Components/ActorComponent.h"
 #include "Boss5LauncherComponent.generated.h"
 
+class UProjectileMovementComponent;
+class UStaticMeshComponent;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DOMINIONPROTOCOL_API UBoss5LauncherComponent : public UActorComponent
 {
@@ -61,7 +64,7 @@ protected:
 
 	// 투사체 스폰
 	UFUNCTION(BlueprintCallable, Category = "Projectile Launcher")
-	void SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+	void SpawnProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const FVector& LaunchDirection);
 
 		
 };
