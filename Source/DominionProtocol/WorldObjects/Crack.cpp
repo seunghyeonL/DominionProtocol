@@ -4,22 +4,16 @@
 #include "Crack.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "Components/ItemComponent/ItemComponent.h"
 #include "Engine/TargetPoint.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
-#include "DomiFramework/GameMode/ProtoLevel1GameMode.h"
-#include "DomiFramework/GameMode/ProtoLevel2GameMode.h"
 #include "DomiFramework/GameState/BaseGameState.h"
-#include "EnumAndStruct/FCrackData.h"
 #include "Player/InGameController.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "UI/UIInGame/DomiInGameHUDWidget.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
 #include "WorldObjects/DialogueManager.h"
-#include "WorldObjects/Helper.h"
 
 #include "Util/DebugHelper.h"
 
@@ -69,8 +63,6 @@ void ACrack::BeginPlay()
 
 	DistanceCalculateRadiusSquared = ActivationDistanceCalculateRadius * ActivationDistanceCalculateRadius;
 	InteractableRadiusSquared = InteractableRadius * InteractableRadius;
-
-	RespawnTargetPoint = Cast<ATargetPoint>(RespawnTargetPointComp->GetChildActor());
 
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	check(IsValid(GameInstance));
@@ -287,9 +279,9 @@ void ACrack::SetDetailDetection(bool bEnable)
 
 FVector ACrack::GetRespawnTargetPointLocation() const
 {
-	if (IsValid(RespawnTargetPoint))
+	if (IsValid(RespawnTargetPointComp->GetChildActor()))
 	{
-		return RespawnTargetPoint->GetActorLocation();
+		return RespawnTargetPointComp->GetChildActor()->GetActorLocation();
 	}
 	else
 	{
@@ -300,9 +292,9 @@ FVector ACrack::GetRespawnTargetPointLocation() const
 
 FRotator ACrack::GetRespawnTargetPointRotation() const
 {
-	if (IsValid(RespawnTargetPoint))
+	if (IsValid(RespawnTargetPointComp->GetChildActor()))
 	{
-		return RespawnTargetPoint->GetActorRotation();
+		return RespawnTargetPointComp->GetChildActor()->GetActorRotation();
 	}
 	else
 	{

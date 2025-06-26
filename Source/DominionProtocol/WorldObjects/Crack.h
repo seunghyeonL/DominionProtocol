@@ -147,9 +147,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AHelper> HelperClass;
 	
-	UPROPERTY()
-	TObjectPtr<ATargetPoint> RespawnTargetPoint;
-	
 	float DistanceCalculateRadiusSquared;
 	
 	float InteractableRadiusSquared;
