@@ -19,7 +19,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+#if WITH_EDITOR
 	virtual void PostEditUndo() override;
+#endif
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blocking Volume")

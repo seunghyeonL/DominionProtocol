@@ -572,7 +572,7 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 	UGameplayStatics::GetAllActorsOfClass(World, APostProcessVolume::StaticClass(), PostProcessVolumes);
 	for (AActor* PostProcessVolume : PostProcessVolumes)
 	{
-		if (PostProcessVolume->GetActorLabel().Contains(TEXT("Witch")))
+		if (PostProcessVolume->ActorHasTag("MainPostProcessVolume"))
 		{
 			APostProcessVolume* WitchPostProcessVolume = Cast<APostProcessVolume>(PostProcessVolume);
 			WitchPostProcessVolume->bEnabled = !bIsBattleRoom;
