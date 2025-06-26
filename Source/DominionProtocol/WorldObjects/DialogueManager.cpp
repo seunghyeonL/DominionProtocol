@@ -30,7 +30,7 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const F
 {
 	CachedHelperSpawnLocation = CrackLocation;
 	CachedHelperSpawnRotation = CrackRotation;
-	CachedHelperSpawnRotation.Yaw -= 40.f;
+	CachedHelperSpawnRotation.Yaw += 40.f;
 
 	const FString Path = TEXT("/Game/Data/DT_HelperDialogueData.DT_HelperDialogueData");
 	UDataTable* Table = LoadDialogueDataTable(Path);
@@ -195,7 +195,7 @@ void UDialogueManager::TriggerHelperDisappear()
 	{
 		Debug::Print(TEXT("UDialogueManager::TriggerHelperDisappear()"));
 		CurrentHelper->SetViewToPlayer();
-		CurrentHelper->Disappear();
+		CurrentHelper->Disappear(CachedHelperSpawnLocation);
 	}
 }
 

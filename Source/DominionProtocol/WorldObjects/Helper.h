@@ -22,7 +22,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Appear(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-	void Disappear();
+	void Disappear(const FVector& SpawnLocation);
 
 	void SetDialogueManager(UDialogueManager* InManager);
 protected:
