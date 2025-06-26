@@ -167,18 +167,12 @@ void ABlockedPath::Interact_Implementation(AActor* Interactor)
 		return;
 	}
 
-	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (!GI || GI->GetCurrentGameStoryState()!= RequiredStoryState)
-	{ 
-		Debug::Print(TEXT("ABlockedPath::Not RequiredStoryState"));
-
-		DialogueManager->TryStartDialogueByID(DialogueID);
-		return; 
-	}
-		
 	Debug::Print(TEXT("ABlockedPath::Item Check"));
 	PlayerItemComponent->RemoveItem(RequiredKey, 1);
+
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 	GI->AdvanceStoryState();
+
 	TryOpen();
 }
 
