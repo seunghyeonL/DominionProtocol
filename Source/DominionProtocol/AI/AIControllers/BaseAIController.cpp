@@ -222,7 +222,6 @@ void ABaseAIController::EvaluateTargetPerception()
 	if (!AIStateComponent || !Blackboard) return;
 
 	AActor* TargetActor = Cast<AActor>(Blackboard->GetValueAsObject("TargetActor"));
-	//AActor* TargetActor = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject("TargetActor"));
 
 	if (IsValid(TargetActor))
 	{
@@ -231,6 +230,7 @@ void ABaseAIController::EvaluateTargetPerception()
 	}
 	else
 	{
+		if (AIStateComponent->GetCurrentStateTag() != EffectTags::Combat) return;
 		if (IsUsingSkill()) return;
 		AIStateComponent->SetAIStateByTag(EffectTags::Idle);
 		SetAISpeed();
