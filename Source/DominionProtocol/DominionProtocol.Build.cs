@@ -10,26 +10,33 @@ public class DominionProtocol : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
-			"Core", 
-			"CoreUObject", 
-			"Engine", 
-			"InputCore", 
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore",
 			"EnhancedInput",
 			"GameplayTags",
 			"AIModule",
 			"NavigationSystem",
 			"GameplayTasks",
 			"MissNoHit",
-            "Niagara",
-            "LevelSequence",
-            "MovieScene",
-            "MovieSceneTools",
-            "MovieSceneTracks",
-            "SlateCore",
-            "Slate",
-            "PhysicsCore",
-            "GeometryCollectionEngine"
-        });
+			"Niagara",
+			"LevelSequence",
+			"MovieScene",
+			"MovieSceneTracks",
+			"PhysicsCore",
+			"GeometryCollectionEngine"
+		});
+
+		if (Target.bBuildEditor)
+		{
+			PublicDependencyModuleNames.AddRange(new string[]
+			{
+				"MovieSceneTools",
+				"Slate",
+				"SlateCore"
+			});
+		}
 		
 		PrivateIncludePaths.Add("DominionProtocol");
 	}
