@@ -44,7 +44,10 @@ public:
 	void OnPressedCrackMenuConfirmButton();
 
 	// FadeInOut
+	UFUNCTION(BlueprintCallable)
 	void FadeIn(float PlayTime);
+
+	UFUNCTION(BlueprintCallable)
 	void FadeOut(float PlayTime);
 	
 	UFUNCTION(BlueprintPure)
