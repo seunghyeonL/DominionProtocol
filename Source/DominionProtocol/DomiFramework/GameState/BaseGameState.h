@@ -41,7 +41,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	const TMap<int32, FCrackImageData>& GetPresentCrackImageData();
 	
-	FORCEINLINE FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
+	FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
 	FSkillComponentInitializeData* GetSkillComponentInitializeData(const FGameplayTag PawnTag) const;
 	FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
 	FEffectInitializeData* GetEffectInitializeData(const FGameplayTag EffectTag) const;
