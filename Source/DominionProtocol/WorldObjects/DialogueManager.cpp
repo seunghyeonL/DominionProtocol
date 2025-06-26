@@ -179,6 +179,11 @@ void UDialogueManager::TriggerHelperAppear()
 		CurrentHelper->SetDialogueManager(this);
 		CurrentHelper->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 		CurrentHelper->Appear(CachedHelperSpawnLocation, CachedHelperSpawnRotation);
+		FVector TargetOffset = FVector(0.f, 0.f, 100.f);
+		APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+		FTransform PlayerTransform(Player->GetActorRotation(), Player->GetActorLocation());
+		CurrentHelper->SetViewTargetLocAndRot(PlayerTransform.TransformPosition(TargetOffset), CachedHelperSpawnRotation);
+		CurrentHelper->SetViewToHelper();
 	}
 
 	ExecuteDialogueLine();
@@ -189,6 +194,7 @@ void UDialogueManager::TriggerHelperDisappear()
 	if (CurrentHelper)
 	{
 		Debug::Print(TEXT("UDialogueManager::TriggerHelperDisappear()"));
+		CurrentHelper->SetViewToPlayer();
 		CurrentHelper->Disappear();
 	}
 }

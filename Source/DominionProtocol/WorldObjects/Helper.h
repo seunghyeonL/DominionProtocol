@@ -37,6 +37,13 @@ public:
 	FOnHelperAppearFinished OnAppearFinishedCallback;
 	FOnHelperDisappearFinished OnDisappearFinishedCallback;
 
+	void SetViewTargetLocAndRot(const FVector& InLocation, const FRotator& InRotation) const;
+	void SetViewToHelper();
+	void SetViewToPlayer();
+	
+	bool bIsFocussed = false;
+	bool bAppearFinished = false;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* AppearMontage;
@@ -53,5 +60,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	USkeletalMeshComponent* Hair;
 
+	UPROPERTY()
+	AActor* ViewTarget;
 
+	UPROPERTY()
+	APlayerController* PC;
 };

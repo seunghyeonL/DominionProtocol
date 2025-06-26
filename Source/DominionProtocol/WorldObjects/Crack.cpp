@@ -164,7 +164,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 				Debug::Print(TEXT("ACrack: APlayerController NotValid"));
 			}
 		}
-		AlignPlayerForDialogue(Cast<ADomiCharacter>(Interactor));
+		// AlignPlayerForDialogue(Cast<ADomiCharacter>(Interactor));
 		Debug::Print(TEXT("Crack: 조력자 이벤트 종료"));
 		GameInstance->AdvanceStoryState();
 
