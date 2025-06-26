@@ -51,7 +51,7 @@ void ABoss5Projectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, U
 {
 	if (OtherActor && (OtherActor != GetOwner()) && (OtherActor != this))
 	{
-		Destroy();
+		//Destroy();
 	}
 }
 
@@ -59,7 +59,7 @@ void ABoss5Projectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 {
 	if (OtherActor && (OtherActor != GetOwner()) && (OtherActor != this))
 	{
-		Destroy(); 
+		//Destroy(); 
 	}
 }
 

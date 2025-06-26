@@ -67,12 +67,13 @@ void UBoss5ProjectileAttack::Execute()
 		return;
 	}
 
-	FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
-	FRotator SpawnRotation = DirectionToTarget.Rotation();
-
-	FVector SpawnLocation = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * ProjectileSpawnOffset.X +
+	FVector SpawnLocation = OwnerCharacter->GetActorLocation() + 
+		OwnerCharacter->GetActorForwardVector() * ProjectileSpawnOffset.X +
 		OwnerCharacter->GetActorRightVector() * ProjectileSpawnOffset.Y +
 		OwnerCharacter->GetActorUpVector() * ProjectileSpawnOffset.Z;
+
+	FVector WorldDirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
+	FRotator SpawnRotation = WorldDirectionToTarget.Rotation();
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = OwnerCharacter; // 보스를 투사체의 Owner
@@ -89,8 +90,8 @@ void UBoss5ProjectileAttack::Execute()
 		{
 			ProjectileMovement->InitialSpeed = ProjectileInitialSpeed;
 			ProjectileMovement->MaxSpeed = ProjectileInitialSpeed; // 최대 속도도 동일하게 설정
-			ProjectileMovement->SetVelocityInLocalSpace(FVector::ForwardVector * ProjectileInitialSpeed); // 투사체 자신의 로컬 공간에서 앞으로 이동
-			ProjectileMovement->ProjectileGravityScale = 0.0f; // 예시: 중력 없음 (직선 발사)
+			ProjectileMovement->Velocity = WorldDirectionToTarget * ProjectileInitialSpeed; // 투사체 자신의 로컬 공간에서 앞으로 이동
+			ProjectileMovement->ProjectileGravityScale = 0.0f;
 		}
 
 		//수명 설정
