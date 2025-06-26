@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SkillComponent/Skills/SkillData.h"
 #include "EnumAndStruct/FCrackInitializeData.h"
+#include "EnumAndStruct/FCrackImageData.h"
 #include "GameFramework/GameState.h"
 #include "BaseGameState.generated.h"
 
@@ -35,10 +36,16 @@ public:
 	ABaseGameState();
 	
 	//Getter
+	UFUNCTION(BlueprintCallable)
+	const TMap<int32, FCrackImageData>& GetPastCrackImageDataMap();
+	UFUNCTION(BlueprintCallable)
+	const TMap<int32, FCrackImageData>& GetPresentCrackImageData();
+	
 	FORCEINLINE FSkillData* GetSkillData(const FGameplayTag SkillTag) const;
 	FSkillComponentInitializeData* GetSkillComponentInitializeData(const FGameplayTag PawnTag) const;
 	FStatusComponentInitializeData* GetStatusComponentInitializeData(const FGameplayTag PawnTag) const;
 	FEffectInitializeData* GetEffectInitializeData(const FGameplayTag EffectTag) const;
+	
 	FORCEINLINE ACrack* GetCrackByIndex(int32 InCrackIndex) const {return AllCracksCache[InCrackIndex]; }
 	FName GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType) const;
 	FPhysicalSurfaceTypeData* GetPhysicalSurfaceTypeData(EPhysicalSurface PhysicalSurfaceType) const;
@@ -68,7 +75,9 @@ protected:
 	ACrack* FindNearestCrack();
 	//=====
 	
-
+	//Load DataTable Data
+	void LoadCrackImageData();
+	
 //Variables
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawning")
@@ -91,6 +100,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|PhysicalSurface ", meta = (AllowPrivateAccess = "true"))
 	UDataTable* SurfaceDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|CrackImage")
+	UDataTable* PastCrackImageData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "DataTable|CrackImage")
+	UDataTable* PresentCrackImageData;
 	
 	UPROPERTY()
 	UWorld* World;
@@ -115,6 +130,9 @@ protected:
 	
 	UPROPERTY()
 	TArray<ACrack*> AllCracksCache;
+
+	TMap<int32, FCrackImageData> PastCrackImageDataMap;
+	TMap<int32, FCrackImageData> PresentCrackImageDataMap;
 
 #pragma endregion
 

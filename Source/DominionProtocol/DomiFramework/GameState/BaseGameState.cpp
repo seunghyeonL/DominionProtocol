@@ -32,6 +32,16 @@ ABaseGameState::ABaseGameState()
 {
 }
 
+const TMap<int32, FCrackImageData>& ABaseGameState::GetPastCrackImageDataMap()
+{
+	return PastCrackImageDataMap;
+}
+
+const TMap<int32, FCrackImageData>& ABaseGameState::GetPresentCrackImageData()
+{
+	return PresentCrackImageDataMap;
+}
+
 void ABaseGameState::BeginPlay()
 {
 	Super::BeginPlay();
@@ -44,6 +54,7 @@ void ABaseGameState::BeginPlay()
 	InitializeZeroIndexCrackData(WorldInstanceSubsystem->GetCurrentLevelName());
 	InitializeSoundSubsystem();
 	InitializeItemInstanceSubsystem();
+	LoadCrackImageData();
 }
 
 void ABaseGameState::InitializeGameInstance()
@@ -394,4 +405,31 @@ ACrack* ABaseGameState::FindNearestCrack()
 	}
 
 	return NearestCrack;
+}
+
+void ABaseGameState::LoadCrackImageData()
+{
+	if (PastCrackImageData)
+	{
+		TArray<FName> RowNames = PastCrackImageData->GetRowNames();
+		for (const FName& RowName : RowNames)
+		{
+			if (FCrackImageData* Row = PastCrackImageData->FindRow<FCrackImageData>(RowName, TEXT("")))
+			{
+				PastCrackImageDataMap.Add(Row->CrackIndex, *Row);
+			}
+		}
+	}
+
+	if (PresentCrackImageData)
+	{
+		TArray<FName> RowNames = PresentCrackImageData->GetRowNames();
+		for (const FName& RowName : RowNames)
+		{
+			if (FCrackImageData* Row = PresentCrackImageData->FindRow<FCrackImageData>(RowName, TEXT("")))
+			{
+				PresentCrackImageDataMap.Add(Row->CrackIndex, *Row);
+			}
+		}
+	}
 }
