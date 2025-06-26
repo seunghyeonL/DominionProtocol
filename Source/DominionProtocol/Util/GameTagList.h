@@ -137,6 +137,7 @@ namespace SkillGroupTags
 	inline const FGameplayTag Boss4WeaponAttack3Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.fourth"));
 	inline const FGameplayTag Boss4FlameStrike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.FlameStrike"));
 	inline const FGameplayTag Boss4SpawnClone = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SpawnClone"));
+	inline const FGameplayTag Boss4CloneStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.CloneStart"));
 	inline const FGameplayTag Boss4InfernoSpike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.InfernoSpike"));
 	inline const FGameplayTag Boss4HellfireFall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.HellfireFall"));
 	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
@@ -272,6 +273,7 @@ namespace SkillTags
 	inline const FGameplayTag Boss4WeaponAttack1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.third"));
 	inline const FGameplayTag Boss4FlameStrike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.FlameStrike"));
 	inline const FGameplayTag Boss4SpawnClone = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SpawnClone"));
+	inline const FGameplayTag Boss4CloneStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.CloneStart"));
 	inline const FGameplayTag Boss4InfernoSpike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.InfernoSpike"));
 	inline const FGameplayTag Boss4HellfireFall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.HellfireFall"));
 	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
