@@ -21,7 +21,7 @@ public:
     FOnUpdateDialogueText OnUpdateDialogueText;
 	UDataTable* LoadDialogueDataTable(const FString& Path);
 	bool TryStartDialogueIfExists(EGameStoryState InState, const FVector& CrackLocation, const FRotator& CrackRotation);
-	bool TryStartDialogueByID(const FString& DialogueID);
+	bool TryStartDialogueByID(const FString& DialogueID, AActor* TalkActor = nullptr);
 	
 	UFUNCTION(BlueprintCallable)
 	void AdvanceDialogue();
@@ -36,12 +36,16 @@ private:
 public:
 	UPROPERTY()
 	TSubclassOf<AHelper> HelperClass;
+	
 private:
 	UPROPERTY(EditAnywhere)
 	UDataTable* DialogueDataTable;
 
 	UPROPERTY()
 	AHelper* CurrentHelper;
+
+	UPROPERTY()
+	TObjectPtr<AActor> TalkActorCache;
 
 	TArray<FDialogueData*> CurrentDialogueLines;
 

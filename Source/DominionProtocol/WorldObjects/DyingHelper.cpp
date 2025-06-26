@@ -4,7 +4,7 @@
 #include "DyingHelper.h"
 #include "ItemInventory/ItemDropped.h"
 #include "WorldObjects/DialogueManager.h"
-#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "Player/Characters/DomiCharacter.h"
 
 #include "Util/DebugHelper.h"
@@ -15,13 +15,14 @@ ADyingHelper::ADyingHelper()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	Hair = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HairMesh"));
-	Hair->SetupAttachment(GetMesh());
-
-	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
-	CollisionBox->SetupAttachment(GetMesh());
-	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	ActorStateComponent = CreateDefaultSubobject<UActorStateComponent>(TEXT("ActorStateComponent"));
+	ActorStateComponent->SetGameplayTag(WorldActorTags::DyingHelper);
+	
+	InteractRadiusSphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("InteractRadiusSphereCollision"));
+	InteractRadiusSphereComponent->SetupAttachment(GetMesh());
+	InteractRadiusSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InteractRadiusSphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	InteractRadiusSphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	GetMesh()->bReceivesDecals = false;
 }
@@ -30,29 +31,27 @@ void ADyingHelper::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (ActorStateComponent->GetActorData().bIsDead)
+	{
+		ApplyDieState();
+	}
+	
 	DialogueManager = NewObject<UDialogueManager>(this);
 
-	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ADyingHelper::OnOverlapBegin);
-	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &ADyingHelper::OnOverlapEnd);
-}
-
-void ADyingHelper::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	//DialogueManager = nullptr;
-	Super::EndPlay(EndPlayReason);
+	InteractRadiusSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ADyingHelper::OnOverlapBegin);
+	InteractRadiusSphereComponent->OnComponentEndOverlap.AddDynamic(this, &ADyingHelper::OnOverlapEnd);
 }
 
 void ADyingHelper::Interact_Implementation(AActor* Interactor)
 {
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (!PlayerCharacter) return;
-
-
+	
 	if (DialogueManager)
 	{
 		DialogueManager = NewObject<UDialogueManager>(this);
 		OnCreateDialogueManager.Broadcast(DialogueManager);
-		DialogueManager->TryStartDialogueByID(DialogueID);
+		DialogueManager->TryStartDialogueByID(DialogueID, this);
 	}
 }
 
@@ -90,20 +89,43 @@ void ADyingHelper::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	}
 }
 
+void ADyingHelper::ApplyDieState()
+{
+	SetIsInteractable(false);
+	GetMesh()->Stop();
+}
+
+void ADyingHelper::SetIsInteractable(bool bNewIsInteractable)
+{
+	if (bNewIsInteractable)
+	{
+		InteractRadiusSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		InteractRadiusSphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		InteractRadiusSphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		InteractRadiusSphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ADyingHelper::OnOverlapBegin);
+		InteractRadiusSphereComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ADyingHelper::OnOverlapEnd);
+	}
+	else
+	{
+		InteractRadiusSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		InteractRadiusSphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		InteractRadiusSphereComponent->OnComponentBeginOverlap.Clear();
+		InteractRadiusSphereComponent->OnComponentEndOverlap.Clear();
+	}
+}
+
 void ADyingHelper::Die()
 {
-	// 아이템 드랍
-	if (IsValid(ItemDroppedClass.Get()))
-	{
-		GetWorld()->SpawnActor<AItemDropped>(ItemDroppedClass.Get(), GetActorLocation(), GetActorRotation());
-	}
+	ActorStateComponent->SwitchStateAndUpdateInstance(WorldActorTags::DyingHelper);
 
-	GetWorldTimerManager().SetTimer(
-		DieTimerHandle,
-		[this]()
-		{
-			Destroy();
-		},
-		3.f,
-		false);
+	ApplyDieState();
+	
+	// 아이템 드랍
+	if (IsValid(ItemDroppedClass))
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		GetWorld()->SpawnActor<AItemDropped>(ItemDroppedClass, GetActorLocation(), GetActorRotation(), SpawnParams);
+	}
+	
 }

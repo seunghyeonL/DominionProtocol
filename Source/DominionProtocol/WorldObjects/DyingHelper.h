@@ -7,9 +7,10 @@
 #include "Interface/InteractableInterface.h"
 #include "DyingHelper.generated.h"
 
+class UActorStateComponent;
 class AItemDropped;
 class UDialogueManager;
-class UBoxComponent;
+class USphereComponent;
 class ADomiCharacter;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
@@ -22,11 +23,13 @@ class DOMINIONPROTOCOL_API ADyingHelper : public ACharacter, public IInteractabl
 public:
 	ADyingHelper();
 
-	FOnCreateDialogueManager OnCreateDialogueManager;
+	//Getter
+	FORCEINLINE UActorStateComponent* GetActorStateComponent() const { return ActorStateComponent; }
+	
+	void Die();
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
@@ -46,26 +49,25 @@ protected:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
-	
-private:
-	void Die();
 
+private:
+	void ApplyDieState();
+	
+	void SetIsInteractable(bool bNewIsInteractable);
+
+
+public:
+	FOnCreateDialogueManager OnCreateDialogueManager;
 	
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
-	TObjectPtr<UAnimMontage> IdleMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<UActorStateComponent> ActorStateComponent;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
-	TObjectPtr<UAnimMontage> DieMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<USphereComponent> InteractRadiusSphereComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftClassPtr<AItemDropped> ItemDroppedClass;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USkeletalMeshComponent> Hair;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UBoxComponent* CollisionBox;
+	TSubclassOf<AItemDropped> ItemDroppedClass;
 
 private:
 	FTimerHandle DieTimerHandle;

@@ -1,5 +1,10 @@
 #include "DialogueManager.h"
+
+#include "DyingHelper.h"
+#include "AI/AICharacters/BossMonster/Boss4Enemy.h"
+#include "DomiFramework/WorldActorManage/ActorStateComponent.h"
 #include "WorldObjects/Helper.h"
+#include "WorldObjects/DyingHelper.h"
 #include "Engine/DataTable.h"
 #include "Kismet/GameplayStatics.h"
 #include "Util/DebugHelper.h"
@@ -63,12 +68,18 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const F
 	return true;
 }
 
-bool UDialogueManager::TryStartDialogueByID(const FString& DialogueID)
+bool UDialogueManager::TryStartDialogueByID(const FString& DialogueID, AActor* TalkActor)
 {
 	const FString Path = TEXT("/Game/Data/DT_DialogueData");
 	UDataTable* Table = LoadDialogueDataTable(Path);
 	if (!Table) return false;
 
+	// (이미 죽은 경우에 대한 처리 위함)
+	if (IsValid(TalkActor))
+	{
+		TalkActorCache = TalkActor;
+	}
+	
 	TArray<FDialogueData*> AllRows;
 	DialogueDataTable = Table;
 	DialogueDataTable->GetAllRows(TEXT("Dialogue"), AllRows);
@@ -99,13 +110,39 @@ bool UDialogueManager::TryStartDialogueByID(const FString& DialogueID)
 void UDialogueManager::AdvanceDialogue()
 {
 	++CurrentLineIndex;
+
+	// 다음 문장 있을 때
 	if (CurrentLineIndex < CurrentDialogueLines.Num())
 	{
 		ExecuteDialogueLine();
 	}
+	// 다음 문장 없을 때
 	else
 	{
-		TriggerHelperDisappear();
+		// 균열 등장 조력자인 경우
+		if (IsValid(CurrentHelper))
+		{
+			TriggerHelperDisappear();
+		}
+		// 죽어가는 조력자인 경우(보스3 전투공간)
+		else if (TalkActorCache->IsA(ADyingHelper::StaticClass()))
+		{
+			ADyingHelper* DyingHelper = Cast<ADyingHelper>(TalkActorCache);
+			if (IsValid(DyingHelper))
+			{
+				DyingHelper->Die();
+			}
+		}
+		// 죽어가는 마녀일 경우
+		else if (TalkActorCache->IsA(ABoss4Enemy::StaticClass()))
+		{
+			//로직 작성 필요
+			// ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(TalkActorCache);
+			// if (IsValid(Boss4))
+			// {
+			// 	Boss4->Die();
+			// }
+		}
 	}
 }
 
