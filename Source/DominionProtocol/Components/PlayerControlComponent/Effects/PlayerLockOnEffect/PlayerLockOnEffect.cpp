@@ -3,13 +3,8 @@
 
 #include "PlayerLockOnEffect.h"
 
-#include <string>
 
-#include "InputActionValue.h"
-#include "LandscapeGizmoActiveActor.h"
-#include "VectorTypes.h"
 #include "AI/AICharacters/BaseEnemy.h"
-#include "AI/AIControllers/BaseAIController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/Characters/DomiCharacter.h"
