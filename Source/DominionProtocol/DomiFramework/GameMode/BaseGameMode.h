@@ -181,6 +181,7 @@ protected:
 
 	FVector PlayerDeathLocation;
 
+
 #pragma endregion
 
 	
@@ -197,18 +198,19 @@ public:
 protected:
 	UFUNCTION()
 	void OnFadeSequenceFinished();
-	
-	UPROPERTY()
-	TObjectPtr<ULevelSequence> FadeSequence;
-
-	UPROPERTY()
-	TObjectPtr<ULevelSequencePlayer> SequencePlayer;
 
 	UPROPERTY()
 	ALevelSequenceActor* SequenceActor;
 
 	UPROPERTY()
 	bool bIsFadeIn;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FadeDuration;
+
+	FTimerHandle FadeTimer;
+
+	FTimerHandle AssetLoadTimer;
 	
 #pragma endregion
 

@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "UI/FadeInOut/FadeWidget.h"
 #include "Util/DevCheatManager.h"
 #include "UI/UIInGame/DomiInGameHUDWidget.h"
 
@@ -17,7 +18,6 @@ AInGameController::AInGameController()
 	}
 	
 	CheatClass = UDevCheatManager::StaticClass();
-	
 }
 
 void AInGameController::HandleSetupInGameHUD()
@@ -33,6 +33,13 @@ void AInGameController::HandleSetupInGameHUD()
 	SetupMappingContext(DefaultMappingContext);
 
 	BindControllerInputActions();
+
+	// FadeWidget
+	check(FadeWidgetClass);
+	if (FadeWidgetInstance = CreateWidget<UFadeWidget>(this, FadeWidgetClass))
+	{
+		FadeWidgetInstance->AddToViewport();
+	}
 }
 
 void AInGameController::OnMainMenuSwitchShowAndHideWidget()
@@ -53,6 +60,18 @@ void AInGameController::OnPressedCrackMenuBackButton()
 void AInGameController::OnPressedCrackMenuConfirmButton()
 {
 	OnPressedCrackMenuConfirmButtonEvent.ExecuteIfBound();
+}
+
+void AInGameController::FadeIn(float PlayTime)
+{
+	check(FadeWidgetInstance);
+	FadeWidgetInstance->FadeIn(PlayTime);
+}
+
+void AInGameController::FadeOut(float PlayTime)
+{
+	check(FadeWidgetInstance);
+	FadeWidgetInstance->FadeOut(PlayTime);
 }
 
 void AInGameController::RemoveAllMappingContext()

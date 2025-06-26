@@ -43,7 +43,9 @@ public:
 	UFUNCTION()
 	void OnPressedCrackMenuConfirmButton();
 
-
+	// FadeInOut
+	void FadeIn(float PlayTime);
+	void FadeOut(float PlayTime);
 	
 	UFUNCTION(BlueprintPure)
 	class UDomiInGameHUDWidget* GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
@@ -166,9 +168,15 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UDomiInGameHUDWidget> InGameHUDWidgetClass;
-
+	
 	UPROPERTY()
 	TObjectPtr<class UDomiInGameHUDWidget> InGameHUDWidgetInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UFadeWidget> FadeWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	TObjectPtr<class UFadeWidget> FadeWidgetInstance;
+	
 	bool bActiveInGameMenuOpen = false;
 };

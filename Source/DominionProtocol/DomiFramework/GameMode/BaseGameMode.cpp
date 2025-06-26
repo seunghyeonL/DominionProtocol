@@ -31,6 +31,7 @@
 #include "Engine/ExponentialHeightFog.h"
 #include "Engine/PostProcessVolume.h"
 #include "Engine/SpotLight.h"
+#include "Player/InGameController.h"
 
 #include "Util/CheatBPLib.h"
 #include "Util/GameTagList.h"
@@ -45,7 +46,8 @@ ABaseGameMode::ABaseGameMode()
 	  RespawnDelay(2.f),
 	  Boss3Skull(nullptr),
 	  PlayTime(0),
-	  bIsFadeIn(true)
+	  bIsFadeIn(true),
+      FadeDuration(1.f)
 {
 	static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
 	if (DropEssenceBPClass.Succeeded())
@@ -74,29 +76,6 @@ void ABaseGameMode::BeginPlay()
 
 	World = GetWorld();
 	check(IsValid(World));
-
-	if (!IsValid(FadeSequence))
-	{
-		FadeSequence = LoadObject<ULevelSequence>(nullptr, TEXT("/Game/Levels/LevelSequence/FadeTrack"));
-		if (!IsValid(FadeSequence))
-		{
-			Debug::Print(FString::Printf(TEXT("%s::BeginPlay : Failed to load 'FadeTrack' Level Sequence"), *GetName()));
-			return;
-		}
-	}
-
-	SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
-		GetWorld(),
-		FadeSequence,
-		FMovieSceneSequencePlaybackSettings(),
-		SequenceActor
-	);
-
-	if (IsValid(SequencePlayer))
-	{
-		SequencePlayer->SetPlayRate(1.0f);
-		SequencePlayer->OnFinished.AddDynamic(this, &ABaseGameMode::OnFadeSequenceFinished);
-	}
 }
 
 void ABaseGameMode::StartPlay()
@@ -368,11 +347,6 @@ void ABaseGameMode::MoveToTargetCrack(FString InOwningCrackLevelName, int32 InCr
 		return;
 	}
 
-	// Debug::Print(FString::Printf(TEXT("Target Location: X=%.2f, Y=%.2f, Z=%.2f"), 
-	// 							TargetCrackData->RespawnLocation.X,
-	// 							TargetCrackData->RespawnLocation.Y,
-	// 							TargetCrackData->RespawnLocation.Z));
-
 	WorldInstanceSubsystem->SetRecentCrackIndex(InCrackIndex);
 	WorldInstanceSubsystem->SetRecentCrackName(TargetCrackData->CrackName);
 	WorldInstanceSubsystem->SetMoveTargetLocation(TargetCrackData->RespawnLocation);
@@ -425,38 +399,39 @@ void ABaseGameMode::RespawnEnemies()
 
 void ABaseGameMode::PlayFade(bool bFadeIn)
 {
-	if (!IsValid(FadeSequence))
-	{
-		Debug::Print(TEXT("FadeSequence is not valid"));
-		return;
-	}
-
-	if (!IsValid(SequencePlayer))
-	{
-		Debug::Print(TEXT("SequencePlayer is not valid"));
-		return;
-	}
-
-	FFrameRate FrameRate = FadeSequence->GetMovieScene()->GetTickResolution();
-	FFrameTime SequenceLength = FadeSequence->GetMovieScene()->GetPlaybackRange().Size<FFrameTime>();
-
+	auto* InGameController = Cast<AInGameController>(PlayerController);
+	check(InGameController);
+	
 	if (bFadeIn)
 	{
 		bIsFadeIn = true;
-		SequencePlayer->SetPlaybackPosition(
-			FMovieSceneSequencePlaybackParams(FFrameTime(0), EUpdatePositionMethod::Play));
-		SequencePlayer->SetPlayRate(1.f);
-		SequencePlayer->Play();
+
+		InGameController->FadeIn(FadeDuration);
+		GetWorldTimerManager().SetTimer(
+			FadeTimer,
+			this,
+			&ABaseGameMode::OnFadeSequenceFinished,
+			FadeDuration,
+			false
+			);
 		EnterAudioComponent->Play();
 	}
 	else
 	{
 		bIsFadeIn = false;
 		SetPlayerInputEnable(false);
-		SequencePlayer->SetPlaybackPosition(
-			FMovieSceneSequencePlaybackParams(SequenceLength, EUpdatePositionMethod::Play));
-		SequencePlayer->SetPlayRate(-1.f);
-		SequencePlayer->Play();
+		// SequencePlayer->SetPlaybackPosition(
+		// 	FMovieSceneSequencePlaybackParams(SequenceLength, EUpdatePositionMethod::Play));
+		// SequencePlayer->SetPlayRate(-1.f);
+		// SequencePlayer->Play();
+		InGameController->FadeOut(FadeDuration);
+		GetWorldTimerManager().SetTimer(
+			FadeTimer,
+			this,
+			&ABaseGameMode::OnFadeSequenceFinished,
+			FadeDuration,
+			false
+			);
 		ExitAudioComponent->Play();
 	}
 }
