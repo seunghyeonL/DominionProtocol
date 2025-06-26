@@ -210,6 +210,9 @@ protected:
 
 	FTimerHandle FadeTimer;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float AssetLoadDelay;
+		
 	FTimerHandle AssetLoadTimer;
 	
 #pragma endregion

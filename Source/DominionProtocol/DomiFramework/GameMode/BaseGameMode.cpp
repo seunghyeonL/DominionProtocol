@@ -47,7 +47,8 @@ ABaseGameMode::ABaseGameMode()
 	  Boss3Skull(nullptr),
 	  PlayTime(0),
 	  bIsFadeIn(true),
-      FadeDuration(1.f)
+      FadeDuration(1.f),
+      AssetLoadDelay(2.f)
 {
 	static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
 	if (DropEssenceBPClass.Succeeded())
@@ -182,9 +183,18 @@ void ABaseGameMode::StartPlay()
 		60.f,
 		true);
 
-	// 페이드인
-	SetPlayerInputEnable(false);
-	PlayFade(true);
+	// AssetLoadDelay 후 페이드인
+	TWeakObjectPtr<ThisClass> WeakThis = this;
+	GetWorldTimerManager().SetTimer(
+		AssetLoadTimer,
+		[WeakThis]()
+		{
+			WeakThis->SetPlayerInputEnable(false);
+			WeakThis->PlayFade(true);
+		},
+		AssetLoadDelay,
+		false
+		);
 }
 
 void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
