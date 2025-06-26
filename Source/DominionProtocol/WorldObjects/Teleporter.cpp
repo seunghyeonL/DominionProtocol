@@ -32,13 +32,12 @@ ATeleporter::ATeleporter()
 
 	TeleportPointComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("RespawnTargetPoint"));
 	TeleportPointComponent->SetupAttachment(SceneComp);
-	TeleportPointComponent->SetChildActorClass(ATargetPoint::StaticClass());
 }
 
 void ATeleporter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	TeleportPointComponent->SetChildActorClass(ATargetPoint::StaticClass());
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ATeleporter::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ATeleporter::OnOverlapEnd);
 

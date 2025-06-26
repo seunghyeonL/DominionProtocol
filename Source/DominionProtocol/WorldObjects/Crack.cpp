@@ -45,7 +45,6 @@ ACrack::ACrack()
 
 	RespawnTargetPointComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("RespawnTargetPoint"));
 	RespawnTargetPointComp->SetupAttachment(SceneComp);
-	RespawnTargetPointComp->SetChildActorClass(ATargetPoint::StaticClass());
 	RespawnTargetPointComp->SetRelativeLocation(FVector(0.f, 0.f, 300.f));
 
 	BGMAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BGMComponent"));
@@ -55,6 +54,7 @@ ACrack::ACrack()
 void ACrack::BeginPlay()
 {
 	Super::BeginPlay();
+	RespawnTargetPointComp->SetChildActorClass(ATargetPoint::StaticClass());
 
 	BGMAudioComponent->SetSound(BGMSound);
 	BGMAudioComponent->AttenuationSettings = SoundAttenuation;
