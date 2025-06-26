@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -9,6 +9,10 @@
 
 class AItemDropped;
 class UDialogueManager;
+class UBoxComponent;
+class ADomiCharacter;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ADyingHelper : public ACharacter, public IInteractableInterface
@@ -17,6 +21,8 @@ class DOMINIONPROTOCOL_API ADyingHelper : public ACharacter, public IInteractabl
 
 public:
 	ADyingHelper();
+
+	FOnCreateDialogueManager OnCreateDialogueManager;
 
 protected:
 	virtual void BeginPlay() override;
@@ -58,10 +64,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USkeletalMeshComponent> Hair;
 
-	UPROPERTY()
-	TObjectPtr<UDialogueManager> DialogueManager;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* CollisionBox;
 
 private:
 	FTimerHandle DieTimerHandle;
 	
+	UPROPERTY()
+	ADomiCharacter* CachedCharacter;
+
+	UPROPERTY(EditAnywhere)
+	FString DialogueID;
+
+	UPROPERTY()
+	TObjectPtr<UDialogueManager> DialogueManager;
 };

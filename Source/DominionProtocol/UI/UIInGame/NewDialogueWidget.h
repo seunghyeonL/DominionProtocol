@@ -8,6 +8,7 @@
 
 enum class EGameStoryState : uint8;
 class UDialogueManager;
+class ABossSpawner;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UNewDialogueWidget : public UUserWidget
@@ -27,6 +28,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 	void BindCreateDialogueDelegate();
+	void BindToSpawner(ABossSpawner* Spawner);
 	void BindDialogueDelegate(UDialogueManager* DialogueManager);
 
 	template<typename T>
