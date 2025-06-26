@@ -32,7 +32,7 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const F
 	CachedHelperSpawnRotation = CrackRotation;
 	CachedHelperSpawnRotation.Yaw -= 40.f;
 
-	const FString Path = TEXT("/Game/Data/DT_HelperDialogueData");
+	const FString Path = TEXT("/Game/Data/DT_HelperDialogueData.DT_HelperDialogueData");
 	UDataTable* Table = LoadDialogueDataTable(Path);
 	if (!Table) return false;
 
@@ -70,7 +70,7 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const F
 
 bool UDialogueManager::TryStartDialogueByID(const FString& DialogueID, AActor* TalkActor)
 {
-	const FString Path = TEXT("/Game/Data/DT_DialogueData");
+	const FString Path = TEXT("/Game/Data/DT_DialogueData.DT_DialogueData");
 	UDataTable* Table = LoadDialogueDataTable(Path);
 	if (!Table) return false;
 
