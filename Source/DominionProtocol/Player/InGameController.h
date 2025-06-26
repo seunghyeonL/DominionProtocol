@@ -12,6 +12,15 @@ class UInputMappingContext;
 DECLARE_DELEGATE(FOnPressedCrackMenuBackButtonEvent);
 DECLARE_DELEGATE(FOnPressedCrackMenuConfirmButtonEvent);
 
+DECLARE_DELEGATE(FOnPressedMainMenuButtonQEvent);
+DECLARE_DELEGATE(FOnPressedMainMenuButtonEEvent);
+DECLARE_DELEGATE(FOnPressedMainMenuButtonREvent);
+DECLARE_DELEGATE(FOnPressedMainMenuButtonAEvent);
+DECLARE_DELEGATE(FOnPressedMainMenuButtonDEvent);
+DECLARE_DELEGATE(FOnPressedMainMenuButtonZEvent);
+DECLARE_DELEGATE(FOnPressedMainMenuButtonCEvent);
+DECLARE_DELEGATE(FOnPressedMainMenuButtonSpaceBarEvent);
+
 UCLASS()
 class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 {
@@ -20,6 +29,17 @@ class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 public:
 	FOnPressedCrackMenuBackButtonEvent OnPressedCrackMenuBackButtonEvent;
 	FOnPressedCrackMenuConfirmButtonEvent OnPressedCrackMenuConfirmButtonEvent;
+
+	FOnPressedMainMenuButtonQEvent OnPressedMainMenuButtonQEvent;
+	FOnPressedMainMenuButtonEEvent OnPressedMainMenuButtonEEvent;
+	FOnPressedMainMenuButtonREvent OnPressedMainMenuButtonREvent;
+	FOnPressedMainMenuButtonAEvent OnPressedMainMenuButtonAEvent;
+	FOnPressedMainMenuButtonDEvent OnPressedMainMenuButtonDEvent;
+	FOnPressedMainMenuButtonZEvent OnPressedMainMenuButtonZEvent;
+	FOnPressedMainMenuButtonCEvent OnPressedMainMenuButtonCEvent;
+	FOnPressedMainMenuButtonSpaceBarEvent OnPressedMainMenuButtonSpaceBarEvent;
+	
+	//
 	
 	AInGameController();
 	
@@ -43,12 +63,34 @@ public:
 	UFUNCTION()
 	void OnPressedCrackMenuConfirmButton();
 
+	UFUNCTION()
+	void OnPressedMainMenuButtonQ();
 	// FadeInOut
 	UFUNCTION(BlueprintCallable)
 	void FadeIn(float PlayTime);
 
+	UFUNCTION()
+	void OnPressedMainMenuButtonE();
 	UFUNCTION(BlueprintCallable)
 	void FadeOut(float PlayTime);
+	
+	UFUNCTION()
+	void OnPressedMainMenuButtonR();
+	
+	UFUNCTION()
+	void OnPressedMainMenuButtonA();
+	
+	UFUNCTION()
+	void OnPressedMainMenuButtonD();
+	
+	UFUNCTION()
+	void OnPressedMainMenuButtonZ();
+	
+	UFUNCTION()
+	void OnPressedMainMenuButtonC();
+	
+	UFUNCTION()
+	void OnPressedMainMenuButtonSpaceBar();
 	
 	UFUNCTION(BlueprintPure)
 	class UDomiInGameHUDWidget* GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
@@ -149,6 +191,32 @@ public:
 	// MainMenuUI Section 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MainMenuSwitchShowAndHideWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MainMenuPressButtonQ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MainMenuPressButtonE;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MainMenuPressButtonR;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MainMenuPressButtonA;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MainMenuPressButtonD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MainMenuPressButtonZ;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MainMenuPressButtonC;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> MainMenuPressButtonSpaceBar;
+
+	
 
 	
 	// DialogueUI Section

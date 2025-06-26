@@ -408,7 +408,17 @@ void UItemComponent::SwapWeapons()
 //슬롯에 장착된 아이템 태그 반환
 FGameplayTag UItemComponent::GetEquippedItem(FName SlotName) const
 {
-	return EquipmentSlots.Contains(SlotName) ? EquipmentSlots[SlotName] : FGameplayTag();
+	if (ConsumableSlots.Contains(SlotName))
+	{
+		return ConsumableSlots[SlotName];
+	}
+
+	if (EquipmentSlots.Contains(SlotName))
+	{
+		return EquipmentSlots[SlotName];
+	}
+	
+	return FGameplayTag();
 }
 
 FName UItemComponent::GetEquippedItemSlotName(FGameplayTag ItemTag)

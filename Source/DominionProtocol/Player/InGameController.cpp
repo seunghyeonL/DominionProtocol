@@ -18,6 +18,7 @@ AInGameController::AInGameController()
 	}
 	
 	CheatClass = UDevCheatManager::StaticClass();
+	
 }
 
 void AInGameController::HandleSetupInGameHUD()
@@ -60,6 +61,46 @@ void AInGameController::OnPressedCrackMenuBackButton()
 void AInGameController::OnPressedCrackMenuConfirmButton()
 {
 	OnPressedCrackMenuConfirmButtonEvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedMainMenuButtonQ()
+{
+	OnPressedMainMenuButtonQEvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedMainMenuButtonE()
+{
+	OnPressedMainMenuButtonEEvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedMainMenuButtonR()
+{
+	OnPressedMainMenuButtonREvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedMainMenuButtonA()
+{
+	OnPressedMainMenuButtonAEvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedMainMenuButtonD()
+{
+	OnPressedMainMenuButtonDEvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedMainMenuButtonZ()
+{
+	OnPressedMainMenuButtonZEvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedMainMenuButtonC()
+{
+	OnPressedMainMenuButtonCEvent.ExecuteIfBound();
+}
+
+void AInGameController::OnPressedMainMenuButtonSpaceBar()
+{
+	OnPressedMainMenuButtonSpaceBarEvent.ExecuteIfBound();
 }
 
 void AInGameController::FadeIn(float PlayTime)
@@ -148,6 +189,62 @@ void AInGameController::BindControllerInputActions()
 			EnhancedInputComp->BindAction(MainMenuSwitchShowAndHideWidget, ETriggerEvent::Started,
 				this,
 				&AInGameController::OnMainMenuSwitchShowAndHideWidget);
+		}
+
+		if (IsValid(MainMenuPressButtonQ))
+		{
+			EnhancedInputComp->BindAction(MainMenuPressButtonQ, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedMainMenuButtonQ);
+		}
+
+		if (IsValid(MainMenuPressButtonE))
+		{
+			EnhancedInputComp->BindAction(MainMenuPressButtonE, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedMainMenuButtonE);
+		}
+
+		if (IsValid(MainMenuPressButtonR))
+		{
+			EnhancedInputComp->BindAction(MainMenuPressButtonR, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedMainMenuButtonR);
+		}
+
+		if (IsValid(MainMenuPressButtonA))
+		{
+			EnhancedInputComp->BindAction(MainMenuPressButtonA, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedMainMenuButtonA);
+		}
+
+		if (IsValid(MainMenuPressButtonD))
+		{
+			EnhancedInputComp->BindAction(MainMenuPressButtonD, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedMainMenuButtonD);
+		}
+
+		if (IsValid(MainMenuPressButtonZ))
+		{
+			EnhancedInputComp->BindAction(MainMenuPressButtonZ, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedMainMenuButtonZ);
+		}
+
+		if (IsValid(MainMenuPressButtonC))
+		{
+			EnhancedInputComp->BindAction(MainMenuPressButtonC, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedMainMenuButtonC);
+		}
+
+		if (IsValid(MainMenuPressButtonSpaceBar))
+		{
+			EnhancedInputComp->BindAction(MainMenuPressButtonSpaceBar, ETriggerEvent::Started,
+				this,
+				&AInGameController::OnPressedMainMenuButtonSpaceBar);
 		}
 
 		// DialogueUI Section

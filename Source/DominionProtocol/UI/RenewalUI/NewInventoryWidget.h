@@ -15,8 +15,8 @@ enum class EDisplayArray : uint8
 	AllItemsArray				UMETA(DisplayName="AllItemsArray"),
 	WeaponItemsArray			UMETA(DisplayName="WeaponItemsArray"),
 	AccessoryItemsArray			UMETA(DisplayName="AccessoryItemsArray"),
-	SkillItemsArray				UMETA(DisplayName="SkillItemsArray"),
 	ConsumableItemsArray		UMETA(DisplayName="ConsumableItemsArray"),
+	SkillItemsArray				UMETA(DisplayName="SkillItemsArray"),
 	OtherItemsArray				UMETA(DisplayName="OtherItemsArray"),
 };
 
