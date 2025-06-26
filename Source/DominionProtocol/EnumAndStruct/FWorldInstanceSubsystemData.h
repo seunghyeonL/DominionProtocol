@@ -13,9 +13,25 @@ struct FWorldInstanceSubsystemData
 {
 	GENERATED_BODY()
 
+	FWorldInstanceSubsystemData()
+		: IsNewGameDataMap(TMap<FString, bool>()),
+		  CurrentLevelName(FString()),
+		  CurrentLevelDisplayName(FText::GetEmpty()),
+		  RecentCrackName(FText::GetEmpty()),
+		  RecentCrackIndex(0),
+		  MaxCrackIndex(1),
+		  CrackDataMap(TMap<FString, FCrackDataArrayStruct>()),
+		  WorldActorDataMap(TMap<FGuid, FWorldActorData>()),
+		  bIsDropEssenceExist(false),
+		  DropEssenceAmount(0),
+		  DropEssenceLocation(FVector::ZeroVector),
+		  DropEssenceLocationLevel(FString())
+	{
+	}
+
 	UPROPERTY()
 	TMap<FString, bool> IsNewGameDataMap;
-	
+
 	UPROPERTY()
 	FString CurrentLevelName;
 
@@ -26,20 +42,20 @@ struct FWorldInstanceSubsystemData
 	FText RecentCrackName;
 
 	UPROPERTY()
-	int32 RecentCrackIndex = 0;
+	int32 RecentCrackIndex;
 
 	UPROPERTY()
-	int32 MaxCrackIndex = 1;
+	int32 MaxCrackIndex;
 
 	UPROPERTY()
 	TMap<FString, FCrackDataArrayStruct> CrackDataMap;
 
 	UPROPERTY()
 	TMap<FGuid, FWorldActorData> WorldActorDataMap;
-	
+
 	UPROPERTY()
 	bool bIsDropEssenceExist;
-	
+
 	UPROPERTY()
 	int32 DropEssenceAmount;
 

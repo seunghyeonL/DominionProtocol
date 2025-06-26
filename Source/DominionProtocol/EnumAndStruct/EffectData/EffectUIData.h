@@ -8,6 +8,14 @@ USTRUCT(BlueprintType)
 struct FEffectUIData
 {
 	GENERATED_BODY()
+
+	FEffectUIData()
+		:  EffectTag(FGameplayTag()),
+		   EffectName(FString()),
+		   EffectIcon(nullptr),
+		   Duration(0.f),
+		   DurationRemained(0.f)
+	{}
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag EffectTag;

@@ -13,6 +13,27 @@ struct FSkillData : public FTableRowBase
 {
 	GENERATED_BODY()
 
+	FSkillData()
+		: bIsMagicSkill(false),
+		  CoolDownTime(0.f),
+		  AnimMontage(nullptr),
+		  Sounds(TArray<TObjectPtr<USoundBase>>()),
+		  Particles(TArray<TObjectPtr<UParticleSystem>>()),
+		  NiagaraParticles(TArray<TObjectPtr<UNiagaraSystem>>()),
+		  SkillMaterials(TArray<TObjectPtr<UMaterialInterface>>()),
+		  CurvedProjectileClass(nullptr),
+		  Effects(TArray<FEffectData>()),
+		  Stamina(0.f),
+		  AttackRadius(0.f),
+		  AttackForwardOffset(0.f),
+		  DamageCoefficient(0.f),
+		  GroggyDamage(0.f),
+		  LaunchGroundSpeed(0.f),
+		  LaunchZSpeed(0.f),
+		  SkillTag(FGameplayTag())
+	{
+	}
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	FName SkillName;
@@ -22,7 +43,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	float CoolDownTime;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	TObjectPtr<UAnimMontage> AnimMontage;
 
@@ -58,7 +79,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	float GroggyDamage;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Data")
 	float LaunchGroundSpeed;
 

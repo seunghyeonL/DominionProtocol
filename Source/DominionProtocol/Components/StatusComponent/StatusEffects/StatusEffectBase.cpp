@@ -48,13 +48,14 @@ FEffectUIData UStatusEffectBase::GetEffectUIData() const
 	FString LastSegment;
 	TagName.Split(TEXT("."), nullptr, &LastSegment, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
 
-	return {
-		StatusEffectTag,
-		 LastSegment,
-		EffectIcon,
-		CachedDuration,
-		DurationRemained,
-	};
+	// return {
+	// 	StatusEffectTag,
+	// 	 LastSegment,
+	// 	EffectIcon,
+	// 	CachedDuration,
+	// 	DurationRemained,
+	// };
+	return FEffectUIData();
 }
 
 bool UStatusEffectBase::Activate()
