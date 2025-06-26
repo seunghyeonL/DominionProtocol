@@ -418,4 +418,5 @@ namespace WorldActorTags
 	UE_DEFINE_GAMEPLAY_TAG(ItemDropped, "WorldActor.Item.ItemDropped");
 	UE_DEFINE_GAMEPLAY_TAG(OpenableChestItem, "WorldActor.Item.OpenableChestItem");
 	UE_DEFINE_GAMEPLAY_TAG(ItemContainer, "WorldActor.Item.ItemContainer");
+	UE_DEFINE_GAMEPLAY_TAG(DyingHelper, "WorldActor.Pawn.DyingHelper");
 }
