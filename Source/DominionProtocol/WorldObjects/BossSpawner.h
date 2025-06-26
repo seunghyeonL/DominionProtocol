@@ -5,7 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
+#include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
+#include "WorldObjects/DialogueManager.h"
 #include "BossSpawner.generated.h"
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABossSpawner : public AActor
@@ -24,6 +28,8 @@ protected:
 public:
 	UPROPERTY(EditAnywhere)
 	FGameplayTag BossTag;
+
+	FOnCreateDialogueManager OnCreateDialogueManager;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Boss")

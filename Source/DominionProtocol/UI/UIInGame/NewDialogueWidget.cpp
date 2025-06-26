@@ -8,6 +8,7 @@
 #include "WorldObjects/StoryTrigger.h"
 #include "WorldObjects/BlockedPath.h"
 #include "WorldObjects/DyingHelper.h"
+#include "WorldObjects/BossSpawner.h"
 #include "WorldObjects/DialogueManager.h"
 
 void UNewDialogueWidget::UpdateDialogueWidget(const FText NewText)
@@ -28,6 +29,7 @@ void UNewDialogueWidget::BindCreateDialogueDelegate()
 	BindDialogueSources<ACrack>();
 	BindDialogueSources<ABlockedPath>();
 	BindDialogueSources<ADyingHelper>();
+	BindDialogueSources<ABossSpawner>();
 }
 
 template<typename T>
@@ -41,7 +43,6 @@ void UNewDialogueWidget::BindDialogueSources()
 		if (T* TypedActor = Cast<T>(Actor))
 		{
 			TypedActor->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
-			UE_LOG(LogTemp, Display, TEXT("UNewDialogueWidget::BindDialogueSources()"));
 		}
 	}
 }

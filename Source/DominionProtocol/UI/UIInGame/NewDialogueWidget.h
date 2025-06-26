@@ -28,7 +28,6 @@ protected:
 	virtual void NativeConstruct() override;
 
 	void BindCreateDialogueDelegate();
-	void BindToSpawner(ABossSpawner* Spawner);
 	void BindDialogueDelegate(UDialogueManager* DialogueManager);
 
 	template<typename T>

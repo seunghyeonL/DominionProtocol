@@ -1,5 +1,6 @@
 #include "WorldObjects/BossSpawner.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
+#include "AI/AICharacters/BossMonster/Boss4Enemy.h"
 #include "Util/DebugHelper.h"
 
 ABossSpawner::ABossSpawner()
@@ -21,6 +22,16 @@ void ABossSpawner::SpawnBoss()
 		return;
 	}
 	AActor* SpawnedBoss = GetWorld()->SpawnActor<AActor>(BossClass, GetActorLocation(),	GetActorRotation());
+	if (BossClass->IsChildOf(ABoss4Enemy::StaticClass()))
+	{
+		if (ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(SpawnedBoss))
+		{
+			if (UDialogueManager* DialogueManager = Boss4->GetDialogueManager())
+			{
+				OnCreateDialogueManager.Broadcast(DialogueManager);
+			}
+		}
+	}
 
 	if (SpawnedBoss)
 	{
