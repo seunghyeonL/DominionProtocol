@@ -163,6 +163,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayEffectsOnMnhAttack(const FHitResult& HitResult);
 
+	bool IsInvincible();
+
 protected:
 	virtual void BeginPlay() override;
 	

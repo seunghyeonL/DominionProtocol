@@ -238,6 +238,13 @@ void ADomiCharacter::PlayEffectsOnMnhAttack(const FHitResult& HitResult)
 	}
 }
 
+bool ADomiCharacter::IsInvincible()
+{
+	check(ControlComponent)
+	auto& ActiveControlEffects = GetActiveControlEffectTags();
+	return ActiveControlEffects.HasAny(InvincibilityTags);
+}
+
 void ADomiCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -537,7 +544,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	
 	auto& ActiveControlEffects = GetActiveControlEffectTags();
 
-	if (ActiveControlEffects.HasAny(InvincibilityTags))
+	if (IsInvincible())
 	{
 		Debug::Print(TEXT("ADomiCharacter::OnAttacked : Invincible!"));
 		return;
