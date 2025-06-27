@@ -3,6 +3,8 @@
 
 #include "AI/AICharacters/BossMonster/Boss4Enemy.h"
 #include "Components/BoxComponent.h"
+#include "Components/ItemComponent/ItemComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "WorldObjects/DialogueManager.h"
 #include "UI/UIInGame/NewDialogueWidget.h"
@@ -48,6 +50,31 @@ void ABoss4Enemy::Interact_Implementation(AActor* Interactor)
 FText ABoss4Enemy::GetInteractMessage_Implementation() const
 {
 	return FText::FromString(TEXT("확인하기"));
+}
+
+void ABoss4Enemy::DropItem()
+{
+	// 일반 DroppedItem 로직
+	if (IsValid(DropItemClass))
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		GetWorld()->SpawnActor<AItemDropped>(DropItemClass, GetGroundSpawnLocation(), GetActorRotation(), SpawnParams);
+	}
+
+	// 스토리 필수 아이템 자동 습득
+	if (StoryItemTag.IsValid())
+	{
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(UGameplayStatics::GetPlayerController(this, 0)->GetPawn());
+		if (IsValid(PlayerCharacter))
+		{
+			UItemComponent* ItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
+			if (IsValid(ItemComponent))
+			{
+				ItemComponent->AddItem(StoryItemTag, 1);
+			}
+		}
+	}
 }
 
 void ABoss4Enemy::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -17,9 +17,13 @@ class DOMINIONPROTOCOL_API ABoss1Enemy : public ABaseBossEnemy
 public:
 	ABoss1Enemy();
 
+	virtual void OnDeath_Implementation() override;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void SpawnDropItem() override;
 
 public:
 	// Called every frame

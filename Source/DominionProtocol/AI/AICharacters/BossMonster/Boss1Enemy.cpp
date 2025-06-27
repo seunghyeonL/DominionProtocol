@@ -3,7 +3,9 @@
 
 #include "AI/AICharacters/BossMonster/Boss1Enemy.h"
 
+#include "Components/ItemComponent/ItemComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Player/Characters/DomiCharacter.h"
 
 // Sets default values
 ABoss1Enemy::ABoss1Enemy()
@@ -14,11 +16,43 @@ ABoss1Enemy::ABoss1Enemy()
 	PawnTag = PawnTags::Boss1;
 }
 
+void ABoss1Enemy::OnDeath_Implementation()
+{
+	Super::OnDeath_Implementation();
+
+	SpawnDropItem();
+}
+
 // Called when the game starts or when spawned
 void ABoss1Enemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+void ABoss1Enemy::SpawnDropItem()
+{
+	// 일반 DroppedItem 로직
+	if (IsValid(DropItemClass))
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		GetWorld()->SpawnActor<AItemDropped>(DropItemClass, GetGroundSpawnLocation(), GetActorRotation(), SpawnParams);
+	}
+
+	// 스토리 필수 아이템 자동 습득
+	if (StoryItemTag.IsValid())
+	{
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(UGameplayStatics::GetPlayerController(this, 0)->GetPawn());
+		if (IsValid(PlayerCharacter))
+		{
+			UItemComponent* ItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
+			if (IsValid(ItemComponent))
+			{
+				ItemComponent->AddItem(StoryItemTag, 1);
+			}
+		}
+	}
 }
 
 // Called every frame

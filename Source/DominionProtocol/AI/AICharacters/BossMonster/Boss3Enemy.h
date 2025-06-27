@@ -16,6 +16,8 @@ class DOMINIONPROTOCOL_API ABoss3Enemy : public ABaseBossEnemy
 public:
 	ABoss3Enemy();
 
+	virtual void OnDeath_Implementation() override;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
@@ -56,4 +58,7 @@ public:
 	void ThrowCapturedTarget();
 
 	virtual void OnGroggy() override;
+
+protected:
+	virtual void SpawnDropItem() override;
 };

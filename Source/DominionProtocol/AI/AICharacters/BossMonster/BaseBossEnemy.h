@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Util/GameTagList.h"
 #include "AI/AICharacters/BaseEnemy.h"
+#include "ItemInventory/ItemDropped.h"
 #include "BaseBossEnemy.generated.h"
 
 
@@ -24,6 +26,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void SpawnDropItem() {};
+
+	FVector GetGroundSpawnLocation();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "BossDrop")
+	FGameplayTag StoryItemTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "BossDrop")
+	TSubclassOf<AItemDropped> DropItemClass;
+	
 	UPROPERTY(EditAnywhere)
 	int32 BossID;
 

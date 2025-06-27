@@ -26,6 +26,9 @@ protected:
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
 
+	UFUNCTION(BlueprintCallable)
+	void DropItem();
+
 	UFUNCTION()
 	void OnOverlapBegin(
 		UPrimitiveComponent* OverlappedComp,
