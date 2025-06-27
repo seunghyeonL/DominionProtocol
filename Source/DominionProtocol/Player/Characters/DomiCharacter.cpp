@@ -553,6 +553,8 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 		LaunchCharacter(AttackData.LaunchVector, true, true);
 	}
 
+	PlayHitSound();
+	
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)
 	{
@@ -594,7 +596,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					}
 					
 					ControlComponent->ActivateControlEffect(EffectTags::Stiffness, Duration);
-					PlayHitSound();
+			
 					return;
 				}
 				else
@@ -610,7 +612,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					SetActorRotation(HitDirection.Rotation());
 
 					ControlComponent->ActivateControlEffect(EffectTags::Flew);
-					PlayHitSound();
+					
 					return;
 				}
 				else
