@@ -366,6 +366,7 @@ namespace ItemTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BurnImmuneAccessoryItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PoisonImmuneAccessoryItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AttackDownImmuneAccessoryItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ItemScanningSkillItem);
 
 	//Consumable Item Tags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ConsumableItem);
