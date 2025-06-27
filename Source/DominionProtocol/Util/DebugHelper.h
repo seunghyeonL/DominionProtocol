@@ -28,20 +28,20 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
-static TAutoConsoleVariable<int32> CVarShowDebugLines(
+namespace Debug
+{
+	inline TAutoConsoleVariable<int32> CVarShowDebugLines(
 	TEXT("Debug.ShowLines"),
 	0,
 	TEXT("디버그라인 표시 제어 : 0 = 숨김, 1 = 표시"),
 	ECVF_Default);
 
-static TAutoConsoleVariable<bool> CVarEnableDebugPrint(
-	TEXT("Debug.ToggleLogPrint"),
-	false,
-	TEXT("Enable or disable Debug::Log print globally"),
-	ECVF_Default);
-
-namespace Debug
-{
+	inline TAutoConsoleVariable<bool> CVarEnableDebugPrint(
+		TEXT("Debug.ToggleLogPrint"),
+		false,
+		TEXT("Enable or disable Debug::Log print globally"),
+		ECVF_Default);
+	
 	static bool IsDebugPrintEnable()
 	{
 		return CVarEnableDebugPrint.GetValueOnAnyThread();
