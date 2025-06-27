@@ -145,9 +145,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitSound();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitVoice();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayDeathSound();
+	void PlayDeathVoice();
 	
 	// WeaopnMeshChange
 	UFUNCTION(BlueprintImplementableEvent)

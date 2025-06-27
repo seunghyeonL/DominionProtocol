@@ -485,7 +485,7 @@ void ADomiCharacter::OnDeath()
 
 	// Activate Death Effect
 	ControlComponent->ActivateControlEffect(EffectTags::Death);
-	PlayDeathSound();
+	PlayDeathVoice();
 	
 	// 델리게이트로?
 	ABaseGameMode* GameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
@@ -603,7 +603,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					}
 					
 					ControlComponent->ActivateControlEffect(EffectTags::Stiffness, Duration);
-			
+					PlayHitVoice();
 					return;
 				}
 				else
@@ -619,7 +619,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					SetActorRotation(HitDirection.Rotation());
 
 					ControlComponent->ActivateControlEffect(EffectTags::Flew);
-					
+					PlayHitVoice();
 					return;
 				}
 				else
