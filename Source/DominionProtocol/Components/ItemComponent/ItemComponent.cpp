@@ -698,6 +698,15 @@ void UItemComponent::ApplyPotionBoost(int32 BoostAmount)
 	{
 		PotionBoostLevel = 5;
 	}
+	if (!InventoryMap.Contains(ItemTags::AddMaxPotion))
+	{
+		return;
+	}
+	if (InventoryMap[ItemTags::AddMaxPotion] < BoostAmount)
+	{
+		Debug::Print(TEXT("재료 부족"));
+		return;
+	}
 	TMap<FGameplayTag, int32> NewInventoryMap;
 	//인벤토리 업데이트
 	for (const auto& Pair : InventoryMap)
@@ -719,6 +728,7 @@ void UItemComponent::ApplyPotionBoost(int32 BoostAmount)
 		}
 	}
 	InventoryMap = NewInventoryMap;
+	RemoveItem(ItemTags::AddMaxPotion, 1);
 	OnInventoryItemListChanged.Broadcast();
 
 	//소비슬롯 업데이트

@@ -1,4 +1,4 @@
-﻿
+
 #include "GameTagList.h"
 
 namespace EffectTags
@@ -357,6 +357,7 @@ namespace ItemTags
 	UE_DEFINE_GAMEPLAY_TAG(TeleportSkillItem, "Item.Equippable.Skill.Teleport");
 	UE_DEFINE_GAMEPLAY_TAG(ZoneyaSkillItem, "Item.Equippable.Skill.Zoneya");
 	UE_DEFINE_GAMEPLAY_TAG(InfiniteStaminaSkillItem, "Item.Equippable.Skill.InfiniteStamina");
+	UE_DEFINE_GAMEPLAY_TAG(ItemScanningSkillItem, "Item.Equippable.Skill.ItemScan");
 	UE_DEFINE_GAMEPLAY_TAG(AccessoryItem, "Item.Equippable.Accessory");
 	UE_DEFINE_GAMEPLAY_TAG(RingOfHealthAccessoryItem, "Item.Equippable.Accessory.RingOfHealth");
 	UE_DEFINE_GAMEPLAY_TAG(NecklaceOfStaminaAccessoryItem, "Item.Equippable.Accessory.NecklaceOfStamina");
@@ -375,7 +376,6 @@ namespace ItemTags
 	UE_DEFINE_GAMEPLAY_TAG(PotionBoosted3, "Item.Consumable.Potion.Boosted.3");
 	UE_DEFINE_GAMEPLAY_TAG(PotionBoosted4, "Item.Consumable.Potion.Boosted.4");
 	UE_DEFINE_GAMEPLAY_TAG(PotionBoosted5, "Item.Consumable.Potion.Boosted.5");
-	UE_DEFINE_GAMEPLAY_TAG(AddMaxPotion, "Item.Consumable.AddMaxPotion");
 	UE_DEFINE_GAMEPLAY_TAG(StaminaPotion, "Item.Consumable.StaminaPotion");
 	UE_DEFINE_GAMEPLAY_TAG(Elixir, "Item.Consumable.Elixir");
 	UE_DEFINE_GAMEPLAY_TAG(PoisonCure, "Item.Consumable.PoisonCure");
@@ -395,6 +395,7 @@ namespace ItemTags
 	UE_DEFINE_GAMEPLAY_TAG(WitchDiary2, "Item.Other.WitchDiary2");
 	UE_DEFINE_GAMEPLAY_TAG(WitchDiary3, "Item.Other.WitchDiary3");
 	UE_DEFINE_GAMEPLAY_TAG(WitchDiary4, "Item.Other.WitchDiary4");
+	UE_DEFINE_GAMEPLAY_TAG(AddMaxPotion, "Item.Other.AddMaxPotion");
 }
 
 namespace TraceTags
