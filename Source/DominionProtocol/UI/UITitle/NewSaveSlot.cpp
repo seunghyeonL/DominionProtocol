@@ -4,13 +4,32 @@
 #include "UI/UITitle/NewSaveSlot.h"
 
 #include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
+#include "Player/TitleController.h"
 
 void UNewSaveSlot::StartGame(const int32 SlotIndex) const
 {
 	// SlotIndex는 위젯에서 설정
 	if (SlotIndex != -1)
 	{
-		SaveManagerSubsystemInstance->StartNewGame(SlotIndex);	
+		auto* TitleController = Cast<ATitleController>(GetOwningPlayer());
+		check(TitleController);
+		TitleController->FadeOut();
+		
+		FTimerHandle FadeTimerHandle;
+		TWeakObjectPtr WeakThis = this;
+		GetWorld()->GetTimerManager().SetTimer(
+			FadeTimerHandle,
+			[WeakThis, SlotIndex]()
+			{
+				if (WeakThis.IsValid())
+				{
+					check(WeakThis->GetSaveManagerSubsystemInstance());
+					WeakThis->GetSaveManagerSubsystemInstance()->StartNewGame(SlotIndex);	
+				}
+			},
+			TitleController->GetFadeDuration() + 0.1f,
+			false
+			);
 	}
 }
 
@@ -18,7 +37,25 @@ void UNewSaveSlot::LoadGame(const int32 SlotIndex) const
 {
 	if (SlotIndex != -1)
 	{
-		SaveManagerSubsystemInstance->LoadSaveDataAndOpenLevel(SlotIndex);	
+		auto* TitleController = Cast<ATitleController>(GetOwningPlayer());
+		check(TitleController);
+		TitleController->FadeOut();
+
+		FTimerHandle FadeTimerHandle;
+		TWeakObjectPtr WeakThis = this;
+		GetWorld()->GetTimerManager().SetTimer(
+			FadeTimerHandle,
+			[WeakThis, SlotIndex]()
+			{
+				if (WeakThis.IsValid())
+				{
+					check(WeakThis->GetSaveManagerSubsystemInstance());
+					WeakThis->GetSaveManagerSubsystemInstance()->LoadSaveDataAndOpenLevel(SlotIndex);	
+				}
+			},
+			TitleController->GetFadeDuration() + 0.1f,
+			false
+			);
 	}
 }
 

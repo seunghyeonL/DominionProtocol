@@ -34,13 +34,6 @@ void AInGameController::HandleSetupInGameHUD()
 	SetupMappingContext(DefaultMappingContext);
 
 	BindControllerInputActions();
-
-	// FadeWidget
-	check(FadeWidgetClass);
-	if (FadeWidgetInstance = CreateWidget<UFadeWidget>(this, FadeWidgetClass))
-	{
-		FadeWidgetInstance->AddToViewport();
-	}
 }
 
 void AInGameController::OnMainMenuSwitchShowAndHideWidget()
@@ -139,15 +132,20 @@ void AInGameController::BeginPlay()
 void AInGameController::CreateHUDWidget()
 {
 	check(InGameHUDWidgetClass);
+	check(FadeWidgetClass);
 
 	InGameHUDWidgetInstance = CreateWidget<UDomiInGameHUDWidget>(this, InGameHUDWidgetClass);
+	FadeWidgetInstance = CreateWidget<UFadeWidget>(this, FadeWidgetClass);
 }
 
 void AInGameController::AddHUDToViewport() const
 {
 	check(InGameHUDWidgetInstance);
+	check(FadeWidgetInstance);
 
 	InGameHUDWidgetInstance->AddToViewport();
+	// FadeWidgetInstance->SetRenderOpacity(0.f);
+	FadeWidgetInstance->AddToViewport();
 }
 
 void AInGameController::SetupMappingContext(class UInputMappingContext* NewMappingContext)

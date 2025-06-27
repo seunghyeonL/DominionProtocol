@@ -51,6 +51,12 @@ public:
 	
 	void RemoveAllMappingContext();
 
+	// FadeInOut
+	UFUNCTION(BlueprintCallable)
+	void FadeIn(float PlayTime);
+
+	UFUNCTION(BlueprintCallable)
+	void FadeOut(float PlayTime);
 	
 	// Binding InputAction
 	void OnMainMenuSwitchShowAndHideWidget();
@@ -62,17 +68,12 @@ public:
 
 	UFUNCTION()
 	void OnPressedCrackMenuConfirmButton();
-
+	
 	UFUNCTION()
 	void OnPressedMainMenuButtonQ();
-	// FadeInOut
-	UFUNCTION(BlueprintCallable)
-	void FadeIn(float PlayTime);
-
+	
 	UFUNCTION()
 	void OnPressedMainMenuButtonE();
-	UFUNCTION(BlueprintCallable)
-	void FadeOut(float PlayTime);
 	
 	UFUNCTION()
 	void OnPressedMainMenuButtonR();

@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "UI/UITitle/NewTitleMenuWidget.h"
+#include "UI/FadeInOut/FadeWidget.h"
 #include "Util/DevCheatManager.h"
 
 ATitleController::ATitleController()
@@ -17,6 +18,7 @@ ATitleController::ATitleController()
 	}
 
 	CheatClass = UDevCheatManager::StaticClass();
+	FadeDuration = 1.f;
 }
 
 void ATitleController::HandleSetupTitleHUD()
@@ -27,6 +29,8 @@ void ATitleController::HandleSetupTitleHUD()
 	SetupInputModeGameAndUI();
 
 	BindControllerInputActions();
+
+	FadeIn();
 }
 
 void ATitleController::OnStartGame()
@@ -45,6 +49,18 @@ void ATitleController::OnBackToMainMenu()
 {
 	OnPressedBackToMainMenu.ExecuteIfBound();
 	UE_LOG(LogTemp, Warning, TEXT("OnBackToMainMenu"));
+}
+
+void ATitleController::FadeIn()
+{
+	check(FadeWidgetInstance);
+	FadeWidgetInstance->FadeIn(FadeDuration);
+}
+
+void ATitleController::FadeOut()
+{
+	check(FadeWidgetInstance);
+	FadeWidgetInstance->FadeOut(FadeDuration);
 }
 
 void ATitleController::SetupInputModeGameAndUI()
@@ -106,13 +122,18 @@ void ATitleController::BeginPlay()
 void ATitleController::CreateHUDWidget()
 {
 	check(TitleHUDWidgetClass);
+	check(FadeWidgetClass);
 	
 	TitleHUDWidgetInstance = CreateWidget<UNewTitleMenuWidget>(this, TitleHUDWidgetClass);
+	FadeWidgetInstance = CreateWidget<UFadeWidget>(this, FadeWidgetClass);
 }
 
 void ATitleController::AddHUDToViewport() const
 {
-	check(TitleHUDWidgetInstance)
+	check(TitleHUDWidgetInstance);
+	check(FadeWidgetInstance);
 	
 	TitleHUDWidgetInstance->AddToViewport();
+	// FadeWidgetInstance->SetRenderOpacity(0.f);
+	FadeWidgetInstance->AddToViewport();
 }

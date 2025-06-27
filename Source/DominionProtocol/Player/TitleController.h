@@ -32,6 +32,15 @@ public:
 
 	UFUNCTION()
 	void OnBackToMainMenu();
+
+	// FadeInOut
+	UFUNCTION(BlueprintCallable)
+	void FadeIn();
+
+	UFUNCTION(BlueprintCallable)
+	void FadeOut();
+
+	FORCEINLINE float GetFadeDuration() const { return FadeDuration; }
 	
 protected:
 	virtual void BeginPlay() override;
@@ -45,11 +54,19 @@ protected:
 	
 
 protected:
+	float FadeDuration;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UNewTitleMenuWidget> TitleHUDWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<class UNewTitleMenuWidget> TitleHUDWidgetInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UFadeWidget> FadeWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	TObjectPtr<class UFadeWidget> FadeWidgetInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputMappingContext> TitleMappingContext;
