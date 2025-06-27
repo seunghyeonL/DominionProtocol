@@ -14,6 +14,7 @@ UStatusEffectBase::UStatusEffectBase()
 	bIsActive = false;
 	CachedDuration = 0.f;
 	DurationRemained = 0.f;
+	EffectIcon = nullptr;
 }
 
 void UStatusEffectBase::Initialize()
