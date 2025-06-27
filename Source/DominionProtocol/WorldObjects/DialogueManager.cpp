@@ -5,6 +5,7 @@
 #include "DomiFramework/WorldActorManage/ActorStateComponent.h"
 #include "WorldObjects/Helper.h"
 #include "WorldObjects/DyingHelper.h"
+#include "WorldObjects/BlockedPath.h"
 #include "Engine/DataTable.h"
 #include "Kismet/GameplayStatics.h"
 #include "Util/DebugHelper.h"
@@ -119,29 +120,33 @@ void UDialogueManager::AdvanceDialogue()
 	// 다음 문장 없을 때
 	else
 	{
-		// 균열 등장 조력자인 경우
+		// StoryState
 		if (IsValid(CurrentHelper))
 		{
 			TriggerHelperDisappear();
 		}
-		// 죽어가는 조력자인 경우(보스3 전투공간)
-		else if (TalkActorCache->IsA(ADyingHelper::StaticClass()))
+		// ID
+		else
 		{
-			ADyingHelper* DyingHelper = Cast<ADyingHelper>(TalkActorCache);
-			if (IsValid(DyingHelper))
+			// 죽어가는 조력자인 경우(보스3 전투공간)
+			if (CurrentDialogueID == TEXT("Helper"))
 			{
-				DyingHelper->Die();
+				ADyingHelper* DyingHelper = Cast<ADyingHelper>(TalkActorCache);
+				if (IsValid(DyingHelper))
+				{
+					DyingHelper->Die();
+				}
 			}
-		}
-		// 죽어가는 마녀일 경우
-		else if (TalkActorCache->IsA(ABoss4Enemy::StaticClass()))
-		{
-			//로직 작성 필요
-			// ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(TalkActorCache);
-			// if (IsValid(Boss4))
-			// {
-			// 	Boss4->Die();
-			// }
+			// 죽어가는 마녀일 경우
+			else if (CurrentDialogueID == TEXT("Witch"))
+			{
+				//로직 작성 필요
+				// ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(TalkActorCache);
+				// if (IsValid(Boss4))
+				// {
+				// 	Boss4->Die();
+				// }
+			}
 		}
 	}
 }

@@ -104,7 +104,7 @@ void ABlockedPath::TryOpen()
 	else
 	{
 		Debug::Print(TEXT("ABlockedPath: 조건 미충족, 막힘 유지"));
-		DialogueManager->TryStartDialogueByID(DialogueID);
+		DialogueManager->TryStartDialogueByID(DialogueID, this);
 	}
 }
 void ABlockedPath::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
