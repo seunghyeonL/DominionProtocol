@@ -402,12 +402,11 @@ FEffectUIData UPlayerControlEffectBase::GetEffectUIData() const
 	FString LastSegment;
 	TagName.Split(TEXT("."), nullptr, &LastSegment, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
 
-	// return {
-	// 	ControlEffectTag,
-	// 	 LastSegment,
-	// 	EffectIcon,
-	// 	CachedDuration,
-	// 	DurationRemained
-	// };
-	return FEffectUIData();
+	return {
+		ControlEffectTag,
+		 LastSegment,
+		EffectIcon,
+		CachedDuration,
+		DurationRemained
+	};
 }
