@@ -184,17 +184,19 @@ void ABaseGameMode::StartPlay()
 		true);
 
 	// AssetLoadDelay 후 페이드인
-	TWeakObjectPtr<ThisClass> WeakThis = this;
-	GetWorldTimerManager().SetTimer(
-		AssetLoadTimer,
-		[WeakThis]()
-		{
-			WeakThis->SetPlayerInputEnable(false);
-			WeakThis->PlayFade(true);
-		},
-		AssetLoadDelay,
-		false
-		);
+	// TWeakObjectPtr<ThisClass> WeakThis = this;
+	// GetWorldTimerManager().SetTimer(
+	// 	AssetLoadTimer,
+	// 	[WeakThis]()
+	// 	{
+	// 		WeakThis->SetPlayerInputEnable(false);
+	// 		WeakThis->PlayFade(true);
+	// 	},
+	// 	AssetLoadDelay,
+	// 	false
+	// 	);
+	SetPlayerInputEnable(false);
+	PlayFade(true);
 }
 
 void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
