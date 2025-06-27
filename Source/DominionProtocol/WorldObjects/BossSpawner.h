@@ -22,6 +22,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Boss")
 	void SpawnBoss();
 
+	void UpdateFade();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -34,4 +36,18 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Boss")
 	TSubclassOf<AActor> BossClass;
+
+	FTimerHandle FadeTimerHandle;
+	float FadeElapsedTime = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "FadeEffect")
+	float FadeDuration = 2.0f;
+
+	UPROPERTY(EditAnywhere, Category = "FadeEffect")
+	UMaterialParameterCollection* FadeMPC;
+
+	UMaterialParameterCollectionInstance* MPCInstance;
+
+	UPROPERTY(EditAnywhere, Category = "FadeEffect")
+	UCurveFloat* FadeCurve;
 };
