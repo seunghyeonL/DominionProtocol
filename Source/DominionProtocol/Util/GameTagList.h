@@ -358,6 +358,7 @@ namespace ItemTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TeleportSkillItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ZoneyaSkillItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InfiniteStaminaSkillItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ItemScanningSkillItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AccessoryItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(RingOfHealthAccessoryItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(NecklaceOfStaminaAccessoryItem);
@@ -366,7 +367,6 @@ namespace ItemTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BurnImmuneAccessoryItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PoisonImmuneAccessoryItem);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AttackDownImmuneAccessoryItem);
-	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ItemScanningSkillItem);
 
 	//Consumable Item Tags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ConsumableItem);
