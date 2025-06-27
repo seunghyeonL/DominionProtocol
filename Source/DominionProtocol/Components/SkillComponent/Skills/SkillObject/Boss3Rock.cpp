@@ -53,13 +53,12 @@ void ABoss3Rock::DestroyProjectile()
 
 	if (IsValid(RockMesh))
 	{
-		// 1️⃣ 파괴용 설정
-		RockMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//RockMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		RockMesh->SetSimulatePhysics(true);
 		RockMesh->SetEnableGravity(true);
 
-		// 필요하다면 충격 추가
 		RockMesh->AddImpulse(FVector(0, 0, -3000.f), NAME_None, true);
+		//RockMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	}
 
 	SetActorTickEnabled(false);
