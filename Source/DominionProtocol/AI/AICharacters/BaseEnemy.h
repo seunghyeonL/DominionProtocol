@@ -88,6 +88,8 @@ public:
 	// LockOnComponent
 	FORCEINLINE FVector GetLockOnLocation() const { return LockOnComponent->GetComponentLocation(); }
 
+	FString GetMonsterName() const { return MonsterName; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

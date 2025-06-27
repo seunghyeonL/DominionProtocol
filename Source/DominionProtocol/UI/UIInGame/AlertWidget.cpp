@@ -3,6 +3,7 @@
 
 #include "UI/UIInGame/AlertWidget.h"
 
+#include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Kismet/GameplayStatics.h"
@@ -16,6 +17,32 @@ void UAlertWidget::OnShowPlayerDeathAlert()
 
 void UAlertWidget::OnShowBossKillAlert(AActor* DeadMonster)
 {
+	FString MonsterName;
+	
+	auto* BossEnemy = Cast<ABaseBossEnemy>(DeadMonster);
+	if (BossEnemy)
+	{
+		MonsterName = BossEnemy->GetMonsterName();
+		TCHAR LastChar = MonsterName.GetCharArray()[MonsterName.Len()-1];
+		if (LastChar >= 0xAC00 && LastChar <= 0xD7A3)
+		{
+			if (((LastChar- 0xAC00) % 28) != 0)
+			{
+				MonsterName = MonsterName + TEXT("을");		
+			}
+			else
+			{
+				MonsterName = MonsterName + TEXT("를");
+			}
+		}
+		else
+		{
+			MonsterName = MonsterName + TEXT("를");
+		}
+	}
+
+	// 함수 시그니쳐 변경 오류로 
+	BossMonsterName = MonsterName;
 	ShowBossKillAlert(DeadMonster);
 }
 

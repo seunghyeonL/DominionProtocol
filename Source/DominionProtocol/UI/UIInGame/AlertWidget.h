@@ -45,4 +45,9 @@ protected:
 
 public:
 	FDelegateHandle HandleBindRestoredEssence;
+
+
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	FString BossMonsterName;
 };
