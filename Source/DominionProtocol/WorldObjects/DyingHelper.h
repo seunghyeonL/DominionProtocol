@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interface/InteractableInterface.h"
+#include "Interface/StoryDependentInterface.h"
 #include "DyingHelper.generated.h"
 
 class UActorStateComponent;
@@ -16,7 +17,7 @@ class ADomiCharacter;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
 
 UCLASS()
-class DOMINIONPROTOCOL_API ADyingHelper : public ACharacter, public IInteractableInterface
+class DOMINIONPROTOCOL_API ADyingHelper : public ACharacter, public IInteractableInterface, public IStoryDependentInterface
 {
 	GENERATED_BODY()
 
@@ -30,10 +31,16 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual FText GetInteractMessage_Implementation() const override;
 
+	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
+
+	UFUNCTION()
+	void ApplyDieState(bool bIsDead);
+	
 	UFUNCTION()
 	void OnOverlapBegin(
 		UPrimitiveComponent* OverlappedComp,
@@ -51,8 +58,6 @@ protected:
 		int32 OtherBodyIndex);
 
 private:
-	void ApplyDieState();
-	
 	void SetIsInteractable(bool bNewIsInteractable);
 
 

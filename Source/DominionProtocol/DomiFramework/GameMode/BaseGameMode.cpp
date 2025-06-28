@@ -16,6 +16,7 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Components/ItemComponent/ItemComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/RectLightComponent.h"
 #include "Components/PlayerControlComponent/PlayerControlComponent.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "EngineUtils.h"
@@ -28,8 +29,10 @@
 #include "Sound/SoundWave.h"
 #include "Components/ExponentialHeightFogComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
+#include "DomiFramework/WorldActorManage/ActorStateComponent.h"
 #include "Engine/ExponentialHeightFog.h"
 #include "Engine/PostProcessVolume.h"
+#include "Engine/RectLight.h"
 #include "Engine/SpotLight.h"
 #include "Player/InGameController.h"
 
@@ -37,6 +40,7 @@
 #include "Util/GameTagList.h"
 #include "Util/DebugHelper.h"
 #include "WorldObjects/Boss3Skull.h"
+#include "WorldObjects/DyingHelper.h"
 #include "WorldObjects/Teleporter.h"
 
 ABaseGameMode::ABaseGameMode()
@@ -604,8 +608,11 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 			{
 				USpotLightComponent* SpotLightComponent = Cast<ASpotLight>(Actor)->GetComponentByClass<
 					USpotLightComponent>();
-				SpotLightComponent->SetHiddenInGame(true);
-				SpotLightComponent->SetVisibility(false);
+				if (IsValid(SpotLightComponent))
+				{
+					SpotLightComponent->SetHiddenInGame(true);
+					SpotLightComponent->SetVisibility(false);
+				}
 			}
 		}
 
@@ -620,6 +627,24 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 					{
 						continue;
 					}
+				}
+			}
+			else if (Actor->IsA(ARectLight::StaticClass()))
+			{
+				URectLightComponent* RectLightComponent = Cast<ARectLight>(Actor)->GetComponentByClass<URectLightComponent>();
+				if (IsValid(RectLightComponent))
+				{
+					RectLightComponent->SetHiddenInGame(false);
+					RectLightComponent->SetVisibility(true);
+				}
+				continue;
+			}
+			else if (Actor->IsA(ADyingHelper::StaticClass()))
+			{
+				ADyingHelper* DyingHelper = Cast<ADyingHelper>(Actor);
+				if (!DyingHelper->GetActorStateComponent()->GetActorData().bIsDead && GameInstance->GetCurrentGameStoryState()>=EGameStoryState::Clear_Boss3)
+				{
+					DyingHelper->GetActorStateComponent()->SwitchStateAndUpdateInstance(WorldActorTags::DyingHelper);
 				}
 			}
 			Actor->SetActorHiddenInGame(false);
@@ -665,6 +690,24 @@ void ABaseGameMode::ToggleBoss3BattleRoom(bool bIsBattleRoom)
 
 		for (AActor* Actor : Boss3RoomBattleState)
 		{
+			if (Actor->IsA(ARectLight::StaticClass()))
+			{
+				URectLightComponent* RectLightComponent = Cast<ARectLight>(Actor)->GetComponentByClass<URectLightComponent>();
+				if (IsValid(RectLightComponent))
+				{
+					RectLightComponent->SetHiddenInGame(true);
+					RectLightComponent->SetVisibility(false);
+				}
+				continue;
+			}
+			else if (Actor->IsA(ADyingHelper::StaticClass()))
+			{
+				ADyingHelper* DyingHelper = Cast<ADyingHelper>(Actor);
+				if (!DyingHelper->GetActorStateComponent()->GetActorData().bIsDead && GameInstance->GetCurrentGameStoryState()>=EGameStoryState::Clear_Boss3)
+				{
+					DyingHelper->GetActorStateComponent()->SwitchStateAndUpdateInstance(WorldActorTags::DyingHelper);
+				}
+			}
 			Actor->SetActorHiddenInGame(true);
 			Actor->SetActorEnableCollision(false);
 		}
