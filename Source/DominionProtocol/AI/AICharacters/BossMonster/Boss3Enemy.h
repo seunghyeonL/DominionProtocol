@@ -18,6 +18,9 @@ public:
 
 	virtual void OnDeath_Implementation() override;
 
+	UFUNCTION()
+	void DestroyActor();
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
@@ -48,6 +51,7 @@ public:
 	UPROPERTY()
 	UStaticMeshComponent* SpawnedStoneMeshComp;
 
+	FTimerHandle BossDestroyHandle;
 	FTimerHandle StoneSpawnDelayHandle;
 	FTimerHandle StoneDestroyHandle;
 	void SpawnStoneReady();

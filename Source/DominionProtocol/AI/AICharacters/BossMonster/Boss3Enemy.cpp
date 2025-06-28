@@ -19,6 +19,18 @@ void ABoss3Enemy::OnDeath_Implementation()
 	Super::OnDeath_Implementation();
 
 	SpawnDropItem();
+	
+	GetWorldTimerManager().SetTimer(
+		BossDestroyHandle,
+		this,
+		&ABoss3Enemy::DestroyActor,
+		3.f,
+		false);
+}
+
+void ABoss3Enemy::DestroyActor()
+{
+	Destroy();
 }
 
 void ABoss3Enemy::Attack()
