@@ -38,6 +38,8 @@ public:
 	FORCEINLINE void SetSaveSlotData(int32 SlotIndex, const FSaveSlotMetaData& Data) { SaveSlotArray[SlotIndex] = Data; }
 
 	// Getter
+	FORCEINLINE int32 GetPlayTime(int32 SlotIndex) { return SaveSlotArray[SlotIndex].PlayTime; }
+	
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FSaveSlotMetaData> SaveSlotArray;

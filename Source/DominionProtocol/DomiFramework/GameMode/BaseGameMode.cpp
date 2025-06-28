@@ -221,7 +221,7 @@ void ABaseGameMode::Save()
 	NewSaveSlotMetaData.SaveSlotName = GameInstance->GetSaveSlotName();
 	NewSaveSlotMetaData.SaveSlotIndex = GameInstance->GetSaveSlotIndex();
 	NewSaveSlotMetaData.SaveDateTime = FDateTime::Now();
-	NewSaveSlotMetaData.PlayTime = PlayTime;
+	NewSaveSlotMetaData.PlayTime = SaveManagerSubsystem->GetPlayTime(GameInstance->GetSaveSlotIndex()) + PlayTime;
 	NewSaveSlotMetaData.PlayingLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
 	NewSaveSlotMetaData.PlayingLevelDisplayName = WorldInstanceSubsystem->GetCurrentLevelDisplayName();
 	NewSaveSlotMetaData.RecentCrackName = RecentCrackCache->GetCrackName();
