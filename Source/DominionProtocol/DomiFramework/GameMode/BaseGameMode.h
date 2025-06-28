@@ -97,6 +97,10 @@ protected:
 
 	void CheckFogCrackAndOffFog();
 
+	void DisappearBoss1Fog();
+
+	void FadeBoss1FogOut();
+
 	void UpdateInstanceData();
 	
 public:
@@ -167,6 +171,18 @@ protected:
 	UPROPERTY()
 	TArray<AActor*> Boss3RoomBattleState;
 
+	UPROPERTY()
+	TArray<AActor*> TargetPostProcessVolumes;
+
+	UPROPERTY()
+	TObjectPtr<APostProcessVolume> Boss1FogProcessVolume;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> MaterialInstanceDynamic;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> MaterialInterface;
+
 	bool bIsSameLevelMove;
 
 	FName MoveTargetLevelName;
@@ -178,6 +194,16 @@ protected:
 	int32 PlayTime;
 
 	FTimerHandle PlayTimer;
+
+	FTimerHandle Boss1FogDisappearTimerHandle;
+
+	float FogFadeStartTime;
+
+	float FogFadeDuration;
+
+	float StartFogIntensity;
+	
+	float TargetFogIntensity;
 
 	FVector PlayerDeathLocation;
 

@@ -23,6 +23,7 @@
 #include "LevelSequencePlayer.h"
 #include "MovieSceneSequencePlaybackSettings.h"
 #include "MovieScene.h"
+#include "AI/AICharacters/BossMonster/Boss1Enemy.h"
 #include "Engine/Engine.h"
 #include "Components/AudioComponent.h"
 #include "Engine/ExponentialHeightFog.h"
@@ -52,7 +53,9 @@ ABaseGameMode::ABaseGameMode()
 	  PlayTime(0),
 	  bIsFadeIn(true),
       FadeDuration(1.f),
-      AssetLoadDelay(1.f)
+      AssetLoadDelay(1.f),
+	  StartFogIntensity(8208.f),
+	  TargetFogIntensity(4805095.f)
 {
 	static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
 	if (DropEssenceBPClass.Succeeded())
@@ -101,8 +104,9 @@ void ABaseGameMode::StartPlay()
 	BaseGameState->InitializeGame();
 
 	// Boss3Room 액터들 저장
-	if (WorldInstanceSubsystem->GetCurrentLevelName() == "PastLevel")
+	if (WorldInstanceSubsystem->GetCurrentLevelName().Contains("PastLevel"))
 	{
+		UGameplayStatics::GetAllActorsWithTag(this, "Boss1Fog", TargetPostProcessVolumes);
 		UGameplayStatics::GetAllActorsWithTag(World, TEXT("NormalState"), Boss3RoomNormalState);
 		UGameplayStatics::GetAllActorsWithTag(World, TEXT("BattleState"), Boss3RoomBattleState);
 	}
@@ -177,8 +181,15 @@ void ABaseGameMode::StartPlay()
 			IStoryDependentInterface::Execute_OnStoryStateUpdated(Actor, GameInstance->GetCurrentGameStoryState());
 		}
 	}
-
-	// ExitAudioComponent->Play();
+	
+	// StoryState >= Clear_Boss1 이면 보스1 안개 삭제
+	if (WorldInstanceSubsystem->GetCurrentLevelName() == "PastLevel" && GameInstance->GetCurrentGameStoryState() >= EGameStoryState::Clear_Boss1)
+	{
+		if (!TargetPostProcessVolumes.IsEmpty())
+		{
+			TargetPostProcessVolumes[0]->Destroy();
+		}
+	}
 
 	World->GetTimerManager().SetTimer(
 		PlayTimer,
@@ -210,6 +221,10 @@ void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
 void ABaseGameMode::EndBattle(AActor* DeadMonster)
 {
 	OnEndBattle.Broadcast(DeadMonster);
+	if (DeadMonster->IsA(ABoss1Enemy::StaticClass()))
+	{
+		DisappearBoss1Fog();
+	}
 }
 
 void ABaseGameMode::Save()
@@ -228,9 +243,8 @@ void ABaseGameMode::Save()
 	NewSaveSlotMetaData.PlayingLevelName = WorldInstanceSubsystem->GetCurrentLevelName();
 	NewSaveSlotMetaData.PlayingLevelDisplayName = WorldInstanceSubsystem->GetCurrentLevelDisplayName();
 	NewSaveSlotMetaData.RecentCrackName = RecentCrackCache->GetCrackName();
-	NewSaveSlotMetaData.PlayerLevel = static_cast<int32>(PlayerCharacter->GetStatusComponent()->
-	                                                                      GetStat(StatTags::Level));
-
+	NewSaveSlotMetaData.PlayerLevel = static_cast<int32>(PlayerCharacter->GetStatusComponent()->GetStat(StatTags::Level));
+	
 	SaveManagerSubsystem->SetSaveSlotData(NewSaveSlotMetaData.SaveSlotIndex, NewSaveSlotMetaData);
 	SaveManagerSubsystem->SaveSettings();
 	SaveManagerSubsystem->SaveGame(GameInstance->GetSaveSlotName(), GameInstance->GetSaveSlotIndex());
@@ -561,6 +575,73 @@ void ABaseGameMode::CheckFogCrackAndOffFog()
 		if (FogComponent->FogMaxOpacity == 0.f)
 		{
 			UCheatBPLib::ToggleFog(this);
+		}
+	}
+}
+
+void ABaseGameMode::DisappearBoss1Fog()
+{
+	if (!WorldInstanceSubsystem->GetCurrentLevelName().Contains("PastLevel"))
+	{
+		return;
+	}
+
+	if (!TargetPostProcessVolumes.IsEmpty())
+	{
+		Boss1FogProcessVolume = Cast<APostProcessVolume>(TargetPostProcessVolumes[0]);
+		if (IsValid(Boss1FogProcessVolume))
+		{
+			FWeightedBlendable& Blendable = Boss1FogProcessVolume->Settings.WeightedBlendables.Array[0];
+			MaterialInstanceDynamic = Cast<UMaterialInstanceDynamic>(Blendable.Object);
+
+			if (!IsValid(MaterialInstanceDynamic))
+			{
+				MaterialInterface = Cast<UMaterialInterface>(Blendable.Object);
+				if (IsValid(MaterialInterface))
+				{
+					MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(MaterialInterface, this);
+
+					Blendable.Object = MaterialInstanceDynamic;
+				}
+			}
+		}
+	}
+
+	FogFadeStartTime = GetWorld()->GetTimeSeconds();
+	FogFadeDuration = 5.f;
+	GetWorldTimerManager().SetTimer(
+		Boss1FogDisappearTimerHandle,
+		this,
+		&ABaseGameMode::FadeBoss1FogOut,
+		0.032f,
+		true);
+}
+
+void ABaseGameMode::FadeBoss1FogOut()
+{
+	float ElapsedTime = GetWorld()->GetTimeSeconds() - FogFadeStartTime;
+	float Alpha = FMath::Clamp(ElapsedTime / FogFadeDuration, 0.f, 1.f);
+	float CurrentFogIntensity;
+
+	if (ElapsedTime <= 3.f)
+	{
+		float Phase1Alpha = ElapsedTime / 3.f;
+		CurrentFogIntensity = FMath::Lerp(StartFogIntensity, 500000.f, Phase1Alpha);
+	}
+	else
+	{
+		float Phase2Alpha = (ElapsedTime - 3.f) / 2.f;
+		CurrentFogIntensity = FMath::Lerp(StartFogIntensity, TargetFogIntensity, Phase2Alpha);
+	}
+	
+	if (IsValid(MaterialInstanceDynamic))
+	{
+		MaterialInstanceDynamic->SetScalarParameterValue("FogDensityDistance", CurrentFogIntensity);
+
+		if (Alpha >= 1.f)
+		{
+			GetWorldTimerManager().ClearTimer(Boss1FogDisappearTimerHandle);
+			Boss1FogProcessVolume->Destroy();
 		}
 	}
 }
