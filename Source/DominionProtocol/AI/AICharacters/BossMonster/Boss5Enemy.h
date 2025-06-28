@@ -17,4 +17,7 @@ public:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	TObjectPtr<UChildActorComponent> RotateArmComponent;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	TObjectPtr<UChildActorComponent> ManipulatorTargeterComponent;
 };

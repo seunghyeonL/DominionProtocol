@@ -11,5 +11,7 @@ ABoss5Enemy::ABoss5Enemy()
 
 	RotateArmComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("RotateArmComponent"));
 	RotateArmComponent->SetupAttachment(RootComponent);
-}
 
+	ManipulatorTargeterComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("ManipulatorTargeterComponent"));
+	ManipulatorTargeterComponent->SetupAttachment(RootComponent);
+}
