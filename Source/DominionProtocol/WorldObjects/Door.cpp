@@ -39,7 +39,7 @@ ADoor::ADoor()
 void ADoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState)
 {
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GI->GetCurrentGameStoryState()>=EGameStoryState::Open_Lever)
+	if (GI->GetCurrentGameStoryState()>EGameStoryState::Open_Lever)
 	{
 		OpenDoor();
 	}
