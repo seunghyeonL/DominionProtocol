@@ -419,7 +419,6 @@ void ABaseGameMode::PlayFade(bool bFadeIn)
 	
 	if (bFadeIn)
 	{
-		// ㅈㅍ
 		bIsFadeIn = true;
 		SetPlayerInputEnable(true);
 		InGameController->FadeIn(FadeDuration);
@@ -462,7 +461,6 @@ void ABaseGameMode::PlayerLevelUp(FGameplayTag StatTag)
 
 void ABaseGameMode::OnFadeSequenceFinished()
 {
-	// ㅈㅍ
 	if (bIsFadeIn)
 	{
 		bIsFadeIn = false;
