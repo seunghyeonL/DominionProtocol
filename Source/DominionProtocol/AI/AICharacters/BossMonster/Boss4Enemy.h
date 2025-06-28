@@ -45,6 +45,10 @@ protected:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
+	UFUNCTION(BlueprintCallable)
+	void StartFade();
+	void UpdateFade();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* CollisionBox;
@@ -58,4 +62,19 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UDialogueManager> DialogueManager;
+
+	FTimerHandle FadeTimerHandle;
+
+	float FadeElapsedTime = 0.0f; // 현재까지 경과한 시간
+
+	UPROPERTY(EditAnywhere, Category = "Boss Spawn Settings")
+	float FadeDuration = 5.0f; // 메테리얼 변화 연출이 걸리는 시간
+
+	UPROPERTY(EditAnywhere, Category = "Boss Spawn Settings")
+	UMaterialParameterCollection* FadeMPC;
+
+	UMaterialParameterCollectionInstance* MPCInstance;
+
+	UPROPERTY(EditAnywhere, Category = "Boss Spawn Settings")
+	UCurveFloat* FadeCurve;
 };

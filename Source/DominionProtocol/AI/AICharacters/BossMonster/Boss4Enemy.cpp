@@ -8,6 +8,7 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "WorldObjects/DialogueManager.h"
 #include "UI/UIInGame/NewDialogueWidget.h"
+#include "Materials/MaterialParameterCollectionInstance.h"
 
 ABoss4Enemy::ABoss4Enemy()
 {
@@ -101,5 +102,42 @@ void ABoss4Enemy::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 
 		CachedCharacter = nullptr;
 		PlayerCharacter->RemoveInteractableActor(this);
+	}
+}
+
+void ABoss4Enemy::StartFade()
+{
+
+	FadeElapsedTime = 0.0f;
+
+	if (FadeMPC)
+	{
+		MPCInstance = GetWorld()->GetParameterCollectionInstance(FadeMPC);
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(
+		FadeTimerHandle,
+		this,
+		&ABoss4Enemy::UpdateFade,
+		0.05f,
+		true
+	);
+}
+
+
+
+void ABoss4Enemy::UpdateFade()
+{
+	if (!FadeCurve || !MPCInstance) return;
+
+	FadeElapsedTime += 0.05f;
+	float Alpha = FadeElapsedTime / FadeDuration;
+	float Value = FadeCurve->GetFloatValue(Alpha * FadeDuration);
+
+	MPCInstance->SetScalarParameterValue("FadeRadius", Value);
+
+	if (FadeElapsedTime >= FadeDuration)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(FadeTimerHandle);
 	}
 }
