@@ -10,6 +10,8 @@
 #include "Player/Characters/DomiCharacter.h"
 #include "EnumAndStruct/EGameStoryState.h"
 #include "AI/AICharacters/BossMonster/BaseBossEnemy.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 
 #include "Util/DebugHelper.h"
 
@@ -38,6 +40,11 @@ ABoss3Skull::ABoss3Skull()
 	InteractableCollisionSphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	InteractableCollisionSphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InteractableCollisionSphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	ExplosionAudioComponent1 = CreateDefaultSubobject<UAudioComponent>(TEXT("ExplosionAudioComponent1"));
+	ExplosionAudioComponent1->SetupAttachment(SceneRootComponent);
+	ExplosionAudioComponent2 = CreateDefaultSubobject<UAudioComponent>(TEXT("ExplosionAudioComponent2"));
+	ExplosionAudioComponent2->SetupAttachment(SceneRootComponent);
 }
 
 void ABoss3Skull::SetIsInteractable(bool bNewIsInteractable)
@@ -78,6 +85,17 @@ void ABoss3Skull::BeginPlay()
 	InteractableCollisionSphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ABoss3Skull::OnOverlapBegin);
 	InteractableCollisionSphereComponent->OnComponentEndOverlap.AddDynamic(this, &ABoss3Skull::OnOverlapEnd);
 
+	if (IsValid(ExplosionSound1))
+	{
+		ExplosionAudioComponent1->SetSound(ExplosionSound1);
+		ExplosionAudioComponent1->bAutoActivate = false;
+	}
+	if (IsValid(ExplosionSound2))
+	{
+		ExplosionAudioComponent2->SetSound(ExplosionSound2);
+		ExplosionAudioComponent2->bAutoActivate = false;
+	}
+	
 	BaseRotation = GetActorRotation();
 }
 
@@ -199,6 +217,16 @@ void ABoss3Skull::SpawnBoss3()
 				GetActorLocation(),
 				GetActorRotation());
 		}
+	}
+
+	//폭발 사운드 재생
+	if (IsValid(ExplosionAudioComponent1) &&
+		IsValid(ExplosionSound1) &&
+		IsValid(ExplosionAudioComponent2) &&
+		IsValid(ExplosionSound2))
+	{
+		ExplosionAudioComponent1->Play();
+		ExplosionAudioComponent2->Play();
 	}
 	
 	//보스 스폰 start
