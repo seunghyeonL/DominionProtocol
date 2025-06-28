@@ -23,7 +23,9 @@ void ABossSpawner::SpawnBoss()
 		Debug::Print(TEXT("BossSpawner: Return - !BossClass || !BossTag.IsValid()"));
 		return;
 	}
+	
 	AActor* SpawnedBoss = GetWorld()->SpawnActor<AActor>(BossClass, GetActorLocation(),	GetActorRotation());
+	
 	if (BossClass->IsChildOf(ABoss4Enemy::StaticClass()))
 	{
 		if (ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(SpawnedBoss))
