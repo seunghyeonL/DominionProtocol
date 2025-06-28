@@ -53,14 +53,14 @@ void ATitleController::OnBackToMainMenu()
 
 void ATitleController::FadeIn()
 {
-	// check(FadeWidgetInstance);
-	// FadeWidgetInstance->FadeIn(FadeDuration);
+	check(FadeWidgetInstance);
+	FadeWidgetInstance->FadeIn(FadeDuration);
 }
 
 void ATitleController::FadeOut()
 {
-	// check(FadeWidgetInstance);
-	// FadeWidgetInstance->FadeOut(FadeDuration);
+	check(FadeWidgetInstance);
+	FadeWidgetInstance->FadeOut(FadeDuration);
 }
 
 void ATitleController::SetupInputModeGameAndUI()
@@ -122,17 +122,17 @@ void ATitleController::BeginPlay()
 void ATitleController::CreateHUDWidget()
 {
 	check(TitleHUDWidgetClass);
-	// check(FadeWidgetClass);
+	check(FadeWidgetClass);
 	
 	TitleHUDWidgetInstance = CreateWidget<UNewTitleMenuWidget>(this, TitleHUDWidgetClass);
-	// FadeWidgetInstance = CreateWidget<UFadeWidget>(this, FadeWidgetClass);
+	FadeWidgetInstance = CreateWidget<UFadeWidget>(this, FadeWidgetClass);
 }
 
 void ATitleController::AddHUDToViewport() const
 {
 	check(TitleHUDWidgetInstance);
-	// check(FadeWidgetInstance);
+	check(FadeWidgetInstance);
 	
 	TitleHUDWidgetInstance->AddToViewport();
-	// FadeWidgetInstance->AddToViewport();
+	FadeWidgetInstance->AddToViewport();
 }

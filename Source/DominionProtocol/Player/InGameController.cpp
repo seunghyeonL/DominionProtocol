@@ -144,7 +144,6 @@ void AInGameController::AddHUDToViewport() const
 	check(FadeWidgetInstance);
 
 	InGameHUDWidgetInstance->AddToViewport();
-	// FadeWidgetInstance->SetRenderOpacity(0.f);
 	FadeWidgetInstance->AddToViewport();
 }
 

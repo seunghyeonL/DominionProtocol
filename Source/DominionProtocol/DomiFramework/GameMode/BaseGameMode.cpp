@@ -48,7 +48,7 @@ ABaseGameMode::ABaseGameMode()
 	  PlayTime(0),
 	  bIsFadeIn(true),
       FadeDuration(1.f),
-      AssetLoadDelay(2.f)
+      AssetLoadDelay(1.f)
 {
 	static ConstructorHelpers::FClassFinder<ADropEssence> DropEssenceBPClass(TEXT("/Game/WorldObjects/BP_DropEssence"));
 	if (DropEssenceBPClass.Succeeded())
@@ -174,7 +174,7 @@ void ABaseGameMode::StartPlay()
 		}
 	}
 
-	ExitAudioComponent->Play();
+	// ExitAudioComponent->Play();
 
 	World->GetTimerManager().SetTimer(
 		PlayTimer,
@@ -184,19 +184,18 @@ void ABaseGameMode::StartPlay()
 		true);
 
 	// AssetLoadDelay 후 페이드인
-	// TWeakObjectPtr<ThisClass> WeakThis = this;
-	// GetWorldTimerManager().SetTimer(
-	// 	AssetLoadTimer,
-	// 	[WeakThis]()
-	// 	{
-	// 		WeakThis->SetPlayerInputEnable(false);
-	// 		WeakThis->PlayFade(true);
-	// 	},
-	// 	AssetLoadDelay,
-	// 	false
-	// 	);
-	SetPlayerInputEnable(false);
-	PlayFade(true);
+	TWeakObjectPtr<ThisClass> WeakThis = this;
+	GetWorldTimerManager().SetTimer(
+		AssetLoadTimer,
+		[WeakThis]()
+		{
+			WeakThis->PlayFade(true);
+		},
+		AssetLoadDelay,
+		false
+		);
+	// SetPlayerInputEnable(false);
+	// PlayFade(true);
 }
 
 void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
@@ -331,6 +330,10 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		RestorePlayer();
 
 		ExitAudioComponent->Play();
+		// if (auto* InGameController = Cast<AInGameController>(PlayerController))
+		// {
+		// 	InGameController->FadeIn(FadeDuration);
+		// }
 
 		// Using InGameHUD
 		OnPlayerSpawn.Broadcast();
@@ -416,8 +419,9 @@ void ABaseGameMode::PlayFade(bool bFadeIn)
 	
 	if (bFadeIn)
 	{
+		// ㅈㅍ
 		bIsFadeIn = true;
-
+		SetPlayerInputEnable(true);
 		InGameController->FadeIn(FadeDuration);
 		GetWorldTimerManager().SetTimer(
 			FadeTimer,
@@ -432,10 +436,6 @@ void ABaseGameMode::PlayFade(bool bFadeIn)
 	{
 		bIsFadeIn = false;
 		SetPlayerInputEnable(false);
-		// SequencePlayer->SetPlaybackPosition(
-		// 	FMovieSceneSequencePlaybackParams(SequenceLength, EUpdatePositionMethod::Play));
-		// SequencePlayer->SetPlayRate(-1.f);
-		// SequencePlayer->Play();
 		InGameController->FadeOut(FadeDuration);
 		GetWorldTimerManager().SetTimer(
 			FadeTimer,
@@ -462,6 +462,7 @@ void ABaseGameMode::PlayerLevelUp(FGameplayTag StatTag)
 
 void ABaseGameMode::OnFadeSequenceFinished()
 {
+	// ㅈㅍ
 	if (bIsFadeIn)
 	{
 		bIsFadeIn = false;
@@ -485,7 +486,6 @@ void ABaseGameMode::OnFadeSequenceFinished()
 				ToggleBoss3BattleRoom(false);
 			}
 			PlayFade(true);
-			ExitAudioComponent->Play();
 		}
 		else
 		{
