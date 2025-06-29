@@ -21,6 +21,9 @@ public:
 
 	FORCEINLINE UDialogueManager* GetDialogueManager() { return DialogueManager; }
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void Boss4Dead();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Interact_Implementation(AActor* Interactor) override;
