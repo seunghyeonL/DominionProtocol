@@ -221,7 +221,7 @@ void ABaseGameMode::StartBattle(AActor* SpawnedBoss)
 void ABaseGameMode::EndBattle(AActor* DeadMonster)
 {
 	OnEndBattle.Broadcast(DeadMonster);
-	if (DeadMonster->IsA(ABoss1Enemy::StaticClass()))
+	if (IsValid(DeadMonster) && DeadMonster->IsA(ABoss1Enemy::StaticClass()))
 	{
 		DisappearBoss1Fog();
 	}
