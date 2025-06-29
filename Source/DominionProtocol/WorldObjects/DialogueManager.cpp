@@ -140,12 +140,11 @@ void UDialogueManager::AdvanceDialogue()
 			// 죽어가는 마녀일 경우
 			else if (CurrentDialogueID == TEXT("Witch"))
 			{
-				//로직 작성 필요
-				// ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(TalkActorCache);
-				// if (IsValid(Boss4))
-				// {
-				// 	Boss4->Die();
-				// }
+				ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(TalkActorCache);
+				if (IsValid(Boss4))
+				{
+					Boss4->Boss4Dead();
+				}
 			}
 		}
 	}

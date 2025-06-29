@@ -45,7 +45,7 @@ void ABoss4Enemy::Interact_Implementation(AActor* Interactor)
 		DialogueManager = NewObject<UDialogueManager>(this);
 		UE_LOG(LogTemp, Display, TEXT("새로만듦"));
 	}
-	DialogueManager->TryStartDialogueByID(DialogueID);
+	DialogueManager->TryStartDialogueByID(DialogueID, this);
 }
 
 FText ABoss4Enemy::GetInteractMessage_Implementation() const
