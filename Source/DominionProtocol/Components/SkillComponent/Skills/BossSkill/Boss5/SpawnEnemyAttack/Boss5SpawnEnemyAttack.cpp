@@ -241,7 +241,6 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 			Debug::PrintError(TEXT("UBoss5SpawnEnemyAttack::BP_BossAI Asset's location is not assigned"));
 		}
 	}
-	BBComp->SetValueAsBool("bEnemySpawned", true);
 }
 
 void UBoss5SpawnEnemyAttack::DestroySpawnedBoss()
@@ -266,5 +265,8 @@ void UBoss5SpawnEnemyAttack::End()
 	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
 
 	check(SkillComponent);
+
+	BBComp->SetValueAsBool("bEnemySpawned", true);
+
 	SkillComponent->EndSkill();
 }
