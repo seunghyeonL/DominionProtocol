@@ -132,6 +132,17 @@ void ABossSpawner::ResetFade(AActor* Boss)
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(
+		PreFadeDelayHandle,
+		this,
+		&ABossSpawner::StartResetFade,
+		GroggyDelay,
+		true
+	);
+}
+
+void ABossSpawner::StartResetFade()
+{
+	GetWorld()->GetTimerManager().SetTimer(
 		FadeTimerHandle,
 		this,
 		&ABossSpawner::UpdateReverseFade,

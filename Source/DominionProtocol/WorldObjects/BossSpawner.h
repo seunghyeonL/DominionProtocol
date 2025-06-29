@@ -25,6 +25,7 @@ public:
 	UFUNCTION()
 	void ResetFade(AActor* Boss);
 
+	void StartResetFade();
 	void UpdateReverseFade();
 
 protected:
@@ -58,6 +59,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Boss Spawn Settings")
 	float Boss2SpawnDelay = 5.0f; // 보스2 페이드 시작 전 대기 시간
+
+	UPROPERTY(EditAnywhere, Category = "Boss Spawn Settings")
+	float GroggyDelay = 0.0f; // 사라지기 연출 전 대기 시간
 
 	UPROPERTY(EditAnywhere, Category = "Boss Spawn Settings")
 	UMaterialParameterCollection* FadeMPC;
