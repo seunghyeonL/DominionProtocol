@@ -132,7 +132,10 @@ void UBoss5SpawnEnemyAttack::SpawnCapsule()
 	SpawnedCapsuleLocation.Add(RangedRightSpawnLocation);
 
 	AActor* TargetActor = Cast<AActor>(BBComp->GetValueAsObject(TargetActorKey));
-	if (!TargetActor) return;
+	if (!TargetActor) 
+	{ 
+		return; 
+	}
 
 	if (CurrentColorType == EColorType::Blue)
 	{
@@ -238,6 +241,7 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 			Debug::PrintError(TEXT("UBoss5SpawnEnemyAttack::BP_BossAI Asset's location is not assigned"));
 		}
 	}
+	BBComp->SetValueAsBool("bEnemySpawned", true);
 }
 
 void UBoss5SpawnEnemyAttack::DestroySpawnedBoss()

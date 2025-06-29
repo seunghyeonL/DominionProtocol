@@ -78,4 +78,7 @@ private:
 	int32 RandomIndex;
 
 	FTimerHandle SpawnedBossAILifeSpanTimer;
+
+	UPROPERTY()
+	bool IsSpawned;
 };
