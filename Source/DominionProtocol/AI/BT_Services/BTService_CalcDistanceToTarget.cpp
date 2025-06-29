@@ -43,6 +43,12 @@ void UBTService_CalcDistanceToTarget::OnBecomeRelevant(UBehaviorTreeComponent& O
 
 	UObject* Target = Blackboard->GetValueAsObject("TargetActor");
 
+	if (!IsValid(Target))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[UBTService_CalcDistanceToTarget] Failed: No Target"));
+		return;
+	}
+
 	AActor* TargetActor = Cast<AActor>(Target);
 
 	FVector OwnerLocation = ControlledPawn->GetActorLocation();
