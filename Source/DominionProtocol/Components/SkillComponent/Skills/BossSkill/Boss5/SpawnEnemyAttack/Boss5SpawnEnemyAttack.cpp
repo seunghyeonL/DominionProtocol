@@ -72,7 +72,18 @@ void UBoss5SpawnEnemyAttack::Tick(float DeltaTime)
 				}
 
 				CapsuleState = ECapsuleState::None;
-				End();
+
+				if (CurrentColorType == EColorType::Black)
+				{
+					if (!SpawnedBossEnemy)
+					{
+						End();
+					}
+				}
+				else
+				{
+					End();
+				}
 			}
 		}
 		break;
@@ -233,7 +244,7 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 		if (BossAI)
 		{
 			SpawnedBossEnemy = Cast<ABoss2Enemy>(GetWorld()->SpawnActor<AActor>(BossAI, SpawnedCapsuleLocation[RandomIndex], SpawnedEnemyRotation[0]));
-			GetWorld()->GetTimerManager().SetTimer(SpawnedBossAILifeSpanTimer, this, &UBoss5SpawnEnemyAttack::DestroySpawnedBoss, 60.0f, false);
+			GetWorld()->GetTimerManager().SetTimer(SpawnedBossAILifeSpanTimer, this, &UBoss5SpawnEnemyAttack::DestroySpawnedBoss, 25.0f, false);
 
 		}
 		else
@@ -257,6 +268,8 @@ void UBoss5SpawnEnemyAttack::DestroySpawnedBoss()
 		if (!TempBBComp) return;
 
 		TempBBComp->SetValueAsBool("bIsBossDead", true);
+
+		End();
 	}
 }
 
