@@ -153,7 +153,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UItemComponent> ItemComponent;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<ACrack> RecentCrackCache;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
