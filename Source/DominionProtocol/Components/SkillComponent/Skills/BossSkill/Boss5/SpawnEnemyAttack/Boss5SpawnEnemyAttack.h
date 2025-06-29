@@ -5,6 +5,7 @@
 #include "Boss5SpawnEnemyAttack.generated.h"
 
 class UBlackboardComponent;
+class ABoss2Enemy;
 
 UENUM()
 enum class EColorType : uint8
@@ -58,7 +59,7 @@ private:
 	TArray<TObjectPtr<AActor>> SpawnedNormalEnemy;
 
 	UPROPERTY()
-	TObjectPtr<AActor> SpawnedBossEnemy;
+	TObjectPtr<ABoss2Enemy> SpawnedBossEnemy;
 
 	TObjectPtr<UBlackboardComponent> BBComp;
 
@@ -68,10 +69,11 @@ private:
 	float ElapsedTime = 0.0f;
 	float Duration = 2.0f;
 
+	TArray<FVector> SpawnedCapsuleLocation;
+
 	TArray<FVector> CapsuleStartLocation;
 	TArray<FVector> CapsuleEndLocation;
 
-	TArray<FVector> SpawnedCapsuleLocation;
 	TArray<FVector> SpawnedEnemyLocation;
 	TArray<FRotator> SpawnedEnemyRotation;
 
@@ -81,4 +83,7 @@ private:
 
 	UPROPERTY()
 	bool IsSpawned;
+
+	UPROPERTY()
+	bool IsSpawnedBossDead;
 };

@@ -72,18 +72,11 @@ void UBoss5SpawnEnemyAttack::Tick(float DeltaTime)
 				}
 
 				CapsuleState = ECapsuleState::None;
-
-				if (CurrentColorType == EColorType::Black)
-				{
-					if (!SpawnedBossEnemy)
-					{
-						End();
-					}
-				}
-				else
+				
+				if (CurrentColorType != EColorType::Black)
 				{
 					End();
-				}
+				}				
 			}
 		}
 		break;
@@ -209,7 +202,7 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 {
 	if (CurrentColorType == EColorType::Blue)
 	{
-		UClass* MeleeAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss5/BP_MinionAI.BP_MinionAI_C"));
+		UClass* MeleeAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss5/BP_Boss5MinionAI.BP_Boss5MinionAI_C"));
 		if (MeleeAI)
 		{
 			for (int i = 0; i < 2; i++)
@@ -222,7 +215,7 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 			Debug::PrintError(TEXT("UBoss5SpawnEnemyAttack::BP_MinionAI Asset's location is not assigned"));
 		}
 
-		UClass* RangedAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss5/BP_GunMinionAI.BP_GunMinionAI_C"));
+		UClass* RangedAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss5/BP_Boss5GunMinionAI.BP_Boss5GunMinionAI_C"));
 		if (RangedAI)
 		{
 			//FVector ChosenSpawnLocation = FMath::RandBool() ? RangedLeftSpawnLocation : RangedRightSpawnLocation;
@@ -243,9 +236,8 @@ void UBoss5SpawnEnemyAttack::SpawnEnemy()
 		UClass* BossAI = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/Blueprints/Boss/Boss2/BP_Boss2.BP_Boss2_C"));
 		if (BossAI)
 		{
-			SpawnedBossEnemy = Cast<ABoss2Enemy>(GetWorld()->SpawnActor<AActor>(BossAI, SpawnedCapsuleLocation[RandomIndex], SpawnedEnemyRotation[0]));
+			SpawnedBossEnemy = GetWorld()->SpawnActor<ABoss2Enemy>(BossAI, SpawnedCapsuleLocation[RandomIndex], SpawnedEnemyRotation[0]);
 			GetWorld()->GetTimerManager().SetTimer(SpawnedBossAILifeSpanTimer, this, &UBoss5SpawnEnemyAttack::DestroySpawnedBoss, 25.0f, false);
-
 		}
 		else
 		{
@@ -258,10 +250,7 @@ void UBoss5SpawnEnemyAttack::DestroySpawnedBoss()
 {
 	if (SpawnedBossEnemy)
 	{
-		ABoss2Enemy* SpawnedBoss = Cast<ABoss2Enemy>(SpawnedBossEnemy);
-		if (!SpawnedBoss) return;
-
-		AAIController* TempAIController = Cast<AAIController>(SpawnedBoss->GetController());
+		AAIController* TempAIController = Cast<AAIController>(SpawnedBossEnemy->GetController());
 		if (!TempAIController) return;
 
 		UBlackboardComponent* TempBBComp = TempAIController->GetBlackboardComponent();
@@ -275,11 +264,11 @@ void UBoss5SpawnEnemyAttack::DestroySpawnedBoss()
 
 void UBoss5SpawnEnemyAttack::End()
 {
+	BBComp->SetValueAsBool("bEnemySpawned", true);
+
 	USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
 
 	check(SkillComponent);
-
-	BBComp->SetValueAsBool("bEnemySpawned", true);
 
 	SkillComponent->EndSkill();
 }
