@@ -39,6 +39,17 @@ EBTNodeResult::Type UReturnToHome::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 
 	UE_LOG(LogTemp, Warning, TEXT("MoveTo Result Code: %d"), static_cast<int32>(Result.Code));
 
+	ControlledActor = AICon->GetPawn();
+	if (!ControlledActor) return EBTNodeResult::Failed;
+
+	if (UAIStateComponent* AIStateComp = AICon->FindComponentByClass<UAIStateComponent>())
+	{
+		AIStateComp->SetAIStateByTag(EffectTags::Idle);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UAIStateComponent not found on AAIController %s"), *AICon->GetName());
+	}
 	return EBTNodeResult::InProgress;
 }
 

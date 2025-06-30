@@ -14,6 +14,7 @@ UStatusEffectBase::UStatusEffectBase()
 	bIsActive = false;
 	CachedDuration = 0.f;
 	DurationRemained = 0.f;
+	EffectIcon = nullptr;
 }
 
 void UStatusEffectBase::Initialize()
@@ -47,7 +48,8 @@ FEffectUIData UStatusEffectBase::GetEffectUIData() const
 	FString TagName = StatusEffectTag.GetTagName().ToString();
 	FString LastSegment;
 	TagName.Split(TEXT("."), nullptr, &LastSegment, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
-
+	FEffectUIData EffectUIData;
+	
 	return {
 		StatusEffectTag,
 		 LastSegment,

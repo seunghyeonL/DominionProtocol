@@ -4,20 +4,8 @@
 #include "DomiInGameHUDWidget.h"
 
 #include "Components/CanvasPanelSlot.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "DomiFramework/GameMode/BaseGameMode.h"
 #include "Player/InGameController.h"
 
-
-void UDomiInGameHUDWidget::OnPlayerDeath()
-{
-	ShowDeathScriptWidget();
-}
-
-void UDomiInGameHUDWidget::OnPlayerSpawn()
-{
-	HideDeathScriptWidget();
-}
 
 void UDomiInGameHUDWidget::OnShowCrackMenuWidget()
 {
@@ -60,33 +48,10 @@ void UDomiInGameHUDWidget::NativeConstruct()
 	ensure(InteractionWidget);
 	ensure(CrackMenuWidget);
 
-	AActor* OwningActor = GetOwningPlayerPawn();
-	if (OwningActor)
-	{
-		SetupStatusBarWidget(OwningActor);
-	}
-
 	auto* InGameController = Cast<AInGameController>(GetOwningPlayer());
 	if (InGameController)
 	{
 		OwningController = InGameController;
-	}
-}
-
-void UDomiInGameHUDWidget::SetupStatusBarWidget(const AActor* OwningActor)
-{
-	ensure(IsValid(OwningActor));
-	
-	auto* StatusComp = OwningActor->GetComponentByClass<UStatusComponent>();
-	if (StatusComp)
-	{
-		StatusComp->OnDeath.AddUObject(this, &UDomiInGameHUDWidget::OnPlayerDeath);
-	}
-
-	auto* GameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
-	if (GameMode)
-	{
-		GameMode->OnPlayerSpawn.AddUObject(this, &UDomiInGameHUDWidget::OnPlayerSpawn);
 	}
 }
 

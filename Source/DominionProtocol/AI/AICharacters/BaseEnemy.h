@@ -88,17 +88,11 @@ public:
 	// LockOnComponent
 	FORCEINLINE FVector GetLockOnLocation() const { return LockOnComponent->GetComponentLocation(); }
 
-	// HitVFX
-	UFUNCTION(BlueprintImplementableEvent, Category = "Hit|VFX")
-	void PlayHitVFX(const FVector& HitLocation);
+	FString GetMonsterName() const { return MonsterName; }
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	// HitSound
-	UFUNCTION(BlueprintImplementableEvent, Category = "Hit|Sound")
-	void PlayHitSound();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStatusComponent> StatusComponent;

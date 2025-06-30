@@ -12,12 +12,22 @@ struct FInstanceData
 {
 	GENERATED_BODY()
 
+	FInstanceData()
+		: SaveSlotName(FString()),
+		  SaveSlotIndex(-1),
+		  StatDataMap(TMap<FGameplayTag, float>()),
+		  CurrentGameStoryState(EGameStoryState::Tutorial),
+		  PlayTime(0),
+		  PlayerCurrentEssence(0)
+	{
+	}
+
 	UPROPERTY()
 	FString SaveSlotName;
 
 	UPROPERTY()
 	int32 SaveSlotIndex;
-	
+
 	UPROPERTY()
 	TMap<FGameplayTag, float> StatDataMap;
 

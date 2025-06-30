@@ -79,21 +79,18 @@ void UPlayerRunningEffect::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (auto DomiCharacter = Cast<ADomiCharacter>(OwnerCharacter))
-	{
-		if (!DomiCharacter->IsInCombat())
-		{
-			return;
-		}
-	}
-
 	auto StatusComponent = Cast<UStatusComponent>(GetOuter());
 	check(StatusComponent);
 
+	if (!StatusComponent->IsInCombat())
+	{
+		return;
+	}
+
+	StatusComponent->SetStamina(StatusComponent->GetStat(StatTags::Stamina) - StatusComponent->GetStat(StatTags::MaxStamina) * StaminaPerSecondRate * DeltaTime);
+	
 	if (FMath::IsNearlyZero(StatusComponent->GetStat(StatTags::Stamina)))
 	{
 		Deactivate();
 	}
-	
-	StatusComponent->SetStamina(StatusComponent->GetStat(StatTags::Stamina) - StatusComponent->GetStat(StatTags::MaxStamina) * StaminaPerSecondRate * DeltaTime);
 }

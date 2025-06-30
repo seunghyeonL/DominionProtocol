@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AI/AICharacters/NomalMonster/SkeletonEnemy.h"
+#include "AI/AICharacters/NomalMonster/NomalEnemy.h"
 #include "DualBladeSkeletonEnemy.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOMINIONPROTOCOL_API ADualBladeSkeletonEnemy : public ASkeletonEnemy
+class DOMINIONPROTOCOL_API ADualBladeSkeletonEnemy : public ANomalEnemy
 {
 	GENERATED_BODY()
-	
+public:
+	ADualBladeSkeletonEnemy();
 };

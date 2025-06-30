@@ -6,6 +6,8 @@
 #include "Components/CapsuleComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "ViewTarget.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Util/DebugHelper.h"
 
 AHelper::AHelper()
@@ -20,16 +22,30 @@ AHelper::AHelper()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	GetMesh()->bReceivesDecals = false;
+	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 }
 
 void AHelper::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bIsFocussed)
+	{
+		FRotator Rot = UKismetMathLibrary::FindLookAtRotation(ViewTarget->GetActorLocation(), GetActorLocation());
+		ViewTarget->SetActorRotation(Rot);
+	}
+	if (bAppearFinished)
+	{
+		FVector ToTarget = ViewTarget->GetActorLocation() - GetActorLocation();
+		ToTarget.Z = 0.f;
+		ToTarget.Normalize();
+		AddMovementInput(ToTarget, 1.f);
+	}
 }
 
 void AHelper::BeginPlay()
 {
 	Super::BeginPlay();
+	ViewTarget = GetWorld()->SpawnActor<AViewTarget>(FVector::ZeroVector, FRotator::ZeroRotator, FActorSpawnParameters());
 }
 
 void AHelper::SetDialogueManager(UDialogueManager* InManager)
@@ -76,7 +92,7 @@ void AHelper::Appear(const FVector& SpawnLocation, const FRotator& SpawnRotation
 		}
 	}
 }
-void AHelper::Disappear()
+void AHelper::Disappear(const FVector& SpawnLocation)
 {
 	Debug::Print(TEXT("AHelper::Disappear()"));
 	if (DisappearMontage)
@@ -85,7 +101,9 @@ void AHelper::Disappear()
 		UAnimInstance* HeadAnim = Hair->GetAnimInstance();
 		if (AnimInstance)
 		{
-			SetActorRotation(FRotator(0.f, 0.f, 100.f));
+			// SetActorRotation(FRotator(0.f, 0.f, 100.f));
+			FRotator Rot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), SpawnLocation);
+			SetActorRotation(Rot);
 
 			AnimInstance->Montage_Play(DisappearMontage, 1.f);
 			HeadAnim->Montage_Play(DisappearMontage, 1.f);
@@ -95,11 +113,13 @@ void AHelper::Disappear()
 			AnimInstance->Montage_SetEndDelegate(EndDelegate, DisappearMontage);
 			Debug::Print(TEXT("AHelper::Disappear() AnimInstance"));
 
-			Destroy(); // 진행을 위한 임시 삭제
+			// ViewTarget->Destroy();
+			// Destroy(); // 진행을 위한 임시 삭제
 		}
 	}
 	else
 	{
+		ViewTarget->Destroy();
 		Destroy();
 		Debug::Print(TEXT("AHelper::Disappear() NoAnimInstance"));
 	}
@@ -108,6 +128,7 @@ void AHelper::Disappear()
 void AHelper::OnDisappearMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	Debug::Print(TEXT("AHelper::OnDisappearMontageEnded;pp"));
+	ViewTarget->Destroy();
 	Destroy();
 }
 
@@ -117,11 +138,34 @@ void AHelper::OnAppearMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	if (Capsule)
 	{
 		Capsule->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-		SetActorRotation(FRotator::ZeroRotator);
 	}
 
 	if (OnAppearFinishedCallback.IsBound())
 	{
 		OnAppearFinishedCallback.Execute();
 	}
+
+	APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Player) return;
+	FVector PlayerLocation = Player->GetActorLocation();
+	FRotator Rot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), PlayerLocation);
+	SetActorRotation(Rot);
+}
+
+void AHelper::SetViewTargetLocAndRot(const FVector& InLocation, const FRotator& InRotation) const
+{
+	ViewTarget->SetActorLocation(InLocation);
+	ViewTarget->SetActorRotation(InRotation);
+}
+
+void AHelper::SetViewToHelper()
+{
+	PC->SetViewTargetWithBlend(ViewTarget, 0.5f);
+	bIsFocussed = true;
+}
+
+void AHelper::SetViewToPlayer()
+{
+	PC->SetViewTargetWithBlend(PC->GetPawn(), 0.5f);
+	bIsFocussed = false;
 }

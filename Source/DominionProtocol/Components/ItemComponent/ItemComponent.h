@@ -19,6 +19,8 @@ DECLARE_DELEGATE_OneParam(FOnPrimaryWeaponChangedForWeaponVisibility, const FGam
 DECLARE_DELEGATE(FOnPrimaryWeaponChangedForAttackPowerSet)
 DECLARE_DELEGATE(FOnSecondaryWeaponChangedForSubAttackPowerSet)
 DECLARE_DELEGATE_OneParam(FOnMagicSkillChanged, const FSkillComponentInitializeData&)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnAddItem, FGameplayTag, int32)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnUseItem, FGameplayTag)
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DOMINIONPROTOCOL_API UItemComponent : public UActorComponent
@@ -36,6 +38,8 @@ public:
 	FOnPrimaryWeaponChangedForAttackPowerSet OnPrimaryWeaponChangedForAttackPowerSet;
 	FOnSecondaryWeaponChangedForSubAttackPowerSet OnSecondaryWeaponChangedForSubAttackPowerSet;
 	FOnMagicSkillChanged OnMagicSkillChanged;
+	FOnAddItem OnAddItem;
+	FOnUseItem OnUseItem;
 
 protected:
 	virtual void BeginPlay() override;

@@ -33,11 +33,16 @@ void UBossMonsterHPBarWidget::UpdateBossMonsterShield(const float NewShield)
 	CurrentBossMonsterShield = NewShield;
 }
 
-void UBossMonsterHPBarWidget::UpdateBossMonsterName(const FString NewBossMonsterName)
+void UBossMonsterHPBarWidget::UpdateBossMonsterName(AActor* NewBossMonster)
 {
-	BossMonsterName = NewBossMonsterName;
-
-	OnUpdateBossMonsterName();
+	if (NewBossMonster->GetClass()->ImplementsInterface(UPawnTagInterface::StaticClass()))
+	{
+		const FString CharacterName = IPawnTagInterface::Execute_GetPawnName(NewBossMonster);
+		CurrentBossMonster = NewBossMonster;
+		BossMonsterName = CharacterName;
+		
+		OnUpdateBossMonsterName();
+	}
 }
 
 
@@ -55,8 +60,9 @@ void UBossMonsterHPBarWidget::StartBattleBossMonster(AActor* NewMonster)
 	OnStartBattleBossMonster();
 }
 
-void UBossMonsterHPBarWidget::EndBattleBossMonster()
+void UBossMonsterHPBarWidget::EndBattleBossMonster(AActor* DeadMonster)
 {
+	// DeadMonster 를 사용하진 않지만, 델리게이트를 하나로 통일하기 위해서 매개변수에 AActor* 를 추가
 	OnEndBattleBossMonster();
 }
 

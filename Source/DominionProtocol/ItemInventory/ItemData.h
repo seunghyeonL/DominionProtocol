@@ -24,21 +24,23 @@ struct FItemData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
+	FItemData() {}
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Item Data")
 	FString ItemName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
-	EItemType ItemType;
+	EItemType ItemType = EItemType::Other;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
-	UTexture2D* ItemIcon;
+	UTexture2D* ItemIcon = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FText ItemDescription;
 
 	//장비아이템 중복획득 방지
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
-	int32 MaxItemQuantity;
+	int32 MaxItemQuantity = 1;
 	
 	//아이템태그(Util/GameTagList, Config/DefaultGameplayTags.ini, DT_ItemDataTable 행이름 변환해 사용) 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
@@ -62,7 +64,7 @@ public:
 
 	//드랍 전용
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
-	UStaticMesh* ItemStaticMesh;
+	UStaticMesh* ItemStaticMesh = nullptr;
 
 	//무기 메시 소켓 등의 데이터
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
@@ -70,17 +72,17 @@ public:
 
 	//무기 계수
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
-	float WeaponStatMultiplier;
+	float WeaponStatMultiplier = 1.f;
 
 	//악세서리 메시 소켓 등의 데이터
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	FAccessoryData AccessoryData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable Effect")
-	class UAnimMontage* ConsumeMontage;
+	class UAnimMontage* ConsumeMontage = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable Effect")
-	class UNiagaraSystem* ConsumeNiagaraSystem;
+	class UNiagaraSystem* ConsumeNiagaraSystem = nullptr;
 
 	//(UI)
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")

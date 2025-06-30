@@ -47,7 +47,31 @@ void ABaseBossEnemy::OnDeath_Implementation()
 	}
 	if (ABaseGameMode* GM = Cast<ABaseGameMode>(UGameplayStatics::GetGameMode(this)))
 	{
-		GM->EndBattle();
+		GM->EndBattle(this);
 	}
 	//OnBossDeathDelegate.Broadcast();
+}
+
+FVector ABaseBossEnemy::GetGroundSpawnLocation()
+{
+	FVector StartLocation = GetActorLocation();
+	FVector EndLocation = StartLocation - FVector(0.f, 0.f, 1000.f);
+
+	FHitResult HitResult;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		StartLocation,
+		EndLocation,
+		ECC_WorldStatic,
+		QueryParams))
+	{
+		return HitResult.Location + FVector(0.f, 0.f, 50.f);
+	}
+
+	FVector FallbackLocation = GetActorLocation();
+	FallbackLocation.Z -= 100.f;
+	return FallbackLocation;
 }

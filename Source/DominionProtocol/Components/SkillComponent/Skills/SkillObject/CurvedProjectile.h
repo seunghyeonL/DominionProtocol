@@ -16,6 +16,19 @@ struct FProjectileCurveSettings
 {
 	GENERATED_BODY()
 
+	FProjectileCurveSettings()
+		: MinCurvePointDistance(0.f),
+		  MaxCurvePointDistance(0.f),
+		  MinCurveRadius(0.f),
+		  MaxCurveRadius(0.f),
+		  MinAngle(0.f),
+		  MaxAngle(0.f),
+		  ProjectileSpeed(0.f),
+		  CurveDuration(0.f),
+		  LifeSpan(0.f)
+	{
+	}
+
 public:
 	// MidPoint가 시작점으로부터 떨어져 있어야 하는 비율 (0 ~ 1)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
@@ -43,7 +56,7 @@ public:
 	float ProjectileSpeed;
 
 	// 투사체가 커브를 계속할 시간
- 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	float CurveDuration;
 
 	// 투사체 생명주기
@@ -83,11 +96,12 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
 	TObjectPtr<UStaticMeshComponent> Projectile;
+
 protected:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-		bool bFromSweep, const FHitResult& SweepResult);
+	                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	                    bool bFromSweep, const FHitResult& SweepResult);
 
 	virtual void ApplyAttackToHitActor(const FHitResult& HitResult, const float DeltaTime);
 
@@ -100,7 +114,7 @@ private:
 
 	void CurveControl();
 
-	void DestroyProjectile();
+	virtual void DestroyProjectile();
 
 	void UpdateCurveMovement(float DeltaTime);
 	void FixTargetPoint();
@@ -117,7 +131,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<USoundBase> Sound;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileCurveSettings",
+		meta = (AllowPrivateAccess = "true"))
 	FProjectileCurveSettings CurveSettings;
 
 	UPROPERTY()
@@ -139,9 +154,9 @@ private:
 
 	bool bIsTargetMove = false;
 	bool bIsInitialize = false;
-	bool bCurveFixed = false;  // 커브가 고정되었는지 확인하는 플래그
-	bool bReachedTarget = false;  // 타겟에 도달했는지 확인하는 플래그
-	FVector DirectionVector;  // 타겟 도달 후 직진할 방향 벡터
+	bool bCurveFixed = false; // 커브가 고정되었는지 확인하는 플래그
+	bool bReachedTarget = false; // 타겟에 도달했는지 확인하는 플래그
+	FVector DirectionVector; // 타겟 도달 후 직진할 방향 벡터
 
-	float ElapsedTime = 0.0f;  // 경과 시간 추적
+	float ElapsedTime = 0.0f; // 경과 시간 추적
 };

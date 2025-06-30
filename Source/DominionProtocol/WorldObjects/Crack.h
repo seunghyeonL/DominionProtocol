@@ -20,6 +20,7 @@ class AHelper;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCrackSystem, Log, All);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnActiveCrack, FText)
 
 
 UCLASS()
@@ -33,6 +34,7 @@ public:
 	ACrack();
 
 	FOnCreateDialogueManager OnCreateDialogueManager;
+	FOnActiveCrack OnActiveCrack;
 
 	void AlignPlayerForDialogue(ADomiCharacter* PlayerCharacter);
 	
@@ -42,7 +44,10 @@ public:
 	FVector GetRespawnTargetPointLocation() const;
 	FRotator GetRespawnTargetPointRotation() const;
 	FORCEINLINE int32 GetCrackIndex() const { return CrackIndex; }
+	FORCEINLINE EGameStoryState GetRequiredRevealStoryState() const { return RequiredRevealStoryState; }
 	FORCEINLINE bool GetIsInFogCrack() const { return bIsInFogCrack;}
+	FORCEINLINE bool GetShouldOffSkyAtmosphere() const { return bShouldOffSkyAtmosphere; }
+	FORCEINLINE bool GetIsBoss3Crack() const { return bIsBoss3Crack; }
 	
 	//Setter
 	FORCEINLINE void SetActive() { bIsActivate = true; }
@@ -111,6 +116,12 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	bool bIsInFogCrack;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	bool bIsBoss3Crack;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	bool bShouldOffSkyAtmosphere;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float InteractableRadius;
 
@@ -135,9 +146,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AHelper> HelperClass;
-	
-	UPROPERTY()
-	TObjectPtr<ATargetPoint> RespawnTargetPoint;
 	
 	float DistanceCalculateRadiusSquared;
 	

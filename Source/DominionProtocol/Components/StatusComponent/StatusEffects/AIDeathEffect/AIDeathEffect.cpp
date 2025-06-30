@@ -29,8 +29,9 @@ bool UAIDeathEffect::Activate()
 		}
 		
 		// OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Visibility);
-		OwnerCharacter->GetCapsuleComponent()->SetCollisionProfileName(TEXT("CameraPawnIgnore"));
+		OwnerCharacter->GetCapsuleComponent()->SetCollisionProfileName(TEXT("DeadPawnCapsule"));
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel3);
+		OwnerCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
 		if (auto WidgetComponent = OwnerCharacter->FindComponentByClass<UDomiWidgetComponent>())
 		{

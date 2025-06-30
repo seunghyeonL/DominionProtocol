@@ -21,6 +21,11 @@ ABossCloudDoor::ABossCloudDoor()
 	BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BlockingBox->SetCollisionResponseToAllChannels(ECR_Block);
 
+	BlockingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlockingMesh"));
+	BlockingMesh->SetupAttachment(RootComponent);
+	BlockingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BlockingMesh->SetCollisionResponseToAllChannels(ECR_Block);
+
 	PathEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PathEffect"));
 	PathEffect->SetupAttachment(RootComponent);
 	PathEffect->SetAutoActivate(true);
@@ -49,6 +54,10 @@ void ABossCloudDoor::OnStoryStateUpdated_Implementation(EGameStoryState NewState
 		if (BlockingBox)
 		{
 			BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+		if (BlockingMesh)
+		{
+			BlockingMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 		if (CollisionBox)
 		{
@@ -117,11 +126,35 @@ void ABossCloudDoor::EnterDoor()
 	UAnimInstance* AnimInstance = CachedCharacter->GetMesh()->GetAnimInstance();
 	if (!AnimInstance)
 		return;
-	float Duration = AnimInstance->Montage_Play(EnterDoorMontage);
+	
+	GetWorld()->GetTimerManager().SetTimer(WalkMontageTimerHandle, this, &ABossCloudDoor::PlayWalkMontageLoop, 0.1f, true);
 
-	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &ABossCloudDoor::OnEnterMontageEnded);
-	AnimInstance->Montage_SetEndDelegate(EndDelegate, EnterDoorMontage);
+	//AnimInstance->Montage_Play(EnterDoorMontage);
+}
+
+void ABossCloudDoor::PlayWalkMontageLoop()
+{
+	if (!CachedCharacter || !EntryTeleportTarget)
+		return;
+
+	FVector Current = CachedCharacter->GetActorLocation();
+	FVector Target = EntryTeleportTarget->GetComponentLocation();
+	Target.Z = Current.Z;
+
+	const float Distance = FVector::Dist(Current, Target);
+	if (Distance > 30.f)
+	{
+		UAnimInstance* AnimInstance = CachedCharacter->GetMesh()->GetAnimInstance();
+		if (AnimInstance && !AnimInstance->Montage_IsPlaying(EnterDoorMontage))
+		{
+			AnimInstance->Montage_Play(EnterDoorMontage);
+		}
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(WalkMontageTimerHandle);
+		OnEnterMontageEnded(EnterDoorMontage, false);
+	}
 }
 
 void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -138,21 +171,28 @@ void ABossCloudDoor::OnEnterMontageEnded(UAnimMontage* Montage, bool bInterrupte
 			}
 		}
 
-		//PathEffect->Activate();
-		//BlockingBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-		BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-		BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-
-		if (UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this)))
+		if (BlockingMesh)
 		{
+			BlockingMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+			BlockingMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+			BlockingMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		}
+		if (BlockingBox)
+		{
+			BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+			BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+			BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		}
+		UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
+
+		if (GI->GetCurrentGameStoryState() == ActiveFromState)
+		{
+			LinkedBossSpawner->SpawnBoss();
 			GI->AdvanceStoryState();
 		}
-
-		LinkedBossSpawner->SpawnBoss();
-
 	}
 	CachedCharacter = nullptr;
+	Debug::Print(TEXT("몽타주 끝"));
 }
 
 void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
@@ -167,7 +207,10 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 	{
 		FVector Target = EntryTeleportTarget->GetComponentLocation();
 		FVector CharacterL = CachedCharacter->GetActorLocation();
+
 		FRotator LookAtRotation = (Target - CharacterL).Rotation();
+		LookAtRotation.Pitch = 0.f;
+		LookAtRotation.Roll = 0.f;
 
 		CachedCharacter->SetActorRotation(LookAtRotation);
 	}
@@ -181,11 +224,19 @@ void ABossCloudDoor::Interact_Implementation(AActor* Interactor)
 		}
 	}
 
-	//BlockingBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-
+	if (BlockingMesh)
+	{
+		BlockingMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		BlockingMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+		BlockingMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+	}
+	if (BlockingBox)
+	{
+		BlockingBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		BlockingBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+		BlockingBox->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+	}
+	
 	EnterDoor();
 }
 

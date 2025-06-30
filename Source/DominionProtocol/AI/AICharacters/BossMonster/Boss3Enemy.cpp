@@ -5,11 +5,32 @@
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/ItemComponent/ItemComponent.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Player/Characters/DomiCharacter.h"
 
 ABoss3Enemy::ABoss3Enemy()
 {
 	PawnTag = PawnTags::Boss3;
+}
+
+void ABoss3Enemy::OnDeath_Implementation()
+{
+	Super::OnDeath_Implementation();
+
+	SpawnDropItem();
+	
+	GetWorldTimerManager().SetTimer(
+		BossDestroyHandle,
+		this,
+		&ABoss3Enemy::DestroyActor,
+		3.f,
+		false);
+}
+
+void ABoss3Enemy::DestroyActor()
+{
+	Destroy();
 }
 
 void ABoss3Enemy::Attack()
@@ -153,4 +174,29 @@ void ABoss3Enemy::OnGroggy()
 {
 	Super::OnGroggy();
 	StatusComponent->ActivateStatusEffect(EffectTags::Groggy, 0.f, 3.f);
+}
+
+void ABoss3Enemy::SpawnDropItem()
+{
+	// 일반 DroppedItem 로직
+	if (IsValid(DropItemClass))
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		GetWorld()->SpawnActor<AItemDropped>(DropItemClass, GetGroundSpawnLocation(), GetActorRotation(), SpawnParams);
+	}
+
+	// 스토리 필수 아이템 자동 습득
+	if (StoryItemTag.IsValid())
+	{
+		ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(UGameplayStatics::GetPlayerController(this, 0)->GetPawn());
+		if (IsValid(PlayerCharacter))
+		{
+			UItemComponent* ItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
+			if (IsValid(ItemComponent))
+			{
+				ItemComponent->AddItem(StoryItemTag, 1);
+			}
+		}
+	}
 }

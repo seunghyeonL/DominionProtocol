@@ -59,17 +59,20 @@ void UDevCheatManager::ToggleDebugLines()
 void UDevCheatManager::ToggleMnhDebug()
 {
 	//MissNoHit 플러그인 디버그 토글
-	int32 CurrentValue = CVarMnhDebugLines.GetValueOnAnyThread();
-	int32 NewValue = (CurrentValue == 0) ? 1 : 0;
-	IConsoleManager::Get().FindConsoleVariable(TEXT("Mnh.ShowLines"))->Set(NewValue);
-
-	Debug::Print(FString::Printf(TEXT("MissNoHit Debug : %s"), NewValue ? TEXT("On") : TEXT("Off")));
+	IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("Mnh.ShowLines"));
+	if (CVar)
+	{
+		int32 CurrentValue = CVar->GetInt();
+		int32 NewValue = (CurrentValue == 0) ? 1 : 0;
+		CVar->Set(NewValue);
+		Debug::Print(FString::Printf(TEXT("MissNoHit Debug : %s"), NewValue ? TEXT("On") : TEXT("Off")));
+	}
 }
 
 void UDevCheatManager::ToggleAllDebug()
 {
 	// 엔진 디버그 + MissNoHit 동시 토글
-	int32 CurrentValue = CVarShowDebugLines.GetValueOnAnyThread();
+	int32 CurrentValue = Debug::CVarShowDebugLines.GetValueOnAnyThread();
 	int32 NewValue = (CurrentValue == 0) ? 1 : 0;
     
 	// 두 콘솔 변수 함께 설정

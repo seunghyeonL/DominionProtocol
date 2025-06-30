@@ -20,6 +20,7 @@
 #include "Components/ItemComponent/ItemComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Components/SkillComponent/SkillComponent.h"
@@ -30,6 +31,10 @@
 
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhTracerComponent.h"
 #include "../Plugins/MissNoHit/Source/MissNoHit/Public/MnhComponents.h"
+#include "Engine/StreamableManager.h"
+#include "Engine/AssetManager.h"
+#include "EnumAndStruct/PhysicalSurfaceTypeData/PhysicalSurfaceTypeData.h"
+#include "Util/AsyncLoadBPLib.h"
 
 
 class UPoisonEffect;
@@ -98,11 +103,9 @@ ADomiCharacter::ADomiCharacter()
 
 	GetMesh()->bReceivesDecals = false;
 
-	bIsInCombat = false;
-	CombatDuration = 5.f;
-
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	UE_LOG(LogTemp, Warning, TEXT("ObjectType: %d"), (int32)GetCapsuleComponent()->GetCollisionObjectType());
 }
 
 AActor* ADomiCharacter::GetCurrentInteractableActor() const
@@ -178,6 +181,69 @@ void ADomiCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	// 	BindInputFunctions();
 	// }
 	// ControlComponent->OnComponentReady.BindUObject(this, &ADomiCharacter::BindInputFunctions);
+}
+
+void ADomiCharacter::PlayEffectsOnMnhAttack(const FHitResult& HitResult)
+{
+	check(StatusComponent);
+	
+	const FVector& HitLocation = HitResult.ImpactPoint;
+	const FRotator HitRotation = HitResult.ImpactNormal.Rotation();
+	
+	EPhysicalSurface SurfaceType = SurfaceType_Default;
+	if (UPhysicalMaterial* PhysMat = HitResult.PhysMaterial.Get())
+	{
+		SurfaceType = PhysMat->SurfaceType;
+	}
+	
+	if (auto* GS = GetWorld()->GetGameState<ABaseGameState>())
+	{
+		if (FPhysicalSurfaceTypeData* SurfaceTypeData = GS->GetPhysicalSurfaceTypeData(SurfaceType))
+		{
+			FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
+			
+			float PitchMultiplier = 1.f;
+			auto PrimaryWeaponTag = ItemComponent->GetEquippedItem(FName("WeaponSlot_Primary"));
+			if (PrimaryWeaponTag.IsValid())
+			{
+				if (PrimaryWeaponTag.MatchesTag(ItemTags::ClawWeapon))
+				{
+					PitchMultiplier = 1.2f;
+				}
+				else if (PrimaryWeaponTag.MatchesTag(ItemTags::AxeWeapon))
+				{
+					PitchMultiplier = 0.8f;
+				}
+			}
+
+			// HitSound 실행
+			if (IsValid(SurfaceTypeData->HitSound))
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, SurfaceTypeData->HitSound, HitLocation, FRotator(0.f), 0.7f, PitchMultiplier);
+			}
+			
+			// HitVfx 실행
+			if (IsValid(SurfaceTypeData->HitVfx))
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					this,
+					SurfaceTypeData->HitVfx,
+					HitLocation,
+					HitRotation,
+					FVector(1.f),
+					true,
+					true
+				);
+			}
+		}
+	}
+}
+
+bool ADomiCharacter::IsInvincible()
+{
+	check(ControlComponent)
+	auto& ActiveControlEffects = GetActiveControlEffectTags();
+	return ActiveControlEffects.HasAny(InvincibilityTags);
 }
 
 void ADomiCharacter::BeginPlay()
@@ -329,32 +395,14 @@ void ADomiCharacter::BindInputFunctions()
 	}
 }
 
-void ADomiCharacter::Landed(const FHitResult& Hit)
+void ADomiCharacter::Landed(const FHitResult& HitResult)
 {
-	Super::Landed(Hit);
+	Super::Landed(HitResult);
 	check(StatusComponent);
 
 	auto CurrentZSpeed = FMath::Abs(GetVelocity().Z);
 	float Damage = FMath::Clamp(CurrentZSpeed - 1000.f, 0.f, 500.f) * StatusComponent->GetStat(StatTags::MaxHealth) / 500.f;
 	StatusComponent->SetHealth(StatusComponent->GetStat(StatTags::Health) - Damage);
-}
-
-void ADomiCharacter::StartCombat()
-{
-	bIsInCombat = true;
-	GetWorldTimerManager().ClearTimer(CombatTimer);
-	GetWorldTimerManager().SetTimer(
-		CombatTimer,
-		this,
-		&ADomiCharacter::EndCombat,
-		CombatDuration,
-		false
-	);
-}
-
-void ADomiCharacter::EndCombat()
-{
-	bIsInCombat = false;
 }
 
 FGameplayTagContainer& ADomiCharacter::GetActiveControlEffectTags()
@@ -438,7 +486,7 @@ void ADomiCharacter::OnDeath()
 
 	// Activate Death Effect
 	ControlComponent->ActivateControlEffect(EffectTags::Death);
-	PlayDeathSound();
+	PlayDeathVoice();
 	
 	// 델리게이트로?
 	ABaseGameMode* GameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
@@ -497,13 +545,13 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 	
 	auto& ActiveControlEffects = GetActiveControlEffectTags();
 
-	if (ActiveControlEffects.HasAny(InvincibilityTags))
+	if (IsInvincible())
 	{
 		Debug::Print(TEXT("ADomiCharacter::OnAttacked : Invincible!"));
 		return;
 	}
 
-	StartCombat();
+	StatusComponent->StartCombat();
 	
 	float CurrentHealth = StatusComponent->GetStat(StatTags::Health);
 	StatusComponent->SetHealth(CurrentHealth - AttackData.Damage);
@@ -513,6 +561,8 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 		LaunchCharacter(AttackData.LaunchVector, true, true);
 	}
 
+	PlayHitSound();
+	
 	// Activate Effects
 	for (FEffectData EffectData : AttackData.Effects)
 	{
@@ -554,7 +604,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					}
 					
 					ControlComponent->ActivateControlEffect(EffectTags::Stiffness, Duration);
-					PlayHitSound();
+					PlayHitVoice();
 					return;
 				}
 				else
@@ -570,7 +620,7 @@ void ADomiCharacter::OnAttacked_Implementation(const FAttackData& AttackData)
 					SetActorRotation(HitDirection.Rotation());
 
 					ControlComponent->ActivateControlEffect(EffectTags::Flew);
-					PlayHitSound();
+					PlayHitVoice();
 					return;
 				}
 				else
@@ -634,12 +684,6 @@ bool ADomiCharacter::IsParryingCond_Implementation()
 void ADomiCharacter::OnParried_Implementation()
 {
 	// 일단 패리당할일 없어서 비워둠
-}
-
-void ADomiCharacter::OnParrySuccess_Implementation()
-{
-	// 패리성공시 나이아가라 보여주기
-	ShowParryWall();
 }
 
 AActor* ADomiCharacter::GetTargetEnemy_Implementation()

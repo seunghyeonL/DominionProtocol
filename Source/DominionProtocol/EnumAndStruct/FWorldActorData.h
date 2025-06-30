@@ -13,7 +13,8 @@ struct FWorldActorData
 
 	FWorldActorData()
 		:	bIsItemCollected(false),
-			bIsChestOpened(false)
+			bIsChestOpened(false),
+			bIsDead(false)
 	{}
 	
 	UPROPERTY()
@@ -29,4 +30,8 @@ struct FWorldActorData
 	//OpenableChestItem
 	UPROPERTY()
 	bool bIsChestOpened;
+
+	//Pawn(DyingHelper)
+	UPROPERTY()
+	bool bIsDead;
 };

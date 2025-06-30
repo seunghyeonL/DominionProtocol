@@ -3,6 +3,7 @@
 
 #include "ProtoNormalEnemy.h"
 #include "Components/StatusComponent/StatusComponent.h"
+#include "Components/SkillComponent/SkillComponent.h"
 
 
 // Sets default values
@@ -34,7 +35,24 @@ void AProtoNormalEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AProtoNormalEnemy::OnGroggy()
 {
+	check(SkillComponent);
 	Super::OnGroggy();
+	
+	SkillComponent->StopSkill();
 	StatusComponent->ActivateStatusEffect(EffectTags::Groggy, 0.f, 3.f);
 }
+
+void AProtoNormalEnemy::OnDeath_Implementation()
+{
+	Super::OnDeath_Implementation();
+	
+	if (auto* MeshComp = GetMesh())
+	{
+		MeshComp->SetSimulatePhysics(true);  // 물리 시뮬레이션 시작
+		MeshComp->SetCollisionProfileName("Ragdoll");  // 적절한 콜리전 프로필 설정
+		MeshComp->bPauseAnims = true;        // 애니메이션 중지
+		MeshComp->bNoSkeletonUpdate = false;
+	}
+}
+
 

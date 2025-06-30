@@ -147,6 +147,7 @@ bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
 			InventoryMap[ItemTag] += Quantity;
 			Debug::Print("Item Quantity Added (Within Limit)");
 			OnInventoryItemListChanged.Broadcast();
+			OnAddItem.Broadcast(ItemTag, Quantity);
 			return true;
 		}
 		else
@@ -162,6 +163,7 @@ bool UItemComponent::AddItem(FGameplayTag ItemTag, int32 Quantity)
 			InventoryMap.Add(ItemTag, Quantity);
 			Debug::Print("New Item Added");
 			OnInventoryItemListChanged.Broadcast();
+			OnAddItem.Broadcast(ItemTag, Quantity);
 			return true;
 		}
 		else
@@ -406,7 +408,17 @@ void UItemComponent::SwapWeapons()
 //슬롯에 장착된 아이템 태그 반환
 FGameplayTag UItemComponent::GetEquippedItem(FName SlotName) const
 {
-	return EquipmentSlots.Contains(SlotName) ? EquipmentSlots[SlotName] : FGameplayTag();
+	if (ConsumableSlots.Contains(SlotName))
+	{
+		return ConsumableSlots[SlotName];
+	}
+
+	if (EquipmentSlots.Contains(SlotName))
+	{
+		return EquipmentSlots[SlotName];
+	}
+	
+	return FGameplayTag();
 }
 
 FName UItemComponent::GetEquippedItemSlotName(FGameplayTag ItemTag)
@@ -619,6 +631,7 @@ void UItemComponent::UseConsumableItem(FName SlotName, FGameplayTag ConsumableIt
 					}
 					OnInventoryItemListChanged.Broadcast();
 					OnInventoryConsumableSlotItemsChanged.Broadcast();
+					OnUseItem.Broadcast(ItemToUse);
 					// 소비 후 임시 액터 파괴 (Consume_Implementation에서 RemoveItem이 호출되었을 것으로 가정)
 					ConsumableActor->Destroy();
 				}
@@ -685,6 +698,15 @@ void UItemComponent::ApplyPotionBoost(int32 BoostAmount)
 	{
 		PotionBoostLevel = 5;
 	}
+	if (!InventoryMap.Contains(ItemTags::AddMaxPotion))
+	{
+		return;
+	}
+	if (InventoryMap[ItemTags::AddMaxPotion] < BoostAmount)
+	{
+		Debug::Print(TEXT("재료 부족"));
+		return;
+	}
 	TMap<FGameplayTag, int32> NewInventoryMap;
 	//인벤토리 업데이트
 	for (const auto& Pair : InventoryMap)
@@ -706,6 +728,7 @@ void UItemComponent::ApplyPotionBoost(int32 BoostAmount)
 		}
 	}
 	InventoryMap = NewInventoryMap;
+	RemoveItem(ItemTags::AddMaxPotion, 1);
 	OnInventoryItemListChanged.Broadcast();
 
 	//소비슬롯 업데이트

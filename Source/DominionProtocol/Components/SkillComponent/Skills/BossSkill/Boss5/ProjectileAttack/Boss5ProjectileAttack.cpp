@@ -2,6 +2,8 @@
 #include "Components/SkillComponent/SkillComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "AI/AIControllers/Boss5AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Util/DebugHelper.h"
 
 
@@ -10,7 +12,7 @@ UBoss5ProjectileAttack::UBoss5ProjectileAttack()
 	SkillTag = SkillTags::Boss5ProjectileAttack;
 
 	ProjectileSpawnOffset = FVector(100.0f, 0.0f, 0.0f); // 보스 앞 100 유닛
-	ProjectileInitialSpeed = 2000.0f; 
+	ProjectileInitialSpeed = 500.0f; 
 	ProjectileLifeSpan = 5.0f;
 }
 
@@ -21,6 +23,37 @@ void UBoss5ProjectileAttack::Execute()
 	{
 		return;
 	}
+	AAIController* AIController = Cast<AAIController>(OwnerCharacter->GetController());
+	if (!AIController)
+	{
+		Debug::PrintError(TEXT("UBoss5ProjectileAttack::Execute - OwnerCharacter의 AIController를 찾을 수 없습니다!"));
+		// 스킬 종료하여 BT가 멈추지 않도록
+		USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+		if (SkillComponent) { SkillComponent->EndSkill(); }
+		return;
+	}
+	UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+	if (!BBComp)
+	{
+		Debug::PrintError(TEXT("UBoss5ProjectileAttack::Execute - AIController의 BlackboardComponent를 찾을 수 없습니다!"));
+		// 스킬 종료하여 BT가 멈추지 않도록
+		USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+		if (SkillComponent) { SkillComponent->EndSkill(); }
+		return;
+	}
+	TargetCharacter = Cast<ACharacter>(BBComp->GetValueAsObject(FName("TargetActor")));
+	if (!TargetCharacter)
+	{
+		Debug::PrintError(TEXT("UBoss5ProjectileAttack::Execute - Blackboard에서 TargetActor를 찾을 수 없습니다!"));
+		// 스킬 종료하여 BT가 멈추지 않도록
+		USkillComponent* SkillComponent = OwnerCharacter->FindComponentByClass<USkillComponent>();
+		if (SkillComponent)
+		{ 
+			SkillComponent->EndSkill();
+		}
+		return;
+	}
+
 
 	if (!ProjectileClass)
 	{
@@ -34,10 +67,13 @@ void UBoss5ProjectileAttack::Execute()
 		return;
 	}
 
-	FVector SpawnLocation = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * ProjectileSpawnOffset.X +
+	FVector SpawnLocation = OwnerCharacter->GetActorLocation() + 
+		OwnerCharacter->GetActorForwardVector() * ProjectileSpawnOffset.X +
 		OwnerCharacter->GetActorRightVector() * ProjectileSpawnOffset.Y +
 		OwnerCharacter->GetActorUpVector() * ProjectileSpawnOffset.Z;
-	FRotator SpawnRotation = OwnerCharacter->GetActorRotation(); 
+
+	FVector WorldDirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
+	FRotator SpawnRotation = WorldDirectionToTarget.Rotation();
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = OwnerCharacter; // 보스를 투사체의 Owner
@@ -54,8 +90,8 @@ void UBoss5ProjectileAttack::Execute()
 		{
 			ProjectileMovement->InitialSpeed = ProjectileInitialSpeed;
 			ProjectileMovement->MaxSpeed = ProjectileInitialSpeed; // 최대 속도도 동일하게 설정
-			ProjectileMovement->SetVelocityInLocalSpace(FVector::ForwardVector * ProjectileInitialSpeed); // 투사체 자신의 로컬 공간에서 앞으로 이동
-			ProjectileMovement->ProjectileGravityScale = 0.0f; // 예시: 중력 없음 (직선 발사)
+			ProjectileMovement->Velocity = WorldDirectionToTarget * ProjectileInitialSpeed; // 투사체 자신의 로컬 공간에서 앞으로 이동
+			ProjectileMovement->ProjectileGravityScale = 0.0f;
 		}
 
 		//수명 설정

@@ -6,6 +6,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "WorldObjects/Crack.h"
 #include "WorldObjects/StoryTrigger.h"
+#include "WorldObjects/BlockedPath.h"
+#include "WorldObjects/DyingHelper.h"
+#include "WorldObjects/BossSpawner.h"
 #include "WorldObjects/DialogueManager.h"
 
 void UNewDialogueWidget::UpdateDialogueWidget(const FText NewText)
@@ -23,27 +26,30 @@ void UNewDialogueWidget::NativeConstruct()
 
 void UNewDialogueWidget::BindCreateDialogueDelegate()
 {
+	BindDialogueSources<ACrack>();
+	BindDialogueSources<ABlockedPath>();
+	BindDialogueSources<ADyingHelper>();
+	BindDialogueSources<ABossSpawner>();
+}
+
+template<typename T>
+void UNewDialogueWidget::BindDialogueSources()
+{
 	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACrack::StaticClass() ,Actors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), T::StaticClass(), Actors);
 
 	for (const auto Actor : Actors)
 	{
-		auto* Crack = Cast<ACrack>(Actor);
-		Crack->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
-	}
-
-	TArray<AActor*> TriggerActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStoryTrigger::StaticClass(), TriggerActors);
-
-	for (const auto Actor : TriggerActors)
-	{
-		auto* StoryTrigger = Cast<AStoryTrigger>(Actor);
-		StoryTrigger->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
+		if (T* TypedActor = Cast<T>(Actor))
+		{
+			TypedActor->OnCreateDialogueManager.AddUObject(this, &UNewDialogueWidget::BindDialogueDelegate);
+		}
 	}
 }
 
 void UNewDialogueWidget::BindDialogueDelegate(UDialogueManager* DialogueManager)
 {
 	CurrentDialogueManager = DialogueManager;
+	DialogueManager->OnUpdateDialogueText.Clear();
 	DialogueManager->OnUpdateDialogueText.AddUObject(this, &UNewDialogueWidget::UpdateDialogueWidget);
 }

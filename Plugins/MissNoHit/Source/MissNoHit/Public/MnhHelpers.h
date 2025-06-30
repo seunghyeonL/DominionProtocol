@@ -30,14 +30,13 @@ DECLARE_CYCLE_STAT(TEXT("MissNoHit Tracer Get Shape"), STAT_MnhGetTracerShape, S
 DECLARE_LOG_CATEGORY_EXTERN(LogMnh, Log, All)
 
 // =====플러그인 커스텀=====(규혁)
-static TAutoConsoleVariable<int32> CVarMnhDebugLines(
+FORCEINLINE static bool ShouldShowDebugLines(const EDrawDebugTrace::Type DrawDebugType)
+{
+	static TAutoConsoleVariable<int32> CVarMnhDebugLines(
 	TEXT("Mnh.ShowLines"),
 	0,
 	TEXT("디버그라인 표시 제어 : 0 = 숨김, 1 = 표시"),
 	ECVF_Default);
-
-FORCEINLINE static bool ShouldShowDebugLines(const EDrawDebugTrace::Type DrawDebugType)
-{
 	return DrawDebugType != EDrawDebugTrace::None && CVarMnhDebugLines.GetValueOnAnyThread() != 0;
 }
 // =======================

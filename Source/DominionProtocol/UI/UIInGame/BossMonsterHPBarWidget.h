@@ -20,14 +20,14 @@ public:
 	UFUNCTION()
 	void UpdateBossMonsterMaxShield(const float NewMaxShield);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void UpdateBossMonsterHP(const float NewHP);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void UpdateBossMonsterShield(const float NewShield);
 
 	UFUNCTION()
-	void UpdateBossMonsterName(const FString NewBossMonsterName);
+	void UpdateBossMonsterName(AActor* NewBossMonster);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnUpdateBossMonsterName();
@@ -39,7 +39,7 @@ public:
 	void OnStartBattleBossMonster();
 
 	UFUNCTION()
-	void EndBattleBossMonster();
+	void EndBattleBossMonster(AActor* DeadMonster);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnEndBattleBossMonster();
@@ -53,6 +53,9 @@ protected:
 	void InitializeAndBindBossStatus(AActor* SpawnedBoss);
 
 protected:
+	UPROPERTY()
+	AActor* CurrentBossMonster;
+	
 	UPROPERTY(BlueprintReadOnly)
 	FString BossMonsterName;
 	

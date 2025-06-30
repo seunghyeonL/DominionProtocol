@@ -38,9 +38,15 @@ protected:
 
 	FText GetInteractMessage_Implementation() const;
 
+	UFUNCTION()
+	void PlayWalkMontageLoop();
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* CollisionBox;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* BlockingMesh;
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* BlockingBox;
@@ -61,6 +67,8 @@ private:
 	ABossSpawner* LinkedBossSpawner;
 
 	bool bIsMontagePlaying;
+
+	FTimerHandle WalkMontageTimerHandle;
 
 	UPROPERTY()
 	bool bHasStoryUpdated;

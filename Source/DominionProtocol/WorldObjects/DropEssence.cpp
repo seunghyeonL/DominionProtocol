@@ -27,6 +27,25 @@ ADropEssence::ADropEssence()
 	SphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
+void ADropEssence::SetIsInteractable(bool bNewIsInteractable)
+{
+	if (bNewIsInteractable)
+	{
+		SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		SphereComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ADropEssence::OnOverlapBegin);
+		SphereComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ADropEssence::OnOverlapEnd);
+	}
+	else
+	{
+		SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		SphereComponent->OnComponentBeginOverlap.Clear();
+		SphereComponent->OnComponentEndOverlap.Clear();
+	}
+}
+
 void ADropEssence::BeginPlay()
 {
 	Super::BeginPlay();
@@ -57,12 +76,16 @@ void ADropEssence::Interact_Implementation(AActor* Interactor)
 	check(GameInstance);
 	check(WorldInstanceSubsystem);
 
-	GameInstance->SetPlayerCurrentEssence(GameInstance->GetPlayerCurrentEssence() + WorldInstanceSubsystem->GetDropEssenceAmount());
+	
+	const int32 RestoredEssence = GameInstance->GetPlayerCurrentEssence() + WorldInstanceSubsystem->GetDropEssenceAmount();
+	GameInstance->SetPlayerCurrentEssence(RestoredEssence);
 	WorldInstanceSubsystem->SetDropEssenceCache(nullptr);
 	WorldInstanceSubsystem->SetIsDropEssenceExist(false);
 	WorldInstanceSubsystem->SetDropEssenceAmount(0);
 	WorldInstanceSubsystem->SetDropEssenceLocation(FVector::ZeroVector);
+	
 	//나중에 복구 UI 만들어지면 그걸로 변경
+	OnDropEssenceRestored.Broadcast(RestoredEssence);
 	Debug::Print(TEXT("Essence Restored!!"));
 	
 	Destroy();

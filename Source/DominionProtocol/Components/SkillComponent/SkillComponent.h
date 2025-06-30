@@ -36,6 +36,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetCombo(const FGameplayTag& SkillGroupTag);
 
+	UFUNCTION(BlueprintCallable)
 	virtual void StopSkill();
 
 	UBaseSkill* GetCurrentSkill() const { return CurrentSkill; }
@@ -45,6 +46,8 @@ public:
 	FOnSkillEnd OnSkillEnd;
 	FOnDashDirectionSet OnDashDirectionSet;
 
+	UFUNCTION(BlueprintCallable, Category = "Skill")
+	bool IsUsingSkill() const;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill")
 	TMap<FGameplayTag, FSkillGroup> SkillGroupMap;

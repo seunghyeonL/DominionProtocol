@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
 #include "AudioMixerDevice.h"
+#include "DomiFramework/GameState/BaseGameState.h"
 
 #include "Util/DebugHelper.h"
 
@@ -30,13 +31,17 @@ void USoundInstanceSubsystem::Deinitialize()
 void USoundInstanceSubsystem::LoadSoundClass()
 {
 	check(World);
-	
-	VolumeControlMix = LoadObject<USoundMix>(nullptr, TEXT("/Game/Sound/Classes/SM_VolumeControl"));
-	MasterClass = LoadObject<USoundClass>(nullptr, TEXT("/Game/Sound/Classes/SC_Master"));
-	SFXClass = LoadObject<USoundClass>(nullptr, TEXT("/Game/Sound/Classes/SC_SFX"));
-	BGMClass = LoadObject<USoundClass>(nullptr, TEXT("/Game/Sound/Classes/SC_BGM"));
-	UIClass = LoadObject<USoundClass>(nullptr, TEXT("/Game/Sound/Classes/SC_UI"));
 
+	ABaseGameState* BaseGameState = World->GetGameState<ABaseGameState>();
+	if (IsValid(BaseGameState))
+	{
+		VolumeControlMix = BaseGameState->GetVolumeControlMix();
+		MasterClass = BaseGameState->GetMasterClass();
+		SFXClass = BaseGameState->GetSFXClass();
+		BGMClass = BaseGameState->GetBGMClass();
+		UIClass = BaseGameState->GetUIClass();
+	}
+	
 	if (IsValid(VolumeControlMix))
 	{
 		UGameplayStatics::PushSoundMixModifier(World, VolumeControlMix);

@@ -22,7 +22,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Appear(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-	void Disappear();
+	void Disappear(const FVector& SpawnLocation);
 
 	void SetDialogueManager(UDialogueManager* InManager);
 protected:
@@ -36,6 +36,13 @@ protected:
 public:
 	FOnHelperAppearFinished OnAppearFinishedCallback;
 	FOnHelperDisappearFinished OnDisappearFinishedCallback;
+
+	void SetViewTargetLocAndRot(const FVector& InLocation, const FRotator& InRotation) const;
+	void SetViewToHelper();
+	void SetViewToPlayer();
+	
+	bool bIsFocussed = false;
+	bool bAppearFinished = false;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
@@ -53,5 +60,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	USkeletalMeshComponent* Hair;
 
+	UPROPERTY()
+	AActor* ViewTarget;
 
+	UPROPERTY()
+	APlayerController* PC;
 };

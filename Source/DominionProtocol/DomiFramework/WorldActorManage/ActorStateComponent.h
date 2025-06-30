@@ -8,6 +8,8 @@
 #include "Util/GameTagList.h"
 #include "ActorStateComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDyingHelperDead, bool, bIsDead);
+
 class UWorldInstanceSubsystem;
 class UActorStateData;
 
@@ -34,6 +36,9 @@ protected:
 	virtual void OnComponentCreated() override;
 #endif
 
+public:
+	FOnDyingHelperDead OnDyingHelperDead;
+	
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Property | UniqueActorID")
 	FGuid UniqueActorID;

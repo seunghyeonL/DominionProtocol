@@ -9,32 +9,31 @@ ABoss5Wall::ABoss5Wall()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    // Root 설정
-    RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-
     // 벽 메쉬
     WallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WallMesh"));
-    WallMesh->SetupAttachment(RootComponent);
-    WallMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    WallMesh->SetCollisionResponseToAllChannels(ECR_Block);
-    WallMesh->SetCollisionObjectType(ECC_WorldStatic);
-    WallMesh->SetGenerateOverlapEvents(false); // 벽 자체는 오버랩 없음
+    SetRootComponent(WallMesh);
 
     // 푸시 트리거
     PushTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PushTrigger"));
     PushTrigger->SetupAttachment(WallMesh);
-    PushTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    PushTrigger->SetCollisionObjectType(ECC_WorldDynamic);
-    PushTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
-    PushTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+    PushTrigger->SetRelativeLocation(FVector(200.f, 40.f, 150.f));
     PushTrigger->SetGenerateOverlapEvents(true);
 
     PushTrigger->OnComponentBeginOverlap.AddDynamic(this, &ABoss5Wall::OnPushTriggerBeginOverlap);
     PushTrigger->OnComponentEndOverlap.AddDynamic(this, &ABoss5Wall::OnPushTriggerEndOverlap);
 
+    CheckTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("CheckTrigger"));
+    CheckTrigger->SetupAttachment(WallMesh);
+    CheckTrigger->SetRelativeLocation(FVector(200.f, 40.f, 150.f));
+    CheckTrigger->SetGenerateOverlapEvents(true);
+
+    CheckTrigger->OnComponentBeginOverlap.AddDynamic(this, &ABoss5Wall::OnCheckTriggerBeginOverlap);
+    CheckTrigger->OnComponentEndOverlap.AddDynamic(this, &ABoss5Wall::OnCheckTriggerEndOverlap);
+
     // 초기 상태 설정
     bShouldPush = false;
-    PushSpeed = 1000.f;
+    bShouldReturn = false;
+    PushSpeed = 4500.f;
     PushProgress = 0.f;
     LastPushTime = -FLT_MAX;
     PushCooldown = 5.f;
@@ -45,8 +44,7 @@ void ABoss5Wall::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     if (!bShouldPush && !bShouldReturn)
-    {
-        Push();
+    {    
         return;
     }
 
@@ -82,57 +80,6 @@ void ABoss5Wall::Tick(float DeltaTime)
     }
 }
 
-void ABoss5Wall::Push()
-{
-    float CurrentTime = GetWorld()->GetTimeSeconds();
-    if (CurrentTime - LastPushTime < PushCooldown)
-    {
-        return;
-    }
-
-    float TraceLength = 1000.f;
-    FVector BoxHalfSize = FVector(200.f, 10.f, 150.f);
-
-    FVector Forward = GetActorRightVector();
-    FVector TraceStart = GetActorLocation() + FVector(0.f, 20.f, 0.f) + Forward;
-    FVector TraceEnd = TraceStart + Forward * TraceLength;
-
-    FHitResult Hit;
-
-    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
-    TArray<AActor*> IgnoreActors;
-    IgnoreActors.Add(this);
-
-    UKismetSystemLibrary::BoxTraceSingleForObjects(
-        this,
-        TraceStart,
-        TraceEnd,
-        BoxHalfSize,
-        GetActorRotation(),
-        ObjectTypes,
-        false,
-        IgnoreActors,
-        EDrawDebugTrace::None,
-        Hit,
-        true
-    );
-
-    if (!Hit.bBlockingHit) return;
-
-    ADomiCharacter* TargetActor = Cast<ADomiCharacter>(Hit.GetActor());
-    if (!TargetActor) return;
-
-    bShouldPush = true;
-    bShouldReturn = false;
-    StartLocation = GetActorLocation();
-    EndLocation = StartLocation + Forward * TraceLength;
-    PushProgress = 0.f;
-
-    LastPushTime = CurrentTime;
-}
-
 void ABoss5Wall::OnPushTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -152,4 +99,31 @@ void ABoss5Wall::OnPushTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AA
             OverlappingCharacter = nullptr;
         }
     }
+}
+
+void ABoss5Wall::OnCheckTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    if (ADomiCharacter* DomiChar = Cast<ADomiCharacter>(OtherActor))
+    {
+        CurrentTime = GetWorld()->GetTimeSeconds();
+        if (CurrentTime - LastPushTime < PushCooldown)
+        {
+            return;
+        }
+
+        FVector Forward = GetActorRightVector();
+        float Length = 1000.f;
+
+        bShouldPush = true;
+        bShouldReturn = false;
+        StartLocation = GetActorLocation();
+        EndLocation = StartLocation + Forward * Length;
+        PushProgress = 0.f;
+        LastPushTime = CurrentTime;
+    }
+}
+
+void ABoss5Wall::OnCheckTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
 }

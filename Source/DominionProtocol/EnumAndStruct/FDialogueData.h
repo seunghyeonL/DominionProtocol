@@ -18,14 +18,16 @@ struct FDialogueData : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EGameStoryState StoryState;
+	FDialogueData() {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 LineIndex;
+	EGameStoryState StoryState = EGameStoryState::Tutorial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EDialogueEventType EventType;
+	FName DialogueID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 LineIndex = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText DialogueText;

@@ -10,10 +10,13 @@
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h" 
 #include "DominionProtocol/Util/GameTagList.h"
+#include "WorldObjects/DialogueManager.h"
 #include "BlockedPath.generated.h"
 
 class UBoxComponent;
 class ADomiCharacter;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCreateDialogueManager, UDialogueManager*);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABlockedPath : public AActor, public IStoryDependentInterface, public IInteractableInterface
@@ -22,6 +25,8 @@ class DOMINIONPROTOCOL_API ABlockedPath : public AActor, public IStoryDependentI
 	
 public:	
 	ABlockedPath();
+
+	FOnCreateDialogueManager OnCreateDialogueManager;
 
 	virtual void OnStoryStateUpdated_Implementation(EGameStoryState NewState) override;
 
@@ -78,4 +83,10 @@ protected:
 private:
 	UPROPERTY()
 	ADomiCharacter* CachedCharacter;
+
+	UPROPERTY(EditAnywhere)
+	FString DialogueID;
+
+	UPROPERTY()
+	UDialogueManager* DialogueManager;
 };

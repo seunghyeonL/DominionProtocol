@@ -3,3 +3,7 @@
 
 #include "AI/AICharacters/NomalMonster/DualBladeSkeletonEnemy.h"
 
+ADualBladeSkeletonEnemy::ADualBladeSkeletonEnemy()
+{
+	PawnTag = PawnTags::DualBladeSkeleton;
+}

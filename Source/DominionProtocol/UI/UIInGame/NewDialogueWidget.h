@@ -8,6 +8,7 @@
 
 enum class EGameStoryState : uint8;
 class UDialogueManager;
+class ABossSpawner;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UNewDialogueWidget : public UUserWidget
@@ -28,6 +29,9 @@ protected:
 
 	void BindCreateDialogueDelegate();
 	void BindDialogueDelegate(UDialogueManager* DialogueManager);
+
+	template<typename T>
+	void BindDialogueSources();
 
 protected:
 	UPROPERTY(BlueprintReadOnly)

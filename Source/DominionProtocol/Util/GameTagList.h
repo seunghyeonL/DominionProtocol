@@ -1,392 +1,425 @@
 #pragma once
 
-#include "GameplayTagContainer.h"
+#include "NativeGameplayTags.h"
 
 namespace EffectTags
 {
 	// ControlEffectTags
-	inline const FGameplayTag Interact = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Interact"));
-	inline const FGameplayTag UsingSkill = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill"));
-	inline const FGameplayTag ConsumingItem = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.ConsumingItem"));
-	inline const FGameplayTag Death = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Death"));
-	inline const FGameplayTag Dash = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Dash"));
-	inline const FGameplayTag Parry = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Parry"));
-	inline const FGameplayTag DashInvincible = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.DashInvincible"));
-	inline const FGameplayTag DashAttackPossible = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.DashAttackPossible"));
-	inline const FGameplayTag UsingDash = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Dash"));
-	inline const FGameplayTag UsingParry = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Parry"));
-	inline const FGameplayTag UsingZoneya = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Zoneya"));
-	inline const FGameplayTag UsingTeleport = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.UsingSkill.Teleport"));
-	inline const FGameplayTag LockOn = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.LockOn"));
-	inline const FGameplayTag Groggy = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Groggy"));
-	inline const FGameplayTag Parried = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Parried"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Interact);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(UsingSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ConsumingItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Death);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dash);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Parry);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DashInvincible);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DashAttackPossible);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(UsingDash);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(UsingParry);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(UsingZoneya);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(UsingTeleport);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(LockOn);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Groggy);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Parried);
 
-	inline const FGameplayTag Stiffness = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Stiffness"));
-	inline const FGameplayTag Flew = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Flew"));
-	inline const FGameplayTag StandingUp = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.StandingUp"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Stiffness);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Flew);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(StandingUp);
 
-	inline const FGameplayTag ControlDebuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff"));
-	inline const FGameplayTag ControlBuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Buff"));
-	inline const FGameplayTag Stun = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Stun"));
-	inline const FGameplayTag PreStun = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.PreStun"));
-	inline const FGameplayTag Silence = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Silence"));
-	inline const FGameplayTag Confused = FGameplayTag::RequestGameplayTag(TEXT("Effect.Control.Debuff.Confused"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ControlDebuff);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ControlBuff);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Stun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PreStun);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Silence);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Confused);
 	
 	// StatusEffectTags
-	inline const FGameplayTag Running = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Running"));
-	inline const FGameplayTag Walking = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Walking"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Running);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Walking);
 
-	inline const FGameplayTag StatusDebuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Debuff"));
-	inline const FGameplayTag StatusBuff = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Buff"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(StatusDebuff);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(StatusBuff);
 	
-	inline const FGameplayTag Slow = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Debuff.Slow"));
-	inline const FGameplayTag AttackDown = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Debuff.AttackDown"));
-	inline const FGameplayTag Burn = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Debuff.Burn"));
-	inline const FGameplayTag Poison = FGameplayTag::RequestGameplayTag(TEXT("Effect.Status.Debuff.Poison"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Slow);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AttackDown);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Burn);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Poison);
 
 	// AIEffectTags
-	inline const FGameplayTag Idle = FGameplayTag::RequestGameplayTag(TEXT("Effect.AIState.Idle"));
-	inline const FGameplayTag Suspicious = FGameplayTag::RequestGameplayTag(TEXT("Effect.AIState.Suspicious"));
-	inline const FGameplayTag Alert = FGameplayTag::RequestGameplayTag(TEXT("Effect.AIState.Alert"));
-	inline const FGameplayTag Combat = FGameplayTag::RequestGameplayTag(TEXT("Effect.AIState.Combat"));
-	inline const FGameplayTag Patrol = FGameplayTag::RequestGameplayTag(TEXT("Effect.AIState.Patrol"));
-	inline const FGameplayTag Return = FGameplayTag::RequestGameplayTag(TEXT("Effect.AIState.Return"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Idle);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Suspicious);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Alert);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Combat);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Patrol);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Return);
 }
 
 namespace StatTags
 {
 	// BaseStatTags
-	inline const FGameplayTag BaseStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base"));
-	inline const FGameplayTag Level = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.Level"));
-	inline const FGameplayTag LIFE = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.LIFE"));
-	inline const FGameplayTag STR = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.STR"));
-	inline const FGameplayTag SPL = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.SPL"));
-	inline const FGameplayTag END = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.END"));
-	inline const FGameplayTag BaseAttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.BaseAttackPower"));
-	inline const FGameplayTag BaseMagicPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.BaseMagicPower"));
-	inline const FGameplayTag BaseMaxHealth = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.BaseMaxHealth"));
-	inline const FGameplayTag BaseMaxStamina = FGameplayTag::RequestGameplayTag(TEXT("Stat.Base.BaseMaxStamina"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseStat);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Level);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(LIFE);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(STR);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SPL);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(END);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackPower);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseMagicPower);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseMaxHealth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseMaxStamina);
 
 	// Base -> Battle Coefficients
-	inline const FGameplayTag StatCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient"));
-	inline const FGameplayTag AttackPowerCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.AttackPower"));
-	inline const FGameplayTag MagicPowerCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MagicPower"));
-	inline const FGameplayTag MaxHealthCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MaxHealth"));
-	inline const FGameplayTag MaxStaminaCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.MaxStamina"));
-	inline const FGameplayTag LevelUpCoefficientB = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.LevelUpB"));
-	inline const FGameplayTag LevelUpCoefficientC = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.LevelUpC"));
-	inline const FGameplayTag LevelUpCoefficientD = FGameplayTag::RequestGameplayTag(TEXT("Stat.Coefficient.LevelUpD"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(StatCoefficient);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AttackPowerCoefficient);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicPowerCoefficient);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MaxHealthCoefficient);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MaxStaminaCoefficient);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(LevelUpCoefficientB);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(LevelUpCoefficientC);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(LevelUpCoefficientD);
 	
 	// BattleStatTags
-	inline const FGameplayTag BattleStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle"));
-	inline const FGameplayTag MaxHealth = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxHealth"));
-	inline const FGameplayTag MaxStamina = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxStamina"));
-	inline const FGameplayTag AttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.AttackPower"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BattleStat);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MaxHealth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MaxStamina);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AttackPower);
 	
-	inline const FGameplayTag SubAttackPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.SubAttackPower"));
-	inline const FGameplayTag MagicPower = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MagicPower"));
-	inline const FGameplayTag StaminaRecoveryRate = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.StaminaRecoveryRate"));
-	inline const FGameplayTag SpeedCoefficient = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.SpeedCoefficient"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SubAttackPower);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicPower);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(StaminaRecoveryRate);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SpeedCoefficient);
 
-	inline const FGameplayTag Defense = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.Defense"));
-	inline const FGameplayTag MaxShield = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxShield"));
-	inline const FGameplayTag MaxGroggyGauge = FGameplayTag::RequestGameplayTag(TEXT("Stat.Battle.MaxGroggyGauge"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Defense);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MaxShield);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MaxGroggyGauge);
 	
 	// VariableStatTags
-	inline const FGameplayTag VariableStat = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable"));
-	inline const FGameplayTag Health = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.Health"));
-	inline const FGameplayTag Stamina = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.Stamina"));
-	inline const FGameplayTag Shield = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.Shield"));
-	inline const FGameplayTag GroggyGauge = FGameplayTag::RequestGameplayTag(TEXT("Stat.Variable.GroggyGauge"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(VariableStat);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Health);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Stamina);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shield);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GroggyGauge);
 }
 
 namespace SkillGroupTags
 {
-	inline const FGameplayTag BaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack"));
-	inline const FGameplayTag WeaponSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill"));
-	inline const FGameplayTag MagicSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill"));
-	inline const FGameplayTag DashAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.DashAttack"));
-	inline const FGameplayTag Dash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Dash"));
-	inline const FGameplayTag Parry = FGameplayTag::RequestGameplayTag(TEXT("Skill.Parry"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WeaponSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DashAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Dash);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Parry);
 
 	// Boss1
-	inline const FGameplayTag SuperAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SuperAttack"));
-	inline const FGameplayTag SpecialAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SpecialAttack"));
-	inline const FGameplayTag EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.EvadeAttack"));
-	inline const FGameplayTag JumpAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.JumpAttack"));
-	inline const FGameplayTag RangedAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.RangedAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SuperAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SpecialAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(EvadeAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(JumpAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(RangedAttack);
 
 	// Boss2 Skill Group Tag
-	inline const FGameplayTag Boss2BaseAttack1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1"));
-	inline const FGameplayTag Boss2BaseAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2"));
-	inline const FGameplayTag Boss2Circling = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.Circling"));
-	inline const FGameplayTag Boss2DashAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.DashAttack"));
-	inline const FGameplayTag Boss2EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.EvadeAttack"));
-	inline const FGameplayTag Boss2TeleportAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.TeleportAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2Circling);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2DashAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2EvadeAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2TeleportAttack);
 
 	// Boss4
-	inline const FGameplayTag Boss4WeaponAttack1Start = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.start"));
-	inline const FGameplayTag Boss4WeaponAttack1First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.first"));
-	inline const FGameplayTag Boss4WeaponAttack1Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.second"));
-	inline const FGameplayTag Boss4WeaponAttack1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.third"));
-	inline const FGameplayTag Boss4WeaponAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2"));
-	inline const FGameplayTag Boss4WeaponAttack3First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.first"));
-	inline const FGameplayTag Boss4WeaponAttack3Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.second"));
-	inline const FGameplayTag Boss4WeaponAttack3Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.third"));
-	inline const FGameplayTag Boss4WeaponAttack3Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.fourth"));
-	inline const FGameplayTag Boss4FlameStrike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.FlameStrike"));
-	inline const FGameplayTag Boss4SpawnClone = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SpawnClone"));
-	inline const FGameplayTag Boss4InfernoSpike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.InfernoSpike"));
-	inline const FGameplayTag Boss4HellfireFall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.HellfireFall"));
-	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
-	inline const FGameplayTag Boss4BackDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BackDash"));
-	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
-	inline const FGameplayTag Boss4RandomMove = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.RandomMove"));
-	inline const FGameplayTag Boss4EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.EvadeAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack1Start);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack1First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack1Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack1Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3Fourth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4FlameStrike);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4SpawnClone);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4CloneStart);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4InfernoSpike);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4HellfireFall);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4BlazeSphere);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4BackDash);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4Teleport);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4RandomMove);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4EvadeAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4RisingWall);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4SlashWave);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4SpawnClonePhase2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_1First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_1Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_1Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_2First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_2Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_2Third);
 }
 
 namespace SkillTags
 {
 	// Player
-	inline const FGameplayTag BaseAttackSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Sword"));
-	inline const FGameplayTag BaseAttackSword2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.second.Sword"));
-	inline const FGameplayTag BaseAttackSword3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.third.Sword"));
-	inline const FGameplayTag BaseAttackAxe1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Axe"));
-	inline const FGameplayTag BaseAttackAxe2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.second.Axe"));
-	inline const FGameplayTag BaseAttackAxe3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.third.Axe"));
-	inline const FGameplayTag BaseAttackClaw1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Claw"));
-	inline const FGameplayTag BaseAttackClaw2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.second.Claw"));
-	inline const FGameplayTag BaseAttackClaw3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.third.Claw"));
-	inline const FGameplayTag BaseAttackClaw4 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.fourth.Claw"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackSword1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackSword2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackSword3);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackAxe1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackAxe2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackAxe3);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackClaw1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackClaw2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackClaw3);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackClaw4);
 	
-	inline const FGameplayTag DashAttackSword = FGameplayTag::RequestGameplayTag(TEXT("Skill.DashAttack.Sword"));
-	inline const FGameplayTag DashAttackClaw = FGameplayTag::RequestGameplayTag(TEXT("Skill.DashAttack.Claw"));
-	inline const FGameplayTag DashAttackAxe = FGameplayTag::RequestGameplayTag(TEXT("Skill.DashAttack.Axe"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DashAttackSword);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DashAttackClaw);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DashAttackAxe);
 
-	inline const FGameplayTag WeaponSkillSword1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Sword"));
-	inline const FGameplayTag WeaponSkillAxe1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Axe"));
-	inline const FGameplayTag WeaponSkillClaw1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.WeaponSkill.first.Claw"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WeaponSkillSword1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WeaponSkillAxe1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WeaponSkillClaw1);
 
-	inline const FGameplayTag BaseAttackSpear1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.BaseAttack.first.Spear"));
-	inline const FGameplayTag PlayerDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Dash.Player"));
-	inline const FGameplayTag PlayerParry = FGameplayTag::RequestGameplayTag(TEXT("Skill.Parry.Player"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BaseAttackSpear1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerDash);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PlayerParry);
 
-	inline const FGameplayTag MagicLaserSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Laser"));
-	inline const FGameplayTag MagicRailGunSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.RailGun"));
-	inline const FGameplayTag MagicFireBallSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.FireBall"));
-	inline const FGameplayTag MagicZoneyaSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Zoneya"));
-	inline const FGameplayTag MagicInfiniteStaminaSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.InfiniteStamina"));
-	inline const FGameplayTag MagicTeleportSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.Teleport"));
-	inline const FGameplayTag MagicItemScanningSkill = FGameplayTag::RequestGameplayTag(TEXT("Skill.MagicSkill.ItemScanning"));	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicLaserSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicRailGunSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicFireBallSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicZoneyaSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicInfiniteStaminaSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicTeleportSkill);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MagicItemScanningSkill);	
 
 	// NomalMonster
-	inline const FGameplayTag AxeSkeletonComboAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.AxeSkeleton.ComboAttack"));
-	inline const FGameplayTag SwordSkeletonBaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.SwordSkeleton.BaseAttack"));
-	inline const FGameplayTag DualBladeSkeletonBaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.DualBladeSkeleton.BaseAttack"));
-	inline const FGameplayTag DualBladeSkeletonJumpAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.DualBladeSkeleton.JumpAttack"));
-	inline const FGameplayTag KnifeThrow = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.KnifeSkeleton.KnifeThrow"));
-	inline const FGameplayTag WoodSwiping = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Wood.Swiping"));
-	inline const FGameplayTag WoodHurricaneKick = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Wood.HurricaneKick"));
-	inline const FGameplayTag MinionBaseAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.Minion.BaseAttack"));
-	inline const FGameplayTag GunMinionFire = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.GunMinion.MinionFire"));
-	inline const FGameplayTag GolemSmash = FGameplayTag::RequestGameplayTag(TEXT("Skill.NomalMonster.EliteGolem.GolemSmash"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AxeSkeletonComboAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SwordSkeletonBaseAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DualBladeSkeletonBaseAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DualBladeSkeletonJumpAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnifeThrow);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WoodSwiping);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WoodHurricaneKick);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(MinionBaseAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GunMinionFire);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GolemSmash);
 
 
 	// Boss1
-	inline const FGameplayTag Boss1LevelStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.LevelStart"));
-	inline const FGameplayTag Boss1Parried = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.Parried"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1LevelStart);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1Parried);
 
-	inline const FGameplayTag Boss1BaseAttack1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.BaseAttack.first"));
-	inline const FGameplayTag Boss1BaseAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.BaseAttack.second"));
-	inline const FGameplayTag Boss1BaseAttack3 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.BaseAttack.third"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1BaseAttack1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1BaseAttack2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1BaseAttack3);
 
-	inline const FGameplayTag Boss1SuperAttack1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SuperAttack.first"));
-	inline const FGameplayTag Boss1SuperAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SuperAttack.second"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1SuperAttack1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1SuperAttack2);
 
-	inline const FGameplayTag Boss1SpecialAttack1 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SpecialAttack.first"));
-	inline const FGameplayTag Boss1SpecialAttack2 = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.SpecialAttack.second"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1SpecialAttack1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1SpecialAttack2);
 
-	inline const FGameplayTag Boss1EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.EvadeAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1EvadeAttack);
 
-	inline const FGameplayTag Boss1JumpAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.JumpAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1JumpAttack);
 
-	inline const FGameplayTag Boss1RangedAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss1.RangedAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1RangedAttack);
 
 	// Boss2
-	inline const FGameplayTag Boss2LevelStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.LevelStart"));
-	inline const FGameplayTag Boss2BaseAttack1First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1.first"));
-	inline const FGameplayTag Boss2BaseAttack1Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1.second"));
-	inline const FGameplayTag Boss2BaseAttack1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1.third"));
-	inline const FGameplayTag Boss2BaseAttack1Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack1.Fourth"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2LevelStart);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack1First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack1Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack1Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack1Fourth);
 
-	inline const FGameplayTag Boss2BaseAttack2First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.first"));
-	inline const FGameplayTag Boss2BaseAttack2Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.second"));
-	inline const FGameplayTag Boss2BaseAttack2Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.third"));
-	inline const FGameplayTag Boss2BaseAttack2Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.fourth"));
-	inline const FGameplayTag Boss2BaseAttack2Fifth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.BaseAttack2.fifth"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack2First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack2Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack2Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack2Fourth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2BaseAttack2Fifth);
 
-	inline const FGameplayTag Boss2Circling = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.Circling"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2Circling);
 
-	inline const FGameplayTag Boss2DashAttackFirst = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.DashAttack.first"));
-	inline const FGameplayTag Boss2DashAttackSecond = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.DashAttack.second"));
-	inline const FGameplayTag Boss2DashAttackThird = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.DashAttack.third"));
-	inline const FGameplayTag Boss2DashAttackBFirst = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.DashAttackB.first"));
-	inline const FGameplayTag Boss2DashAttackBSecond = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.DashAttackB.second"));
-	inline const FGameplayTag Boss2EvadeAttackFirst = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.EvadeAttack.first"));
-	inline const FGameplayTag Boss2EvadeAttackSecond = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.EvadeAttack.second"));
-	inline const FGameplayTag Boss2Dash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss2.Dash"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2DashAttackFirst);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2DashAttackSecond);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2DashAttackThird);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2DashAttackBFirst);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2DashAttackBSecond);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2EvadeAttackFirst);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2EvadeAttackSecond);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2Dash);
 
 	// Boss3
-	inline const FGameplayTag Boss3LevelStart = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.LevelStart"));
-	inline const FGameplayTag Boss3BaseAttack1first = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack1.first"));
-	inline const FGameplayTag Boss3BaseAttack1second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack1.second"));
-	inline const FGameplayTag Boss3BaseAttack1third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack1.third"));
-	inline const FGameplayTag Boss3BaseAttack2first = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack2.first"));
-	inline const FGameplayTag Boss3BaseAttack2second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack2.second"));
-	inline const FGameplayTag Boss3BaseAttack3first = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack3.first"));
-	inline const FGameplayTag Boss3BaseAttack3second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.BaseAttack3.second"));
-	inline const FGameplayTag Boss3RockThrow = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.RockThrow.RockThrow"));
-	inline const FGameplayTag Boss3TurningAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.TurningAttack.TurningAttack"));
-	inline const FGameplayTag Boss3GroundFall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.GroundFall.GroundFall"));
-	inline const FGameplayTag Boss3Grab = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.Grab.Grab"));
-	inline const FGameplayTag Boss3GrabAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.Grab.GrabAttack"));
-	inline const FGameplayTag Boss3RushAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.RushAttack.RushAttack"));
-	inline const FGameplayTag Boss3JumpAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss3.JumpAttack.JumpAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3LevelStart);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3BaseAttack1first);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3BaseAttack1second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3BaseAttack1third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3BaseAttack2first);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3BaseAttack2second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3BaseAttack3first);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3BaseAttack3second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3RockThrow);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3TurningAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3GroundFall);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3Grab);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3GrabAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3RushAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3JumpAttack);
 
 	// Boss4
-	inline const FGameplayTag Boss4BaseAttackFirst = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BaseAttack.first"));
-	inline const FGameplayTag Boss4BaseAttackSecond = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BaseAttack.second"));
-	inline const FGameplayTag Boss4WeaponAttack1Start = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.start"));
-	inline const FGameplayTag Boss4WeaponAttack1First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.first"));
-	inline const FGameplayTag Boss4WeaponAttack1Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.second"));
-	inline const FGameplayTag Boss4WeaponAttack1Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack1.third"));
-	inline const FGameplayTag Boss4FlameStrike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.FlameStrike"));
-	inline const FGameplayTag Boss4SpawnClone = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.SpawnClone"));
-	inline const FGameplayTag Boss4InfernoSpike = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.InfernoSpike"));
-	inline const FGameplayTag Boss4HellfireFall = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.HellfireFall"));
-	inline const FGameplayTag Boss4BlazeSphere = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BlazeSphere"));
-	inline const FGameplayTag Boss4BackDash = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.BackDash"));
-	inline const FGameplayTag Boss4Teleport = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.Teleport"));
-	inline const FGameplayTag Boss4RandomMove = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.RandomMove"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4BaseAttackFirst);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4BaseAttackSecond);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack1Start);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack1First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack1Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack1Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4FlameStrike);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4SpawnClone);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4CloneStart);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4InfernoSpike);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4HellfireFall);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4BlazeSphere);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4BackDash);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4Teleport);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4RandomMove);
 
 	/// Boss4_2
-	inline const FGameplayTag Boss4WeaponAttack2First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.first"));
-	inline const FGameplayTag Boss4WeaponAttack2Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.second"));
-	inline const FGameplayTag Boss4WeaponAttack2Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.third"));
-	inline const FGameplayTag Boss4WeaponAttack2Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.fourth"));
-	inline const FGameplayTag Boss4WeaponAttack2Fifth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.fifth"));
-	inline const FGameplayTag Boss4WeaponAttack2Sixth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.sixth"));
-	inline const FGameplayTag Boss4WeaponAttack2Seventh = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.seventh"));
-	inline const FGameplayTag Boss4WeaponAttack2Eighth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack2.eighth"));
-	inline const FGameplayTag Boss4WeaponAttack3First = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.first"));
-	inline const FGameplayTag Boss4WeaponAttack3Second = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.second"));
-	inline const FGameplayTag Boss4WeaponAttack3Third = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.third"));
-	inline const FGameplayTag Boss4WeaponAttack3Fourth = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.WeaponAttack3.fourth"));
-	inline const FGameplayTag Boss4EvadeAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss4.EvadeAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4Phase2LevelStart);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Fourth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Fifth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Sixth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Seventh);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Eighth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack3Fourth);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4EvadeAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4RisingWall);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4SlashWaveFirst);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4SlashWaveSecond);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4SlashWaveThird);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4SpawnClonePhase2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_1First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_1Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_1Third);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_2First);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_2Second);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4ClonePhase2_2Third);
 
 	//Boss5
-	inline const FGameplayTag Boss5PeckingAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.PeckingAttack"));
-	inline const FGameplayTag Boss5ZoneyaAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.ZoneyaAttack"));
-	inline const FGameplayTag Boss5ElectricAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.ElectricAttack"));
-	inline const FGameplayTag Boss5SpawnEnemyAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.SpawnEnemyAttack"));
-	inline const FGameplayTag Boss5ProjectileAttack = FGameplayTag::RequestGameplayTag(TEXT("Skill.Boss5.ProjectileAttack"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss5PeckingAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss5ZoneyaAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss5ElectricAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss5SpawnEnemyAttack);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss5ProjectileAttack);
 }
 
 namespace PawnTags
 {
-	inline const FGameplayTag Player = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Player"));
-	inline const FGameplayTag ProtoNormal = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.Proto"));
-	inline const FGameplayTag ProtoElite = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Elite.Proto"));
-	inline const FGameplayTag ProtoBoss = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.Proto"));
-	inline const FGameplayTag ArrowProto = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.ArrowProto"));
-	inline const FGameplayTag AxeSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.AxeSkeleton"));
-	inline const FGameplayTag SwordSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.SwordSkeleton"));
-	inline const FGameplayTag DualBladeSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.DualBladeSkeleton"));
-	inline const FGameplayTag KnifeSkeleton = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.KnifeSkeleton"));
-	inline const FGameplayTag Wood = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.Wood"));
-	inline const FGameplayTag Minion = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.Minion"));
-	inline const FGameplayTag GunMinion = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.GunMinion"));
-	inline const FGameplayTag EliteGolem = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Normal.EliteGolem"));
-	inline const FGameplayTag Boss1 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.1"));
-	inline const FGameplayTag Boss2 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.2"));
-	inline const FGameplayTag Boss3 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.3"));
-	inline const FGameplayTag Boss4 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.4"));
-	inline const FGameplayTag Boss4Clone = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.4.Clone"));
-	inline const FGameplayTag Boss5 = FGameplayTag::RequestGameplayTag(TEXT("Pawn.Enemy.Boss.5"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ProtoNormal);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ProtoElite);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ProtoBoss);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ArrowProto);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AxeSkeleton);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SwordSkeleton);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DualBladeSkeleton);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(KnifeSkeleton);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Wood);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Minion);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GunMinion);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(EliteGolem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss3);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4Clone);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4Clone2Phase);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss5);
 
 }
 
 namespace ItemTags
 {
-	inline const FGameplayTag ItemBase = FGameplayTag::RequestGameplayTag(TEXT("Item.Base"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ItemBase);
 
 	//Equippable Item Tags
-	inline const FGameplayTag EquippableItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable"));
-	inline const FGameplayTag WeaponItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon"));
-	inline const FGameplayTag BasicWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Basic"));
-	inline const FGameplayTag SwordWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Sword"));
-	inline const FGameplayTag AxeWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Axe"));
-	inline const FGameplayTag ClawWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Claw"));
-	inline const FGameplayTag HammerWeapon = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Weapon.Hammer"));
-	inline const FGameplayTag SkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill"));
-	inline const FGameplayTag RailGunSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.RailGun"));
-	inline const FGameplayTag FireBallSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.FireBall"));
-	inline const FGameplayTag TeleportSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.Teleport"));
-	inline const FGameplayTag ZoneyaSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.Zoneya"));
-	inline const FGameplayTag InfiniteStaminaSkillItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Skill.InfiniteStamina"));
-	inline const FGameplayTag AccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory"));
-	inline const FGameplayTag RingOfHealthAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.RingOfHealth"));
-	inline const FGameplayTag NecklaceOfStaminaAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.NecklaceOfStamina"));
-	inline const FGameplayTag EaringOfAttackPowerAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.EaringOfAttackPower"));
-	inline const FGameplayTag SlowImmuneAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.SlowImmuneAc"));
-	inline const FGameplayTag BurnImmuneAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.BurnImmuneAc"));
-	inline const FGameplayTag PoisonImmuneAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.PoisonImmuneAc"));
-	inline const FGameplayTag AttackDownImmuneAccessoryItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Equippable.Accessory.AttackDownImmuneAc"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(EquippableItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WeaponItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BasicWeapon);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SwordWeapon);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AxeWeapon);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ClawWeapon);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(HammerWeapon);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SkillItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(RailGunSkillItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(FireBallSkillItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(TeleportSkillItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ZoneyaSkillItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InfiniteStaminaSkillItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ItemScanningSkillItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AccessoryItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(RingOfHealthAccessoryItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(NecklaceOfStaminaAccessoryItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(EaringOfAttackPowerAccessoryItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SlowImmuneAccessoryItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BurnImmuneAccessoryItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PoisonImmuneAccessoryItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AttackDownImmuneAccessoryItem);
 
 	//Consumable Item Tags
-	inline const FGameplayTag ConsumableItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable"));
-	inline const FGameplayTag Potion = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion"));
-	inline const FGameplayTag PotionBoosted = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted"));
-	inline const FGameplayTag PotionBoosted1 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.1"));
-	inline const FGameplayTag PotionBoosted2 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.2"));
-	inline const FGameplayTag PotionBoosted3 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.3"));
-	inline const FGameplayTag PotionBoosted4 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.4"));
-	inline const FGameplayTag PotionBoosted5 = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Potion.Boosted.5"));
-	inline const FGameplayTag AddMaxPotion = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.AddMaxPotion"));
-	inline const FGameplayTag StaminaPotion = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.StaminaPotion"));
-	inline const FGameplayTag Elixir = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.Elixir"));
-	inline const FGameplayTag PoisonCure = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.PoisonCure"));
-	inline const FGameplayTag BurnCure = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.BurnCure"));
-	inline const FGameplayTag SlowCure = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.SlowCure"));
-	inline const FGameplayTag AttackDownCure = FGameplayTag::RequestGameplayTag(TEXT("Item.Consumable.AttackDownCure"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ConsumableItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Potion);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PotionBoosted);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PotionBoosted1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PotionBoosted2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PotionBoosted3);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PotionBoosted4);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PotionBoosted5);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(StaminaPotion);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Elixir);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PoisonCure);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(BurnCure);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SlowCure);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AttackDownCure);
 
 	//Other Item Tags
-	inline const FGameplayTag OtherItem = FGameplayTag::RequestGameplayTag(TEXT("Item.Other"));
-	inline const FGameplayTag Key = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.Key"));
-	inline const FGameplayTag EnergyCore = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.EnergyCore"));
-	inline const FGameplayTag GolemHeart = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.GolemHeart"));
-	inline const FGameplayTag HintNote = FGameplayTag::RequestGameplayTag(TEXT("Item.Other.HintNote"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(OtherItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Key);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(EnergyCore);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GolemHeart);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(HintNote1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(HintNote2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(HintNote3);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WitchDiary1);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WitchDiary2);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WitchDiary3);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(WitchDiary4);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(AddMaxPotion);
 }
 
 namespace TraceTags
 {
 	// Axe
-	inline const FGameplayTag HandRightAxe = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right.Axe"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(HandRightAxe);
 
 	// Claw
-	inline const FGameplayTag HandLeftClaw = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Left.Claw"));
-	inline const FGameplayTag HandRightClaw = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right.Claw"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(HandLeftClaw);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(HandRightClaw);
 	
 	// Sword
-	inline const FGameplayTag HandRightSword = FGameplayTag::RequestGameplayTag(TEXT("Trace.Hand.Right.Sword"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(HandRightSword);
 
 	//Boss3
-	inline const FGameplayTag Body = FGameplayTag::RequestGameplayTag(TEXT("Trace.Body"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Body);
 }
 
 namespace WorldActorTags
 {
-	inline const FGameplayTag ItemDropped = FGameplayTag::RequestGameplayTag(TEXT("WorldActor.Item.ItemDropped"));
-	inline const FGameplayTag OpenableChestItem = FGameplayTag::RequestGameplayTag(TEXT("WorldActor.Item.OpenableChestItem"));
-	inline const FGameplayTag ItemContainer = FGameplayTag::RequestGameplayTag(TEXT("WorldActor.Item.ItemContainer"));
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ItemDropped);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(OpenableChestItem);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ItemContainer);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(DyingHelper);
 }

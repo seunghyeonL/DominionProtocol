@@ -9,6 +9,8 @@
 #include "DomiFramework/GameInstance/SaveManagerSubsystem.h"
 #include "BaseGameMode.generated.h"
 
+class ABoss3Skull;
+class ATeleporter;
 class UItemComponent;
 class ADropEssence;
 class ALevelSequenceActor;
@@ -35,7 +37,8 @@ struct FEnemySpawnInfo
 
 DECLARE_MULTICAST_DELEGATE(FOnPlayerSpawn);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnStartBattle, AActor*);
-DECLARE_MULTICAST_DELEGATE(FOnEndBattle);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEndBattle, AActor*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSpawnDropEssence, ADropEssence*);
 
 UCLASS()
 class DOMINIONPROTOCOL_API ABaseGameMode : public AGameMode
@@ -51,20 +54,26 @@ public:
 	virtual void StartPlay() override;
 	
 	virtual void StartBattle(AActor* SpawnedBoss);
-	virtual void EndBattle();
+	virtual void EndBattle(AActor* DeadMonster = nullptr);
 
 	virtual void OnPlayerDeath();
 
+	UFUNCTION(BlueprintCallable)
+	void Save();
+
+	//긴급탈출 : UI에서 호출
+	UFUNCTION(BlueprintCallable)
+	void MoveToRecentCrack();
+	
 	UFUNCTION()
 	void SaveItemDataToInstance();
-
-	void UpdateInstanceData();
-	
-	void Save();
 	
 	void RestorePlayer();
 	
 	void RespawnPlayerCharacter();
+
+	//Boss3Skull에서 호출
+	void ToggleBoss3BattleRoom(bool bIsInBattleRoom);
 	
 	//UI 쪽에서 레벨과 균열인덱스를 정하면 해당 함수를 호출하도록 하면 됩니다
 	UFUNCTION(BlueprintCallable)
@@ -73,6 +82,9 @@ public:
 	//균열 쪽에서 호출할 함수
 	void DestroyAllNormalEnemy();	// 기존 적들 제거
 	void RespawnEnemies();	// 적 기존 위치에 리스폰
+
+	//Teleporter에서 호출
+	void CheckSkyAtmosphereAndToggle(ATeleporter* Teleporter = nullptr);
 
 	//Getter
 	FORCEINLINE int32 GetPlayTime() { return PlayTime; }
@@ -84,12 +96,19 @@ protected:
 	void PlayTimeAdder();
 
 	void CheckFogCrackAndOffFog();
+
+	void DisappearBoss1Fog();
+
+	void FadeBoss1FogOut();
+
+	void UpdateInstanceData();
 	
 public:
 	// Delegate
 	FOnPlayerSpawn OnPlayerSpawn;
 	FOnStartBattle OnStartBattle;
 	FOnEndBattle OnEndBattle;
+	FOnSpawnDropEssence OnSpawnDropEssence;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawning")
@@ -134,14 +153,35 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UItemComponent> ItemComponent;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<ACrack> RecentCrackCache;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float RespawnDelay;
 
 	UPROPERTY()
+	TObjectPtr<ABoss3Skull> Boss3Skull;
+	
+	UPROPERTY()
 	TArray<FEnemySpawnInfo> CachedEnemyInfo;
+
+	UPROPERTY()
+	TArray<AActor*> Boss3RoomNormalState;
+
+	UPROPERTY()
+	TArray<AActor*> Boss3RoomBattleState;
+
+	UPROPERTY()
+	TArray<AActor*> TargetPostProcessVolumes;
+
+	UPROPERTY()
+	TObjectPtr<APostProcessVolume> Boss1FogProcessVolume;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> MaterialInstanceDynamic;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> MaterialInterface;
 
 	bool bIsSameLevelMove;
 
@@ -154,6 +194,19 @@ protected:
 	int32 PlayTime;
 
 	FTimerHandle PlayTimer;
+
+	FTimerHandle Boss1FogDisappearTimerHandle;
+
+	float FogFadeStartTime;
+
+	float FogFadeDuration;
+
+	float StartFogIntensity;
+	
+	float TargetFogIntensity;
+
+	FVector PlayerDeathLocation;
+
 
 #pragma endregion
 
@@ -171,18 +224,22 @@ public:
 protected:
 	UFUNCTION()
 	void OnFadeSequenceFinished();
-	
-	UPROPERTY()
-	TObjectPtr<ULevelSequence> FadeSequence;
-
-	UPROPERTY()
-	TObjectPtr<ULevelSequencePlayer> SequencePlayer;
 
 	UPROPERTY()
 	ALevelSequenceActor* SequenceActor;
 
 	UPROPERTY()
 	bool bIsFadeIn;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FadeDuration;
+
+	FTimerHandle FadeTimer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float AssetLoadDelay;
+		
+	FTimerHandle AssetLoadTimer;
 	
 #pragma endregion
 

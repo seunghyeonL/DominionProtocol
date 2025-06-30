@@ -23,6 +23,7 @@ void ASplineBlockingVolume::BeginPlay()
 	Super::BeginPlay();
 }
 
+#if WITH_EDITOR
 void ASplineBlockingVolume::PostEditUndo()
 {
 	Super::PostEditUndo();
@@ -30,6 +31,7 @@ void ASplineBlockingVolume::PostEditUndo()
 	ClearBox();
 	CreateBox();
 }
+#endif
 
 void ASplineBlockingVolume::OnConstruction(const FTransform& Transform)
 {

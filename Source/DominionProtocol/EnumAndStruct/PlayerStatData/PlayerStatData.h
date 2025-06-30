@@ -9,32 +9,34 @@ struct FPlayerStatData
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Str;
+	FPlayerStatData() {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Life;
+	float Str = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Spl;
+	float Life = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float End;
+	float Spl = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PrimaryAttackPower;
+	float End = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PrimaryAttackPower = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float SubAttackPower;
+	float SubAttackPower = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MagicPower;
+	float MagicPower = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth;
+	float MaxHealth = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxStamina;
+	float MaxStamina = 0.f;
 
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	// float StaminaRecoveryRate; 

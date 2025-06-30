@@ -15,18 +15,6 @@ class DOMINIONPROTOCOL_API UDomiInGameHUDWidget : public UUserWidget
 
 
 public:
-	UFUNCTION()
-	void OnPlayerDeath();
-	
-	UFUNCTION()
-	void OnPlayerSpawn();
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void ShowDeathScriptWidget();
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void HideDeathScriptWidget();
-	
 	UFUNCTION(BlueprintCallable)
 	void OnShowCrackMenuWidget();
 
@@ -52,7 +40,6 @@ public:
 
 protected:
 	virtual void NativeConstruct() override;
-	void SetupStatusBarWidget(const AActor* OwningActor);
 
 
 protected:

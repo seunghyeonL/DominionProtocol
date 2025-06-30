@@ -12,6 +12,7 @@
 class ACrack;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStoryStateChanged, EGameStoryState, NewState);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnChangedCurrentEssence, int32)
 
 UCLASS()
 class DOMINIONPROTOCOL_API UDomiGameInstance : public UGameInstance
@@ -22,6 +23,8 @@ class DOMINIONPROTOCOL_API UDomiGameInstance : public UGameInstance
 	
 public:
 	virtual void Init() override;
+
+	FOnChangedCurrentEssence OnChangedCurrentEssence;
 	
 	//Save & Load
 	void LoadSaveData(const FInstanceData& SaveData);
@@ -40,9 +43,9 @@ public:
 	
 	void SetCurrentGameStoryState(EGameStoryState NewGameStoryState);
 
-	FORCEINLINE void SetPlayerCurrentEssence(int32 NewPlayerCurrentEssence) { PlayerCurrentEssence = NewPlayerCurrentEssence; }
+	void SetPlayerCurrentEssence(const int32 NewPlayerCurrentEssence);
 
-	FORCEINLINE void AddPlayerCurrentEssence(int32 AddEssenceValue) { PlayerCurrentEssence += AddEssenceValue; }
+	void AddPlayerCurrentEssence(int32 AddEssenceValue);
 	
 	FORCEINLINE void SubtractPlayerCurrentEssence(int32 SubtractEssenceValue)
 	{

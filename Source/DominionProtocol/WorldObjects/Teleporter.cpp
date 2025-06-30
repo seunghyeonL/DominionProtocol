@@ -4,13 +4,17 @@
 #include "Teleporter.h"
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Engine/TargetPoint.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "EngineUtils.h"
+#include "DomiFramework/GameMode/BaseGameMode.h"
 
 #include "Util/DebugHelper.h"
 
 
 ATeleporter::ATeleporter()
+	: bShouldOnSkyAtmosphere(false),
+	  bShouldOffSkyAtmosphere(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -25,12 +29,15 @@ ATeleporter::ATeleporter()
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
 	ArrowComponent->SetupAttachment(SceneComp);
+
+	TeleportPointComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("RespawnTargetPoint"));
+	TeleportPointComponent->SetupAttachment(SceneComp);
 }
 
 void ATeleporter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	TeleportPointComponent->SetChildActorClass(ATargetPoint::StaticClass());
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ATeleporter::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ATeleporter::OnOverlapEnd);
 
@@ -41,8 +48,15 @@ void ATeleporter::Interact_Implementation(AActor* Interactor)
 {
 	if (IsValid(CachedCharacter))
 	{
-		CachedCharacter->SetActorLocation(LinkedTeleporter->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
-		CachedCharacter->SetActorRotation(LinkedTeleporter->GetActorRotation(), ETeleportType::TeleportPhysics);
+		CachedCharacter->SetActorLocation(LinkedTeleporter->TeleportPointComponent->GetChildActor()->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		CachedCharacter->SetActorRotation(LinkedTeleporter->TeleportPointComponent->GetChildActor()->GetActorRotation(), ETeleportType::TeleportPhysics);
+
+		if (bShouldOffSkyAtmosphere || bShouldOnSkyAtmosphere)
+		{
+			ABaseGameMode* BaseGameMode = Cast<ABaseGameMode>(GetWorld()->GetAuthGameMode());
+			check(IsValid(BaseGameMode))
+			BaseGameMode->CheckSkyAtmosphereAndToggle(this);
+		}
 	}
 	else
 	{

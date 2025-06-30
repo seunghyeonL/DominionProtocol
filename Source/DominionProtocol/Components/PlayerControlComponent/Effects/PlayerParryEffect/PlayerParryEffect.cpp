@@ -11,16 +11,15 @@ UPlayerParryEffect::UPlayerParryEffect()
 
 bool UPlayerParryEffect::Activate()
 {
-	if (!Super::Activate())
+	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
+	check(ControlComponent);
+	// 노티파이에서 ParryEffect를 Activate시키는 순간 StopSkill 될 경우에 Deactivate 되지 않는 현상 때문에 넣은 안전코드
+	if (!ControlComponent->GetActiveControlEffectTags().HasTag(EffectTags::UsingParry))
 	{
 		return false;
 	}
-
-	auto ControlComponent = Cast<UPlayerControlComponent>(GetOuter());
-	check(ControlComponent);
-
-	// 노티파이에서 ParryEffect를 Activate시키는 순간 StopSkill 될 경우에 Deactivate 되지 않는 현상 때문에 넣은 안전코드
-	if (!ControlComponent->GetActiveControlEffectTags().HasTag(EffectTags::UsingParry))
+	
+	if (!Super::Activate())
 	{
 		return false;
 	}

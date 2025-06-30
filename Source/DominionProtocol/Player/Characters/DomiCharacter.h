@@ -77,12 +77,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	virtual void Landed(const FHitResult& Hit) override;
-
-	// Combat
-	FORCEINLINE bool IsInCombat() const { return bIsInCombat; }
-	void StartCombat();
-	void EndCombat();
+	virtual void Landed(const FHitResult& HitResult) override;
 	
 	// ControlComponentUser
 	virtual FGameplayTagContainer& GetActiveControlEffectTags() override;
@@ -119,7 +114,7 @@ public:
 	// Parryable
 	virtual bool IsParryingCond_Implementation() override;
 	virtual void OnParried_Implementation() override;
-	virtual void OnParrySuccess_Implementation() override;
+	// virtual void OnParrySuccess_Implementation() override;
 	virtual AActor* GetTargetEnemy_Implementation() override;
 
 	// EffectUser
@@ -150,9 +145,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHitSound();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHitVoice();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayDeathSound();
+	void PlayDeathVoice();
 	
 	// WeaopnMeshChange
 	UFUNCTION(BlueprintImplementableEvent)
@@ -163,6 +161,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void HideParryWall();
+
+	// On Attack Detected
+	UFUNCTION(BlueprintCallable)
+	void PlayEffectsOnMnhAttack(const FHitResult& HitResult);
+
+	bool IsInvincible();
 
 protected:
 	virtual void BeginPlay() override;
@@ -212,13 +216,6 @@ protected:
 	TObjectPtr<UStaticMeshComponent> DownTrace;
 
 	FString PlayerName;
-
-	// Combat
-	FTimerHandle CombatTimer;
-	bool bIsInCombat;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Teleport")
-	float CombatDuration;
 
 private:
 	UPROPERTY(VisibleAnywhere)

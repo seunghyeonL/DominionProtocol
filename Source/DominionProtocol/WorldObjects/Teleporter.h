@@ -7,6 +7,7 @@
 #include "Interface/InteractableInterface.h"
 #include "Teleporter.generated.h"
 
+class ATargetPoint;
 class UArrowComponent;
 class ADomiCharacter;
 class USphereComponent;
@@ -19,6 +20,10 @@ class DOMINIONPROTOCOL_API ATeleporter : public AActor, public IInteractableInte
 // Functions
 public:
 	ATeleporter();
+
+// Getter
+	FORCEINLINE bool GetShouldOnSkyAtmosphere() const { return bShouldOnSkyAtmosphere; }
+	FORCEINLINE bool GetShouldOffSkyAtmosphere() const { return bShouldOffSkyAtmosphere; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -57,10 +62,19 @@ protected:
 	TObjectPtr<UArrowComponent> ArrowComponent;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	TObjectPtr<UChildActorComponent> TeleportPointComponent;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FString TeleporterName;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FString LinkedTeleporterName;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	bool bShouldOnSkyAtmosphere;
+	
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	bool bShouldOffSkyAtmosphere;
 
 private:
 	UPROPERTY()
@@ -68,4 +82,6 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<ATeleporter> LinkedTeleporter;
+
+	
 };

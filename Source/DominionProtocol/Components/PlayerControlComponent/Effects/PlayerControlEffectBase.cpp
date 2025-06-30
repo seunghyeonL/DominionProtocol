@@ -16,6 +16,7 @@ UPlayerControlEffectBase::UPlayerControlEffectBase()
 	OuterState = nullptr;
 	CachedDuration = 0.f;
 	DurationRemained = 0.f;
+	EffectIcon = nullptr;
 }
 
 void UPlayerControlEffectBase::Initialize()

@@ -1,40 +1,44 @@
 #include "DialogueManager.h"
+
+#include "DyingHelper.h"
+#include "AI/AICharacters/BossMonster/Boss4Enemy.h"
+#include "DomiFramework/WorldActorManage/ActorStateComponent.h"
 #include "WorldObjects/Helper.h"
+#include "WorldObjects/DyingHelper.h"
+#include "WorldObjects/BlockedPath.h"
 #include "Engine/DataTable.h"
 #include "Kismet/GameplayStatics.h"
 #include "Util/DebugHelper.h"
 #include "EnumAndStruct/FDialogueData.h"
-#include "DomiFramework/GameInstance/DomiGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-void UDialogueManager::LoadDialogueDataTable()
+UDataTable* UDialogueManager::LoadDialogueDataTable(const FString& Path)
 {
-	if (DialogueDataTable) return;
-
-	static const FString Path = TEXT("/Game/Data/DT_DialogueData.DT_DialogueData");
-	DialogueDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *Path));
-
-	if (DialogueDataTable)
+	UDataTable* Table = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *Path));
+	if (!Table)
 	{
-		Debug::Print(TEXT("O DialogueDataTable 로딩 성공"));
+		Debug::Print(FString::Printf(TEXT("X 로딩 실패: %s"), *Path));
 	}
 	else
 	{
-		Debug::Print(TEXT("X DialogueDataTable 로딩 실패"));
+		Debug::Print(FString::Printf(TEXT("O 로딩 성공: %s"), *Path));
 	}
+
+	return Table;
 }
 
 bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const FVector& CrackLocation, const FRotator& CrackRotation)
 {
 	CachedHelperSpawnLocation = CrackLocation;
 	CachedHelperSpawnRotation = CrackRotation;
-	CachedHelperSpawnRotation.Yaw -= 40.f;
-	LoadDialogueDataTable();
+	CachedHelperSpawnRotation.Yaw += 40.f;
 
-	Debug::Print(TEXT("UDialogueSubsystem::TryStartDialogueIfExists()"));
-	if (!DialogueDataTable) return false;
+	const FString Path = TEXT("/Game/Data/DT_HelperDialogueData.DT_HelperDialogueData");
+	UDataTable* Table = LoadDialogueDataTable(Path);
+	if (!Table) return false;
 
 	TArray<FDialogueData*> AllRows;
+	DialogueDataTable = Table;
 	DialogueDataTable->GetAllRows(TEXT("Dialogue"), AllRows);
 
 	CurrentDialogueLines.Empty();
@@ -55,18 +59,51 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const F
 
 	if (CurrentDialogueLines.Num() == 0)
 	{
-		Debug::Print(TEXT("UDialogueSubsystem: NoLine, Return False"));
+		Debug::Print(TEXT("UDialogueSubsystem: 대사 없음"));
 		return false;
 	}
 		
 	CurrentStoryState = InState;
 	CurrentLineIndex = 0;
-	ExecuteDialogueLine();
-	Debug::Print(TEXT("UDialogueSubsystem: Return true"));
-	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (GI) {
-		GI->AdvanceStoryState();
+	TriggerHelperAppear();
+	return true;
+}
+
+bool UDialogueManager::TryStartDialogueByID(const FString& DialogueID, AActor* TalkActor)
+{
+	const FString Path = TEXT("/Game/Data/DT_DialogueData.DT_DialogueData");
+	UDataTable* Table = LoadDialogueDataTable(Path);
+	if (!Table) return false;
+
+	// (이미 죽은 경우에 대한 처리 위함)
+	if (IsValid(TalkActor))
+	{
+		TalkActorCache = TalkActor;
 	}
+	
+	TArray<FDialogueData*> AllRows;
+	DialogueDataTable = Table;
+	DialogueDataTable->GetAllRows(TEXT("Dialogue"), AllRows);
+
+	CurrentDialogueLines.Empty();
+
+	for (FDialogueData* Row : AllRows)
+	{
+		if (Row && Row->DialogueID.ToString() == DialogueID)
+		{
+			CurrentDialogueLines.Add(Row);
+		}
+	}
+
+	if (CurrentDialogueLines.Num() == 0)
+	{
+		Debug::Print(TEXT("UDialogueManager::대사 없음"));
+		return false;
+	}
+
+	CurrentDialogueID = DialogueID;
+	CurrentLineIndex = 0;
+	ExecuteDialogueLine();
 	return true;
 }
 
@@ -74,13 +111,42 @@ bool UDialogueManager::TryStartDialogueIfExists(EGameStoryState InState, const F
 void UDialogueManager::AdvanceDialogue()
 {
 	++CurrentLineIndex;
+
+	// 다음 문장 있을 때
 	if (CurrentLineIndex < CurrentDialogueLines.Num())
 	{
 		ExecuteDialogueLine();
 	}
+	// 다음 문장 없을 때
 	else
 	{
-		Debug::Print("대사 종료");
+		// StoryState
+		if (IsValid(CurrentHelper))
+		{
+			TriggerHelperDisappear();
+		}
+		// ID
+		else
+		{
+			// 죽어가는 조력자인 경우(보스3 전투공간)
+			if (CurrentDialogueID == TEXT("Helper"))
+			{
+				ADyingHelper* DyingHelper = Cast<ADyingHelper>(TalkActorCache);
+				if (IsValid(DyingHelper))
+				{
+					DyingHelper->Die();
+				}
+			}
+			// 죽어가는 마녀일 경우
+			else if (CurrentDialogueID == TEXT("Witch"))
+			{
+				ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(TalkActorCache);
+				if (IsValid(Boss4))
+				{
+					Boss4->Boss4Dead();
+				}
+			}
+		}
 	}
 }
 
@@ -89,26 +155,11 @@ void UDialogueManager::ExecuteDialogueLine()
 	if (!CurrentDialogueLines.IsValidIndex(CurrentLineIndex)) return;
 	const FDialogueData* Line = CurrentDialogueLines[CurrentLineIndex];
 
-	switch (Line->EventType)
+	if (!Line->DialogueText.IsEmpty())
 	{
-	case EDialogueEventType::TextOnly:
-		if (!Line->DialogueText.IsEmpty())
-		{
-			Debug::Print(Line->DialogueText.ToString()); // 대사
-			CurrentDialogueString = Line->DialogueText.ToString();
-			OnUpdateDialogueText.Broadcast(FText::FromString(CurrentDialogueString)); // 대사 델리게이트
-		}
-		break;
-	case EDialogueEventType::SpawnHelper:
-		CurrentDialogueString = TEXT("");
-		TriggerHelperAppear();
-		return;
-	case EDialogueEventType::DespawnHelper:
-		CurrentDialogueString = TEXT("");
-		TriggerHelperDisappear();
-		return;
-	default:
-		break;
+		Debug::Print(Line->DialogueText.ToString()); // 대사
+		CurrentDialogueString = Line->DialogueText.ToString();
+		OnUpdateDialogueText.Broadcast(FText::FromString(CurrentDialogueString)); // 대사 델리게이트
 	}
 }
 
@@ -132,7 +183,14 @@ void UDialogueManager::TriggerHelperAppear()
 		CurrentHelper->SetDialogueManager(this);
 		CurrentHelper->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 		CurrentHelper->Appear(CachedHelperSpawnLocation, CachedHelperSpawnRotation);
+		FVector TargetOffset = FVector(0.f, 0.f, 100.f);
+		APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+		FTransform PlayerTransform(Player->GetActorRotation(), Player->GetActorLocation());
+		CurrentHelper->SetViewTargetLocAndRot(PlayerTransform.TransformPosition(TargetOffset), CachedHelperSpawnRotation);
+		CurrentHelper->SetViewToHelper();
 	}
+
+	ExecuteDialogueLine();
 }
 
 void UDialogueManager::TriggerHelperDisappear()
@@ -140,7 +198,8 @@ void UDialogueManager::TriggerHelperDisappear()
 	if (CurrentHelper)
 	{
 		Debug::Print(TEXT("UDialogueManager::TriggerHelperDisappear()"));
-		CurrentHelper->Disappear();
+		CurrentHelper->SetViewToPlayer();
+		CurrentHelper->Disappear(CachedHelperSpawnLocation);
 	}
 }
 

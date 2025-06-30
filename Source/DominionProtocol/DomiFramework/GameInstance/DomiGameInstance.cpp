@@ -48,6 +48,21 @@ void UDomiGameInstance::SetCurrentGameStoryState(EGameStoryState NewGameStorySta
 	}
 }
 
+void UDomiGameInstance::SetPlayerCurrentEssence(const int32 NewPlayerCurrentEssence)
+{
+	// 변화량 계산
+	const int32 PreEssence = NewPlayerCurrentEssence - PlayerCurrentEssence;
+	OnChangedCurrentEssence.Broadcast(PreEssence);
+	
+	PlayerCurrentEssence = NewPlayerCurrentEssence;
+}
+
+void UDomiGameInstance::AddPlayerCurrentEssence(int32 AddEssenceValue)
+{
+	OnChangedCurrentEssence.Broadcast(AddEssenceValue);
+	PlayerCurrentEssence += AddEssenceValue;
+}
+
 void UDomiGameInstance::AdvanceStoryState()
 {
 	int32 CurrentIndex = static_cast<int32>(CurrentGameStoryState);

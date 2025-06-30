@@ -19,7 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShieldChanged, float, Shield);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttackPowerChanged, float, AttackPower);
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMaxShieldChanged, float);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnBattleMonster, FString);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBattleMonster, AActor*);
 DECLARE_MULTICAST_DELEGATE(FOnStatusEffectsChanged);
 DECLARE_MULTICAST_DELEGATE(FOnDeath);
 
@@ -64,8 +64,15 @@ public:
 
 	FOnMaxShieldChanged OnMaxShieldChanged;
 	FOnBattleMonster OnBattleMonster;
-
-	// TimerHandles
+	
+	// Combat State
+	FTimerHandle CombatTimer;
+	
+	FORCEINLINE bool IsInCombat() const { return bIsInCombat; }
+	FORCEINLINE void SetIsInCombat(const bool Flag) { bIsInCombat = Flag; }
+	void StartCombat();
+	void EndCombat();
+	
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -99,8 +106,12 @@ public:
 	float GetMaxVariableStat(const FGameplayTag& StatTag) const;
 
 	// Getter/Setter with Delegate
+	UFUNCTION(BlueprintCallable)
 	void SetHealth(const float NewHealth);
+
+	UFUNCTION(BlueprintCallable)
 	void SetGroggyGauge(const float NewGroggyGauge);
+
 	void SetMaxHealth(const float NewMaxHealth);
 	void SetShield(const float NewShield);
 	void SetStamina(float NewHealth);
@@ -130,6 +141,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	float CombatDuration;
+
+	bool bIsInCombat;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stats", meta=(AllowPrivateAccess=true))
 	TMap<FGameplayTag, float> StatMap;
@@ -147,10 +163,7 @@ protected:
 	FGameplayTagContainer ImmuneStatusEffectTags;
 	
 	UPROPERTY(EditAnywhere, Category = "Stamina")
-	float StaminaRecoveryRate = 10.f;
-
-	UPROPERTY(EditAnywhere, Category = "Stamina")
-	float StaminaRecoveryDelay = 1.f;
+	float StaminaRecoveryRate;
 
 	bool bIsRecoveringStamina = false;
 	

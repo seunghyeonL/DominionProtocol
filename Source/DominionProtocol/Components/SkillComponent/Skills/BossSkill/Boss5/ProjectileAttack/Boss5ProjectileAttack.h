@@ -6,6 +6,8 @@
 
 class ACharacter;
 class UProjectileMovementComponent;
+class AAIController;
+class UBlackboardComponent;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UBoss5ProjectileAttack : public UBaseSkill
@@ -35,4 +37,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sound")
 	TObjectPtr<USoundBase> FireSound;
+
+	UPROPERTY()
+	TObjectPtr<ACharacter> TargetCharacter;
 };

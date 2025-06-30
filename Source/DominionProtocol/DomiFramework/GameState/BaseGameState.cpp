@@ -14,6 +14,7 @@
 #include "Components/StatusComponent/StatusComponentInitializeData.h"
 #include "Components/StatusComponent/StatusComponent.h"
 #include "EnumAndStruct/EffectData/EffectInitializeData.h"
+#include "EnumAndStruct/PhysicalSurfaceTypeData/PhysicalSurfaceTypeData.h"
 #include "EnumAndStruct/FCrackData.h"
 #include "WorldObjects/Crack.h"
 #include "Player/Characters/DomiCharacter.h"
@@ -31,6 +32,16 @@ ABaseGameState::ABaseGameState()
 {
 }
 
+const TMap<int32, FCrackImageData>& ABaseGameState::GetPastCrackImageDataMap()
+{
+	return PastCrackImageDataMap;
+}
+
+const TMap<int32, FCrackImageData>& ABaseGameState::GetPresentCrackImageData()
+{
+	return PresentCrackImageDataMap;
+}
+
 void ABaseGameState::BeginPlay()
 {
 	Super::BeginPlay();
@@ -43,6 +54,7 @@ void ABaseGameState::BeginPlay()
 	InitializeZeroIndexCrackData(WorldInstanceSubsystem->GetCurrentLevelName());
 	InitializeSoundSubsystem();
 	InitializeItemInstanceSubsystem();
+	LoadCrackImageData();
 }
 
 void ABaseGameState::InitializeGameInstance()
@@ -120,6 +132,28 @@ FEffectInitializeData* ABaseGameState::GetEffectInitializeData(const FGameplayTa
 	return EffectInitializeDataTable->FindRow<FEffectInitializeData>(EffectTag.GetTagName(), TEXT(""));
 }
 
+FName ABaseGameState::GetSurfaceNameByEnum(EPhysicalSurface PhysicalSurfaceType) const
+{
+	switch (PhysicalSurfaceType)
+	{
+		case SurfaceType_Default : return FName("Default");
+		case SurfaceType1:        return FName("Metal");
+		case SurfaceType2:        return FName("Flesh");
+		case SurfaceType3:        return FName("CityRoads");
+		case SurfaceType4:        return FName("BuildingsAndWalls");
+		case SurfaceType5:        return FName("FactoryFloor");
+		case SurfaceType6:        return FName("Rebar");
+		case SurfaceType7:        return FName("Boss1Blood");
+		default:                  return FName("Default");
+	}
+}
+
+FPhysicalSurfaceTypeData* ABaseGameState::GetPhysicalSurfaceTypeData(EPhysicalSurface PhysicalSurfaceType) const
+{
+	check(SurfaceDataTable);
+	return SurfaceDataTable->FindRow<FPhysicalSurfaceTypeData>(GetSurfaceNameByEnum(PhysicalSurfaceType), TEXT("GetPhysicalSurfaceTypeData"));
+}
+
 void ABaseGameState::InitializeGame()
 {
 	check(IsValid(GameInstance));
@@ -191,9 +225,9 @@ void ABaseGameState::InitializeGame()
 		}
 		
 		ACrack* NearestCrack = FindNearestCrack();
-		BaseGameMode->SetRecentCrackCache(NearestCrack);
 		if (WorldInstanceSubsystem->GetRecentCrackName().IsEmpty())
 		{
+			BaseGameMode->SetRecentCrackCache(NearestCrack);
 			WorldInstanceSubsystem->SetRecentCrackName(NearestCrack->GetCrackName());
 			WorldInstanceSubsystem->SetRecentCrackIndex(NearestCrack->GetCrackIndex());
 		}
@@ -372,4 +406,31 @@ ACrack* ABaseGameState::FindNearestCrack()
 	}
 
 	return NearestCrack;
+}
+
+void ABaseGameState::LoadCrackImageData()
+{
+	if (PastCrackImageData)
+	{
+		TArray<FName> RowNames = PastCrackImageData->GetRowNames();
+		for (const FName& RowName : RowNames)
+		{
+			if (FCrackImageData* Row = PastCrackImageData->FindRow<FCrackImageData>(RowName, TEXT("")))
+			{
+				PastCrackImageDataMap.Add(Row->CrackIndex, *Row);
+			}
+		}
+	}
+
+	if (PresentCrackImageData)
+	{
+		TArray<FName> RowNames = PresentCrackImageData->GetRowNames();
+		for (const FName& RowName : RowNames)
+		{
+			if (FCrackImageData* Row = PresentCrackImageData->FindRow<FCrackImageData>(RowName, TEXT("")))
+			{
+				PresentCrackImageDataMap.Add(Row->CrackIndex, *Row);
+			}
+		}
+	}
 }

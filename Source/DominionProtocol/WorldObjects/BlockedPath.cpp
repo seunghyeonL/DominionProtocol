@@ -4,10 +4,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "Components/ItemComponent/ItemComponent.h"
+#include "WorldObjects/DialogueManager.h"
+#include "UI/UIInGame/NewDialogueWidget.h"
 #include "Util/DebugHelper.h"
 
 ABlockedPath::ABlockedPath()
-	:bIsBlocking(true)
+	:bIsBlocking(true),
+	DialogueID(TEXT("BlockedPath"))
 {
 	PrimaryActorTick.bCanEverTick = false;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -101,6 +104,7 @@ void ABlockedPath::TryOpen()
 	else
 	{
 		Debug::Print(TEXT("ABlockedPath: 조건 미충족, 막힘 유지"));
+		DialogueManager->TryStartDialogueByID(DialogueID, this);
 	}
 }
 void ABlockedPath::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -112,13 +116,13 @@ void ABlockedPath::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 		Debug::Print(TEXT("Not Player"));
 		return;
 	}
-
+	/*
 	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (!GI || GI->GetCurrentGameStoryState() != RequiredStoryState)
 	{
 		Debug::Print(TEXT("Not RequiredStoryState"));
 		return;
-	}
+	}*/
 
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(OtherActor);
 	ensure(PlayerCharacter);
@@ -148,19 +152,27 @@ void ABlockedPath::Interact_Implementation(AActor* Interactor)
 	ADomiCharacter* PlayerCharacter = Cast<ADomiCharacter>(Interactor);
 	if (!PlayerCharacter || !bIsBlocking) return;
 
-	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (!GI || GI->GetCurrentGameStoryState() != RequiredStoryState) return;
+	if (!DialogueManager)
+	{
+		DialogueManager = NewObject<UDialogueManager>(this);
+		OnCreateDialogueManager.Broadcast(DialogueManager);
+	}
 
 	UItemComponent* PlayerItemComponent = PlayerCharacter->FindComponentByClass<UItemComponent>();
 	if (!IsValid(PlayerItemComponent) || !PlayerItemComponent->HasItem(RequiredKey, 1))
 	{
 		Debug::Print(TEXT("ABlockedPath::Item Not Found"));
+
+		DialogueManager->TryStartDialogueByID(DialogueID);
 		return;
 	}
-		
+
 	Debug::Print(TEXT("ABlockedPath::Item Check"));
 	PlayerItemComponent->RemoveItem(RequiredKey, 1);
+
+	UDomiGameInstance* GI = Cast<UDomiGameInstance>(UGameplayStatics::GetGameInstance(this));
 	GI->AdvanceStoryState();
+
 	TryOpen();
 }
 

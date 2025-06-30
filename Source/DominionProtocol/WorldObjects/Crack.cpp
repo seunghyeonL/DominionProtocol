@@ -4,22 +4,16 @@
 #include "Crack.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/StatusComponent/StatusComponent.h"
-#include "Components/ItemComponent/ItemComponent.h"
 #include "Engine/TargetPoint.h"
 #include "DomiFramework/GameInstance/WorldInstanceSubsystem.h"
 #include "DomiFramework/GameMode/BaseGameMode.h"
-#include "DomiFramework/GameMode/ProtoLevel1GameMode.h"
-#include "DomiFramework/GameMode/ProtoLevel2GameMode.h"
 #include "DomiFramework/GameState/BaseGameState.h"
-#include "EnumAndStruct/FCrackData.h"
 #include "Player/InGameController.h"
 #include "Player/Characters/DomiCharacter.h"
 #include "UI/UIInGame/DomiInGameHUDWidget.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
 #include "WorldObjects/DialogueManager.h"
-#include "WorldObjects/Helper.h"
 
 #include "Util/DebugHelper.h"
 
@@ -29,8 +23,11 @@ DEFINE_LOG_CATEGORY(LogCrackSystem);
 ACrack::ACrack()
 	: CrackName(FText::GetEmpty()),
 	  CrackIndex(0),
+	  RequiredRevealStoryState(EGameStoryState::Tutorial),
 	  bIsBossRoomCrack(false),
 	  bIsInFogCrack(false),
+	  bIsBoss3Crack(false),
+	  bShouldOffSkyAtmosphere(false),
 	  InteractableRadius(150.f),
 	  ActivationDistanceCalculateRadius(1500.f),
 	  Distance(1600.f),
@@ -48,7 +45,6 @@ ACrack::ACrack()
 
 	RespawnTargetPointComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("RespawnTargetPoint"));
 	RespawnTargetPointComp->SetupAttachment(SceneComp);
-	RespawnTargetPointComp->SetChildActorClass(ATargetPoint::StaticClass());
 	RespawnTargetPointComp->SetRelativeLocation(FVector(0.f, 0.f, 300.f));
 
 	BGMAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BGMComponent"));
@@ -58,6 +54,7 @@ ACrack::ACrack()
 void ACrack::BeginPlay()
 {
 	Super::BeginPlay();
+	RespawnTargetPointComp->SetChildActorClass(ATargetPoint::StaticClass());
 
 	BGMAudioComponent->SetSound(BGMSound);
 	BGMAudioComponent->AttenuationSettings = SoundAttenuation;
@@ -66,8 +63,6 @@ void ACrack::BeginPlay()
 
 	DistanceCalculateRadiusSquared = ActivationDistanceCalculateRadius * ActivationDistanceCalculateRadius;
 	InteractableRadiusSquared = InteractableRadius * InteractableRadius;
-
-	RespawnTargetPoint = Cast<ATargetPoint>(RespawnTargetPointComp->GetChildActor());
 
 	GameInstance = Cast<UDomiGameInstance>(GetGameInstance());
 	check(IsValid(GameInstance));
@@ -133,6 +128,10 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 		UGameplayStatics::PlaySoundAtLocation(this, ActivateSound, GetActorLocation());
 		bIsActivate = true;
 		WorldInstanceSubsystem->SetIsActivateCrackIndex(WorldInstanceSubsystem->GetCurrentLevelName(), CrackIndex);
+		// 저장
+		BaseGameMode->Save();
+
+		OnActiveCrack.Broadcast(CrackName);
 		Debug::Print(CrackName.ToString() + TEXT(" 활성화"));
 		return;
 	}
@@ -165,7 +164,7 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 				Debug::Print(TEXT("ACrack: APlayerController NotValid"));
 			}
 		}
-		AlignPlayerForDialogue(Cast<ADomiCharacter>(Interactor));
+		// AlignPlayerForDialogue(Cast<ADomiCharacter>(Interactor));
 		Debug::Print(TEXT("Crack: 조력자 이벤트 종료"));
 		GameInstance->AdvanceStoryState();
 
@@ -185,11 +184,8 @@ void ACrack::Interact_Implementation(AActor* Interactor)
 	// 적 몬스터 초기화
 	BaseGameMode->RespawnEnemies();
 
-	// 저장
-	BaseGameMode->UpdateInstanceData();
-
 	BaseGameMode->Save();
-
+	
 	UDomiInGameHUDWidget* InGameHUDWidget = PlayerController->GetInGameHUDWidget();
 
 	// 균열 이동
@@ -283,9 +279,9 @@ void ACrack::SetDetailDetection(bool bEnable)
 
 FVector ACrack::GetRespawnTargetPointLocation() const
 {
-	if (IsValid(RespawnTargetPoint))
+	if (IsValid(RespawnTargetPointComp->GetChildActor()))
 	{
-		return RespawnTargetPoint->GetActorLocation();
+		return RespawnTargetPointComp->GetChildActor()->GetActorLocation();
 	}
 	else
 	{
@@ -296,9 +292,9 @@ FVector ACrack::GetRespawnTargetPointLocation() const
 
 FRotator ACrack::GetRespawnTargetPointRotation() const
 {
-	if (IsValid(RespawnTargetPoint))
+	if (IsValid(RespawnTargetPointComp->GetChildActor()))
 	{
-		return RespawnTargetPoint->GetActorRotation();
+		return RespawnTargetPointComp->GetChildActor()->GetActorRotation();
 	}
 	else
 	{

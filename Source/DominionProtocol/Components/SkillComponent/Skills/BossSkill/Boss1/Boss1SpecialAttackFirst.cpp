@@ -8,6 +8,7 @@
 #include "Components/StatusComponent/StatusComponent.h"
 #include "Player/Damagable.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Player/Characters/DomiCharacter.h"
 
 UBoss1SpecialAttackFirst::UBoss1SpecialAttackFirst()
 {
@@ -105,6 +106,14 @@ void UBoss1SpecialAttackFirst::AttackTrace() const
 		if (HitActor->GetClass()->ImplementsInterface(UDamagable::StaticClass()))
 		{
 			if (CheckParry(HitActor))
+			{
+				return;
+			}
+
+			ADomiCharacter* DomiCharacter = Cast<ADomiCharacter>(HitActor);
+
+			// DomiCharacter가 넉백 or 무적 상태일 때 리턴
+			if (!IsValid(DomiCharacter) || DomiCharacter->IsInvincible())
 			{
 				return;
 			}

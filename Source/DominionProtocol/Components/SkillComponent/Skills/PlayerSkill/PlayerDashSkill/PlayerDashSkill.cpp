@@ -126,6 +126,7 @@ void UPlayerDashSkill::Tick(float DeltaTime)
 			auto& ActiveControlEffectTags = ControlComponent->GetActiveControlEffectTags();
 			ActiveControlEffectTags.RemoveTag(EffectTags::DashInvincible);
 			OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+			OwnerCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
 		return;
 	}
@@ -135,6 +136,7 @@ void UPlayerDashSkill::Tick(float DeltaTime)
 	{
 		bIsMoving = true;
 		OwnerCharacter->GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel1);
+		OwnerCharacter->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		auto& ActiveControlEffectTags = ControlComponent->GetActiveControlEffectTags();
 		ActiveControlEffectTags.AddTag(EffectTags::DashInvincible);
 	}

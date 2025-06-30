@@ -22,6 +22,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DeleteGame(const int32 SlotIndex) const;
 
+	FORCEINLINE class USaveManagerSubsystem* GetSaveManagerSubsystemInstance() const { return SaveManagerSubsystemInstance; }
+	
 protected:
 	virtual void NativeConstruct() override;
 	
