@@ -124,6 +124,7 @@ namespace SkillGroupTags
 	UE_DEFINE_GAMEPLAY_TAG(Boss2TeleportAttack, "Skill.Boss2.TeleportAttack");
 
 	// Boss4
+	UE_DEFINE_GAMEPLAY_TAG(Boss4Phase2LevelStart, "Skill.Boss4.LevelStart.Phase2");
 	UE_DEFINE_GAMEPLAY_TAG(Boss4WeaponAttack1Start, "Skill.Boss4.WeaponAttack1.start");
 	UE_DEFINE_GAMEPLAY_TAG(Boss4WeaponAttack1First, "Skill.Boss4.WeaponAttack1.first");
 	UE_DEFINE_GAMEPLAY_TAG(Boss4WeaponAttack1Second, "Skill.Boss4.WeaponAttack1.second");
@@ -281,6 +282,7 @@ namespace SkillTags
 	UE_DEFINE_GAMEPLAY_TAG(Boss4RandomMove, "Skill.Boss4.RandomMove");
 
 	/// Boss4_2
+	UE_DEFINE_GAMEPLAY_TAG(Boss4Phase2LevelStart, "Skill.Boss4.LevelStart.Phase2");
 	UE_DEFINE_GAMEPLAY_TAG(Boss4WeaponAttack2First, "Skill.Boss4.WeaponAttack2.first");
 	UE_DEFINE_GAMEPLAY_TAG(Boss4WeaponAttack2Second, "Skill.Boss4.WeaponAttack2.second");
 	UE_DEFINE_GAMEPLAY_TAG(Boss4WeaponAttack2Third, "Skill.Boss4.WeaponAttack2.third");

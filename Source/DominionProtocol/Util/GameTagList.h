@@ -282,6 +282,7 @@ namespace SkillTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4RandomMove);
 
 	/// Boss4_2
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4Phase2LevelStart);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2First);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Second);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Boss4WeaponAttack2Third);

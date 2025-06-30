@@ -83,6 +83,11 @@ void ABoss4Phase2AIController::Tick(float DeltaTime)
 	float CurrentHealth = CachedStatusComponent->GetStat(StatTags::Health);
 	float CurrentHealthPercent = CurrentHealth / CachedMaxHealth;
 
+	if (CurrentHealth <= 0)
+	{
+		return;
+	}
+
 	if (CurrentHealthPercent <= 0.9f && !GetWorldTimerManager().IsTimerActive(EvadeAttackCoolDownTimer))
 	{
 		bIsActiveEvadeAttack = true;
