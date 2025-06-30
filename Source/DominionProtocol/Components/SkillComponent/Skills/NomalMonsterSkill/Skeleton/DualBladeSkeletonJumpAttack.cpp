@@ -3,3 +3,7 @@
 
 #include "Components/SkillComponent/Skills/NomalMonsterSkill/Skeleton/DualBladeSkeletonJumpAttack.h"
 
+UDualBladeSkeletonJumpAttack::UDualBladeSkeletonJumpAttack()
+{
+	SkillTag = SkillTags::DualBladeSkeletonJumpAttack;
+}

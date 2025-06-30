@@ -13,5 +13,6 @@ UCLASS()
 class DOMINIONPROTOCOL_API ADualBladeSkeletonEnemy : public ANomalEnemy
 {
 	GENERATED_BODY()
-	
+public:
+	ADualBladeSkeletonEnemy();
 };

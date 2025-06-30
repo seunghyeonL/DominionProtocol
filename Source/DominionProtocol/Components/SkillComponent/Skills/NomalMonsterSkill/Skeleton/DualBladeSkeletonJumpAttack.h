@@ -13,5 +13,6 @@ UCLASS()
 class DOMINIONPROTOCOL_API UDualBladeSkeletonJumpAttack : public UBaseSkill
 {
 	GENERATED_BODY()
-	
+public:
+	UDualBladeSkeletonJumpAttack();
 };
