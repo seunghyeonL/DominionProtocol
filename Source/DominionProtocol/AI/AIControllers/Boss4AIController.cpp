@@ -77,12 +77,22 @@ void ABoss4AIController::Tick(float DeltaTime)
 		return;
 	}
 
-	if (!IsValid(CachedStatusComponent))
+	// Boss4 스폰 시점에 따른 처리
+	if (!IsValid(CachedStatusComponent) || FMath::IsNearlyZero(CachedMaxHealth))
 	{
-		return;
+		APawn* Boss4Pawn = GetPawn();
+
+		if (IsValid(Boss4Pawn))
+		{
+			ABoss4Enemy* Boss4 = Cast<ABoss4Enemy>(Boss4Pawn);
+
+			CachedStatusComponent = Boss4->GetStatusComponent();
+			CachedMaxHealth = CachedStatusComponent->GetStat(StatTags::MaxHealth);
+		}
 	}
 
-	if (FMath::IsNearlyZero(CachedMaxHealth))
+	// 위에서 처리했음에도 비어있다면 예외처리
+	if (!IsValid(CachedStatusComponent) || FMath::IsNearlyZero(CachedMaxHealth))
 	{
 		return;
 	}
