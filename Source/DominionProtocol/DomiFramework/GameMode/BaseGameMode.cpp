@@ -328,6 +328,11 @@ void ABaseGameMode::RespawnPlayerCharacter()
 		GameInstance->SetPlayerCurrentEssence(0);
 	}
 
+	if (GameInstance->GetCurrentGameStoryState() == EGameStoryState::Find_Boss2)
+	{
+		UCheatBPLib::ToggleFog(World);
+	}
+	
 	// 플레이어 리스폰
 	if (IsValid(PlayerCharacter))
 	{
