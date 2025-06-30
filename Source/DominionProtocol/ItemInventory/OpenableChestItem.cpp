@@ -132,7 +132,7 @@ void AOpenableChestItem::Interact_Implementation(AActor* Interactor)
 
 FText AOpenableChestItem::GetInteractMessage_Implementation() const
 {
-    return FText();
+    return FText::FromString(TEXT("상자 열기"));
 }
 
 void AOpenableChestItem::OpenChestUpdate(float Alpha)
