@@ -29,7 +29,6 @@ class DOMINIONPROTOCOL_API AInGameController : public APlayerController
 public:
 	FOnPressedCrackMenuBackButtonEvent OnPressedCrackMenuBackButtonEvent;
 	FOnPressedCrackMenuConfirmButtonEvent OnPressedCrackMenuConfirmButtonEvent;
-
 	FOnPressedMainMenuButtonQEvent OnPressedMainMenuButtonQEvent;
 	FOnPressedMainMenuButtonEEvent OnPressedMainMenuButtonEEvent;
 	FOnPressedMainMenuButtonREvent OnPressedMainMenuButtonREvent;
@@ -216,9 +215,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MainMenuPressButtonSpaceBar;
-
 	
-
+	
+	
 	
 	// DialogueUI Section
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))

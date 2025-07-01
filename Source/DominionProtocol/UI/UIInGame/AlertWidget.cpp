@@ -28,7 +28,7 @@ void UAlertWidget::OnShowBossKillAlert(AActor* DeadMonster)
 		{
 			if (((LastChar- 0xAC00) % 28) != 0)
 			{
-				MonsterName = MonsterName + TEXT("을");		
+				MonsterName = MonsterName + TEXT("을");
 			}
 			else
 			{
