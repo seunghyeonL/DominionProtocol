@@ -52,6 +52,7 @@ public IEffectUser
 public:
 	ADomiCharacter();
 
+	// Delegates
 	FOnAddInteractableActor OnAddInteractableActor;
 	FOnRemoveInteractableActor OnRemoveInteractableActor;
 	FOnInteractionWidgetScroll OnInteractionWidgetScroll;
