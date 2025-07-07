@@ -3,7 +3,6 @@
 
 #include "TitleController.h"
 
-#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "UI/UITitle/NewTitleMenuWidget.h"
 #include "UI/FadeInOut/FadeWidget.h"
@@ -18,62 +17,57 @@ ATitleController::ATitleController()
 	}
 
 	CheatClass = UDevCheatManager::StaticClass();
-	FadeDuration = 1.f;
-}
-
-void ATitleController::HandleSetupTitleHUD()
-{
-	SetupMappingContext();
-	CreateHUDWidget();
-	AddHUDToViewport();
-	SetupInputModeGameAndUI();
-
-	BindControllerInputActions();
-
-	FadeIn();
 }
 
 void ATitleController::OnStartGame()
 {
 	OnPressedStartGame.ExecuteIfBound();
-	UE_LOG(LogTemp, Warning, TEXT("OnStartGame"));
 }
 
 void ATitleController::OnDeleteGame()
 {
 	OnPressedDeleteGame.ExecuteIfBound();
-	UE_LOG(LogTemp, Warning, TEXT("OnDeleteGame"));
 }
 
 void ATitleController::OnBackToMainMenu()
 {
 	OnPressedBackToMainMenu.ExecuteIfBound();
-	UE_LOG(LogTemp, Warning, TEXT("OnBackToMainMenu"));
 }
 
-void ATitleController::FadeIn()
+void ATitleController::BeginPlay()
 {
-	check(FadeWidgetInstance);
-	FadeWidgetInstance->FadeIn(FadeDuration);
+	Super::BeginPlay();
+
+	FadeIn();
 }
 
-void ATitleController::FadeOut()
+void ATitleController::CreateAndAddHUDWidget()
 {
-	check(FadeWidgetInstance);
-	FadeWidgetInstance->FadeOut(FadeDuration);
+	Super::CreateAndAddHUDWidget();
+
+	check(TitleHUDWidgetClass);
+	
+	TitleHUDWidgetInstance = CreateWidget<UNewTitleMenuWidget>(this, TitleHUDWidgetClass);
+
+	if (TitleHUDWidgetInstance)
+	{
+		TitleHUDWidgetInstance->AddToViewport();	
+	}
 }
 
-void ATitleController::SetupInputModeGameAndUI()
+void ATitleController::SetupInputMode()
 {
+	Super::SetupInputMode();
+
 	const FInputModeGameAndUI CurrentInputMode;
 	SetInputMode(CurrentInputMode);
 	bShowMouseCursor = true;
-
-	// Focus Setting -> HUD Widget, not Controller
 }
 
-void ATitleController::SetupMappingContext() const
+void ATitleController::SetupMappingContext()
 {
+	Super::SetupMappingContext();
+
 	if (LocalPlayerInputSubsystem)
 	{
 		if (TitleMappingContext)
@@ -83,56 +77,14 @@ void ATitleController::SetupMappingContext() const
 	}
 }
 
-void ATitleController::BindControllerInputActions()
+void ATitleController::BindInputActions()
 {
+	Super::BindInputActions();
+
 	auto* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
-	if (EnhancedInputComponent)
-	{
-		if (IsValid(StartGame))
-		{
-			EnhancedInputComponent->BindAction(StartGame, ETriggerEvent::Started, this, &ATitleController::OnStartGame);
-		}
+	check(EnhancedInputComponent);
 
-		if (IsValid(DeleteGame))
-		{
-			EnhancedInputComponent->BindAction(DeleteGame, ETriggerEvent::Started, this, &ATitleController::OnDeleteGame);
-		}
-
-		if (IsValid(BackToMainMenu))
-		{
-			EnhancedInputComponent->BindAction(BackToMainMenu, ETriggerEvent::Started, this, &ATitleController::OnBackToMainMenu);
-		}
-	}
-	
-}
-
-void ATitleController::BeginPlay()
-{
-	Super::BeginPlay();
-
-	const ULocalPlayer* LocalPlayer = GetLocalPlayer();
-	if (LocalPlayer)
-	{
-		LocalPlayerInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
-	}
-
-	HandleSetupTitleHUD();
-}
-
-void ATitleController::CreateHUDWidget()
-{
-	check(TitleHUDWidgetClass);
-	check(FadeWidgetClass);
-	
-	TitleHUDWidgetInstance = CreateWidget<UNewTitleMenuWidget>(this, TitleHUDWidgetClass);
-	FadeWidgetInstance = CreateWidget<UFadeWidget>(this, FadeWidgetClass);
-}
-
-void ATitleController::AddHUDToViewport() const
-{
-	check(TitleHUDWidgetInstance);
-	check(FadeWidgetInstance);
-	
-	TitleHUDWidgetInstance->AddToViewport();
-	FadeWidgetInstance->AddToViewport();
+	HelperBindInputAction(EnhancedInputComponent, StartGame, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnStartGame));
+	HelperBindInputAction(EnhancedInputComponent, DeleteGame, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnDeleteGame));
+	HelperBindInputAction(EnhancedInputComponent, BackToMainMenu, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnBackToMainMenu));
 }

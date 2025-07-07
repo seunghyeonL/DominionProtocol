@@ -53,6 +53,18 @@ void UDomiInGameHUDWidget::NativeConstruct()
 	{
 		OwningController = InGameController;
 	}
+
+	BindInputActionDelegates();
+}
+
+void UDomiInGameHUDWidget::BindInputActionDelegates()
+{
+	auto* Controller = Cast<AInGameController>(GetOwningPlayer());
+	if (Controller)
+	{
+		Controller->OnPressedMainMenuSwitchShowAndHideWidgetEvent.BindUObject(this, &UDomiInGameHUDWidget::OnMainMenuSwitchShowAndHideWidget);
+		Controller->OnPressedDialogueChangedNextStoryState.BindUObject(this, &UDomiInGameHUDWidget::OnDialogueChangedNextStoryState);
+	}
 }
 
 

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
+#include "BasePlayerController.h"
 #include "InGameController.generated.h"
 
-class UInputAction;
-class UInputMappingContext;
+DECLARE_DELEGATE(FOnPressedMainMenuSwitchShowAndHideWidgetEvent);
+DECLARE_DELEGATE(FOnPressedDialogueChangedNextStoryState);
 
 DECLARE_DELEGATE(FOnPressedCrackMenuBackButtonEvent);
 DECLARE_DELEGATE(FOnPressedCrackMenuConfirmButtonEvent);
@@ -22,11 +22,13 @@ DECLARE_DELEGATE(FOnPressedMainMenuButtonCEvent);
 DECLARE_DELEGATE(FOnPressedMainMenuButtonSpaceBarEvent);
 
 UCLASS()
-class DOMINIONPROTOCOL_API AInGameController : public APlayerController
+class DOMINIONPROTOCOL_API AInGameController : public ABasePlayerController
 {
 	GENERATED_BODY()
 
 public:
+	FOnPressedMainMenuSwitchShowAndHideWidgetEvent OnPressedMainMenuSwitchShowAndHideWidgetEvent;
+	FOnPressedDialogueChangedNextStoryState OnPressedDialogueChangedNextStoryState;
 	FOnPressedCrackMenuBackButtonEvent OnPressedCrackMenuBackButtonEvent;
 	FOnPressedCrackMenuConfirmButtonEvent OnPressedCrackMenuConfirmButtonEvent;
 	FOnPressedMainMenuButtonQEvent OnPressedMainMenuButtonQEvent;
@@ -42,24 +44,17 @@ public:
 	
 	AInGameController();
 	
-	// 필요시 위젯에서 호출하여 사용)
+	// 필요시 위젯에서 호출하여 사용
 	UFUNCTION(BlueprintCallable)
 	void SetupMappingContext(class UInputMappingContext* NewMappingContext);
 	
-	void HandleSetupInGameHUD();
-	
 	void RemoveAllMappingContext();
-
-	// FadeInOut
-	UFUNCTION(BlueprintCallable)
-	void FadeIn(float PlayTime);
-
-	UFUNCTION(BlueprintCallable)
-	void FadeOut(float PlayTime);
 	
 	// Binding InputAction
+	UFUNCTION()
 	void OnMainMenuSwitchShowAndHideWidget();
-	
+
+	UFUNCTION()
 	void OnDialogueChangedNextStoryState();
 
 	UFUNCTION()
@@ -97,11 +92,11 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-	void CreateHUDWidget();
-	void AddHUDToViewport() const;
-
-	void BindControllerInputActions();
+	
+	virtual void CreateAndAddHUDWidget() override;
+	virtual void SetupInputMode() override;
+	virtual void SetupMappingContext() override;
+	virtual void BindInputActions() override;
 	
 public:
 	
@@ -121,7 +116,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> CrackMenuMappingContext;
 
-	
 
 
 #pragma region Character Input Actions Section
@@ -234,20 +228,11 @@ public:
 #pragma endregion
 	
 protected:
-	UPROPERTY()
-	TObjectPtr<class UEnhancedInputLocalPlayerSubsystem> LocalPlayerInputSubsystem;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UDomiInGameHUDWidget> InGameHUDWidgetClass;
 	
 	UPROPERTY()
 	TObjectPtr<class UDomiInGameHUDWidget> InGameHUDWidgetInstance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<class UFadeWidget> FadeWidgetClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
-	TObjectPtr<class UFadeWidget> FadeWidgetInstance;
 	
 	bool bActiveInGameMenuOpen = false;
 };

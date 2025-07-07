@@ -31,6 +31,8 @@ void UNewEquipmentWidget::BindEquippedSlotsDelegates()
 		ItemComponent->OnInventoryEquippedSlotItemsChanged.AddUObject(this, &UNewEquipmentWidget::OnUpdateEquippedSlots);
 		ItemComponent->OnInventoryConsumableSlotItemsChanged.AddUObject(this, &UNewEquipmentWidget::OnUpdateEquippedSlots);
 	}
+
+	
 }
 
 void UNewEquipmentWidget::OnUpdateEquippedSlots()

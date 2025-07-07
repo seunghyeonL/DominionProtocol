@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
+#include "BasePlayerController.h"
 #include "TitleController.generated.h"
 
 DECLARE_DELEGATE(FOnPressedStartGame)
@@ -11,7 +11,7 @@ DECLARE_DELEGATE(FOnPressedDeleteGame)
 DECLARE_DELEGATE(FOnPressedBackToMainMenu)
 
 UCLASS()
-class DOMINIONPROTOCOL_API ATitleController : public APlayerController
+class DOMINIONPROTOCOL_API ATitleController : public ABasePlayerController
 {
 	GENERATED_BODY()
 
@@ -22,8 +22,6 @@ public:
 	
 	ATitleController();
 
-	void HandleSetupTitleHUD();
-
 	UFUNCTION()
 	void OnStartGame();
 
@@ -33,40 +31,22 @@ public:
 	UFUNCTION()
 	void OnBackToMainMenu();
 
-	// FadeInOut
-	UFUNCTION(BlueprintCallable)
-	void FadeIn();
-
-	UFUNCTION(BlueprintCallable)
-	void FadeOut();
-
 	FORCEINLINE float GetFadeDuration() const { return FadeDuration; }
 	
 protected:
 	virtual void BeginPlay() override;
 
-	void CreateHUDWidget();
-	void AddHUDToViewport() const;
-	void SetupInputModeGameAndUI();
-	void SetupMappingContext() const;
-
-	void BindControllerInputActions();
-	
+	virtual void CreateAndAddHUDWidget() override;
+	virtual void SetupInputMode() override;
+	virtual void SetupMappingContext() override;
+	virtual void BindInputActions() override;
 
 protected:
-	float FadeDuration;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UNewTitleMenuWidget> TitleHUDWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<class UNewTitleMenuWidget> TitleHUDWidgetInstance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<class UFadeWidget> FadeWidgetClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
-	TObjectPtr<class UFadeWidget> FadeWidgetInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputMappingContext> TitleMappingContext;
@@ -79,8 +59,5 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> BackToMainMenu;
-	
-	UPROPERTY()
-	TObjectPtr<class UEnhancedInputLocalPlayerSubsystem> LocalPlayerInputSubsystem;
 	
 };

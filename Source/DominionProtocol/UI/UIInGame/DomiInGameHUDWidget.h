@@ -15,20 +15,20 @@ class DOMINIONPROTOCOL_API UDomiInGameHUDWidget : public UUserWidget
 
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void OnShowCrackMenuWidget();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowCrackMenuWidget();
 
 	// Binding Input Action
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void OnMainMenuSwitchShowAndHideWidget();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void MainMenuSwitchShowAndHideWidget();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void OnDialogueChangedNextStoryState();
 
 	UFUNCTION(BlueprintImplementableEvent)
@@ -40,6 +40,8 @@ public:
 
 protected:
 	virtual void NativeConstruct() override;
+
+	void BindInputActionDelegates();
 
 
 protected:
@@ -57,6 +59,11 @@ protected:
 #pragma endregion
 
 #pragma region UI On/Off
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UAlertWidget> AlertWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UNewEventBoxWidget> EventBoxWidget; 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UUserWidget> InteractionWidget;

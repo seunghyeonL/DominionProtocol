@@ -5,7 +5,6 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "UI/FadeInOut/FadeWidget.h"
 #include "Util/DevCheatManager.h"
 #include "UI/UIInGame/DomiInGameHUDWidget.h"
 
@@ -21,29 +20,14 @@ AInGameController::AInGameController()
 	
 }
 
-void AInGameController::HandleSetupInGameHUD()
-{
-	CreateHUDWidget();
-	AddHUDToViewport();
-	
-	MappingContextArray.AddUnique(DefaultMappingContext);
-	MappingContextArray.AddUnique(MainMenuMappingContext);
-	MappingContextArray.AddUnique(DialogueMappingContext);
-	MappingContextArray.AddUnique(CrackMenuMappingContext);
-	
-	SetupMappingContext(DefaultMappingContext);
-
-	BindControllerInputActions();
-}
-
 void AInGameController::OnMainMenuSwitchShowAndHideWidget()
 {
-	InGameHUDWidgetInstance->OnMainMenuSwitchShowAndHideWidget();
+	OnPressedMainMenuSwitchShowAndHideWidgetEvent.ExecuteIfBound();
 }
 
 void AInGameController::OnDialogueChangedNextStoryState()
 {
-	InGameHUDWidgetInstance->OnDialogueChangedNextStoryState();
+	OnPressedDialogueChangedNextStoryState.ExecuteIfBound();
 }
 
 void AInGameController::OnPressedCrackMenuBackButton()
@@ -96,18 +80,6 @@ void AInGameController::OnPressedMainMenuButtonSpaceBar()
 	OnPressedMainMenuButtonSpaceBarEvent.ExecuteIfBound();
 }
 
-void AInGameController::FadeIn(float PlayTime)
-{
-	check(FadeWidgetInstance);
-	FadeWidgetInstance->FadeIn(PlayTime);
-}
-
-void AInGameController::FadeOut(float PlayTime)
-{
-	check(FadeWidgetInstance);
-	FadeWidgetInstance->FadeOut(PlayTime);
-}
-
 void AInGameController::RemoveAllMappingContext()
 {
 	for (const auto* MappingContext : MappingContextArray)
@@ -119,32 +91,74 @@ void AInGameController::RemoveAllMappingContext()
 void AInGameController::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	MappingContextArray.AddUnique(DefaultMappingContext);
+	MappingContextArray.AddUnique(MainMenuMappingContext);
+	MappingContextArray.AddUnique(DialogueMappingContext);
+	MappingContextArray.AddUnique(CrackMenuMappingContext);
 
-	const ULocalPlayer* LocalPlayer = GetLocalPlayer();
-	if (LocalPlayer)
-	{
-		LocalPlayerInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
-	}
-
-	HandleSetupInGameHUD();
+	FadeIn();
 }
 
-void AInGameController::CreateHUDWidget()
+void AInGameController::CreateAndAddHUDWidget()
 {
-	check(InGameHUDWidgetClass);
-	check(FadeWidgetClass);
-
+	Super::CreateAndAddHUDWidget();
+	
 	InGameHUDWidgetInstance = CreateWidget<UDomiInGameHUDWidget>(this, InGameHUDWidgetClass);
-	FadeWidgetInstance = CreateWidget<UFadeWidget>(this, FadeWidgetClass);
+
+	if (InGameHUDWidgetInstance)
+	{
+		InGameHUDWidgetInstance->AddToViewport();
+	}
 }
 
-void AInGameController::AddHUDToViewport() const
+void AInGameController::SetupInputMode()
 {
-	check(InGameHUDWidgetInstance);
-	check(FadeWidgetInstance);
+	Super::SetupInputMode();
 
-	InGameHUDWidgetInstance->AddToViewport();
-	FadeWidgetInstance->AddToViewport();
+	const FInputModeGameAndUI CurrentInputMode;
+	SetInputMode(CurrentInputMode);
+	bShowMouseCursor = false;
+}
+
+void AInGameController::SetupMappingContext()
+{
+	Super::SetupMappingContext();
+
+	if (LocalPlayerInputSubsystem)
+	{
+		if (DefaultMappingContext)
+		{
+			LocalPlayerInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+}
+
+void AInGameController::BindInputActions()
+{
+	Super::BindInputActions();
+
+	auto* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent);
+	check(EnhancedInputComp);
+
+	// Main Menu UI Input
+	HelperBindInputAction(EnhancedInputComp, MainMenuSwitchShowAndHideWidget, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnMainMenuSwitchShowAndHideWidget));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonQ, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonQ));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonE, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonE));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonR, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonR));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonA, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonA));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonD, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonD));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonZ, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonZ));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonC, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonC));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonSpaceBar, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonSpaceBar));
+
+	// Dialogue UI Input
+	HelperBindInputAction(EnhancedInputComp, DialogueChangeNextStoryState, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnDialogueChangedNextStoryState));
+	
+	// Crack UI Input
+	HelperBindInputAction(EnhancedInputComp, PressedCrackBackButton, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedCrackMenuBackButton));
+	HelperBindInputAction(EnhancedInputComp, PressedCrackConfirmButton, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedCrackMenuConfirmButton));
+	
 }
 
 void AInGameController::SetupMappingContext(class UInputMappingContext* NewMappingContext)
@@ -157,7 +171,7 @@ void AInGameController::SetupMappingContext(class UInputMappingContext* NewMappi
 		{
 			LocalPlayerInputSubsystem->AddMappingContext(NewMappingContext, 1);	
 		}
-
+		
 		// Setting InputMode 
 		if (DefaultMappingContext == NewMappingContext)
 		{
@@ -171,100 +185,6 @@ void AInGameController::SetupMappingContext(class UInputMappingContext* NewMappi
 			SetInputMode(CurrentInputMode);
 			bShowMouseCursor = true;
 		}
-	}
-}
 
-
-void AInGameController::BindControllerInputActions()
-{
-	auto* EnhancedInputComp = Cast<UEnhancedInputComponent>(InputComponent);
-	if (EnhancedInputComp)
-	{
-		// MainMenuUI Section
-		if (IsValid(MainMenuSwitchShowAndHideWidget))
-		{
-			EnhancedInputComp->BindAction(MainMenuSwitchShowAndHideWidget, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnMainMenuSwitchShowAndHideWidget);
-		}
-
-		if (IsValid(MainMenuPressButtonQ))
-		{
-			EnhancedInputComp->BindAction(MainMenuPressButtonQ, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedMainMenuButtonQ);
-		}
-
-		if (IsValid(MainMenuPressButtonE))
-		{
-			EnhancedInputComp->BindAction(MainMenuPressButtonE, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedMainMenuButtonE);
-		}
-
-		if (IsValid(MainMenuPressButtonR))
-		{
-			EnhancedInputComp->BindAction(MainMenuPressButtonR, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedMainMenuButtonR);
-		}
-
-		if (IsValid(MainMenuPressButtonA))
-		{
-			EnhancedInputComp->BindAction(MainMenuPressButtonA, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedMainMenuButtonA);
-		}
-
-		if (IsValid(MainMenuPressButtonD))
-		{
-			EnhancedInputComp->BindAction(MainMenuPressButtonD, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedMainMenuButtonD);
-		}
-
-		if (IsValid(MainMenuPressButtonZ))
-		{
-			EnhancedInputComp->BindAction(MainMenuPressButtonZ, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedMainMenuButtonZ);
-		}
-
-		if (IsValid(MainMenuPressButtonC))
-		{
-			EnhancedInputComp->BindAction(MainMenuPressButtonC, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedMainMenuButtonC);
-		}
-
-		if (IsValid(MainMenuPressButtonSpaceBar))
-		{
-			EnhancedInputComp->BindAction(MainMenuPressButtonSpaceBar, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedMainMenuButtonSpaceBar);
-		}
-
-		// DialogueUI Section
-		if (IsValid(DialogueChangeNextStoryState))
-		{
-			EnhancedInputComp->BindAction(DialogueChangeNextStoryState, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnDialogueChangedNextStoryState);
-		}
-
-		// CrackMenuUI Section
-		if (IsValid(PressedCrackBackButton))
-		{
-			EnhancedInputComp->BindAction(PressedCrackBackButton, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedCrackMenuBackButton);
-		}
-
-		if (IsValid(PressedCrackConfirmButton))
-		{
-			EnhancedInputComp->BindAction(PressedCrackConfirmButton, ETriggerEvent::Started,
-				this,
-				&AInGameController::OnPressedCrackMenuConfirmButton);
-		}
 	}
 }
