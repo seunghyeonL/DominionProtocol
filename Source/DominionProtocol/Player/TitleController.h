@@ -43,10 +43,10 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<class UNewTitleMenuWidget> TitleHUDWidgetClass;
+	TSubclassOf<class UNewTitleHUDWidget> TitleHUDWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<class UNewTitleMenuWidget> TitleHUDWidgetInstance;
+	TObjectPtr<class UNewTitleHUDWidget> TitleHUDWidgetInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputMappingContext> TitleMappingContext;

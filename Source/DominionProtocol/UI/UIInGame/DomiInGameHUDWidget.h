@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/BaseHUDWidget.h"
 #include "DomiInGameHUDWidget.generated.h"
 
 
 
 UCLASS()
-class DOMINIONPROTOCOL_API UDomiInGameHUDWidget : public UUserWidget
+class DOMINIONPROTOCOL_API UDomiInGameHUDWidget : public UBaseHUDWidget
 {
 	GENERATED_BODY()
 

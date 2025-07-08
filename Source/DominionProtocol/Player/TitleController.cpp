@@ -4,13 +4,13 @@
 #include "TitleController.h"
 
 #include "EnhancedInputSubsystems.h"
-#include "UI/UITitle/NewTitleMenuWidget.h"
+#include "UI/UITitle/NewTitleHUDWidget.h"
 #include "UI/FadeInOut/FadeWidget.h"
 #include "Util/DevCheatManager.h"
 
 ATitleController::ATitleController()
 {
-	static ConstructorHelpers::FClassFinder<UNewTitleMenuWidget> TitleMenuWidgetRef (TEXT("/Game/Blueprints/UI/NewUI/StartMenuWidget.StartMenuWidget_C"));
+	static ConstructorHelpers::FClassFinder<UNewTitleHUDWidget> TitleMenuWidgetRef (TEXT("/Game/Blueprints/UI/NewUI/StartMenuWidget.StartMenuWidget_C"));
 	if (TitleMenuWidgetRef.Class)
 	{
 		TitleHUDWidgetClass = TitleMenuWidgetRef.Class;
@@ -47,7 +47,7 @@ void ATitleController::CreateAndAddHUDWidget()
 
 	check(TitleHUDWidgetClass);
 	
-	TitleHUDWidgetInstance = CreateWidget<UNewTitleMenuWidget>(this, TitleHUDWidgetClass);
+	TitleHUDWidgetInstance = CreateWidget<UNewTitleHUDWidget>(this, TitleHUDWidgetClass);
 
 	if (TitleHUDWidgetInstance)
 	{
