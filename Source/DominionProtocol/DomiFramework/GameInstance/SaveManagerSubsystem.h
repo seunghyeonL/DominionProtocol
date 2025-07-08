@@ -39,6 +39,7 @@ public:
 
 	// Getter
 	FORCEINLINE int32 GetPlayTime(int32 SlotIndex) { return SaveSlotArray[SlotIndex].PlayTime; }
+	TArray<FSaveSlotMetaData> GetSaveSlotArray() { return SaveSlotArray; }
 	
 protected:
 	UPROPERTY(BlueprintReadOnly)

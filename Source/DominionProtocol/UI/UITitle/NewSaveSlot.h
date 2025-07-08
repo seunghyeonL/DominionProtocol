@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "NewSaveSlot.generated.h"
 
+class UImage;
+class UTextBlock;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UNewSaveSlot : public UUserWidget
@@ -13,22 +15,67 @@ class DOMINIONPROTOCOL_API UNewSaveSlot : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void StartGame(const int32 SlotIndex) const;
+	void SetSaveSlotIndex(const int32 NewSaveSlotIndex) { SaveSlotIndex = NewSaveSlotIndex; }
 	
-	UFUNCTION(BlueprintCallable)
-	void LoadGame(const int32 SlotIndex) const;
-	
-	UFUNCTION(BlueprintCallable)
-	void DeleteGame(const int32 SlotIndex) const;
+	void SetSaveSlotInfo();
 
-	FORCEINLINE class USaveManagerSubsystem* GetSaveManagerSubsystemInstance() const { return SaveManagerSubsystemInstance; }
-	
+	UFUNCTION(BlueprintCallable)
+	void SetSaveSlotEmpty();
+
+	void GetFocus();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void GetFocusEffect();
+
+	UFUNCTION(BlueprintCallable)
+	void LoseFocus();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void LoseFocusEffect();
+
+	int32 GetSaveSlotIndex() const { return SaveSlotIndex; }
+
 protected:
 	virtual void NativeConstruct() override;
-	
+
 protected:
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> SaveSlotDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> PastCrackImageDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UDataTable> PresentCrackImageDataTable;
+	
+	UPROPERTY()
 	TObjectPtr<class USaveManagerSubsystem> SaveManagerSubsystemInstance;
 
+	UPROPERTY(BlueprintReadWrite)
+	int32 SaveSlotIndex = -1;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> CrackMapImage;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<UTextBlock> GameIndex;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<UTextBlock> SaveTime;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> PlayTime;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> CurrentLevelName;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> CurrentCrackName;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> PlayerLevel;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool ExistSaveSlotData = false;
+	
 };
