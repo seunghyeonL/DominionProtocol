@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/UITitle/NewTitleMenuWidget.h"
+#include "UI/UITitle/NewTitleMenuUI.h"
 
 #include "Components/VerticalBox.h"
 #include "UI/UITitle/TitleMenuButton.h"
 
-void UNewTitleMenuWidget::NativeConstruct()
+void UNewTitleMenuUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 
@@ -25,7 +25,7 @@ void UNewTitleMenuWidget::NativeConstruct()
 	MaxButtonBoxFocusIndex = TitleMenuButtons.Num() - 1;
 }
 
-void UNewTitleMenuWidget::ChangeButtonBoxFocusIndex(const int32 NewFocusIndex)
+void UNewTitleMenuUI::ChangeButtonBoxFocusIndex(const int32 NewFocusIndex)
 {
 	if (!TitleMenuButtons.IsEmpty())
 	{
@@ -44,7 +44,7 @@ void UNewTitleMenuWidget::ChangeButtonBoxFocusIndex(const int32 NewFocusIndex)
 	}
 }
 
-void UNewTitleMenuWidget::IncreaseButtonBoxFocusIndex()
+void UNewTitleMenuUI::IncreaseButtonBoxFocusIndex()
 {
 	if (CurrentButtonBoxFocusIndex >= MaxButtonBoxFocusIndex)
 	{
@@ -54,7 +54,7 @@ void UNewTitleMenuWidget::IncreaseButtonBoxFocusIndex()
 	ChangeButtonBoxFocusIndex(CurrentButtonBoxFocusIndex + 1);
 }
 
-void UNewTitleMenuWidget::DecreaseButtonBoxFocusIndex()
+void UNewTitleMenuUI::DecreaseButtonBoxFocusIndex()
 {
 	if (CurrentButtonBoxFocusIndex <= 0)
 	{
