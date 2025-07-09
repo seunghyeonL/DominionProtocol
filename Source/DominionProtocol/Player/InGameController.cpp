@@ -16,8 +16,12 @@ AInGameController::AInGameController()
 		InGameHUDWidgetClass = InGameHUDWidgetRef.Class;	
 	}
 	
-	CheatClass = UDevCheatManager::StaticClass();
+	MappingContextArray.AddUnique(DefaultMappingContext);
+	MappingContextArray.AddUnique(MainMenuMappingContext);
+	MappingContextArray.AddUnique(DialogueMappingContext);
+	MappingContextArray.AddUnique(CrackMenuMappingContext);
 	
+	CheatClass = UDevCheatManager::StaticClass();
 }
 
 void AInGameController::OnMainMenuSwitchShowAndHideWidget()
@@ -80,22 +84,9 @@ void AInGameController::OnPressedMainMenuButtonSpaceBar()
 	OnPressedMainMenuButtonSpaceBarEvent.ExecuteIfBound();
 }
 
-void AInGameController::RemoveAllMappingContext()
-{
-	for (const auto* MappingContext : MappingContextArray)
-	{
-		LocalPlayerInputSubsystem->RemoveMappingContext(MappingContext);
-	}
-}
-
 void AInGameController::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	MappingContextArray.AddUnique(DefaultMappingContext);
-	MappingContextArray.AddUnique(MainMenuMappingContext);
-	MappingContextArray.AddUnique(DialogueMappingContext);
-	MappingContextArray.AddUnique(CrackMenuMappingContext);
 
 	FadeIn();
 }

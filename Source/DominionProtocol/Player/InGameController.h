@@ -21,6 +21,8 @@ DECLARE_DELEGATE(FOnPressedMainMenuButtonZEvent);
 DECLARE_DELEGATE(FOnPressedMainMenuButtonCEvent);
 DECLARE_DELEGATE(FOnPressedMainMenuButtonSpaceBarEvent);
 
+class UDomiInGameHUDWidget;
+
 UCLASS()
 class DOMINIONPROTOCOL_API AInGameController : public ABasePlayerController
 {
@@ -46,9 +48,7 @@ public:
 	
 	// 필요시 위젯에서 호출하여 사용
 	UFUNCTION(BlueprintCallable)
-	void SetupMappingContext(class UInputMappingContext* NewMappingContext);
-	
-	void RemoveAllMappingContext();
+	void SetupMappingContext(UInputMappingContext* NewMappingContext);
 	
 	// Binding InputAction
 	UFUNCTION()
@@ -88,7 +88,7 @@ public:
 	void OnPressedMainMenuButtonSpaceBar();
 	
 	UFUNCTION(BlueprintPure)
-	class UDomiInGameHUDWidget* GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
+	UDomiInGameHUDWidget* GetInGameHUDWidget() const { return InGameHUDWidgetInstance; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -99,11 +99,7 @@ protected:
 	virtual void BindInputActions() override;
 	
 public:
-	
 	/** MappingContext */
-	UPROPERTY(BlueprintReadOnly)
-	TArray<UInputMappingContext*> MappingContextArray;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
@@ -229,10 +225,10 @@ public:
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<class UDomiInGameHUDWidget> InGameHUDWidgetClass;
+	TSubclassOf<UDomiInGameHUDWidget> InGameHUDWidgetClass;
 	
 	UPROPERTY()
-	TObjectPtr<class UDomiInGameHUDWidget> InGameHUDWidgetInstance;
+	TObjectPtr<UDomiInGameHUDWidget> InGameHUDWidgetInstance;
 	
 	bool bActiveInGameMenuOpen = false;
 };

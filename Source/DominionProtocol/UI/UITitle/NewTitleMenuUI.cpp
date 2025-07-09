@@ -4,6 +4,7 @@
 #include "UI/UITitle/NewTitleMenuUI.h"
 
 #include "Components/VerticalBox.h"
+#include "Player/TitleController.h"
 #include "UI/UITitle/TitleMenuButton.h"
 
 void UNewTitleMenuUI::NativeConstruct()
@@ -23,6 +24,9 @@ void UNewTitleMenuUI::NativeConstruct()
 		}
 	}
 	MaxButtonBoxFocusIndex = TitleMenuButtons.Num() - 1;
+
+	BindInputActionDelegates();
+	ChangeButtonBoxFocusIndex(0);
 }
 
 void UNewTitleMenuUI::ChangeButtonBoxFocusIndex(const int32 NewFocusIndex)
@@ -34,6 +38,7 @@ void UNewTitleMenuUI::ChangeButtonBoxFocusIndex(const int32 NewFocusIndex)
 			if (i == NewFocusIndex)
 			{
 				TitleMenuButtons[i]->GetFocus();
+				TitleMenuButtons[i]->SetFocus();
 				CurrentButtonBoxFocusIndex = NewFocusIndex;
 			}
 			else
@@ -64,3 +69,28 @@ void UNewTitleMenuUI::DecreaseButtonBoxFocusIndex()
 	ChangeButtonBoxFocusIndex(CurrentButtonBoxFocusIndex - 1);
 }
 
+void UNewTitleMenuUI::OnMoveSelectionUp()
+{
+	DecreaseButtonBoxFocusIndex();	
+}
+
+void UNewTitleMenuUI::OnMoveSelectionDown()
+{
+	IncreaseButtonBoxFocusIndex();
+}
+
+void UNewTitleMenuUI::OnConfirmSelection()
+{
+	TitleMenuButtons[CurrentButtonBoxFocusIndex]->OnConfirm();
+}
+
+void UNewTitleMenuUI::BindInputActionDelegates()
+{
+	auto* TitleController = Cast<ATitleController>(GetOwningPlayer());
+	if (TitleController)
+	{
+		TitleController->OnMoveSelectionUp.AddUObject(this, &UNewTitleMenuUI::OnMoveSelectionUp);
+		TitleController->OnMoveSelectionDown.AddUObject(this, &UNewTitleMenuUI::OnMoveSelectionDown);
+		TitleController->OnConfirmSelection.AddUObject(this, &UNewTitleMenuUI::OnConfirmSelection);
+	}
+}

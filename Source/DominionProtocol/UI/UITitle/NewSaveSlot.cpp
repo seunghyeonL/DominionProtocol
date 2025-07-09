@@ -17,15 +17,15 @@ void UNewSaveSlot::SetSaveSlotInfo()
 	}
 	
 	const FSaveSlotMetaData SaveSlotMetaData = SaveSlotArray[SaveSlotIndex];
-	ExistSaveSlotData = SaveSlotMetaData.SaveSlotExist;
-	if (ExistSaveSlotData)
+	if (SaveSlotMetaData.SaveSlotExist)
 	{
+		ExistSaveSlotData = SaveSlotMetaData.SaveSlotExist;
 		if (PastCrackImageDataTable && PresentCrackImageDataTable)
 		{
 			const FString SaveSlotCrackName = SaveSlotMetaData.RecentCrackName.ToString();
 
 #pragma region SearchDataTable 
-			auto SearchDataTable = [&](const UDataTable* DataTableToSearch, const FString& DebugTableName) -> bool
+			auto SearchDataTable = [&](const UDataTable* DataTableToSearch) -> bool
 			{
 				if (!DataTableToSearch)
 				{
@@ -50,10 +50,10 @@ void UNewSaveSlot::SetSaveSlotInfo()
 			};
 #pragma endregion
 
-			if (SearchDataTable(PastCrackImageDataTable, TEXT("PastCrackImageDataTable")))
+			if (SearchDataTable(PastCrackImageDataTable))
 			{
 			}
-			else if (SearchDataTable(PresentCrackImageDataTable, TEXT("PresentCrackImageDataTable")))
+			else if (SearchDataTable(PresentCrackImageDataTable))
 			{
 			}
 		}

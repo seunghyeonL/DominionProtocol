@@ -6,12 +6,16 @@
 #include "Blueprint/UserWidget.h"
 #include "BaseHUDWidget.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentTopUIChanged, UUserWidget*)
+
 UCLASS(Abstract)
 class DOMINIONPROTOCOL_API UBaseHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
+	FOnCurrentTopUIChanged OnCurrentTopUIChanged;
+	
 	UFUNCTION()
 	UUserWidget* PushUI(UUserWidget* WidgetToPush);
 

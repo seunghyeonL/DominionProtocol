@@ -6,9 +6,14 @@
 #include "BasePlayerController.h"
 #include "TitleController.generated.h"
 
-DECLARE_DELEGATE(FOnPressedStartGame)
-DECLARE_DELEGATE(FOnPressedDeleteGame)
-DECLARE_DELEGATE(FOnPressedBackToMainMenu)
+DECLARE_MULTICAST_DELEGATE(FOnStartGame)
+DECLARE_MULTICAST_DELEGATE(FOnDeleteGame)
+DECLARE_MULTICAST_DELEGATE(FOnBackToTitleMenu)
+DECLARE_MULTICAST_DELEGATE(FOnMoveSelectionUp)
+DECLARE_MULTICAST_DELEGATE(FOnMoveSelectionDown)
+DECLARE_MULTICAST_DELEGATE(FOnConfirmSelection)
+
+class UNewTitleHUDWidget;
 
 UCLASS()
 class DOMINIONPROTOCOL_API ATitleController : public ABasePlayerController
@@ -16,48 +21,91 @@ class DOMINIONPROTOCOL_API ATitleController : public ABasePlayerController
 	GENERATED_BODY()
 
 public:
-	FOnPressedStartGame OnPressedStartGame;
-	FOnPressedDeleteGame OnPressedDeleteGame;
-	FOnPressedBackToMainMenu OnPressedBackToMainMenu;
+	FOnStartGame OnStartGame;
+	FOnDeleteGame OnDeleteGame;
+	FOnBackToTitleMenu OnBackToTitleMenu;
+	FOnMoveSelectionUp OnMoveSelectionUp;
+	FOnMoveSelectionDown OnMoveSelectionDown;
+	FOnConfirmSelection OnConfirmSelection;
 	
 	ATitleController();
 
+	// Bind Action
 	UFUNCTION()
-	void OnStartGame();
+	void OnTitleSlotUIStartGame() const;
 
 	UFUNCTION()
-	void OnDeleteGame();
+	void OnTitleSlotUIDeleteGame() const;
 
 	UFUNCTION()
-	void OnBackToMainMenu();
+	void OnTitleSlotUIBackToTitleMenu() const;
+
+	UFUNCTION()
+	void OnTitleMenuUIMoveSelectionUp() const;
+
+	UFUNCTION()
+	void OnTitleMenuUIMoveSelectionDown() const;
+
+	UFUNCTION()
+	void OnTitleMenuUIConfirmSelection() const;
+	
+	void SetupMappingContext(const UInputMappingContext* NewInputMappingContext);
 
 	FORCEINLINE float GetFadeDuration() const { return FadeDuration; }
 	
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
 	virtual void CreateAndAddHUDWidget() override;
-	virtual void SetupInputMode() override;
+	
+	UFUNCTION()
 	virtual void SetupMappingContext() override;
+	
+	UFUNCTION()
+	virtual void SetupInputMode() override;
+
+	UFUNCTION()
 	virtual void BindInputActions() override;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputMappingContext> TitleSlotUIMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputMappingContext> TitleMenuUIMappingContext;
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<class UNewTitleHUDWidget> TitleHUDWidgetClass;
+	TSubclassOf<UNewTitleHUDWidget> TitleHUDWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<class UNewTitleHUDWidget> TitleHUDWidgetInstance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	TObjectPtr<class UInputMappingContext> TitleMappingContext;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	TObjectPtr<class UInputAction> StartGame;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	TObjectPtr<class UInputAction> DeleteGame;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	TObjectPtr<class UInputAction> BackToMainMenu;
+	TObjectPtr<UNewTitleHUDWidget> TitleHUDWidgetInstance;
 	
+#pragma region TitleMenuUI Input Actions Section
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InputTitleMenuUIMoveSelectionUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InputTitleMenuUIMoveSelectionDown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InputTitleMenuUIConfirmSelection;
+
+
+#pragma endregion
+
+#pragma region SlotUI Input Actions Section
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InputTitleSlotUIStartGame;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InputTitleSlotUIDeleteGame;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InputTitleSlotUIBackToTitleMenu;
+	
+#pragma endregion
 };

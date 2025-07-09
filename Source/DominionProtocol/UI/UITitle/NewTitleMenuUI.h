@@ -15,18 +15,28 @@ class DOMINIONPROTOCOL_API UNewTitleMenuUI : public UUserWidget
 
 	
 protected:
-	virtual void NativeConstruct() override;
-	
 	UFUNCTION(BlueprintCallable)
 	void ChangeButtonBoxFocusIndex(const int32 NewFocusIndex);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void IncreaseButtonBoxFocusIndex();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void DecreaseButtonBoxFocusIndex();
 	
+	UFUNCTION()
+	void OnMoveSelectionUp();
 
+	UFUNCTION()
+	void OnMoveSelectionDown();
+
+	UFUNCTION()
+	void OnConfirmSelection();
+
+	virtual void NativeConstruct() override;
+
+	void BindInputActionDelegates();
+	
 protected:
 	UPROPERTY()
 	TArray<TObjectPtr<UTitleMenuButton>> TitleMenuButtons;
@@ -35,8 +45,8 @@ protected:
 	TObjectPtr<class UVerticalBox> ButtonBox;
 
 	UPROPERTY(BlueprintReadWrite)
-	int32 CurrentButtonBoxFocusIndex = 0;
+	int32 CurrentButtonBoxFocusIndex = -1;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY()
 	int32 MaxButtonBoxFocusIndex = 0;
 };

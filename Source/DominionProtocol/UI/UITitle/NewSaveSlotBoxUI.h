@@ -67,7 +67,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	int32 CurrentSaveSlotBoxFocusIndex = -1;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY()
 	int32 MaxSaveSlotBoxFocusIndex = 0;
 	
 };

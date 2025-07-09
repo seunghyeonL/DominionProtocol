@@ -40,9 +40,6 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UDataTable> SaveSlotDataTable;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UDataTable> PastCrackImageDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -51,7 +48,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class USaveManagerSubsystem> SaveManagerSubsystemInstance;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 SaveSlotIndex = -1;
 
 	UPROPERTY(meta = (BindWidget))

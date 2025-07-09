@@ -29,12 +29,15 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void LoseFocusEffect();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnConfirm();
 	
 	void SetButtonIndex(const int32 NewButtonIndex) { ButtonIndex = NewButtonIndex; }
 
 protected:
-	UPROPERTY(BlueprintReadWrite)
-	int32 ButtonIndex;
+	UPROPERTY(BlueprintReadOnly)
+	int32 ButtonIndex = -1;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UTextBlock> ButtonName;

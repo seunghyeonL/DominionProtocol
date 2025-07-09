@@ -16,22 +16,52 @@ ATitleController::ATitleController()
 		TitleHUDWidgetClass = TitleMenuWidgetRef.Class;
 	}
 
+	MappingContextArray.AddUnique(TitleMenuUIMappingContext);
+	MappingContextArray.AddUnique(TitleSlotUIMappingContext);
+
 	CheatClass = UDevCheatManager::StaticClass();
 }
 
-void ATitleController::OnStartGame()
+void ATitleController::OnTitleSlotUIStartGame() const
 {
-	OnPressedStartGame.ExecuteIfBound();
+	OnStartGame.Broadcast();
 }
 
-void ATitleController::OnDeleteGame()
+void ATitleController::OnTitleSlotUIDeleteGame() const
 {
-	OnPressedDeleteGame.ExecuteIfBound();
+	OnDeleteGame.Broadcast();
 }
 
-void ATitleController::OnBackToMainMenu()
+void ATitleController::OnTitleSlotUIBackToTitleMenu() const
 {
-	OnPressedBackToMainMenu.ExecuteIfBound();
+	OnBackToTitleMenu.Broadcast();
+}
+
+void ATitleController::OnTitleMenuUIMoveSelectionUp() const
+{
+	OnMoveSelectionUp.Broadcast();
+}
+
+void ATitleController::OnTitleMenuUIMoveSelectionDown() const
+{
+	OnMoveSelectionDown.Broadcast();
+}
+
+void ATitleController::OnTitleMenuUIConfirmSelection() const
+{
+	OnConfirmSelection.Broadcast();
+}
+
+void ATitleController::SetupMappingContext(const UInputMappingContext* NewInputMappingContext)
+{
+	if (LocalPlayerInputSubsystem)
+	{
+		RemoveAllMappingContext();
+		if (!LocalPlayerInputSubsystem->HasMappingContext(NewInputMappingContext))
+		{
+			LocalPlayerInputSubsystem->AddMappingContext(NewInputMappingContext,1);
+		}
+	}
 }
 
 void ATitleController::BeginPlay()
@@ -68,13 +98,6 @@ void ATitleController::SetupMappingContext()
 {
 	Super::SetupMappingContext();
 
-	if (LocalPlayerInputSubsystem)
-	{
-		if (TitleMappingContext)
-		{
-			LocalPlayerInputSubsystem->AddMappingContext(TitleMappingContext, 0);
-		}
-	}
 }
 
 void ATitleController::BindInputActions()
@@ -84,7 +107,11 @@ void ATitleController::BindInputActions()
 	auto* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 	check(EnhancedInputComponent);
 
-	HelperBindInputAction(EnhancedInputComponent, StartGame, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnStartGame));
-	HelperBindInputAction(EnhancedInputComponent, DeleteGame, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnDeleteGame));
-	HelperBindInputAction(EnhancedInputComponent, BackToMainMenu, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnBackToMainMenu));
+	HelperBindInputAction(EnhancedInputComponent, InputTitleSlotUIStartGame, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleSlotUIStartGame));
+	HelperBindInputAction(EnhancedInputComponent, InputTitleSlotUIDeleteGame, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleSlotUIDeleteGame));
+	HelperBindInputAction(EnhancedInputComponent, InputTitleSlotUIBackToTitleMenu, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleSlotUIBackToTitleMenu));
+
+	HelperBindInputAction(EnhancedInputComponent, InputTitleMenuUIMoveSelectionUp, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleMenuUIMoveSelectionUp));
+	HelperBindInputAction(EnhancedInputComponent, InputTitleMenuUIMoveSelectionDown, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleMenuUIMoveSelectionDown));
+	HelperBindInputAction(EnhancedInputComponent, InputTitleMenuUIConfirmSelection, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleMenuUIConfirmSelection));
 }

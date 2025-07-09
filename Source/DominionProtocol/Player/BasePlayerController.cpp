@@ -84,6 +84,14 @@ void ABasePlayerController::BindInputActions()
 {
 }
 
+void ABasePlayerController::RemoveAllMappingContext()
+{
+	for (const UInputMappingContext* MappingContext : MappingContextArray)
+	{
+		LocalPlayerInputSubsystem->RemoveMappingContext(MappingContext);
+	}
+}
+
 void ABasePlayerController::HelperBindInputAction(UEnhancedInputComponent* EnhancedInputComponent, const UInputAction* Action, const ETriggerEvent Event, const FName FunctionName)
 {
 	check(EnhancedInputComponent);

@@ -164,8 +164,8 @@ void UNewSaveSlotBoxUI::BindInputActionDelegates()
 	auto* TitleController = Cast<ATitleController>(GetOwningPlayer());
 	if (TitleController)
 	{
-		TitleController->OnPressedStartGame.BindUObject(this, &UNewSaveSlotBoxUI::OnStartGame);
-		TitleController->OnPressedDeleteGame.BindUObject(this, &UNewSaveSlotBoxUI::OnDeleteGame);
-		TitleController->OnPressedBackToMainMenu.BindUObject(this, &UNewSaveSlotBoxUI::OnBackToTitleMenu);
+		TitleController->OnStartGame.AddUObject(this, &UNewSaveSlotBoxUI::OnStartGame);
+		TitleController->OnDeleteGame.AddUObject(this, &UNewSaveSlotBoxUI::OnDeleteGame);
+		TitleController->OnBackToTitleMenu.AddUObject(this, &UNewSaveSlotBoxUI::OnBackToTitleMenu);
 	}
 }

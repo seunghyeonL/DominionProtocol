@@ -10,6 +10,7 @@
 class UInputAction;
 class UEnhancedInputLocalPlayerSubsystem;
 class UFadeWidget;
+class UInputMappingContext;
 
 UCLASS(Abstract)
 class DOMINIONPROTOCOL_API ABasePlayerController : public APlayerController
@@ -35,12 +36,17 @@ protected:
 	virtual void SetupMappingContext();
 
 	virtual void BindInputActions();
+	
+	void RemoveAllMappingContext();
 
 	// 함수 사용 시 GET_FUNCTION_NAME_CHECKED 를 사용하여 FunctionName 을 입력해주세요 
 	void HelperBindInputAction(UEnhancedInputComponent* EnhancedInputComponent, const UInputAction* Action, const ETriggerEvent Event, const FName FunctionName);
 
 
 protected:
+	UPROPERTY()
+	TArray<TObjectPtr<UInputMappingContext>> MappingContextArray;
+	
 	UPROPERTY()
 	TObjectPtr<UEnhancedInputLocalPlayerSubsystem> LocalPlayerInputSubsystem;
 
