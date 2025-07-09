@@ -54,10 +54,13 @@ void ABasePlayerController::BeginPlay()
 		LocalPlayerInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
 	}
 
-	CreateAndAddHUDWidget();
+	BindInputActions();
+	
 	SetupInputMode();
 	SetupMappingContext();
-	BindInputActions();
+	
+	
+	CreateAndAddHUDWidget();
 }
 
 void ABasePlayerController::CreateAndAddHUDWidget()

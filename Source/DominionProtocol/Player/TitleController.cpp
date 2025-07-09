@@ -16,9 +16,6 @@ ATitleController::ATitleController()
 		TitleHUDWidgetClass = TitleMenuWidgetRef.Class;
 	}
 
-	MappingContextArray.AddUnique(TitleMenuUIMappingContext);
-	MappingContextArray.AddUnique(TitleSlotUIMappingContext);
-
 	CheatClass = UDevCheatManager::StaticClass();
 }
 
@@ -67,7 +64,10 @@ void ATitleController::SetupMappingContext(const UInputMappingContext* NewInputM
 void ATitleController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	MappingContextArray.AddUnique(TitleMenuUIMappingContext);
+	MappingContextArray.AddUnique(TitleSlotUIMappingContext);
+	
 	FadeIn();
 }
 
@@ -97,7 +97,7 @@ void ATitleController::SetupInputMode()
 void ATitleController::SetupMappingContext()
 {
 	Super::SetupMappingContext();
-
+	
 }
 
 void ATitleController::BindInputActions()

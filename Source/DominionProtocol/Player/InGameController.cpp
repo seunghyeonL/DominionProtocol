@@ -16,11 +16,6 @@ AInGameController::AInGameController()
 		InGameHUDWidgetClass = InGameHUDWidgetRef.Class;	
 	}
 	
-	MappingContextArray.AddUnique(DefaultMappingContext);
-	MappingContextArray.AddUnique(MainMenuMappingContext);
-	MappingContextArray.AddUnique(DialogueMappingContext);
-	MappingContextArray.AddUnique(CrackMenuMappingContext);
-	
 	CheatClass = UDevCheatManager::StaticClass();
 }
 
@@ -88,6 +83,11 @@ void AInGameController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MappingContextArray.AddUnique(DefaultMappingContext);
+	MappingContextArray.AddUnique(MainMenuMappingContext);
+	MappingContextArray.AddUnique(DialogueMappingContext);
+	MappingContextArray.AddUnique(CrackMenuMappingContext);
+	
 	FadeIn();
 }
 

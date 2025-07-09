@@ -33,7 +33,6 @@ public:
 
 	UFUNCTION()
 	virtual void SetInputModeForUIStack();
-
 	
 protected:
 	virtual void NativeConstruct() override;

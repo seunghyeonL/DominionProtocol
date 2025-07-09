@@ -9,8 +9,6 @@ void UNewTitleHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	BindTopUIChangeDelegate();
-	
 	ensureMsgf(TitleMenuUI, TEXT("TitleMenuUI Not Connected"));
 	ensureMsgf(SaveSlotBoxUI, TEXT("SaveSlotBoxUI Not Connected"));
 	
@@ -19,9 +17,10 @@ void UNewTitleHUDWidget::NativeConstruct()
 	{
 		TitleController = PlayerController;
 	}
+	
+	BindTopUIChangeDelegate();
 
 	PushUI(TitleMenuUI);
-	TitleController->SetupMappingContext(TitleController->TitleMenuUIMappingContext);
 }
 
 void UNewTitleHUDWidget::ActivateSaveSlotBoxUI()
