@@ -1,0 +1,90 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "BossMonsterHPBarWidget.generated.h"
+
+
+UCLASS()
+class DOMINIONPROTOCOL_API UBossMonsterHPBarWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+
+public:
+	UFUNCTION()
+	void UpdateBossMonsterMaxHP(const float NewMaxHP);
+
+	UFUNCTION()
+	void UpdateBossMonsterMaxShield(const float NewMaxShield);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateBossMonsterHP(const float NewHP);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateBossMonsterShield(const float NewShield);
+
+	UFUNCTION()
+	void UpdateBossMonsterName(AActor* NewBossMonster);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnUpdateBossMonsterName();
+
+	UFUNCTION()
+	void StartBattleBossMonster(AActor* NewMonster);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnStartBattleBossMonster();
+
+	UFUNCTION()
+	void EndBattleBossMonster(AActor* DeadMonster);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEndBattleBossMonster();
+
+protected:
+	virtual void NativeConstruct() override;
+	
+	void BindStartAndEndBattleDelegate();
+
+	UFUNCTION()
+	void InitializeAndBindBossStatus(AActor* SpawnedBoss);
+
+protected:
+	UPROPERTY()
+	AActor* CurrentBossMonster;
+	
+	UPROPERTY(BlueprintReadOnly)
+	FString BossMonsterName;
+	
+	// HP Section
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float CurrentBossMonsterHP;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float PreBossMonsterHP;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float MaxBossMonsterHP;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float AlphaForBossMonsterHPAnim;
+
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UProgressBar> BossMonsterHPBar;
+	
+
+	// Shield Section
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float CurrentBossMonsterShield;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float PreBossMonsterShield;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float MaxBossMonsterShield;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float AlphaForBossMonsterShieldAnim;
+
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UProgressBar> BossMonsterShieldBar;
+};
