@@ -28,6 +28,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnBackToTitleMenu();
 
+	UFUNCTION()
+	void OnMoveSelectionUp();
+
+	UFUNCTION()
+	void OnMoveSelectionDown();
+
 	FORCEINLINE class USaveManagerSubsystem* GetSaveManagerSubsystemInstance() const { return SaveManagerSubsystemInstance; }
 
 protected:

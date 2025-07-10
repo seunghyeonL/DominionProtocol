@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "NewTitleMenuUI.generated.h"
 
-class UTitleMenuButton;
+class UNewTitleMenuButton;
 
 UCLASS()
 class DOMINIONPROTOCOL_API UNewTitleMenuUI : public UUserWidget
@@ -39,7 +39,7 @@ protected:
 	
 protected:
 	UPROPERTY()
-	TArray<TObjectPtr<UTitleMenuButton>> TitleMenuButtons;
+	TArray<TObjectPtr<UNewTitleMenuButton>> TitleMenuButtons;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UVerticalBox> ButtonBox;

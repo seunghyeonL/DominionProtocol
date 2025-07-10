@@ -6,12 +6,14 @@
 #include "BasePlayerController.h"
 #include "TitleController.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnStartGame)
-DECLARE_MULTICAST_DELEGATE(FOnDeleteGame)
-DECLARE_MULTICAST_DELEGATE(FOnBackToTitleMenu)
-DECLARE_MULTICAST_DELEGATE(FOnMoveSelectionUp)
-DECLARE_MULTICAST_DELEGATE(FOnMoveSelectionDown)
-DECLARE_MULTICAST_DELEGATE(FOnConfirmSelection)
+DECLARE_MULTICAST_DELEGATE(FOnSlotUIStartGame)
+DECLARE_MULTICAST_DELEGATE(FOnSlotUIDeleteGame)
+DECLARE_MULTICAST_DELEGATE(FOnSlotUIBackToTitleMenu)
+DECLARE_MULTICAST_DELEGATE(FOnSlotUIMoveSelectionUp)
+DECLARE_MULTICAST_DELEGATE(FOnSlotUIMoveSelectionDown)
+DECLARE_MULTICAST_DELEGATE(FOnMenuUIMoveSelectionUp)
+DECLARE_MULTICAST_DELEGATE(FOnMenuUIMoveSelectionDown)
+DECLARE_MULTICAST_DELEGATE(FOnMenuUIConfirmSelection)
 
 class UNewTitleHUDWidget;
 
@@ -21,12 +23,17 @@ class DOMINIONPROTOCOL_API ATitleController : public ABasePlayerController
 	GENERATED_BODY()
 
 public:
-	FOnStartGame OnStartGame;
-	FOnDeleteGame OnDeleteGame;
-	FOnBackToTitleMenu OnBackToTitleMenu;
-	FOnMoveSelectionUp OnMoveSelectionUp;
-	FOnMoveSelectionDown OnMoveSelectionDown;
-	FOnConfirmSelection OnConfirmSelection;
+	// Slot UI
+	FOnSlotUIStartGame OnSlotUIStartGame;
+	FOnSlotUIDeleteGame OnSlotUIDeleteGame;
+	FOnSlotUIBackToTitleMenu OnSlotUIBackToTitleMenu;
+	FOnSlotUIMoveSelectionUp OnSlotUIMoveSelectionUp;
+	FOnSlotUIMoveSelectionDown OnSlotUIMoveSelectionDown;
+
+	// MenuUI
+	FOnMenuUIMoveSelectionUp OnMenuUIMoveSelectionUp;
+	FOnMenuUIMoveSelectionDown OnMenuUIMoveSelectionDown;
+	FOnMenuUIConfirmSelection OnMenuUIConfirmSelection;
 	
 	ATitleController();
 
@@ -39,6 +46,12 @@ public:
 
 	UFUNCTION()
 	void OnTitleSlotUIBackToTitleMenu() const;
+
+	UFUNCTION()
+	void OnTitleSlotUIMoveSelectionUp() const;
+
+	UFUNCTION()
+	void OnTitleSlotUIMoveSelectionDown() const;
 
 	UFUNCTION()
 	void OnTitleMenuUIMoveSelectionUp() const;
@@ -106,6 +119,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> InputTitleSlotUIBackToTitleMenu;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InputTitleSlotUIMoveSelectionUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> InputTitleSlotUIMoveSelectionDown;
 	
 #pragma endregion
 };

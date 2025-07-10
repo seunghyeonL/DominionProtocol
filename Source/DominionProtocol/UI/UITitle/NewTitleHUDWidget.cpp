@@ -33,7 +33,7 @@ void UNewTitleHUDWidget::DeactivateTitleMenuUI()
 	PopSpecificUI(SaveSlotBoxUI);
 }
 
-void UNewTitleHUDWidget::ChangeMappingContext(UUserWidget* NewTopUI)
+void UNewTitleHUDWidget::ChangeMappingContext(UUserWidget* NewTopUI) const
 {
 	if (NewTopUI == SaveSlotBoxUI)
 	{

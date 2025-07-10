@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "TitleMenuButton.generated.h"
+#include "NewTitleMenuButton.generated.h"
 
 class UTextBlock;
 class USizeBox;
 
 UCLASS()
-class DOMINIONPROTOCOL_API UTitleMenuButton : public UUserWidget
+class DOMINIONPROTOCOL_API UNewTitleMenuButton : public UUserWidget
 {
 	GENERATED_BODY()
 

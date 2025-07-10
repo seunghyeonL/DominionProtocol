@@ -133,22 +133,22 @@ void AInGameController::BindInputActions()
 	check(EnhancedInputComp);
 
 	// Main Menu UI Input
-	HelperBindInputAction(EnhancedInputComp, MainMenuSwitchShowAndHideWidget, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnMainMenuSwitchShowAndHideWidget));
-	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonQ, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonQ));
-	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonE, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonE));
-	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonR, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonR));
-	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonA, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonA));
-	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonD, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonD));
-	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonZ, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonZ));
-	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonC, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonC));
-	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonSpaceBar, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonSpaceBar));
+	HelperBindInputAction(EnhancedInputComp, MainMenuSwitchShowAndHideWidget, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnMainMenuSwitchShowAndHideWidget));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonQ, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonQ));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonE, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonE));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonR, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonR));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonA, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonA));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonD, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonD));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonZ, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonZ));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonC, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonC));
+	HelperBindInputAction(EnhancedInputComp, MainMenuPressButtonSpaceBar, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedMainMenuButtonSpaceBar));
 
 	// Dialogue UI Input
-	HelperBindInputAction(EnhancedInputComp, DialogueChangeNextStoryState, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnDialogueChangedNextStoryState));
+	HelperBindInputAction(EnhancedInputComp, DialogueChangeNextStoryState, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnDialogueChangedNextStoryState));
 	
 	// Crack UI Input
-	HelperBindInputAction(EnhancedInputComp, PressedCrackBackButton, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedCrackMenuBackButton));
-	HelperBindInputAction(EnhancedInputComp, PressedCrackConfirmButton, ETriggerEvent::Triggered, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedCrackMenuConfirmButton));
+	HelperBindInputAction(EnhancedInputComp, PressedCrackBackButton, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedCrackMenuBackButton));
+	HelperBindInputAction(EnhancedInputComp, PressedCrackConfirmButton, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(AInGameController, OnPressedCrackMenuConfirmButton));
 	
 }
 

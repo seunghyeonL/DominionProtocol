@@ -28,7 +28,7 @@ protected:
 	void DeactivateTitleMenuUI();
 
 	UFUNCTION()
-	void ChangeMappingContext(UUserWidget* NewTopUI);
+	void ChangeMappingContext(UUserWidget* NewTopUI) const;
 
 	void BindTopUIChangeDelegate();
 

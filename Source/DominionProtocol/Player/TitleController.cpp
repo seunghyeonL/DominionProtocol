@@ -21,32 +21,42 @@ ATitleController::ATitleController()
 
 void ATitleController::OnTitleSlotUIStartGame() const
 {
-	OnStartGame.Broadcast();
+	OnSlotUIStartGame.Broadcast();
 }
 
 void ATitleController::OnTitleSlotUIDeleteGame() const
 {
-	OnDeleteGame.Broadcast();
+	OnSlotUIDeleteGame.Broadcast();
 }
 
 void ATitleController::OnTitleSlotUIBackToTitleMenu() const
 {
-	OnBackToTitleMenu.Broadcast();
+	OnSlotUIBackToTitleMenu.Broadcast();
+}
+
+void ATitleController::OnTitleSlotUIMoveSelectionUp() const
+{
+	OnSlotUIMoveSelectionUp.Broadcast();
+}
+
+void ATitleController::OnTitleSlotUIMoveSelectionDown() const
+{
+	OnSlotUIMoveSelectionDown.Broadcast();
 }
 
 void ATitleController::OnTitleMenuUIMoveSelectionUp() const
 {
-	OnMoveSelectionUp.Broadcast();
+	OnMenuUIMoveSelectionUp.Broadcast();
 }
 
 void ATitleController::OnTitleMenuUIMoveSelectionDown() const
 {
-	OnMoveSelectionDown.Broadcast();
+	OnMenuUIMoveSelectionDown.Broadcast();
 }
 
 void ATitleController::OnTitleMenuUIConfirmSelection() const
 {
-	OnConfirmSelection.Broadcast();
+	OnMenuUIConfirmSelection.Broadcast();
 }
 
 void ATitleController::SetupMappingContext(const UInputMappingContext* NewInputMappingContext)
@@ -110,6 +120,8 @@ void ATitleController::BindInputActions()
 	HelperBindInputAction(EnhancedInputComponent, InputTitleSlotUIStartGame, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleSlotUIStartGame));
 	HelperBindInputAction(EnhancedInputComponent, InputTitleSlotUIDeleteGame, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleSlotUIDeleteGame));
 	HelperBindInputAction(EnhancedInputComponent, InputTitleSlotUIBackToTitleMenu, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleSlotUIBackToTitleMenu));
+	HelperBindInputAction(EnhancedInputComponent, InputTitleSlotUIMoveSelectionUp, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleSlotUIMoveSelectionUp));
+	HelperBindInputAction(EnhancedInputComponent, InputTitleSlotUIMoveSelectionDown, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleSlotUIMoveSelectionDown));
 
 	HelperBindInputAction(EnhancedInputComponent, InputTitleMenuUIMoveSelectionUp, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleMenuUIMoveSelectionUp));
 	HelperBindInputAction(EnhancedInputComponent, InputTitleMenuUIMoveSelectionDown, ETriggerEvent::Started, GET_FUNCTION_NAME_CHECKED(ATitleController, OnTitleMenuUIMoveSelectionDown));

@@ -5,7 +5,7 @@
 
 #include "Components/VerticalBox.h"
 #include "Player/TitleController.h"
-#include "UI/UITitle/TitleMenuButton.h"
+#include "UI/UITitle/NewTitleMenuButton.h"
 
 void UNewTitleMenuUI::NativeConstruct()
 {
@@ -16,7 +16,7 @@ void UNewTitleMenuUI::NativeConstruct()
 	TArray<UWidget*> ButtonArray = ButtonBox->GetAllChildren();
 	for (int32 i = 0; i < ButtonArray.Num(); i++)
 	{
-		auto* Button = Cast<UTitleMenuButton>(ButtonArray[i]);
+		auto* Button = Cast<UNewTitleMenuButton>(ButtonArray[i]);
 		if (Button)
 		{
 			Button->SetButtonIndex(i);
@@ -89,8 +89,8 @@ void UNewTitleMenuUI::BindInputActionDelegates()
 	auto* TitleController = Cast<ATitleController>(GetOwningPlayer());
 	if (TitleController)
 	{
-		TitleController->OnMoveSelectionUp.AddUObject(this, &UNewTitleMenuUI::OnMoveSelectionUp);
-		TitleController->OnMoveSelectionDown.AddUObject(this, &UNewTitleMenuUI::OnMoveSelectionDown);
-		TitleController->OnConfirmSelection.AddUObject(this, &UNewTitleMenuUI::OnConfirmSelection);
+		TitleController->OnMenuUIMoveSelectionUp.AddUObject(this, &UNewTitleMenuUI::OnMoveSelectionUp);
+		TitleController->OnMenuUIMoveSelectionDown.AddUObject(this, &UNewTitleMenuUI::OnMoveSelectionDown);
+		TitleController->OnMenuUIConfirmSelection.AddUObject(this, &UNewTitleMenuUI::OnConfirmSelection);
 	}
 }

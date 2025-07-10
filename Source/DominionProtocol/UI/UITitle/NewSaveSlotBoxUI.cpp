@@ -17,10 +17,16 @@ void UNewSaveSlotBoxUI::RefreshSlotData(const ESlateVisibility VisibilityState)
 			SaveSlot->SetSaveSlotInfo();
 		}	
 	}
-	else
-	{
-		CurrentSaveSlotBoxFocusIndex = -1;
-	}
+}
+
+void UNewSaveSlotBoxUI::OnMoveSelectionUp()
+{
+	DecreaseSaveSlotBoxFocusIndex();
+}
+
+void UNewSaveSlotBoxUI::OnMoveSelectionDown()
+{
+	IncreaseSaveSlotBoxFocusIndex();
 }
 
 void UNewSaveSlotBoxUI::ChangeSaveSlotBoxFocusIndex(const int32 NewFocusIndex)
@@ -153,6 +159,7 @@ void UNewSaveSlotBoxUI::NativeConstruct()
 		}
 	}
 	MaxSaveSlotBoxFocusIndex = SaveSlots.Num()-1;
+	CurrentSaveSlotBoxFocusIndex = 0;
 	
 	BindInputActionDelegates();
 
@@ -164,8 +171,10 @@ void UNewSaveSlotBoxUI::BindInputActionDelegates()
 	auto* TitleController = Cast<ATitleController>(GetOwningPlayer());
 	if (TitleController)
 	{
-		TitleController->OnStartGame.AddUObject(this, &UNewSaveSlotBoxUI::OnStartGame);
-		TitleController->OnDeleteGame.AddUObject(this, &UNewSaveSlotBoxUI::OnDeleteGame);
-		TitleController->OnBackToTitleMenu.AddUObject(this, &UNewSaveSlotBoxUI::OnBackToTitleMenu);
+		TitleController->OnSlotUIStartGame.AddUObject(this, &UNewSaveSlotBoxUI::OnStartGame);
+		TitleController->OnSlotUIDeleteGame.AddUObject(this, &UNewSaveSlotBoxUI::OnDeleteGame);
+		TitleController->OnSlotUIBackToTitleMenu.AddUObject(this, &UNewSaveSlotBoxUI::OnBackToTitleMenu);
+		TitleController->OnSlotUIMoveSelectionUp.AddUObject(this, &UNewSaveSlotBoxUI::OnMoveSelectionUp);
+		TitleController->OnSlotUIMoveSelectionDown.AddUObject(this, &UNewSaveSlotBoxUI::OnMoveSelectionDown);
 	}
 }
